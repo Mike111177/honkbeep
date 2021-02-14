@@ -1,0 +1,10 @@
+.handCardArea{
+    display: grid;
+    grid-template-columns: repeat(5, auto);
+}
+.HBHand{
+    display: grid;
+    justify-content: center;
+    justify-items: center;
+    user-select: none;
+}

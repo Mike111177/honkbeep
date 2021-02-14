@@ -2,7 +2,7 @@ import {Component} from "react"
 import "./HBCard.scss"
 import colors from "../../colors"
 
-type HBCardProps = {
+export type HBCardProps = {
     number: number,
     color: string
 }
