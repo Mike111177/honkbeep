@@ -6,7 +6,8 @@ import "./HBHand.scss"
 function DraggableCard({number, color}:HBCardProps){
     const [{ x, y }, set] = useSpring(() => ({ x: 0, y: 0 }))
     const bind = useDrag(({ down, movement: [mx, my] }) => {
-        set({ x: down ? mx : 0, y: down ? my : 0 })
+        set({ x: down ? mx : 0, y: down ? my : 0, 
+            config: { friction: 100, tension: 1000000}})
     })
     console.log(x,y)
     return (
