@@ -1,0 +1,71 @@
+$pipHeight: 13%;
+$midPipX: 38%;
+$midPipY: 43%;
+$endPipY: 13%;
+$sidePipX: 5%;
+
+$centerPipHeight: 16%;
+$centerPipY: 41%;
+$centerPipX: 36%;
+
+
+.HBCard {
+    position: relative;
+    width: 120px;
+    height: 175px;
+    border-style: solid;
+    border-width: 4px;
+    border-radius: 10px;
+    margin: 5px;
+    box-shadow: 4px 4px rgba(0, 0, 0, .4);
+    user-select: none;
+}
+
+.cardPip {
+    position: absolute;
+    padding: 3px;
+    height: $pipHeight;
+    filter: drop-shadow( 0px 0px 2px rgba(0, 0, 0, 1));
+}
+
+.cardPip1 {
+    top: $midPipY;
+    left: $sidePipX;
+}
+
+.cardPip2 {
+    height: $centerPipHeight;
+    top: $centerPipY;
+    left: $centerPipX;    
+}
+
+.cardPip3 {
+    top: $midPipY; 
+    right: $sidePipX;
+    transform: rotate(-180deg);
+}
+
+.cardPip4 {
+    top: $endPipY;
+    left: $midPipX;
+}
+
+.cardPip5 {
+    left: $midPipX;
+    bottom: $endPipY;
+    transform: rotate(-180deg);
+}
+
+.cardNumber {
+    position: absolute;
+    font-size: 200%;
+    top:-8%;
+    left: 5%;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    filter: drop-shadow( 0px 0px 2px rgba(0, 0, 0, 1));
+}
+.cardNumber-bottom{
+     right: 5%; 
+     bottom: -8%;
+     transform: rotate(-180deg);
+}
