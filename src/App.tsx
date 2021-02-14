@@ -1,6 +1,5 @@
 import background from "./background_black.jpg"
 import './App.css';
-
 import HBBoard from './game/HBBoard/HBBoard'
 
 

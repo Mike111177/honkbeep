@@ -1,13 +1,9 @@
 .App {
   min-height: 100vh;
   display: grid;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  grid-template-columns: auto;
+  grid-template-rows: auto;
   background-repeat: no-repeat;
   background-size: cover;
-}
-
-.App-link {
-  color: #61dafb;
 }
 
