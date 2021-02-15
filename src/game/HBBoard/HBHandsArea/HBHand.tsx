@@ -1,35 +1,78 @@
-import HBCard, {HBCardProps} from "../HBCard/HBCard"
+import React from "react"
+import HBCard, { HBCardProps } from "../HBCard/HBCard"
 import { useSpring, animated } from 'react-spring'
 import { useDrag } from 'react-use-gesture'
 import "./HBHand.scss"
 
-function DraggableCard({number, color}:HBCardProps){
-    const [{ x, y }, set] = useSpring(() => ({ x: 0, y: 0 }))
+let target_x = 100;
+let target_y = 200;
+
+function DraggableCard({ rank, color }: HBCardProps) {
+    const [isDragging, setIsDragging] = React.useState(false);
+    const [isTargeting, setIsTargeting] = React.useState(false);
+    const [{ tx, ty }, setTarget] = React.useState({ tx: target_x, ty: target_y });
+
+
+    //div
+    const divElement = React.useRef<HTMLDivElement | null>(null);
+
+    //Get Spring position
+    const [spring, setSpring] = useSpring(() => ({ x: 0, y: 0 }))
+
+    //On DragUpdate
     const bind = useDrag(({ down, movement: [mx, my] }) => {
-        set({ x: down ? mx : 0, y: down ? my : 0, 
-            config: { friction: 100, tension: 1000000}})
+        let dragging = isDragging;
+        let targeting = isTargeting;
+
+        if (!targeting) {
+
+            if (down) {
+                setIsDragging(true);
+                dragging = true;
+            }
+
+            if (!down && dragging) {
+                setIsDragging(false);
+                dragging = false;
+                setIsTargeting(true);
+                targeting = true;
+            }
+
+            if (!targeting) {
+                setSpring({ x: down ? mx : 0, y: down ? my : 0, config: { friction: down ? 100 : 50, tension: 1000000 } });
+            } else {
+                if (divElement.current) {
+                    let rect = divElement.current.getBoundingClientRect();
+                    console.log(spring);
+
+                    let offset_x = tx - rect.x + mx;
+                    let offset_y = ty - rect.y + my;
+                    setSpring({ x: offset_x, y: offset_y, config: { friction: 100, tension: 1000 }});
+                }
+            }
+        }
+
     })
-    console.log(x,y)
     return (
-    <animated.div {...bind()} style={{x, y, touchAction: 'none' }}>
-      <HBCard number={number} color={color}/>
-    </animated.div>
+        <animated.div ref={divElement} {...bind()} style={{ x: spring.x, y: spring.y, touchAction: 'none' }}>
+            <HBCard rank={rank} color={color} />
+        </animated.div>
     )
 }
 
 type HBHandProps = {
-    username:string
+    username: string
 }
 
-export default function HBHand({username}:HBHandProps) {
+export default function HBHand({ username }: HBHandProps) {
     return (
         <div className="HBHand">
             <div className="handCardArea">
-                <DraggableCard number={1} color="Blue"/>
-                <DraggableCard number={2} color="Red"/>
-                <DraggableCard number={3} color="Purple"/>
-                <DraggableCard number={4} color="Green"/>
-                <DraggableCard number={5} color="Yellow"/>
+                <DraggableCard rank={1} color="Blue" />
+                <DraggableCard rank={2} color="Red" />
+                <DraggableCard rank={3} color="Purple" />
+                <DraggableCard rank={4} color="Green" />
+                <DraggableCard rank={5} color="Yellow" />
             </div>
             <div className="handNameArea">
                 {username}
