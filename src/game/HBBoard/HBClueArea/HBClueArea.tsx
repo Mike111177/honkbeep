@@ -1,5 +1,9 @@
-import "./HBClueArea.scss"
+import React from "react";
+
+import {GameDefinitionContext} from '../../Game'
 import Colors from "../../colors"
+
+import "./HBClueArea.scss"
 
 enum ClueType {
     Color = 1,
@@ -30,22 +34,19 @@ function HBClueButton({ type, value }: HBClueButtonProps) {
     }
 }
 
-type HBClueAreaProps = {
-    colors: string[]
-}
-
-export default function HBClueArea({ colors }: HBClueAreaProps) {
+export default function HBClueArea() {
+    const { suits } = React.useContext(GameDefinitionContext).variant;
     return (
         <div className="HBClueArea">
-            <div className="HBClueButtonAreaSuit" style={{ gridTemplateColumns: `repeat(${colors.length}, auto)` }}>
-                {colors.map(c => <HBClueButton type={ClueType.Color} value={c} />)}
+            <div className="HBClueButtonAreaSuit" style={{ gridTemplateColumns: `repeat(${suits.length}, auto)` }}>
+                {suits.map((c, i) => <HBClueButton type={ClueType.Color} key={i} value={c} />)}
             </div>
             <div className="HBClueButtonAreaNumber">
-                {[1, 2, 3, 4, 5].map(i => <HBClueButton type={ClueType.Number} value={i} />)}
+                {[1, 2, 3, 4, 5].map((i, n) => <HBClueButton type={ClueType.Number} key={n} value={i} />)}
             </div>
             <div className="submitButton">
                 Submit Clue
-                </div>
+            </div>
         </div>
     )
 }

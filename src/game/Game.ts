@@ -1,3 +1,4 @@
+import React from "react";
 import xorshift32 from "./xorshift32";
 
 type CardData = {
@@ -7,10 +8,15 @@ type CardData = {
 
 type SuitData = string;
 
-type GameDefinition = {
+type VariantDefinition= {
     suits: SuitData[],
-    players: string[], 
-    handSize: number,
+    numPlayers: number, 
+    handSize: number
+}
+
+export type GameDefinition = {
+    variant: VariantDefinition,
+    playerNames: string[], 
 }
 //May either be a seed or a shuffled index list of a deck
 type ShufflerInput = number | number[];
@@ -86,11 +92,20 @@ export class GameTracker{
 
         this.cardKnowledge = [];
         this.hands = [];
-        this.hands.fill([], state.definition.players.length);
+        this.hands.fill([], state.definition.variant.numPlayers);
     }
 
     useShuffler(si: ShufflerInput){}
 }
+
+export const GameDefinitionContext = React.createContext<GameDefinition>({
+    variant: {
+        suits: ["Red", "Yellow", "Green", "Blue", "Purple"],
+        numPlayers: 4,
+        handSize: 5
+    },
+    playerNames: ["Alice", "Bob", "Cathy", "Donald"]
+});
 
 
 

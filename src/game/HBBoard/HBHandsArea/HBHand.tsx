@@ -2,6 +2,9 @@ import React from "react"
 import HBCard, { HBCardProps } from "../HBCard/HBCard"
 import { useSpring, animated } from 'react-spring'
 import { useDrag } from 'react-use-gesture'
+
+import {GameDefinitionContext} from '../../Game'
+
 import "./HBHand.scss"
 
 let target_x = 100;
@@ -61,10 +64,11 @@ function DraggableCard({ rank, color }: HBCardProps) {
 }
 
 type HBHandProps = {
-    username: string
+    player: number
 }
 
-export default function HBHand({ username }: HBHandProps) {
+export default function HBHand({ player}: HBHandProps) {
+    const {playerNames} = React.useContext(GameDefinitionContext);
     return (
         <div className="HBHand">
             <div className="handCardArea">
@@ -75,7 +79,7 @@ export default function HBHand({ username }: HBHandProps) {
                 <DraggableCard rank={5} color="Yellow" />
             </div>
             <div className="handNameArea">
-                {username}
+                {playerNames[player]}
             </div>
         </div>
     )

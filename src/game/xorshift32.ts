@@ -5,11 +5,7 @@ function autoSeed() {
 export default class xorshift32 {
     #a: number; //Javascript does bitwise ops on signed_32's
     constructor(seed: number | undefined = undefined) {
-        if (typeof(seed) === "undefined") {
-            this.#a = autoSeed();
-        } else {
-            this.#a = seed;
-        }
+        this.#a = seed ?? autoSeed();
     }
     next() {
         let x = this.#a;

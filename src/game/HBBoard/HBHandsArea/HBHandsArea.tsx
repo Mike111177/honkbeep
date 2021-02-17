@@ -1,9 +1,12 @@
-import HBHand from "./HBHand" //OBVIOUS PLACEHOLDER LUL
+import React from "react"
+import HBHand from "./HBHand"
+import {GameDefinitionContext} from '../../Game'
 
 export default function HBHandsArea() {
-    return (
-      <div className="HBHandsArea">
-        {["Alice", "Bob", "Cathy", "Donald" /*, "Emily"*/].map((n)=><HBHand username={n}/>)}
-      </div>
-    )
+  const { playerNames } = React.useContext(GameDefinitionContext)
+  return (
+    <div className="HBHandsArea">
+      {playerNames.map((n, i) => <HBHand player={i} key={i} />)}
+    </div>
+  )
 }
