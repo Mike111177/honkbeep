@@ -4,11 +4,11 @@ import HBCard from "../HBCard/HBCard"
 
 type HBStackProps = {
   number: number,
-  color: string
+  suit: string
 }
 
-export default function HBStack({ color, number }: HBStackProps) {
-  const colorData = colors[color];
+export default function HBStack({ suit, number }: HBStackProps) {
+  const colorData = colors[suit];
   if (number === 0) {
     return (
       <div className="HBStack" style={{ borderColor: colorData.fill, backgroundColor: colorData.back + "7f", color: colorData.fill }}>
@@ -16,6 +16,6 @@ export default function HBStack({ color, number }: HBStackProps) {
       </div>
     );
   } else {
-    return (<HBCard rank={number} color={color} />);
+    return (<HBCard rank={number} suit={suit} />);
   }
 }

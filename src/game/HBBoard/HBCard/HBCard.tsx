@@ -3,11 +3,11 @@ import colors from "../../colors"
 
 export type HBCardProps = {
   rank: number,
-  color: string
+  suit: string
 }
 
-export default function HBCard({ color, rank }: HBCardProps) {
-  let colorData = colors[color];
+export default function HBCard({ suit, rank }: HBCardProps) {
+  let colorData = colors[suit];
   const num = rank;
   return (
     <div className="HBCard" style={{ borderColor: colorData.fill, backgroundColor: colorData.back, color: colorData.fill }}>

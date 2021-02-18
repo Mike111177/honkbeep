@@ -1,6 +1,6 @@
 import React from "react";
 
-import {GameDefinitionContext} from '../../Game'
+import {GameUIContext} from '../../Game'
 import Colors from "../../colors"
 
 import "./HBClueArea.scss"
@@ -35,7 +35,7 @@ function HBClueButton({ type, value }: HBClueButtonProps) {
 }
 
 export default function HBClueArea() {
-    const { suits } = React.useContext(GameDefinitionContext).variant;
+    const suits = React.useContext(GameUIContext).getSuits();
     return (
         <div className="HBClueArea">
             <div className="HBClueButtonAreaSuit" style={{ gridTemplateColumns: `repeat(${suits.length}, auto)` }}>

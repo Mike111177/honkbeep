@@ -1,12 +1,12 @@
-import React from "react"
+import React, { useState, useContext } from "react"
 import HBCard, { HBCardProps } from "../HBCard/HBCard"
 import { useSpring, animated } from 'react-spring'
 import { useDrag } from 'react-use-gesture'
 
-import { GameDefinitionContext } from '../../Game'
+import { GameUIContext } from '../../Game'
 
 import "./HBHand.scss"
-
+/*
 let target_x = 100;
 let target_y = 200;
 
@@ -15,11 +15,12 @@ function DraggableCard({ rank, color }: HBCardProps) {
   const [isTargeting, setIsTargeting] = React.useState(false);
   const [{ tx, ty }, setTarget] = React.useState({ tx: target_x, ty: target_y });
 
-
   //div
   const divElement = React.useRef<HTMLDivElement | null>(null);
 
+
   //Get Spring position
+
   const [spring, setSpring] = useSpring(() => ({ x: 0, y: 0 }))
 
   //On DragUpdate
@@ -56,11 +57,30 @@ function DraggableCard({ rank, color }: HBCardProps) {
     }
 
   })
+
   return (
     <animated.div ref={divElement} {...bind()} style={{ x: spring.x, y: spring.y, touchAction: 'none' }}>
       <HBCard rank={rank} color={color} />
     </animated.div>
   )
+}
+*/
+
+type CardInHandProps = {
+  player: number,
+  index: number
+}
+
+function CardInHand({ player, index }: CardInHandProps) {
+  const context = useContext(GameUIContext);
+  const cardIndex = context.getCardInHand(player,index);
+  const cardInfo = context.getCardDisplayableProps(cardIndex);
+  return (
+    <div className="cardInHand">
+      <HBCard {...cardInfo}/>
+    </div>
+  )
+
 }
 
 type HBHandProps = {
@@ -68,15 +88,14 @@ type HBHandProps = {
 }
 
 export default function HBHand({ player }: HBHandProps) {
-  const { playerNames } = React.useContext(GameDefinitionContext);
+  const context = useContext(GameUIContext);
+  const playerNames = context.getPlayerNames();
+  const cards = context.getCardsPerHand();
+  const cardSlots = [...Array(cards).keys()];
   return (
     <div className="HBHand">
       <div className="handCardArea">
-        <DraggableCard rank={1} color="Blue" />
-        <DraggableCard rank={2} color="Red" />
-        <DraggableCard rank={3} color="Purple" />
-        <DraggableCard rank={4} color="Green" />
-        <DraggableCard rank={5} color="Yellow" />
+        {cardSlots.map(i=><CardInHand player={player} index={i} key={i}/>)}        
       </div>
       <div className="handNameArea">
         {playerNames[player]}

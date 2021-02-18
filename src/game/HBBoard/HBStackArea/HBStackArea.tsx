@@ -1,15 +1,15 @@
 import React from "react"
 
 import HBStack from "../HBStack/HBStack"
-import {GameDefinitionContext} from '../../Game'
+import {GameUIContext} from '../../Game'
 
 import "./HBStackArea.scss"
 
 export default function HBStackArea() {
-    const {suits} = React.useContext(GameDefinitionContext).variant;
+    const suits = React.useContext(GameUIContext).getSuits();
     return (
         <div className="HBStackArea" style={{ gridTemplateColumns: `repeat(${suits.length}, auto)` }}>
-            {suits.map((c,i) => <HBStack color={c} key={i} number={0} />)}
+            {suits.map((c,i) => <HBStack suit={c} key={i} number={0} />)}
         </div>
     )
 }

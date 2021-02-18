@@ -1,6 +1,6 @@
 .HBBoard{
     display: grid;
-    grid-template-columns: min-content auto auto;
+    grid-template-columns: min-content min-content auto;
     grid-template-rows: 25% 25% 25% 25%;
     font-size: calc(10px + 2vmin);
     color: white;
@@ -10,10 +10,11 @@
 
 .handsWrapper{
     position: relative;
+    display: flex;
+    justify-content: center;
 }
 
 .HBPlayHistory,
-.handsWrapper,
 .HBClueHistory,
 .HBDiscardArea,
 .HBGeneralControls {
