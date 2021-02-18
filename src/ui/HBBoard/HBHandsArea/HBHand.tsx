@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react"
+import React, { useState, useContext, useEffect } from "react"
 import HBCard, { HBCardProps } from "../HBCard/HBCard"
 import { useSpring, animated } from 'react-spring'
 import { useDrag } from 'react-use-gesture'
@@ -73,14 +73,23 @@ type CardInHandProps = {
 
 function CardInHand({ player, index }: CardInHandProps) {
   const context = useContext(GameUIContext);
-  const cardIndex = context.getCardInHand(player,index);
-  const cardInfo = context.getCardDisplayableProps(cardIndex);
+  
+  function getCurrentDisplayProps(){
+    const cardIndex = context.getCardInHand(player,index);
+    return context.getCardDisplayableProps(cardIndex);
+  }
+  const [cardInfo, setDisprops] = useState(getCurrentDisplayProps());
+/*
+  context.subscribeToAnyThingLUL(()=>{
+    setDisprops(getCurrentDisplayProps());
+  });
+  */
+
   return (
     <div className="cardInHand">
       <HBCard {...cardInfo}/>
     </div>
   )
-
 }
 
 type HBHandProps = {

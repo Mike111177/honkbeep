@@ -1,6 +1,6 @@
 import BackendInterface from "./BackendInterface"
 import { GameTracker } from "./Game";
-import { CardData, CardReveal, GameDefinition, GameState, VariantDefinition, GameEventSeries } from "./GameTypes"
+import { CardData, CardReveal, GameDefinition, GameState, VariantDefinition, GameEventSeries, GameActionType } from "./GameTypes"
 import { buildDeck, getShuffledOrder } from "./VariantBuilding";
 
 //Will be the substitute for a server in these local games
@@ -15,7 +15,7 @@ class Server {
   hands: number[][];
   discard: number[];
   topDeck: number;
-  lastTurn: number
+  lastTurn: number;
 
   events: GameEventSeries;
   constructor(definition: GameDefinition) {
@@ -48,7 +48,10 @@ class Server {
     }
 
     //Set turn 0 as a pure reveal, of the cards in everyones hands
-    this.events = [{reveals: initialReveals}];
+    this.events = [{
+      type: GameActionType.Deal, 
+      reveals: initialReveals
+    }];
     this.lastTurn = 0;
   }
 
@@ -69,7 +72,7 @@ export default class LocalBackend implements BackendInterface {
     this.#state = {
       events: this.#server.getAllEvents(),
       definition
-    }
+    };
   }
 
   currentState(): GameState {

@@ -28,7 +28,15 @@ export type CardReveal = {
   card: number
 }
 
+export enum GameActionType{
+  Deal = 1, 
+  Play, 
+  Discard,
+  Clue
+}
+
 export type GameAction = {
+  type: GameActionType,
   reveals?: CardReveal[]
 }
 
@@ -74,3 +82,5 @@ export type Stack = {
   suit: SuitData,
   cards: number[]
 }
+
+
