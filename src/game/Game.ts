@@ -51,9 +51,9 @@ export class GameTracker {
     this.knownDeckOrder = [];
 
     //Propagate State
-    for (let event of state.events){
-      if (event.reveals){
-        for (let revealedCard of event.reveals){
+    for (let event of state.events) {
+      if (event.reveals) {
+        for (let revealedCard of event.reveals) {
           this.knownDeckOrder[revealedCard.deck] = revealedCard.card;
         }
       }
@@ -106,12 +106,12 @@ export class GameTracker {
   }
 
   useShuffler(si: ShufflerInput = undefined) {
-    const {order} = getShuffledOrder(this.cards.length, si);
+    const { order } = getShuffledOrder(this.cards.length, si);
     this.shuffledOrder = order;
   }
 
   isPossiblyPlayable(cardIndex: number) { return true; }
-  isCardRevealed(cardIndex : number) { return this.knownDeckOrder[cardIndex] !== undefined; }
+  isCardRevealed(cardIndex: number) { return this.knownDeckOrder[cardIndex] !== undefined; }
   getSuits() { return this.#backend.currentState().definition.variant.suits; }
   getHandSize() { return this.#backend.currentState().definition.variant.handSize; }
   getPlayerNames() { return this.#backend.currentState().definition.playerNames; }
