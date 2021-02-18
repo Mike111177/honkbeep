@@ -1,20 +1,15 @@
 import HBClueArea from "./HBClueArea/HBClueArea"
 import HBStackArea from "./HBStackArea/HBStackArea"
 import HBHandsArea from "./HBHandsArea/HBHandsArea"
-import {GameTracker, GameUIContext, GameUIInterface} from '../Game'
+import {GameUIContext, GameUIInterface} from '../ReactFrontendInterface'
 
 import './HBBoard.scss'
 
-export default function HBBoard() {
-  const game = new GameUIInterface(new GameTracker({
-        variant: {
-            suits: ["Red", "Yellow", "Green", "Blue", "Purple"],
-            numPlayers: 4,
-            handSize: 5
-        },
-        playerNames: ["Alice", "Bob", "Cathy", "Donald"]
-    }));
-    game.game?.useShuffler();
+type HBBoardProps = {
+  game: GameUIInterface
+}
+
+export default function HBBoard({game}:HBBoardProps) {
     return (
         <GameUIContext.Provider value={game}>
             <div className="HBBoard">

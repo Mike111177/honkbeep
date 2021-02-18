@@ -1,6 +1,6 @@
 import React from "react"
 import HBHand from "./HBHand"
-import { GameUIContext } from '../../Game'
+import { GameUIContext } from '../../ReactFrontendInterface'
 
 export default function HBHandsArea() {
   const playerNames = React.useContext(GameUIContext).getPlayerNames();

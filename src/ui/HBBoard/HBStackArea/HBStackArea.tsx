@@ -1,7 +1,7 @@
 import React from "react"
 
 import HBStack from "../HBStack/HBStack"
-import {GameUIContext} from '../../Game'
+import {GameUIContext} from '../../ReactFrontendInterface'
 
 import "./HBStackArea.scss"
 
