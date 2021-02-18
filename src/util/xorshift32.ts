@@ -4,8 +4,10 @@ function autoSeed() {
 
 export default class xorshift32 {
     #a: number; //Javascript does bitwise ops on signed_32's
+    #seed: number;
     constructor(seed: number | undefined = undefined) {
-        this.#a = seed ?? autoSeed();
+        this.#seed = seed ?? autoSeed();
+        this.#a = this.#seed;
     }
     next() {
         let x = this.#a;
@@ -14,5 +16,8 @@ export default class xorshift32 {
         x ^= x << 5;
         this.#a = x;
         return this.#a>>>0;//Convert to unsigned_32 before returning
+    }
+    seed(){
+      return this.#seed;
     }
 }

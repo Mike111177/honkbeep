@@ -1,19 +1,19 @@
-import xorshift32 from "../util/xorshift32";
+import BackendInterface from "./BackendInterface";
 import FrontendInterface from "./FrontendInterface"
 import {
   CardData,
-  GameState,
   Stack,
   CardKnowledgeHistory,
   HandHistory,
-  GameDefinition,
   ShufflerInput,
-  VariantDefinition
 } from "./GameTypes";
+import { buildDeck, getShuffledOrder } from "./VariantBuilding";
 
 // Calculates current board state as new turns are played
 export class GameTracker {
-  state: GameState;
+  #backend: BackendInterface;
+  #frontend: FrontendInterface;
+
   turn: number = 0;
   topDeck: number = 0;
 
@@ -27,6 +27,8 @@ export class GameTracker {
   //Unshuffled deck information
   cards: CardData[];
 
+  knownDeckOrder: number[];
+
   stacks: Stack[];
 
   //Shuffled order of deck for spectator and review mode, and displaying discovered cards
@@ -37,32 +39,40 @@ export class GameTracker {
   //Linked copy, used for branches from hypotheticals
   hypothetical?: GameTracker;
 
-  frontend: FrontendInterface;
+  constructor(backend: BackendInterface, frontend: FrontendInterface) {
+    this.#backend = backend;
+    this.#backend.bind(this);
 
-  constructor(definition: GameDefinition, frontend: FrontendInterface) {
-    this.state = {
-      events: [],
-      definition
-    };
-    this.frontend = frontend;
-    this.frontend.bind(this);
+    this.#frontend = frontend;
+    this.#frontend.bind(this);
 
-    this.cards = buildDeck(this.state.definition.variant);
+    let state = backend.currentState();
+    this.cards = buildDeck(state.definition.variant);
+    this.knownDeckOrder = [];
+
+    //Propagate State
+    for (let event of state.events){
+      if (event.reveals){
+        for (let revealedCard of event.reveals){
+          this.knownDeckOrder[revealedCard.deck] = revealedCard.card;
+        }
+      }
+    }
 
     //Init stacks
-    this.stacks = this.state.definition.variant.suits.map(s => ({
+    this.stacks = state.definition.variant.suits.map(s => ({
       suit: s,
       cards: []
     }));
 
     //Turn 0, Deal
     this.handHistories = [];
-    for (let p = 0; p < this.state.definition.variant.numPlayers; p++) {
+    for (let p = 0; p < state.definition.variant.numPlayers; p++) {
       this.handHistories[p] = [{
         turn: 0,
         result: []
       }];
-      for (let s = 0; s < this.state.definition.variant.handSize; s++) {
+      for (let s = 0; s < state.definition.variant.handSize; s++) {
         this.handHistories[p][0].result.push(this.topDeck);
         this.topDeck++;
       }
@@ -96,31 +106,15 @@ export class GameTracker {
   }
 
   useShuffler(si: ShufflerInput = undefined) {
-    this.shuffledOrder = getShuffledOrder(this.cards.length, si);
+    const {order} = getShuffledOrder(this.cards.length, si);
+    this.shuffledOrder = order;
   }
-  
-  isPossiblyPlayable(cardIndex:number){
-    return true;
-  }
+
+  isPossiblyPlayable(cardIndex: number) { return true; }
+  isCardRevealed(cardIndex : number) { return this.knownDeckOrder[cardIndex] !== undefined; }
+  getSuits() { return this.#backend.currentState().definition.variant.suits; }
+  getHandSize() { return this.#backend.currentState().definition.variant.handSize; }
+  getPlayerNames() { return this.#backend.currentState().definition.playerNames; }
 }
 
-function buildDeck({ suits }: VariantDefinition) {
-  let deck = suits.map(suit => (
-    [1, 1, 1, 2, 2, 3, 3, 4, 4, 5].map(rank => (
-      { suit, rank }
-    ))
-  )).flat();
-  return deck;
-}
 
-function getShuffledOrder(length: number, seed: ShufflerInput = undefined) {
-  let rng = new xorshift32(seed);
-  let order = [...Array(length).keys()];
-  for (let i = 0; i < length; i++) {
-    let s = rng.next() % (length - 1);
-    let tmp = order[s];
-    order[s] = order[i];
-    order[i] = tmp;
-  }
-  return order;
-}

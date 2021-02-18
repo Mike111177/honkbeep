@@ -23,8 +23,13 @@ export type ShufflerInput = number | undefined;
 //You should be able to derive the entire deck order
 //Meant for spectators and post game review
 
+export type CardReveal = {
+  deck: number,
+  card: number
+}
+
 export type GameAction = {
-  description: string
+  reveals?: CardReveal[]
 }
 
 export type GameEventSeries = GameAction[];
