@@ -6,6 +6,7 @@ import { useDrag } from 'react-use-gesture'
 import { GameUIContext } from '../../ReactFrontendInterface'
 
 import "./HBHand.scss"
+import { GameEventType, PlayResultType } from "../../../game/GameTypes"
 /*
 let target_x = 100;
 let target_y = 200;
@@ -79,14 +80,24 @@ function CardInHand({ player, index }: CardInHandProps) {
     return context.getCardDisplayableProps(cardIndex);
   }
   const [cardInfo, setDisprops] = useState(getCurrentDisplayProps());
-/*
-  context.subscribeToAnyThingLUL(()=>{
-    setDisprops(getCurrentDisplayProps());
-  });
-  */
+
+  useEffect(() =>
+    context.listenGameStateChange(() => 
+      setDisprops(getCurrentDisplayProps())
+  ));
+
+  //Temporary Stand in for drag and drop
+  const clickHandler = async ()=>{
+    await context.attemptPlayerAction({
+      type: GameEventType.Play,
+      player: player,
+      handSlot: index,
+      result: {type: PlayResultType.Request}
+    });
+  };
 
   return (
-    <div className="cardInHand">
+    <div className="cardInHand" onClick={clickHandler}>
       <HBCard {...cardInfo}/>
     </div>
   )

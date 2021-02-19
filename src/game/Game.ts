@@ -6,6 +6,9 @@ import {
   CardKnowledgeHistory,
   HandHistory,
   ShufflerInput,
+  GameEvent,
+  GameEventType,
+  PlayResultType,
 } from "./GameTypes";
 import { buildDeck, getShuffledOrder } from "./VariantBuilding";
 
@@ -14,7 +17,9 @@ export class GameTracker {
   #backend: BackendInterface;
   #frontend: FrontendInterface;
 
-  turn: number = 0;
+  turnsProcessed: number = 0;
+
+
   topDeck: number = 0;
 
   //Array the size of the whole deck, 
@@ -50,20 +55,8 @@ export class GameTracker {
     this.cards = buildDeck(state.definition.variant);
     this.knownDeckOrder = [];
 
-    //Propagate State
-    for (let event of state.events) {
-      if (event.reveals) {
-        for (let revealedCard of event.reveals) {
-          this.knownDeckOrder[revealedCard.deck] = revealedCard.card;
-        }
-      }
-    }
-
     //Init stacks
-    this.stacks = state.definition.variant.suits.map(s => ({
-      suit: s,
-      cards: []
-    }));
+    this.stacks = state.definition.variant.suits.map<number[]>(_ => ([]));
 
     //Turn 0, Deal
     this.handHistories = [];
@@ -76,6 +69,49 @@ export class GameTracker {
         this.handHistories[p][0].result.push(this.topDeck);
         this.topDeck++;
       }
+    }
+
+    //Process State
+    this.propagateState();
+  }
+
+  getLatestPlayerHand(player: number) {
+    return;
+  }
+
+  propagateState() {
+    let events = this.#backend.currentState().events;
+    let newEvents = false;
+    for (this.turnsProcessed; this.turnsProcessed < events.length; this.turnsProcessed++) {
+      newEvents = true;
+      let event = events[this.turnsProcessed];
+      //Process Actions
+      switch (event.type) {
+        case GameEventType.Play:
+          let newHand = Array.from(this.handHistories[event.player][this.handHistories[event.player].length - 1].result);
+          let card = newHand.splice(event.handSlot, 1)[0];
+          if (event.result.type === PlayResultType.Success){
+            this.stacks[event.result.stack].push(card);
+          }
+          newHand.unshift(this.topDeck)
+          this.handHistories[event.player].push({
+            turn: this.turnsProcessed,
+            result: newHand,
+            played: event.handSlot,
+            replacement: this.topDeck
+          });
+          this.topDeck++;
+      }
+      //Process Reveals
+      if (event.reveals) {
+        for (let revealedCard of event.reveals) {
+          this.knownDeckOrder[revealedCard.deck] = revealedCard.card;
+        }
+      }
+    }
+    //If we processed new events, notify the frontend changes happened
+    if (newEvents) {
+      this.#frontend.onGameStateChange();
     }
   }
 
@@ -115,6 +151,16 @@ export class GameTracker {
   getSuits() { return this.#backend.currentState().definition.variant.suits; }
   getHandSize() { return this.#backend.currentState().definition.variant.handSize; }
   getPlayerNames() { return this.#backend.currentState().definition.playerNames; }
+
+  //Frontend Action Endpoint
+  async attemptPlayerAction(action: GameEvent) {
+    return this.#backend.attemptPlayerAction(action);
+  }
+
+  //Backend Endpoints
+  onNewEvents() {
+    this.propagateState();
+  }
 }
 
 

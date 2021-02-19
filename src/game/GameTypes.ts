@@ -28,19 +28,65 @@ export type CardReveal = {
   card: number
 }
 
-export enum GameActionType{
+export enum PlayResultType{
+  Request = 1,
+  Success,
+  Misplay
+}
+
+type PlayRequestResult = {
+  type: PlayResultType.Request;
+}
+
+type PlaySuccessResult = {
+  type: PlayResultType.Success;
+  stack: number;
+}
+
+type PlayMisplayResult=  {
+  type: PlayResultType.Misplay;
+}
+
+export type PlayResult = PlaySuccessResult | PlayMisplayResult | PlayRequestResult;
+
+export enum GameEventType{
   Deal = 1, 
   Play, 
   Discard,
   Clue
 }
 
-export type GameAction = {
-  type: GameActionType,
+type GameDealEvent = {
+  type: GameEventType.Deal;
   reveals?: CardReveal[]
 }
 
-export type GameEventSeries = GameAction[];
+type GamePlayEvent = {
+  type: GameEventType.Play;
+  player: number;
+  handSlot: number;
+  result: PlayResult;
+  reveals?: CardReveal[];
+}
+
+type GameDiscardEvent = {
+  type: GameEventType.Discard;
+  reveals?: CardReveal[];
+}
+
+type GameClueEvent = {
+  type: GameEventType.Clue;
+  reveals?: CardReveal[];
+}
+
+export type GameEvent = 
+  GameDealEvent |
+  GamePlayEvent | 
+  GameDiscardEvent |
+  GameClueEvent;
+
+
+export type GameEventSeries = GameEvent[];
 
 //Minimum data to construct entire game state
 export type GameState = {
@@ -54,17 +100,9 @@ export enum PipStatus {
   KnownImpossible
 }
 
-export enum CardDestination {
-  Deck = 1,
-  Hand,
-  Stacks,
-  Discard
-}
-
 export type HandUpdate = {
   turn: number, //The turn this update was made on / this should be unique in a hands history
   played?: number, //Card that was played to cause this hand state
-  destination?: CardDestination // Where the card went
   replacement?: number, //Card that replaced slot 1 from deck
   result: number[] //Cards (by deck index) in hand after play
 }
@@ -78,9 +116,6 @@ export type CardKnowledgeUpdate = {
 
 export type CardKnowledgeHistory = CardKnowledgeUpdate[];
 
-export type Stack = {
-  suit: SuitData,
-  cards: number[]
-}
+export type Stack = number[];
 
 
