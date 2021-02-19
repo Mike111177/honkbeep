@@ -1,7 +1,7 @@
 .handCardArea{
     display: grid;
     grid-template-columns: repeat(5, 20%);
-    grid-template-rows: 100%;
+    grid-template-rows: min-content;
     justify-content: center;
     align-content: center;
 }
@@ -9,18 +9,20 @@
     display: grid;
     justify-content: center;
     justify-items: center;
-    grid-template-rows: 80% 20%;
+    grid-template-rows: min-content min-content;
     user-select: none;
 }
 
 .HBHandsArea{
     display: grid;
-    grid-template-rows: 25% 25% 25% 25%;
-    height: 100%;
     justify-content: center;
 }
 
 .cardInHand{
   width: max-content;
   height: 100%;
+}
+
+.handNameArea{
+    font-size: 20px;
 }
