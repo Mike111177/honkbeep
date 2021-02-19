@@ -25,11 +25,7 @@ export default function HBStack({ suit, number }: HBStackProps) {
     }
   }
   const [{ empty, rank }, setDisprops] = useState(getCurrentDisplayProps());
-
-  useEffect(() =>
-    context.listenGameStateChange(() => 
-      setDisprops(getCurrentDisplayProps())
-  ));
+  context.useGameEvent("game-event", () => setDisprops(getCurrentDisplayProps()));
 
   if (empty) {
     return (

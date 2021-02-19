@@ -80,11 +80,7 @@ function CardInHand({ player, index }: CardInHandProps) {
     return context.getCardDisplayableProps(cardIndex);
   }
   const [cardInfo, setDisprops] = useState(getCurrentDisplayProps());
-
-  useEffect(() =>
-    context.listenGameStateChange(() => 
-      setDisprops(getCurrentDisplayProps())
-  ));
+  context.useGameEvent("game-event", () => setDisprops(getCurrentDisplayProps()));
 
   //Temporary Stand in for drag and drop
   const clickHandler = async ()=>{

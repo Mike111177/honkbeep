@@ -1,13 +1,19 @@
 import React from "react";
+import EventEmitter from "events";
 
 import {GameTracker} from "../game/Game";
 import FrontendInterface from "../game/FrontendInterface"
 import { GameEvent } from "../game/GameTypes";
 
+
 type GameStateListener = ()=>void;
-export class GameUIInterface implements FrontendInterface{
+export class GameUIInterface extends EventEmitter implements FrontendInterface{
   #game?: GameTracker;
-  #gameStateChangeListeners: GameStateListener[] = [];
+
+  constructor(){
+    super();
+    this.setMaxListeners(25);
+  }
   
   bind(game: GameTracker): void {
     this.#game = game;
@@ -30,15 +36,25 @@ export class GameUIInterface implements FrontendInterface{
     }
   }
 
-  //Anything that changes with gamestate should add a listener here
-  //TODO: add unsubcribe Action
-  //TODO: split into more specific state change handlers for improved perf
-  listenGameStateChange(listener: GameStateListener){
-    this.#gameStateChangeListeners.push(listener);
+  onGameStateChange(){
+    this.emit("game-update");
   }
-  onGameStateChange(){this.#gameStateChangeListeners.forEach(l=>l());}
+
   async attemptPlayerAction(action: GameEvent){
     return this.#game!.attemptPlayerAction(action);
+  }
+
+  //DO NOT CALL FROM OUTSIDE REACT COMPONENT LUL
+  // If you need to listen to events outside of a component just call this.on(<event-name>)
+  useGameEvent(event:string, callback:GameStateListener){
+    // This violates the rule of hooks where useEffect is not supposed to be called outside of a component
+    // So don't call it from outside a component lol
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    React.useEffect(() => {
+      const removeFunc = () => {this.off("game-update", callback)};
+      this.on("game-update", callback);
+      return removeFunc;
+    });
   }
 }
 export const GameUIContext = React.createContext<GameUIInterface>(new GameUIInterface());
