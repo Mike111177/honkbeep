@@ -1,12 +1,12 @@
 import React, { useState, useContext, useEffect } from "react"
-import HBCard, { HBCardProps } from "../HBCard/HBCard"
+import HBCard, { HBCardProps } from "./HBCard"
 import { useSpring, animated } from 'react-spring'
 import { useDrag } from 'react-use-gesture'
 
-import { GameUIContext } from '../../ReactFrontendInterface'
+import { GameUIContext } from '../ReactFrontendInterface'
 
 import "./HBHand.scss"
-import { GameEventType, PlayResultType } from "../../../game/GameTypes"
+import { GameEventType, PlayResultType } from "../../game/GameTypes"
 /*
 let target_x = 100;
 let target_y = 200;

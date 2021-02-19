@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 
-import { GameUIContext } from "../../ReactFrontendInterface";
-import HBCard from "../HBCard/HBCard"
-import colors from "../../colors"
+import { GameUIContext } from "../ReactFrontendInterface";
+import HBCard from "./HBCard"
+import colors from "../colors"
 
 import "./HBStack.scss"
 

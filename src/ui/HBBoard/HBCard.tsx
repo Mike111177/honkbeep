@@ -1,5 +1,5 @@
 import "./HBCard.scss"
-import colors from "../../colors"
+import colors from "../colors"
 
 export type HBCardProps = {
   rank: number,

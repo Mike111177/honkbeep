@@ -1,6 +1,6 @@
-import HBClueArea from "./HBClueArea/HBClueArea"
-import HBStackArea from "./HBStackArea/HBStackArea"
-import HBHandsArea from "./HBHandsArea/HBHandsArea"
+import HBClueArea from "./HBClueArea"
+import HBStackArea from "./HBStackArea"
+import HBHandsArea from "./HBHandsArea"
 import { GameUIContext, GameUIInterface } from '../ReactFrontendInterface'
 
 import './HBBoard.scss'

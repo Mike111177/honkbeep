@@ -1,7 +1,7 @@
 import React from "react";
 
-import {GameUIContext} from '../../ReactFrontendInterface'
-import Colors from "../../colors"
+import {GameUIContext} from '../ReactFrontendInterface'
+import Colors from "../colors"
 
 import "./HBClueArea.scss"
 
