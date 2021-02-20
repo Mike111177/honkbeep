@@ -1,71 +1,11 @@
-import React, { useState, useContext, useEffect } from "react"
-import HBCard, { HBCardProps } from "./HBCard"
-import { useSpring, animated } from 'react-spring'
-import { useDrag } from 'react-use-gesture'
+import React, { useState, useContext } from "react"
+import { Draggable } from "../Dragging"
 
+import { GameEventType, PlayResultType } from "../../game/GameTypes"
 import { GameUIContext } from '../ReactFrontendInterface'
+import HBCard, { HBCardProps } from "./HBCard"
 
 import "./HBHand.scss"
-import { GameEventType, PlayResultType } from "../../game/GameTypes"
-/*
-let target_x = 100;
-let target_y = 200;
-
-function DraggableCard({ rank, color }: HBCardProps) {
-  const [isDragging, setIsDragging] = React.useState(false);
-  const [isTargeting, setIsTargeting] = React.useState(false);
-  const [{ tx, ty }, setTarget] = React.useState({ tx: target_x, ty: target_y });
-
-  //div
-  const divElement = React.useRef<HTMLDivElement | null>(null);
-
-
-  //Get Spring position
-
-  const [spring, setSpring] = useSpring(() => ({ x: 0, y: 0 }))
-
-  //On DragUpdate
-  const bind = useDrag(({ down, movement: [mx, my] }) => {
-    let dragging = isDragging;
-    let targeting = isTargeting;
-
-    if (!targeting) {
-
-      if (down) {
-        setIsDragging(true);
-        dragging = true;
-      }
-
-      if (!down && dragging) {
-        setIsDragging(false);
-        dragging = false;
-        setIsTargeting(true);
-        targeting = true;
-      }
-
-      if (!targeting) {
-        setSpring({ x: down ? mx : 0, y: down ? my : 0, config: { friction: down ? 100 : 50, tension: 1000000 } });
-      } else {
-        if (divElement.current) {
-          let rect = divElement.current.getBoundingClientRect();
-          console.log(spring);
-
-          let offset_x = tx - rect.x + mx;
-          let offset_y = ty - rect.y + my;
-          setSpring({ x: offset_x, y: offset_y, config: { friction: 100, tension: 1000 } });
-        }
-      }
-    }
-
-  })
-
-  return (
-    <animated.div ref={divElement} {...bind()} style={{ x: spring.x, y: spring.y, touchAction: 'none' }}>
-      <HBCard rank={rank} color={color} />
-    </animated.div>
-  )
-}
-*/
 
 type CardInHandProps = {
   player: number,
@@ -74,17 +14,14 @@ type CardInHandProps = {
 
 function CardInHand({ player, index }: CardInHandProps) {
   const context = useContext(GameUIContext);
-  
-  function getCurrentDisplayProps(){
-    const cardIndex = context.getCardInHand(player,index);
-    return context.getCardDisplayableProps(cardIndex);
-  }
+
+  //Update card display on game-event
+  const getCurrentDisplayProps = () => context.getCardDisplayableProps(context.getCardInHand(player, index));
   const [cardInfo, setDisprops] = useState(getCurrentDisplayProps());
   context.useGameEvent("game-event", () => setDisprops(getCurrentDisplayProps()));
 
-  //Temporary Stand in for drag and drop
-  const clickHandler = async ()=>{
-    await context.attemptPlayerAction({
+  const onDrop = (place:string)=>{
+    context.attemptPlayerAction({
       type: GameEventType.Play,
       player: player,
       handSlot: index,
@@ -93,9 +30,9 @@ function CardInHand({ player, index }: CardInHandProps) {
   };
 
   return (
-    <div className="cardInHand" onClick={clickHandler}>
-      <HBCard {...cardInfo}/>
-    </div>
+    <Draggable onDrop={onDrop} className="cardInHand">
+      <HBCard {...cardInfo} />
+    </Draggable>
   )
 }
 
@@ -111,7 +48,7 @@ export default function HBHand({ player }: HBHandProps) {
   return (
     <div className="HBHand">
       <div className="handCardArea">
-        {cardSlots.map(i=><CardInHand player={player} index={i} key={i}/>)}        
+        {cardSlots.map(i => <CardInHand player={player} index={i} key={i} />)}
       </div>
       <div className="handNameArea">
         {playerNames[player]}
