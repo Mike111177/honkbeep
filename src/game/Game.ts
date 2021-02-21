@@ -151,6 +151,7 @@ export class GameTracker {
   getSuits() { return this.#backend.currentState().definition.variant.suits; }
   getHandSize() { return this.#backend.currentState().definition.variant.handSize; }
   getPlayerNames() { return this.#backend.currentState().definition.playerNames; }
+  getDeckSize() { return this.cards.length; }
 
   //Frontend Action Endpoint
   async attemptPlayerAction(action: GameEvent) {

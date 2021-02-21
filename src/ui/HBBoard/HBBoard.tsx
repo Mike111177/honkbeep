@@ -1,11 +1,11 @@
 import HBClueArea from "./HBClueArea"
 import HBStackArea from "./HBStackArea"
-import HBHandsArea from "./HBHandsArea"
+
+import { CardFloatLayer, CardFloatArea } from "./CardFloat"
+import { HBHandsArea } from "./HBHand"
 import { GameUIContext, GameUIInterface } from '../ReactFrontendInterface'
-import { DragArea } from "../Dragging"
 
 import './HBBoard.scss'
-
 
 type HBBoardProps = {
   game: GameUIInterface
@@ -14,7 +14,7 @@ type HBBoardProps = {
 export default function HBBoard({ game }: HBBoardProps) {
   return (
     <GameUIContext.Provider value={game}>
-      <DragArea>
+      <CardFloatArea>
         <div className="HBBoard">
           <div className="HBPlayHistory">
           </div>
@@ -27,7 +27,8 @@ export default function HBBoard({ game }: HBBoardProps) {
           <HBClueArea />
           <div className="HBGeneralControls" />
         </div>
-      </DragArea>
-    </GameUIContext.Provider>
+        <CardFloatLayer />
+      </CardFloatArea>
+    </GameUIContext.Provider >
   )
 }

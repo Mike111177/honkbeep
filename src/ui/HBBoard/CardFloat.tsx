@@ -1,5 +1,8 @@
-import React, { useRef, useState, useContext, createContext, useEffect } from "react"
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { animated, useSpring } from "react-spring"
+
+import HBDeckCard from "./HBDeckCard";
+import { GameUIContext } from "../ReactFrontendInterface";
 
 class DragManager{
   dragging: boolean = false;
@@ -97,3 +100,50 @@ export function DropZone({ children, id, ...props }: any) {
 export function DragArea({ children }: any) {
   return <DragContext.Provider value={new DragManager()}>{children}</DragContext.Provider>
 }
+
+const CardFloatContext = createContext<any[]>([]);
+
+export function CardFloatArea({ children }: any) {
+  const deckSize = useContext(GameUIContext).getDeckSize();
+  const deckHandles = [...Array(deckSize)];
+  return (
+    <DragArea>
+      <CardFloatContext.Provider value={deckHandles}>
+        {children}
+      </CardFloatContext.Provider>
+    </DragArea>
+  );
+}
+
+export function CardFloatTarget({index}:any){
+  const element = useRef(null);
+  const deckHandles = useContext(CardFloatContext);
+  useEffect(()=>{
+    deckHandles[index](element.current!);
+  });
+  return <div ref={element} style={{width:"115px", height:"162px"}}/>;
+}
+
+function FloatingCard({ index }: { index: number }) {
+  const deckHandles = useContext(CardFloatContext);
+  const [spring, setSpring] = useSpring(() => ({ x: 0, y: 0 }))
+  deckHandles[index] = (target:HTMLDivElement) => {
+    const rect = target.getBoundingClientRect();
+    setSpring({x: rect.x, y: rect.y});
+  };
+  return (
+    <animated.div style={{x: spring.x, y: spring.y, position: "absolute" }}>
+      <HBDeckCard index={index} />
+    </animated.div>
+  );
+}
+
+export function CardFloatLayer() {
+  const deckHandles = useContext(CardFloatContext);
+  return (
+    <div className="CardFloatLayer" style={{ position: "absolute" }}>
+      {deckHandles.map((i, n) => <FloatingCard index={n} key={n} />)}
+    </div>
+  )
+}
+

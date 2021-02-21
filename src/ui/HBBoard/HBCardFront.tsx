@@ -10,7 +10,7 @@ export default function HBCard({ suit, rank }: HBCardProps) {
   let colorData = colors[suit];
   const num = rank;
   return (
-      <svg height="150" width="110" style={{ margin: "2.5px" }}>
+      <svg height="150" width="110" style={{ margin: "2.5px", userSelect:"none" }}>
         <defs>
           <filter id="outline">
           <feComponentTransfer>

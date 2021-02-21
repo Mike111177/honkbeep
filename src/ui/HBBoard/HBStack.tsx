@@ -1,7 +1,7 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 
 import { GameUIContext } from "../ReactFrontendInterface";
-import HBCard from "./HBCard"
+import HBDeckCard from "./HBDeckCard"
 import colors from "../colors"
 
 import "./HBStack.scss"
@@ -16,24 +16,20 @@ export default function HBStack({ suit, number }: HBStackProps) {
 
   const context = useContext(GameUIContext);
 
-  function getCurrentDisplayProps(): { empty: boolean, rank?: number } {
+  function getCurrentCard(): number | undefined {
     const stack = context.getStack(number);
-    if (stack.length === 0) {
-      return { empty: true };
-    } else {
-      return { empty: false, rank: context.getCardDisplayableProps(stack[stack.length - 1]).rank };
-    }
+    return stack[stack.length - 1];
   }
-  const [{ empty, rank }, setDisprops] = useState(getCurrentDisplayProps());
-  context.useGameEvent("game-event", () => setDisprops(getCurrentDisplayProps()));
+  const [index, setIndex] = useState(getCurrentCard());
+  context.useGameEvent("game-event", () => setIndex(getCurrentCard()));
 
-  if (empty) {
+  if (index===undefined) {
     return (
       <div className="HBStack" style={{ borderColor: colorData.fill, backgroundColor: colorData.back + "7f", color: colorData.fill }}>
         <img className="stackPip" src={colorData.pip} alt="" />
       </div>
     );
   } else {
-    return (<HBCard rank={rank!} suit={suit} />);
+    return (<HBDeckCard index={index}/>);
   }
 }

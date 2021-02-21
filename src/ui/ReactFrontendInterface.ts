@@ -12,7 +12,7 @@ export class GameUIInterface extends EventEmitter implements FrontendInterface{
 
   constructor(){
     super();
-    this.setMaxListeners(25);
+    this.setMaxListeners(100);
   }
   
   bind(game: GameTracker): void {
@@ -25,14 +25,13 @@ export class GameUIInterface extends EventEmitter implements FrontendInterface{
   getCardsPerHand() {return this.#game!.getHandSize();}
   getCardInHand(player: number, index: number) {return this.#game!.getCardInHand(player, index, this.#game!.turnsProcessed);}
   getSuits() {return this.#game!.getSuits();}
-  getStack(index: number){
-    return this.#game!.stacks[index];
-  }
+  getStack(index: number){return this.#game!.stacks[index];}
+  getDeckSize() { return this.#game!.getDeckSize(); }
   getCardDisplayableProps(index: number) { 
     if (this.#game!.isCardRevealed(index)){
       return this.#game!.cards[this.#game!.knownDeckOrder[index]];
     } else {
-      return {rank: 6, suit: "Purple"};
+      return {rank: 6, suit: "Black"};
     }
   }
 

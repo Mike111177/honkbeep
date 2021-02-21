@@ -1,7 +1,7 @@
 import React from "react"
 
 import HBStack from "./HBStack"
-import { DropZone } from "../Dragging";
+import { DropZone } from "./CardFloat";
 import { GameUIContext } from '../ReactFrontendInterface'
 
 import "./HBStackArea.scss"
