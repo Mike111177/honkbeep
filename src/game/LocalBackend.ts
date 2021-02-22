@@ -1,6 +1,19 @@
 import BackendInterface from "./BackendInterface"
 import { GameTracker } from "./Game";
-import { CardData, CardReveal, GameDefinition, GameState, VariantDefinition, GameEventSeries, GameEventType, GameEvent, PlayResultType } from "./GameTypes"
+import { 
+  CardData, 
+  CardReveal, 
+  GameDefinition, 
+  GameState, 
+  VariantDefinition, 
+  GameEventSeries, 
+  GameEventType, 
+  GameEvent, 
+  PlayResultType, 
+  GamePlayEvent, 
+  GameDiscardEvent, 
+  DiscardResultType
+} from "./GameTypes"
 import { buildDeck, getShuffledOrder } from "./VariantBuilding";
 
 //Will be the substitute for a server in these local games
@@ -98,47 +111,113 @@ class Server {
     return false;
   }
 
+  attemptPlay(action: GamePlayEvent) {
+    //Check to make sure its this players turn
+    if (!this.isPlayersTurn(action.player)) return false;
+    //Check if card is playable
+    const attemptedPlayIndex = this.cardFromHand(action.player, action.handSlot);
+    for (let i = 0; i < this.variant.suits.length; i++) {
+      if (this.isCardPlayableOnStack(attemptedPlayIndex, i)) {
+        //Remove Card from Hand
+        this.hands[action.player].splice(action.handSlot, 1);
+        //Add card to end of stack
+        this.stacks[i].push(attemptedPlayIndex);
+        //Replace card in hand with the card at the top of the deck
+        this.hands[action.player].unshift(this.topDeck);
+        //Build new event and add it to event list
+        this.events.push({
+          type: GameEventType.Play,
+          player: action.player,
+          handSlot: action.handSlot,
+          result: {
+            type: PlayResultType.Success,
+            stack: i
+          },
+          reveals: [
+            { //Reveal played card to all
+              deck: attemptedPlayIndex,
+              card: this.getCardIndexFromDeckIndex(attemptedPlayIndex)
+            },
+            { // Reveal new card to all
+              deck: this.topDeck,
+              card: this.getCardIndexFromDeckIndex(this.topDeck)
+            }
+          ]
+        });
+        this.topDeck++;
+        this.lastTurn++;
+        return true;
+      }
+    }
+    //Well it wasn't playable, misplay time
+    this.hands[action.player].splice(action.handSlot, 1);
+    //Add card to end of discard
+    this.discard.push(attemptedPlayIndex);
+    //Replace card in hand with the card at the top of the deck
+    this.hands[action.player].unshift(this.topDeck);
+    //Build new event and add it to event list
+    this.events.push({
+      type: GameEventType.Play,
+      player: action.player,
+      handSlot: action.handSlot,
+      result: {
+        type: PlayResultType.Misplay
+      },
+      reveals: [
+        { //Reveal played card to all
+          deck: attemptedPlayIndex,
+          card: this.getCardIndexFromDeckIndex(attemptedPlayIndex)
+        },
+        { // Reveal new card to all
+          deck: this.topDeck,
+          card: this.getCardIndexFromDeckIndex(this.topDeck)
+        }
+      ]
+    });
+    return true;
+  }
+
+  attemptDiscard(action: GameDiscardEvent) {
+    //Check to make sure its this players turn
+    if (!this.isPlayersTurn(action.player)) return false;
+    //Check if card is playable
+    const attemptedPlayIndex = this.cardFromHand(action.player, action.handSlot);
+    //Remove Card from Hand
+    this.hands[action.player].splice(action.handSlot, 1);
+    //Add card to end of discard
+    this.discard.push(attemptedPlayIndex);
+    //Replace card in hand with the card at the top of the deck
+    this.hands[action.player].unshift(this.topDeck);
+    //Build new event and add it to event list
+    this.events.push({
+      type: GameEventType.Discard,
+      player: action.player,
+      handSlot: action.handSlot,
+      result: {
+        type: DiscardResultType.Success
+      },
+      reveals: [
+        { //Reveal played card to all
+          deck: attemptedPlayIndex,
+          card: this.getCardIndexFromDeckIndex(attemptedPlayIndex)
+        },
+        { // Reveal new card to all
+          deck: this.topDeck,
+          card: this.getCardIndexFromDeckIndex(this.topDeck)
+        }
+      ]
+    });
+    this.topDeck++;
+    this.lastTurn++;
+    return true;
+  }
+
   async attemptPlayerAction(action: GameEvent) {
     switch (action.type) {
       case GameEventType.Play:
-        //Check to make sure its this players turn
-        if (!this.isPlayersTurn(action.player)) return false;
-        //Check if card is playable
-        const attemptedPlayIndex = this.cardFromHand(action.player, action.handSlot);
-        for (let i = 0; i < this.variant.suits.length; i++) {
-          if (this.isCardPlayableOnStack(attemptedPlayIndex, i)) {
-            //Remove Card from Hand
-            this.hands[action.player].splice(action.handSlot, 1);
-            //Add card to end of stack
-            this.stacks[i].push(attemptedPlayIndex);
-            //Replace card in hand with the card at the top of the deck
-            this.hands[action.player].unshift(this.topDeck);
-            //Build new event and add it to event list
-            this.events.push({
-              type: GameEventType.Play,
-              player: action.player,
-              handSlot: action.handSlot,
-              result: {
-                type: PlayResultType.Success,
-                stack: i
-              },
-              reveals: [
-                { //Reveal played card to all
-                  deck: attemptedPlayIndex,
-                  card: this.getCardIndexFromDeckIndex(attemptedPlayIndex)
-                },
-                { // Reveal new card to all
-                  deck: this.topDeck,
-                  card: this.getCardIndexFromDeckIndex(this.topDeck)
-                }
-              ]
-            });
-            this.topDeck++;
-            this.lastTurn++;
-            return true;
-          }
-        }
-        return false;
+        return this.attemptPlay(action);
+      case GameEventType.Discard:
+        return this.attemptDiscard(action);
     }
     return false;
   }

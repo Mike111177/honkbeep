@@ -22,6 +22,7 @@ export class GameUIInterface extends EventEmitter implements FrontendInterface{
   //Return method for handslots to attempt to play a card
   useHandSlot(player: number, index: number){}
   getPlayerNames() {return this.#game!.getPlayerNames();}
+  getNumberOfPlayers() {return this.#game!.getNumberOfPlayers();}
   getCardsPerHand() {return this.#game!.getHandSize();}
   getCardInHand(player: number, index: number) {return this.#game!.getCardInHand(player, index, this.#game!.turnsProcessed);}
   getSuits() {return this.#game!.getSuits();}
@@ -33,6 +34,12 @@ export class GameUIInterface extends EventEmitter implements FrontendInterface{
     } else {
       return {rank: 6, suit: "Black"};
     }
+  }
+  isPlayerTurn(player:number){
+    return player === (this.#game!.turnsProcessed - 1) % this.#game!.getNumberOfPlayers();
+  }
+  getDiscardPile(){
+    return this.#game!.discardPile.map(i=>i.index);
   }
 
   onGameStateChange(){

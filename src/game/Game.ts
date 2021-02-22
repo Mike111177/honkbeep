@@ -9,6 +9,8 @@ import {
   GameEvent,
   GameEventType,
   PlayResultType,
+  GamePlayEvent,
+  GameDiscardEvent,
 } from "./GameTypes";
 import { buildDeck, getShuffledOrder } from "./VariantBuilding";
 
@@ -18,8 +20,6 @@ export class GameTracker {
   #frontend: FrontendInterface;
 
   turnsProcessed: number = 0;
-
-
   topDeck: number = 0;
 
   //Array the size of the whole deck, 
@@ -35,6 +35,7 @@ export class GameTracker {
   knownDeckOrder: number[];
 
   stacks: Stack[];
+  discardPile: {turn:number, index:number}[]
 
   //Shuffled order of deck for spectator and review mode, and displaying discovered cards
   //Ergo shuffledOrder[0] contains the card data index of the first card from deck
@@ -58,6 +59,9 @@ export class GameTracker {
     //Init stacks
     this.stacks = state.definition.variant.suits.map<number[]>(_ => ([]));
 
+    //Init Discards
+    this.discardPile = [];
+
     //Turn 0, Deal
     this.handHistories = [];
     for (let p = 0; p < state.definition.variant.numPlayers; p++) {
@@ -79,6 +83,39 @@ export class GameTracker {
     return;
   }
 
+  processPlayEvent(event: GamePlayEvent){
+    let newHand = Array.from(this.handHistories[event.player][this.handHistories[event.player].length - 1].result);
+    let card = newHand.splice(event.handSlot, 1)[0];
+    if (event.result.type === PlayResultType.Success){
+      this.stacks[event.result.stack].push(card);
+    } else if (event.result.type === PlayResultType.Misplay){ 
+      //FIXME: For some reason, when a misplay occurs, both the stack and discard pile drop zones cease to function. This could be cause by the backend as well, unsure.
+      this.discardPile.push({index: card, turn: this.turnsProcessed});
+    }
+    newHand.unshift(this.topDeck)
+    this.handHistories[event.player].push({
+      turn: this.turnsProcessed,
+      result: newHand,
+      played: event.handSlot,
+      replacement: this.topDeck
+    });
+    this.topDeck++;
+  }
+
+  processDiscardEvent(event: GameDiscardEvent){
+    let newHand = Array.from(this.handHistories[event.player][this.handHistories[event.player].length - 1].result);
+    let card = newHand.splice(event.handSlot, 1)[0];
+    this.discardPile.push({index: card, turn: this.turnsProcessed});
+    newHand.unshift(this.topDeck)
+    this.handHistories[event.player].push({
+      turn: this.turnsProcessed,
+      result: newHand,
+      played: event.handSlot,
+      replacement: this.topDeck
+    });
+    this.topDeck++;
+  }
+
   propagateState() {
     let events = this.#backend.currentState().events;
     let newEvents = false;
@@ -88,19 +125,11 @@ export class GameTracker {
       //Process Actions
       switch (event.type) {
         case GameEventType.Play:
-          let newHand = Array.from(this.handHistories[event.player][this.handHistories[event.player].length - 1].result);
-          let card = newHand.splice(event.handSlot, 1)[0];
-          if (event.result.type === PlayResultType.Success){
-            this.stacks[event.result.stack].push(card);
-          }
-          newHand.unshift(this.topDeck)
-          this.handHistories[event.player].push({
-            turn: this.turnsProcessed,
-            result: newHand,
-            played: event.handSlot,
-            replacement: this.topDeck
-          });
-          this.topDeck++;
+          this.processPlayEvent(event);
+          break;
+        case GameEventType.Discard:
+          this.processDiscardEvent(event);
+          break;
       }
       //Process Reveals
       if (event.reveals) {
@@ -151,6 +180,7 @@ export class GameTracker {
   getSuits() { return this.#backend.currentState().definition.variant.suits; }
   getHandSize() { return this.#backend.currentState().definition.variant.handSize; }
   getPlayerNames() { return this.#backend.currentState().definition.playerNames; }
+  getNumberOfPlayers(){ return this.#backend.currentState().definition.variant.numPlayers; }
   getDeckSize() { return this.cards.length; }
 
   //Frontend Action Endpoint

@@ -49,6 +49,21 @@ type PlayMisplayResult=  {
 
 export type PlayResult = PlaySuccessResult | PlayMisplayResult | PlayRequestResult;
 
+export enum DiscardResultType{
+  Request = 1,
+  Success
+}
+
+type DiscardRequestResult = {
+  type: DiscardResultType.Request;
+}
+
+type DiscardSuccessResult = {
+  type: DiscardResultType.Success;
+}
+
+export type DiscardResult = DiscardSuccessResult | DiscardRequestResult;
+
 export enum GameEventType{
   Deal = 1, 
   Play, 
@@ -56,12 +71,12 @@ export enum GameEventType{
   Clue
 }
 
-type GameDealEvent = {
+export type GameDealEvent = {
   type: GameEventType.Deal;
   reveals?: CardReveal[]
 }
 
-type GamePlayEvent = {
+export type GamePlayEvent = {
   type: GameEventType.Play;
   player: number;
   handSlot: number;
@@ -69,12 +84,15 @@ type GamePlayEvent = {
   reveals?: CardReveal[];
 }
 
-type GameDiscardEvent = {
+export type GameDiscardEvent = {
   type: GameEventType.Discard;
+  player: number;
+  handSlot: number;
+  result: DiscardResult;
   reveals?: CardReveal[];
 }
 
-type GameClueEvent = {
+export type GameClueEvent = {
   type: GameEventType.Clue;
   reveals?: CardReveal[];
 }
