@@ -3,10 +3,9 @@ import React, { useState, useContext } from "react"
 import { CardFloatTarget } from "./CardFloat"
 import { DiscardResultType, GameEventType, PlayResultType } from "../../game/GameTypes"
 import { GameUIContext } from '../ReactFrontendInterface'
-import HBDeckCard from './HBDeckCard'
 
 import "./HBHand.scss"
-import { Draggable } from "./Dragging"
+import { Draggable } from "../util/Dragging"
 
 
 type CardInHandProps = {

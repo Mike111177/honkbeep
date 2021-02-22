@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 
 import { GameUIContext } from "../ReactFrontendInterface";
 import { CardFloatTarget } from "./CardFloat";
-import { DropZone } from "./Dragging";
+import { DropZone } from "../util/Dragging";
 
 export default function HBDiscardPile() {
   const context = useContext(GameUIContext);

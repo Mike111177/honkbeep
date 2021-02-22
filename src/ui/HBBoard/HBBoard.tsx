@@ -1,7 +1,7 @@
 import HBClueArea from "./HBClueArea"
 import { HBStackArea } from "./HBStack"
 import HBDiscardPile from "./HBDiscardPile"
-import { DragArea } from "./Dragging"
+import { DragArea } from "../util/Dragging"
 import { CardFloatLayer, CardFloatArea } from "./CardFloat"
 import { HBHandsArea } from "./HBHand"
 import { GameUIContext, GameUIInterface } from '../ReactFrontendInterface'

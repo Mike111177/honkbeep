@@ -1,8 +1,7 @@
 import { useContext, useState } from "react";
 
 import { GameUIContext } from "../ReactFrontendInterface";
-import { DropZone } from "./Dragging";
-import HBDeckCard from "./HBDeckCard"
+import { DropZone } from "../util/Dragging";
 
 import colors from "../colors"
 import "./HBStackArea.scss"

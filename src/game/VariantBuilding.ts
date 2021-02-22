@@ -1,5 +1,5 @@
 import { ShufflerInput, VariantDefinition } from "./GameTypes";
-import xorshift32 from "../util/xorshift32";
+import xorshift32 from "./xorshift32";
 
 export function buildDeck({ suits }: VariantDefinition) {
   let deck = suits.map(suit => (
