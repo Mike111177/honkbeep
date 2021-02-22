@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
-import { animated, Controller } from "react-spring"
+import { animated, Controller } from "react-spring/web.cjs"
 
 import HBDeckCard from "./HBDeckCard";
 import { GameUIContext } from "../ReactFrontendInterface";

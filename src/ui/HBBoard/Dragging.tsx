@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { animated, useSpring } from "react-spring";
+import { animated, useSpring } from "react-spring/web.cjs";
 
 class DragManager {
   dragging: boolean = false;
