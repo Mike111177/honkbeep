@@ -84,35 +84,48 @@ export class GameTracker {
   }
 
   processPlayEvent(event: GamePlayEvent){
+    //Create copy of current hand to make new hand
     let newHand = Array.from(this.handHistories[event.player][this.handHistories[event.player].length - 1].result);
+    //Remove played card from hand
     let card = newHand.splice(event.handSlot, 1)[0];
     if (event.result.type === PlayResultType.Success){
+      //If it was a successful play, add card to proper stack
       this.stacks[event.result.stack].push(card);
-    } else if (event.result.type === PlayResultType.Misplay){ 
+    } else if (event.result.type === PlayResultType.Misplay){
+      //if it was a missplay put it in the discard pile 
       //FIXME: For some reason, when a misplay occurs, both the stack and discard pile drop zones cease to function. This could be cause by the backend as well, unsure.
       this.discardPile.push({index: card, turn: this.turnsProcessed});
     }
-    newHand.unshift(this.topDeck)
+    //Put card on top of deck in leftmost slot
+    newHand.unshift(this.topDeck);
+    //Update the players hand
     this.handHistories[event.player].push({
       turn: this.turnsProcessed,
       result: newHand,
       played: event.handSlot,
       replacement: this.topDeck
     });
+    //Mark off another from the deck
     this.topDeck++;
   }
 
   processDiscardEvent(event: GameDiscardEvent){
+    //Create copy of current hand to make new hand
     let newHand = Array.from(this.handHistories[event.player][this.handHistories[event.player].length - 1].result);
+    //Remove  discarded card from hand
     let card = newHand.splice(event.handSlot, 1)[0];
+    //Put it in the discard pile
     this.discardPile.push({index: card, turn: this.turnsProcessed});
-    newHand.unshift(this.topDeck)
+    //Put card on top of deck in leftmost slot
+    newHand.unshift(this.topDeck);
+    //Update the players hand
     this.handHistories[event.player].push({
       turn: this.turnsProcessed,
       result: newHand,
       played: event.handSlot,
       replacement: this.topDeck
     });
+    //Mark off another from the deck
     this.topDeck++;
   }
 
@@ -153,7 +166,9 @@ export class GameTracker {
     }
   }
 
+  //get the players hand state as of a given turn
   getHandState(player: number, turn: number) {
+    //We are looking for the last turn where this players hand was updated, but before the given turn number
     let handHistoryIndex = 0;
     for (let i = 1; i < this.handHistories[player].length; i++) {
       if (this.handHistories[player][i].turn <= turn) {
