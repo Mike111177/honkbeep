@@ -30,7 +30,7 @@ export function HBStack({ suit, number }: HBStackProps) {
 
   return (
     <div>
-      <CardFloatTarget index={index} style={{ width: "0", heigt: "0" }} />
+      <CardFloatTarget index={index} style={{ width: "0", height: "0" }} />
       <div className="HBStack" style={{ borderColor: colorData.fill, backgroundColor: colorData.back + "7f", color: colorData.fill }}>
         <img className="stackPip" src={colorData.pip} alt="" />
       </div>

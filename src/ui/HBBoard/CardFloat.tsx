@@ -141,7 +141,11 @@ export function CardFloatArea({ children }: any) {
 
 //Element to create target, binds a reference to a card by index
 //TODO: I would like to make the wrapping functionality a little more elegent
-export function CardFloatTarget({ wrap, index, style }: any) {
+type CardFloatTargetProps = {
+  index?: number;
+  children?: (children: React.ReactNode) => React.ReactNode;
+} & React.ComponentPropsWithoutRef<"div">;
+export function CardFloatTarget({ index, children, ...props }: CardFloatTargetProps) {
   const deckHandles = useContext(CardFloatContext);
 
   //Div element to grab target coordinates
@@ -150,10 +154,10 @@ export function CardFloatTarget({ wrap, index, style }: any) {
   //Claim the card. Anytime this component updates, the CardManager will 
   //update the target coordinates of the bound floating card
   useEffect(() => {
-    deckHandles!.claimCard(index, element.current!, wrap)
-  });
+    deckHandles!.claimCard(index, element.current!, children); //Children gets redirected as the new wrapper function for the target
+  }, [children, deckHandles, index]);
 
-  return <div ref={element} style={style} />;
+  return <div ref={element} {...props}/>;
 }
 
 function FloatingCard({ index }: { index: number }) {

@@ -24,15 +24,15 @@ function CardInHand({ myTurn, player, index }: CardInHandProps) {
   context.useGameEvent("game-event", () => setDisprops(getCurrentCard()));
 
   //Make it draggable
-  const onDrop = (loc:string)=>{
-    if (loc==="stacks"){
+  const onDrop = (loc: string) => {
+    if (loc === "stacks") {
       context.attemptPlayerAction({
         type: GameEventType.Play,
         player: player,
         handSlot: index,
-        result: {type: PlayResultType.Request}
+        result: { type: PlayResultType.Request }
       });
-    } else if (loc==="discard"){
+    } else if (loc === "discard") {
       context.attemptPlayerAction({
         type: GameEventType.Discard,
         player: player,
@@ -41,16 +41,15 @@ function CardInHand({ myTurn, player, index }: CardInHandProps) {
       });
     }
   }
-  const dragWrapper = (o:Element)=>{
-    return (
-      <Draggable onDrop={onDrop}>
-        {o}
-      </Draggable>
-    )
-  }
 
   return (
-    <CardFloatTarget wrap={myTurn ? dragWrapper : undefined} index={cardIndex} style={{width: "115px", height: "162px"}}/>
+    <CardFloatTarget index={cardIndex} style={{ width: "115px", height: "162px" }}>
+      {myTurn ? (children) => ( //If it is my turn, we wrap it with this draggable, else give no wrapper
+        <Draggable onDrop={onDrop}>
+          {children}
+        </Draggable>
+      ) : undefined}
+    </CardFloatTarget>
   )
 }
 
@@ -66,7 +65,7 @@ export function HBHand({ player }: HBHandProps) {
   const [myTurn, setMyTurn] = useState(context.isPlayerTurn(player));
   context.useGameEvent("game-event", () => setMyTurn(context.isPlayerTurn(player)));
   return (
-    <div className="HBHand" style={myTurn ? {borderWidth:"2px", borderColor:"yellow", borderStyle:"solid", borderRadius:"5px"} : undefined}>
+    <div className="HBHand" style={myTurn ? { borderWidth: "2px", borderColor: "yellow", borderStyle: "solid", borderRadius: "5px" } : undefined}>
       <div className="handCardArea">
         {cardSlots.map(i => <CardInHand myTurn={myTurn} player={player} index={i} key={i} />)}
       </div>
@@ -81,7 +80,7 @@ export function HBHand({ player }: HBHandProps) {
 export function HBHandsArea() {
   const playerNames = useContext(GameUIContext).getPlayerNames();
   return (
-    <div className="HBHandsArea" style={{gridTemplateRows:`repeat(${playerNames.length}, min-content)`}}>
+    <div className="HBHandsArea" style={{ gridTemplateRows: `repeat(${playerNames.length}, min-content)` }}>
       {playerNames.map((n, i) => <HBHand player={i} key={i} />)}
     </div>
   )
