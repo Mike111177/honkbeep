@@ -1,5 +1,6 @@
 import { ComponentPropsWithoutRef, useEffect, useRef, useState } from "react";
 import { animated, Controller, SpringValue } from "react-spring/web.cjs"
+import { Vec2D } from "./Vector";
 
 
 // TODO: Implement some kind of sequencer, to give more control of the animation
@@ -10,11 +11,6 @@ export type FloatState = {
   y: SpringValue<number> | number;
   claimed: boolean;
   props?: any;
-}
-
-export type Vec2D = {
-  x: number;
-  y: number;
 }
 
 function targetVec(el: HTMLElement): Vec2D {

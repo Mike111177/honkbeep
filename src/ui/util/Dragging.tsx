@@ -1,5 +1,7 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { ComponentPropsWithoutRef, createContext, ReactNode, useContext, useEffect, useRef, useState } from "react";
 import { animated, useSpring } from "react-spring/web.cjs";
+
+import { useDrag } from "./InputHandling";
 
 class DragManager {
   dragging: boolean = false;
@@ -8,50 +10,31 @@ class DragManager {
 
 const DragContext = createContext(new DragManager());
 
-export function Draggable({ children, props, onDrop = ()=>{}}: any) {
+type DraggableProps = {
+  children: ReactNode;
+  onDrop?: (target: string) => void;
+};
+export function Draggable({ children, onDrop, ...props }: DraggableProps) {
   const dragContext = useContext(DragContext);
-  const element = useRef<HTMLDivElement>(null);
-  const [isDragging, setDragging] = useState(false);
-  const [dragVec, setDragVec] = useState(() => ({ x: 0, y: 0 }))
-  const [spring, setSpring] = useSpring(() => ({ x: 0, y: 0 }))
-  const listeners = {
-    onPointerDown: (event: React.PointerEvent) => {
-      if (event.button === 0) { //Left Click
-        setDragging(true);
-        dragContext.dragging = true;
-        element.current!.setPointerCapture(event.pointerId);
+
+  const ref = useRef<HTMLDivElement>(null);
+  const [{ x, y }, setSpring] = useSpring(() => ({ x: 0, y: 0 }));
+  const attach = useDrag(ref, ({down, offset:{x,y}}) => {
+    if (down) {
+      dragContext.dragging = true;
+      //Extremly high parameters to make draging not look laggy
+      setSpring({x, y, config: {friction:150, tension:10000}});
+    } else {
+      if (dragContext.zone != null && onDrop !== undefined){
+        onDrop(dragContext.zone);
       }
-    },
-    onPointerUp: (event: React.PointerEvent) => {
-      if (event.button === 0) { //Left Click
-        element.current!.releasePointerCapture(event.pointerId);
-        setDragging(false);
-        dragContext.dragging = false;
-        dragVec.x = 0;
-        dragVec.y = 0;
-        setDragVec(dragVec);
-        if (dragContext.zone != null) {
-          onDrop(dragContext.zone);
-          dragContext.zone = null;
-          setSpring({ ...dragVec, immediate: true });
-        } else {
-          setSpring({ ...dragVec, config: { friction: 25, tension: 500 } });
-        }
-      }
-    },
-    onPointerMove: (event: React.PointerEvent) => {
-      if (isDragging) {
-        dragVec.x += event.movementX;
-        dragVec.y += event.movementY;
-        setDragVec(dragVec);
-        setSpring({ ...dragVec, config: { friction: 150, tension: 10000 } });
-      }
-    },
-    //Capture Right Clicks
-    onContextMenu: (event: React.MouseEvent) => { event.preventDefault(); }
-  };
+      //Relaxed parameters to make bounce back pretty
+      setSpring({x:0, y:0, config: {friction:25, tension:750}});
+    }
+  });
+
   return (
-    <animated.div ref={element} {...listeners} {...props} style={{ x: spring.x, y: spring.y, touchAction: 'none' }}>
+    <animated.div ref={ref} {...attach} {...props} style={{ x, y, touchAction: 'none' }}>
       {children}
     </animated.div>
   );
