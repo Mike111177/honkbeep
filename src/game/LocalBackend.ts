@@ -1,17 +1,17 @@
 import BackendInterface from "./BackendInterface"
 import { GameTracker } from "./Game";
-import { 
-  CardData, 
-  CardReveal, 
-  GameDefinition, 
-  GameState, 
-  VariantDefinition, 
-  GameEventSeries, 
-  GameEventType, 
-  GameEvent, 
-  PlayResultType, 
-  GamePlayEvent, 
-  GameDiscardEvent, 
+import {
+  CardData,
+  CardReveal,
+  GameDefinition,
+  GameState,
+  VariantDefinition,
+  GameEventSeries,
+  GameEventType,
+  GameEvent,
+  PlayResultType,
+  GamePlayEvent,
+  GameDiscardEvent,
   DiscardResultType
 } from "./GameTypes"
 import { buildDeck, getShuffledOrder } from "./VariantBuilding";
@@ -116,6 +116,7 @@ class Server {
     if (!this.isPlayersTurn(action.player)) return false;
     //Check if card is playable
     const attemptedPlayIndex = this.cardFromHand(action.player, action.handSlot);
+    let cardWasPlayed = false;
     for (let i = 0; i < this.variant.suits.length; i++) {
       if (this.isCardPlayableOnStack(attemptedPlayIndex, i)) {
         //Remove Card from Hand
@@ -144,36 +145,39 @@ class Server {
             }
           ]
         });
-        this.topDeck++;
-        this.lastTurn++;
-        return true;
+        cardWasPlayed = true;
+        break;
       }
     }
-    //Well it wasn't playable, misplay time
-    this.hands[action.player].splice(action.handSlot, 1);
-    //Add card to end of discard
-    this.discard.push(attemptedPlayIndex);
-    //Replace card in hand with the card at the top of the deck
-    this.hands[action.player].unshift(this.topDeck);
-    //Build new event and add it to event list
-    this.events.push({
-      type: GameEventType.Play,
-      player: action.player,
-      handSlot: action.handSlot,
-      result: {
-        type: PlayResultType.Misplay
-      },
-      reveals: [
-        { //Reveal played card to all
-          deck: attemptedPlayIndex,
-          card: this.getCardIndexFromDeckIndex(attemptedPlayIndex)
+    if (!cardWasPlayed) {
+      //Well it wasn't playable, misplay time
+      this.hands[action.player].splice(action.handSlot, 1);
+      //Add card to end of discard
+      this.discard.push(attemptedPlayIndex);
+      //Replace card in hand with the card at the top of the deck
+      this.hands[action.player].unshift(this.topDeck);
+      //Build new event and add it to event list
+      this.events.push({
+        type: GameEventType.Play,
+        player: action.player,
+        handSlot: action.handSlot,
+        result: {
+          type: PlayResultType.Misplay
         },
-        { // Reveal new card to all
-          deck: this.topDeck,
-          card: this.getCardIndexFromDeckIndex(this.topDeck)
-        }
-      ]
-    });
+        reveals: [
+          { //Reveal played card to all
+            deck: attemptedPlayIndex,
+            card: this.getCardIndexFromDeckIndex(attemptedPlayIndex)
+          },
+          { // Reveal new card to all
+            deck: this.topDeck,
+            card: this.getCardIndexFromDeckIndex(this.topDeck)
+          }
+        ]
+      });
+    }
+    this.topDeck++;
+    this.lastTurn++;
     return true;
   }
 

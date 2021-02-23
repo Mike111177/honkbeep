@@ -93,7 +93,6 @@ export class GameTracker {
       this.stacks[event.result.stack].push(card);
     } else if (event.result.type === PlayResultType.Misplay){
       //if it was a missplay put it in the discard pile 
-      //FIXME: For some reason, when a misplay occurs, both the stack and discard pile drop zones cease to function. This could be cause by the backend as well, unsure.
       this.discardPile.push({index: card, turn: this.turnsProcessed});
     }
     //Put card on top of deck in leftmost slot

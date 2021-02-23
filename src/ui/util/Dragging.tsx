@@ -65,7 +65,7 @@ export function DropZone({ children, id, ...props }: any) {
     };
     window.addEventListener('mousemove', listener);
     return () => window.removeEventListener('mousemove', listener);
-  })
+  }, [dragContext, id, targeted])
   return (
     <div ref={element} {...props}>
       {children}
