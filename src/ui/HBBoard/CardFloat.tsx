@@ -2,7 +2,7 @@ import React, { ComponentPropsWithoutRef, createContext, useContext } from "reac
 
 import HBDeckCard from "./HBDeckCard";
 import { GameUIContext } from "../ReactFrontendInterface";
-import { FloatController, FloatElement, FloatLayer, FloatTarget } from "../util/Floating";
+import { FloatController, FloatElement, FloatLayer, FloatTarget, FloatTargetOptions } from "../util/Floating";
 
 // TODO: Generalize so more elements can be animated
 // TODO: Create a specialized draggable object that is also animated to smooth out the current work-around
@@ -41,6 +41,7 @@ export function CardFloatArea({ children }: any) {
 //Helper to make card targets
 type CardFloatTargetProps = {
   index?: number;
+  options?: FloatTargetOptions;
   children?: (children: React.ReactNode) => React.ReactNode;
 } & ComponentPropsWithoutRef<"div">;
 export function CardFloatTarget({ index, children, ...props }: CardFloatTargetProps) {
@@ -49,7 +50,7 @@ export function CardFloatTarget({ index, children, ...props }: CardFloatTargetPr
   <FloatTarget
     floatID={index}
      /*this lets us insert the wrapper function as children in the target component*/
-    injectProps={{wrap: children}}
+    options={{injectProps: {wrap: children}}}
     controller={(id) => deckHandles!.getCard(id)} {...props} />
   );
 }

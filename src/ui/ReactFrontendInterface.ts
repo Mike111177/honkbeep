@@ -49,18 +49,5 @@ export class GameUIInterface extends EventEmitter implements FrontendInterface{
   async attemptPlayerAction(action: GameEvent){
     return this.#game!.attemptPlayerAction(action);
   }
-
-  //DO NOT CALL FROM OUTSIDE REACT COMPONENT LUL
-  // If you need to listen to events outside of a component just call this.on(<event-name>)
-  useGameEvent(event:string, callback:GameStateListener){
-    // This violates the rule of hooks where useEffect is not supposed to be called outside of a component
-    // So don't call it from outside a component lol
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    React.useEffect(() => {
-      const removeFunc = () => {this.off("game-update", callback)};
-      this.on("game-update", callback);
-      return removeFunc;
-    });
-  }
 }
 export const GameUIContext = React.createContext<GameUIInterface>(new GameUIInterface());

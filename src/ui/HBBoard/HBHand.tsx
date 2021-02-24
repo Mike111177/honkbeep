@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react"
+import React, { useContext, useEffect, useState } from "react"
 
 import { CardFloatTarget } from "./CardFloat"
 import { DiscardResultType, GameEventType, PlayResultType } from "../../game/GameTypes"
@@ -16,39 +16,41 @@ type CardInHandProps = {
 
 function CardInHand({ myTurn, player, index }: CardInHandProps) {
   const context = useContext(GameUIContext);
-
-  //Update card display on game-event
-  const getCurrentCard = () => context.getCardInHand(player, index);
-  const [cardIndex, setDisprops] = useState(getCurrentCard());
-  context.useGameEvent("game-event", () => setDisprops(getCurrentCard()));
+  const [cardIndex, setCard] = useState(context.getCardInHand(player, index));
+  useEffect(()=>{
+    const callback = () => {
+      const newCardValue = context.getCardInHand(player, index);
+      if (newCardValue !== cardIndex){
+        setCard(newCardValue);
+      }
+    };
+    const removeFunc = () => {context.off("game-update", callback)};
+    context.on("game-update", callback);
+    return removeFunc;
+  })
 
   //Make it draggable
-  const onDrop = (loc: string) => {
+  const onDrop = async (loc: string) => {
     if (loc === "stacks") {
-      context.attemptPlayerAction({
+      return await context.attemptPlayerAction({
         type: GameEventType.Play,
         player: player,
         handSlot: index,
         result: { type: PlayResultType.Request }
       });
     } else if (loc === "discard") {
-      context.attemptPlayerAction({
+      return await context.attemptPlayerAction({
         type: GameEventType.Discard,
         player: player,
         handSlot: index,
         result: { type: DiscardResultType.Request }
       });
-    }
+    } 
+    return false;
   }
 
   return (
-    <CardFloatTarget index={cardIndex} style={{ width: "115px", height: "162px" }}>
-      {myTurn ? (children) => ( //If it is my turn, we wrap it with this draggable, else give no wrapper
-        <Draggable onDrop={onDrop}>
-          {children}
-        </Draggable>
-      ) : undefined}
-    </CardFloatTarget>
+    <CardFloatTarget index={cardIndex} style={{ width: "115px", height: "162px" }} options={{onDrop, draggable: myTurn}}/>
   )
 }
 
@@ -61,8 +63,13 @@ export function HBHand({ player }: HBHandProps) {
   const playerNames = context.getPlayerNames();
   const cards = context.getCardsPerHand();
   const cardSlots = [...Array(cards).keys()];
-  const [myTurn, setMyTurn] = useState(context.isPlayerTurn(player));
-  context.useGameEvent("game-event", () => setMyTurn(context.isPlayerTurn(player)));
+  const [myTurn, setMyTurn]  = useState(context.isPlayerTurn(player));
+  useEffect(() => {
+    const callback = () => setMyTurn(context.isPlayerTurn(player));
+    const removeFunc = () => {context.off("game-update", callback)};
+    context.on("game-update", callback);
+    return removeFunc;
+  });
   return (
     <div className="HBHand" style={myTurn ? { borderWidth: "2px", borderColor: "yellow", borderStyle: "solid", borderRadius: "5px" } : undefined}>
       <div className="handCardArea">
@@ -76,11 +83,16 @@ export function HBHand({ player }: HBHandProps) {
 
 }
 
-export function HBHandsArea() {
-  const playerNames = useContext(GameUIContext).getPlayerNames();
+type HBHandsAreaProps = {
+  perspective: number
+}
+export function HBHandsArea({perspective}:HBHandsAreaProps) {
+  const context = useContext(GameUIContext);
+  const playerNames = context.getPlayerNames();
+  const numPlayers = context.getNumberOfPlayers();
   return (
-    <div className="HBHandsArea" style={{ gridTemplateRows: `repeat(${playerNames.length}, min-content)` }}>
-      {playerNames.map((n, i) => <HBHand player={i} key={i} />)}
+    <div className="HBHandsArea" style={{ gridTemplateRows: `repeat(${numPlayers}, min-content)` }}>
+      {playerNames.map((n, i) => <HBHand player={(i + perspective) % (numPlayers)} key={i} />)}
     </div>
   )
 }

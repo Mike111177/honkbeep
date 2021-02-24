@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import HBCardFront from "./HBCardFront"
 import { GameUIContext } from "../ReactFrontendInterface";
@@ -8,7 +8,12 @@ export default function HBDeckCard({index}:any){
   const context = useContext(GameUIContext);
   const getCurrentDisplayProps = () => context.getCardDisplayableProps(index);
   const [cardInfo, setDisprops] = useState(getCurrentDisplayProps());
-  context.useGameEvent("game-event", () => setDisprops(getCurrentDisplayProps()));
+  useEffect(() => {
+    const callback = () => setDisprops(getCurrentDisplayProps());
+    const removeFunc = () => {context.off("game-update", callback)};
+    context.on("game-update", callback);
+    return removeFunc;
+  });
   return <HBCardFront {...cardInfo}/>
 
 }

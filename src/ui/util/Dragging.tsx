@@ -3,16 +3,17 @@ import { animated, useSpring } from "react-spring/web.cjs";
 
 import { useDrag } from "./InputHandling";
 
-class DragManager {
+export class DragManager {
   dragging: boolean = false;
-  zone: string | null = null;
+  zone?: string;
 }
 
-const DragContext = createContext(new DragManager());
+//I hate this context, legitimatley thinking about replacing with a global singleton
+export const DragContext = createContext(new DragManager());
 
 type DraggableProps = {
   children: ReactNode;
-  onDrop?: (target: string) => void;
+  onDrop?: (target: string) => boolean;
 };
 export function Draggable({ children, onDrop, ...props }: DraggableProps) {
   const dragContext = useContext(DragContext);
@@ -58,7 +59,7 @@ export function DropZone({ children, id, ...props }: any) {
         } else {
           if (targeted) {
             setTargeted(false);
-            dragContext.zone = null;
+            dragContext.zone = undefined;
           }
         }
       }

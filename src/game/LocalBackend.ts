@@ -229,29 +229,31 @@ class Server {
 
 //Meant for dictating logic of local games or template games
 export default class LocalBackend implements BackendInterface {
-  #state: GameState;
-  #game?: GameTracker;
-  #server: Server;
+  private state: GameState;
+  private game?: GameTracker;
+  private server: Server;
 
   constructor(definition: GameDefinition) {
-    this.#server = new Server(definition);
-    this.#state = {
-      events: this.#server.events,
+    this.server = new Server(definition);
+    this.state = {
+      events: this.server.events,
       definition
     };
   }
 
   currentState(): GameState {
-    return this.#state;
+    return this.state;
   }
 
   bind(game: GameTracker) {
-    this.#game = game;
+    this.game = game;
   }
 
   async attemptPlayerAction(action: GameEvent) {
-    if (await this.#server.attemptPlayerAction(action)) {
-      this.#game!.onNewEvents();
+    const actionSuccess = await this.server.attemptPlayerAction(action);
+    if (actionSuccess) {
+      this.game!.onNewEvents();
     }
+    return actionSuccess;
   }
 }

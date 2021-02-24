@@ -1,6 +1,8 @@
-import { ComponentPropsWithoutRef, useEffect, useRef, useState } from "react";
-import { animated, Controller, SpringValue } from "react-spring/web.cjs"
-import { Vec2D } from "./Vector";
+import { ComponentPropsWithoutRef, RefObject, useContext, useEffect, useRef, useState } from "react";
+import { animated, Controller, SpringConfig, SpringValue } from "react-spring/web.cjs"
+import { DragRecognizer, DragStatus } from "./InputHandling";
+import { Vec2D, vecAdd } from "./Vector";
+import { DragContext, DragManager} from "./Dragging"
 
 
 // TODO: Implement some kind of sequencer, to give more control of the animation
@@ -11,6 +13,31 @@ export type FloatState = {
   y: SpringValue<number> | number;
   claimed: boolean;
   props?: any;
+  listeners?: any;
+}
+
+//Everything a FloatElement needs to give a FloatContoller to give it control
+type FloatBindRef = {
+  //Reference to its animation.div
+  ref: RefObject<HTMLElement>;
+  //function to set its FloatState
+  setState: React.Dispatch<React.SetStateAction<FloatState>>;
+  //dragcontext of scope
+  dragcontext: DragManager;
+}
+
+//Everything A FloatTarget Wants to communicate to the floating element
+export type FloatTargetOptions = {
+  //Whether or not to allow user to drag element
+
+  draggable?: boolean; 
+  // onDrop Event Handler for when user drops element on dropzone
+  // The if supplied, FloatElement will not return to its origin 
+  // until the promise is resolved true
+
+  onDrop?: (e:string)=>Promise<boolean>; 
+  // Properties to inject into the floating element
+  injectProps?: any;
 }
 
 function targetVec(el: HTMLElement): Vec2D {
@@ -18,17 +45,22 @@ function targetVec(el: HTMLElement): Vec2D {
   return { x: rect.x, y: rect.y };
 }
 
+const DEFAULT_SPRING: SpringConfig = {};
+const DRAG_SPRING: SpringConfig = {friction: 50, tension:1500};
 
 //Manages the shared state between a bound float and a claiming target
 export class FloatController {
   //TODO: add scaling transforms
   //TODO: add relative coordinate support to handle non-full screen zones
-  bound: boolean = false;
-  home: Vec2D = { x: 0, y: 0 };
-  offset: Vec2D = { x: 0, y: 0 }; //TODO: use this to implement draggability
-  spring?: Controller<Vec2D>;
-  state: FloatState;
-  setState?: any;
+  private bound: boolean = false;
+  private home: Vec2D = { x: 0, y: 0 };
+  private offset: Vec2D = { x: 0, y: 0 };
+  private springCfg: SpringConfig = DEFAULT_SPRING;
+  private state: FloatState;
+  private options?: FloatTargetOptions;
+  private spring?: Controller<Vec2D>;
+  private drag?: DragRecognizer;
+  private floatRef?: FloatBindRef;
 
   constructor() {
     this.state = {
@@ -39,17 +71,17 @@ export class FloatController {
 
   //For targets to claim card, this may be called
   //multiple times by the claimer to update the bound card
-  claim(claimer: HTMLDivElement, props: any) {
+  claim(claimer: HTMLDivElement, options?: FloatTargetOptions) {
     this.home = targetVec(claimer);
     this.state.claimed = true; //We be claimed now bois
-    this.state.props = props;
+    this.options = options;
     this.update();
   }
 
   //Floating cards use this to attach then selfs to the context
-  useBind(setState: any) {
+  useBind(bindref: FloatBindRef) {
     this.bound = true;
-    this.setState = setState;
+    this.floatRef = bindref;
     this.update();
   }
 
@@ -66,21 +98,71 @@ export class FloatController {
     this.bound = false;
   }
 
+
+  private isActive() { return this.bound && this.state.claimed; }
+
   //Internal helper function for whenever a bound floating card needs to know of a state change
-  update() {
+  private update() {
     if (this.bound) {
-      if (this.state.claimed) {
-        if (this.spring === undefined) {
-          this.spring = new Controller<Vec2D>({ x: 0, y: 0 });
-        }
-        this.spring.start(this.home);
-        this.state = {
-          ...this.state,
-          ...this.spring.springs
-        };
-      }
-      this.setState(this.state);
+      //Make sure everything is initialized if need be
+      this.updateSpring();
+      this.updateDrag();
+      this.updateLocation();
+      this.state.props = this.options?.injectProps??{};
+      this.floatRef!.setState(this.state);
     }
+  }
+
+  private updateSpring() {
+    if (this.isActive()) {
+      if (this.spring === undefined) {
+        this.spring = new Controller<Vec2D>({ x: 0, y: 0 });
+        this.spring.start(this.home);
+      }
+      const { x, y } = this.spring.springs;
+      this.state.x = x;
+      this.state.y = y;
+    }
+  }
+
+  private updateDrag() {
+    if (this.options?.draggable && this.isActive()) {
+      if (this.drag === undefined) {
+        this.drag = new DragRecognizer(this.floatRef!.ref, event=>this.onDragEvent(event));
+      }
+      this.state.listeners = this.drag.listeners;
+    } else {
+      this.drag = undefined;
+      this.state.listeners = undefined;
+      this.offset = {x: 0, y: 0};
+    }
+  }
+
+  private updateLocation() {
+    if (this.spring !== undefined){
+      const {x,y} = vecAdd(this.home, this.offset);
+      this.spring.start({x, y, config: this.springCfg});
+    }
+  }
+
+  //FIXME: This is broken as shit. Plz Help, but at least the cards dont do that weird teleporting thing anymore
+  private async onDragEvent({ down, offset }: DragStatus) {
+    if (down){
+      this.offset = offset;
+      this.springCfg = DRAG_SPRING;
+      if (this.floatRef !== undefined){
+        this.floatRef.dragcontext.dragging = true;
+      }
+    } else {
+      if (this.floatRef?.dragcontext.zone !== undefined && 
+          this.options?.onDrop !== undefined && 
+          await this.options.onDrop(this.floatRef.dragcontext.zone)){
+            this.springCfg = DEFAULT_SPRING;   
+      } else {
+        this.offset = {x:0, y:0};
+      }
+    }
+    this.update();
   }
 }
 
@@ -88,11 +170,11 @@ type FloatElementID = number | string | undefined;
 
 type FloatTargetProps<T extends FloatElementID> = {
   floatID?: T;
-  injectProps?: any;
+  options?: FloatTargetOptions;
   controller: (id: T) => FloatController;
 } & ComponentPropsWithoutRef<"div">;
 
-export function FloatTarget<T extends FloatElementID>({ floatID, injectProps, controller, ...props }: FloatTargetProps<T>) {
+export function FloatTarget<T extends FloatElementID>({ floatID, options, controller, ...props }: FloatTargetProps<T>) {
   //Div element to grab target coordinates
   const element = useRef(null);
 
@@ -100,9 +182,9 @@ export function FloatTarget<T extends FloatElementID>({ floatID, injectProps, co
   //update the bound floating card
   useEffect(() => {
     if (floatID !== undefined) {
-      controller(floatID).claim(element.current!, injectProps);
+      controller(floatID).claim(element.current!, options);
     }
-  }, [floatID, controller, injectProps]);
+  }, [floatID, controller, options]);
 
   return <div ref={element} {...props} />;
 }
@@ -115,25 +197,27 @@ export type FloatElementProps<T extends FloatElementID> = {
 
 //Wrapper for any element meant to float
 export function FloatElement<T extends FloatElementID>({ floatID, children, controller }: FloatElementProps<T>) {
-  const [{ x, y, claimed, props }, setState] = useState<FloatState>({
+  const [{ x, y, claimed, props, listeners }, setState] = useState<FloatState>({
     x: 0, y: 0,
     claimed: false
   });
 
+  const ref = useRef(null);
+  const dragcontext = useContext(DragContext);
   //Make sure this element stays bound to its manager
   useEffect(() => {
-    controller(floatID).useBind(setState)
-  }, [x, y, claimed, setState, controller, floatID, props]);
+    controller(floatID).useBind({ setState, ref, dragcontext})
+  }, [x, y, claimed, setState, controller, floatID, props, dragcontext]);
 
   return claimed ? //If we are not claimed by a target we should be invisible dont render anything
-    <animated.div style={{ x, y, position: "absolute" }}>
+    <animated.div ref={ref} {...listeners} style={{ x, y, position: "absolute" }}>
       {children(props)}
     </animated.div>
     : <></>;
 }
 
 //TODO: add context provider to give children knowlege of their spacial limits
-export function FloatLayer({children, style, ...props}: ComponentPropsWithoutRef<"div">){
+export function FloatLayer({ children, style, ...props }: ComponentPropsWithoutRef<"div">) {
   return (
     <div {...props} style={{ position: "absolute", ...style }}>
       {children}

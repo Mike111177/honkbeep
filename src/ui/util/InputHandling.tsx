@@ -2,7 +2,7 @@ import { RefObject, useState } from "react";
 import { vecSub, Vec2D } from "./Vector";
 
 //Configurable Master hook for dealing with user interaction ona component
-type DragStatus = {
+export type DragStatus = {
   down: boolean;
   origin: Vec2D;
   offset: Vec2D;

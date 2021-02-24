@@ -5,5 +5,5 @@ import { GameEvent, GameState } from "./GameTypes";
 export default interface BackendInterface {
   bind(game: GameTracker): void;
   currentState(): GameState;
-  attemptPlayerAction(action: GameEvent): Promise<void>;
+  attemptPlayerAction(action: GameEvent): Promise<boolean>;
 }

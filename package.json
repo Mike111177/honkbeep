@@ -24,6 +24,7 @@
     ],
     "rules": {
       "react-hooks/rules-of-hooks": "error",
+      "react/no-unknown-property": "error",
       "react-hooks/exhaustive-deps": "warn"
     },
     "extends": [

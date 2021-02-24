@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { GameUIContext } from "../ReactFrontendInterface";
 import { DropZone } from "../util/Dragging";
@@ -23,10 +23,14 @@ export function HBStack({ suit, number }: HBStackProps) {
     return stack[stack.length - 1];
   }
   const [index, setIndex] = useState(getCurrentCard());
-  context.useGameEvent("game-event", () => {
-    setIndex(getCurrentCard())
+  useEffect(() => {
+    const callback = () => {
+      setIndex(getCurrentCard())
+    };
+    const removeFunc = () => {context.off("game-update", callback)};
+    context.on("game-update", callback);
+    return removeFunc;
   });
-
   return (
     <div>
       <CardFloatTarget index={index} style={{ width: "0", height: "0" }} />

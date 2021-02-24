@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { GameUIContext } from "../ReactFrontendInterface";
 import { CardFloatTarget } from "./CardFloat";
@@ -7,7 +7,12 @@ import { DropZone } from "../util/Dragging";
 export default function HBDiscardPile() {
   const context = useContext(GameUIContext);
   const [cards, setCards] = useState(context.getDiscardPile());
-  context.useGameEvent("game-event", () => setCards(context.getDiscardPile()));
+  useEffect(() => {
+    const callback = () => setCards(context.getDiscardPile());
+    const removeFunc = () => {context.off("game-update", callback)};
+    context.on("game-update", callback);
+    return removeFunc;
+  });
   
   //TODO: Fix this..........
   const cardOrder = cards
