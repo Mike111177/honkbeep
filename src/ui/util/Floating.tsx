@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, RefObject, useContext, useEffect, useRef, useState } from "react";
+import { cloneElement, ComponentPropsWithoutRef, RefObject, useContext, useEffect, useRef, useState } from "react";
 import { animated, Controller, SpringConfig, SpringValue } from "react-spring/web.cjs"
 import { DragRecognizer, DragStatus } from "./InputHandling";
 import { Vec2D, vecAdd } from "./Vector";
@@ -8,21 +8,24 @@ import { DragContext, DragManager} from "./Dragging"
 // TODO: Implement some kind of sequencer, to give more control of the animation
 // TODO: Give control over z-index somehow, to prevent bugs where items
 
-export type FloatState = {
+type FloatVectorDriver = {
   x: SpringValue<number> | number;
   y: SpringValue<number> | number;
+}
+
+type FloatInjectedProps = any;
+
+export type FloatState = {
   claimed: boolean;
-  props?: any;
   listeners?: any;
 }
 
 //Everything a FloatElement needs to give a FloatContoller to give it control
 type FloatBindRef = {
-  //Reference to its animation.div
   ref: RefObject<HTMLElement>;
-  //function to set its FloatState
+  setVectorDriver: React.Dispatch<React.SetStateAction<FloatVectorDriver>>;
   setState: React.Dispatch<React.SetStateAction<FloatState>>;
-  //dragcontext of scope
+  setProps: React.Dispatch<React.SetStateAction<FloatInjectedProps>>;
   dragcontext: DragManager;
 }
 
@@ -57,6 +60,7 @@ export class FloatController {
   private offset: Vec2D = { x: 0, y: 0 };
   private springCfg: SpringConfig = DEFAULT_SPRING;
   private state: FloatState;
+  private fvDriver: FloatVectorDriver = {x:0,y:0};
   private options?: FloatTargetOptions;
   private spring?: Controller<Vec2D>;
   private drag?: DragRecognizer;
@@ -64,7 +68,6 @@ export class FloatController {
 
   constructor() {
     this.state = {
-      x: 0, y: 0, //x and y will soon be replaced by Spring Values
       claimed: false
     }
   }
@@ -75,6 +78,12 @@ export class FloatController {
     this.home = targetVec(claimer);
     this.state.claimed = true; //We be claimed now bois
     this.options = options;
+    if (this.floatRef !== undefined){
+      this.initSpring()
+      this.floatRef.setVectorDriver(this.fvDriver);
+      this.options = options;
+      this.floatRef.setProps(this.options?.injectProps)
+    }
     this.update();
   }
 
@@ -82,6 +91,11 @@ export class FloatController {
   useBind(bindref: FloatBindRef) {
     this.bound = true;
     this.floatRef = bindref;
+    if (this.state.claimed){
+      this.initSpring()
+      this.floatRef.setVectorDriver(this.fvDriver);
+      this.floatRef.setProps(this.options?.injectProps)
+    }
     this.update();
   }
 
@@ -104,24 +118,18 @@ export class FloatController {
   //Internal helper function for whenever a bound floating card needs to know of a state change
   private update() {
     if (this.bound) {
-      //Make sure everything is initialized if need be
-      this.updateSpring();
       this.updateDrag();
       this.updateLocation();
-      this.state.props = this.options?.injectProps??{};
       this.floatRef!.setState(this.state);
     }
   }
 
-  private updateSpring() {
-    if (this.isActive()) {
-      if (this.spring === undefined) {
-        this.spring = new Controller<Vec2D>({ x: 0, y: 0 });
-        this.spring.start(this.home);
-      }
+  private initSpring() {
+    if (this.spring === undefined) {
+      this.spring = new Controller<Vec2D>({ x: 0, y: 0 });
+      this.spring.start(this.home);
       const { x, y } = this.spring.springs;
-      this.state.x = x;
-      this.state.y = y;
+      this.fvDriver = {x,y};
     }
   }
 
@@ -145,7 +153,7 @@ export class FloatController {
     }
   }
 
-  //FIXME: This is broken as shit. Plz Help, but at least the cards dont do that weird teleporting thing anymore
+  //TODO: this works okay but it probably could be made more robust
   private async onDragEvent({ down, offset }: DragStatus) {
     if (down){
       this.offset = offset;
@@ -191,14 +199,17 @@ export function FloatTarget<T extends FloatElementID>({ floatID, options, contro
 
 export type FloatElementProps<T extends FloatElementID> = {
   floatID: T;
-  children: (props: any) => React.ReactNode;
+  children?: React.ReactElement;
   controller: (id: T) => FloatController;
 }
 
 //Wrapper for any element meant to float
 export function FloatElement<T extends FloatElementID>({ floatID, children, controller }: FloatElementProps<T>) {
-  const [{ x, y, claimed, props, listeners }, setState] = useState<FloatState>({
-    x: 0, y: 0,
+  const [{x,y}, setVectorDriver] = useState<FloatVectorDriver>({
+    x:0, y:0
+  });
+  const [props, setProps] = useState<FloatInjectedProps>(undefined);
+  const [{ claimed, listeners }, setState] = useState<FloatState>({
     claimed: false
   });
 
@@ -206,12 +217,12 @@ export function FloatElement<T extends FloatElementID>({ floatID, children, cont
   const dragcontext = useContext(DragContext);
   //Make sure this element stays bound to its manager
   useEffect(() => {
-    controller(floatID).useBind({ setState, ref, dragcontext})
-  }, [x, y, claimed, setState, controller, floatID, props, dragcontext]);
+    controller(floatID).useBind({ setState, ref, dragcontext, setVectorDriver, setProps})
+  }, [x, y, claimed, setState, controller, floatID, props, dragcontext, setVectorDriver]);
 
   return claimed ? //If we are not claimed by a target we should be invisible dont render anything
     <animated.div ref={ref} {...listeners} style={{ x, y, position: "absolute" }}>
-      {children(props)}
+      {children !== undefined ? cloneElement(children, props) : undefined}
     </animated.div>
     : <></>;
 }

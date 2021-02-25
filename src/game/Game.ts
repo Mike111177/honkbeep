@@ -16,8 +16,8 @@ import { buildDeck, getShuffledOrder } from "./VariantBuilding";
 
 // Calculates current board state as new turns are played
 export class GameTracker {
-  #backend: BackendInterface;
-  #frontend: FrontendInterface;
+  private backend: BackendInterface;
+  private frontend: FrontendInterface;
 
   turnsProcessed: number = 0;
   topDeck: number = 0;
@@ -46,11 +46,11 @@ export class GameTracker {
   hypothetical?: GameTracker;
 
   constructor(backend: BackendInterface, frontend: FrontendInterface) {
-    this.#backend = backend;
-    this.#backend.bind(this);
+    this.backend = backend;
+    this.backend.bind(this);
 
-    this.#frontend = frontend;
-    this.#frontend.bind(this);
+    this.frontend = frontend;
+    this.frontend.bind(this);
 
     let state = backend.currentState();
     this.cards = buildDeck(state.definition.variant);
@@ -80,7 +80,7 @@ export class GameTracker {
   }
 
   getLatestPlayerHand(player: number) {
-    return;
+    return this.getHandState(player, this.turnsProcessed);
   }
 
   processPlayEvent(event: GamePlayEvent){
@@ -129,7 +129,7 @@ export class GameTracker {
   }
 
   propagateState() {
-    let events = this.#backend.currentState().events;
+    let events = this.backend.currentState().events;
     let newEvents = false;
     for (this.turnsProcessed; this.turnsProcessed < events.length; this.turnsProcessed++) {
       newEvents = true;
@@ -152,7 +152,7 @@ export class GameTracker {
     }
     //If we processed new events, notify the frontend changes happened
     if (newEvents) {
-      this.#frontend.onGameStateChange();
+      this.frontend.onGameStateChange();
     }
   }
 
@@ -191,15 +191,15 @@ export class GameTracker {
 
   isPossiblyPlayable(cardIndex: number) { return true; }
   isCardRevealed(cardIndex: number) { return this.knownDeckOrder[cardIndex] !== undefined; }
-  getSuits() { return this.#backend.currentState().definition.variant.suits; }
-  getHandSize() { return this.#backend.currentState().definition.variant.handSize; }
-  getPlayerNames() { return this.#backend.currentState().definition.playerNames; }
-  getNumberOfPlayers(){ return this.#backend.currentState().definition.variant.numPlayers; }
+  getSuits() { return this.backend.currentState().definition.variant.suits; }
+  getHandSize() { return this.backend.currentState().definition.variant.handSize; }
+  getPlayerNames() { return this.backend.currentState().definition.playerNames; }
+  getNumberOfPlayers(){ return this.backend.currentState().definition.variant.numPlayers; }
   getDeckSize() { return this.cards.length; }
 
   //Frontend Action Endpoint
   async attemptPlayerAction(action: GameEvent) {
-    return this.#backend.attemptPlayerAction(action);
+    return this.backend.attemptPlayerAction(action);
   }
 
   //Backend Endpoints

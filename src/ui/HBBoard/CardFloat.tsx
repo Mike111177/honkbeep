@@ -13,6 +13,7 @@ import { FloatController, FloatElement, FloatLayer, FloatTarget, FloatTargetOpti
 class DeckManager {
   defaultTarget?: HTMLDivElement;
   cards: FloatController[];
+  readonly getCardCallback = (id:number)=>this.getCard(id)
 
   constructor(deckSize: number) {
     this.cards = [...Array(deckSize)].map(_ => new FloatController());
@@ -42,35 +43,23 @@ export function CardFloatArea({ children }: any) {
 type CardFloatTargetProps = {
   index?: number;
   options?: FloatTargetOptions;
-  children?: (children: React.ReactNode) => React.ReactNode;
 } & ComponentPropsWithoutRef<"div">;
-export function CardFloatTarget({ index, children, ...props }: CardFloatTargetProps) {
+export function CardFloatTarget({ index, children, options, ...props }: CardFloatTargetProps) {
   const deckHandles = useContext(CardFloatContext);
   return (
   <FloatTarget
     floatID={index}
      /*this lets us insert the wrapper function as children in the target component*/
-    options={{injectProps: {wrap: children}}}
-    controller={(id) => deckHandles!.getCard(id)} {...props} />
+    options={options}
+    controller={deckHandles!.getCardCallback} {...props} />
   );
 }
 
 function FloatingCard({ index }: { index: number }) {
   const deckMan = useContext(CardFloatContext);
-  //TODO: Make a seperate visibility api point for the target to control
   return (
-    <FloatElement floatID={index} controller={id => deckMan!.getCard(id)}>
-      {
-        (props) =>{
-          //If our claimer gave use a wrapper function (via props.children)... wrap with that function.... 
-          if (props.wrap !== undefined){
-            return props.wrap(<HBDeckCard index={index} />);
-          }
-          else {
-            return <HBDeckCard index={index} />;
-          }
-        }
-      }
+    <FloatElement floatID={index} controller={deckMan!.getCardCallback}>
+      <HBDeckCard index={index}/>
     </FloatElement>
   );
 }

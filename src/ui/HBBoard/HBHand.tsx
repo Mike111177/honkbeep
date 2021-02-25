@@ -1,56 +1,48 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useCallback, useContext, useEffect, useMemo, useState } from "react"
 
 import { CardFloatTarget } from "./CardFloat"
 import { DiscardResultType, GameEventType, PlayResultType } from "../../game/GameTypes"
 import { GameUIContext } from '../ReactFrontendInterface'
 
 import "./HBHand.scss"
-import { Draggable } from "../util/Dragging"
-
 
 type CardInHandProps = {
   player: number,
   index: number,
-  myTurn: boolean
+  myTurn: boolean,
+  card: number
 }
 
-function CardInHand({ myTurn, player, index }: CardInHandProps) {
+function CardInHand({ myTurn, player, index, card }: CardInHandProps) {
   const context = useContext(GameUIContext);
-  const [cardIndex, setCard] = useState(context.getCardInHand(player, index));
-  useEffect(()=>{
-    const callback = () => {
-      const newCardValue = context.getCardInHand(player, index);
-      if (newCardValue !== cardIndex){
-        setCard(newCardValue);
-      }
-    };
-    const removeFunc = () => {context.off("game-update", callback)};
-    context.on("game-update", callback);
-    return removeFunc;
-  })
 
   //Make it draggable
-  const onDrop = async (loc: string) => {
-    if (loc === "stacks") {
-      return await context.attemptPlayerAction({
-        type: GameEventType.Play,
-        player: player,
-        handSlot: index,
-        result: { type: PlayResultType.Request }
-      });
-    } else if (loc === "discard") {
-      return await context.attemptPlayerAction({
-        type: GameEventType.Discard,
-        player: player,
-        handSlot: index,
-        result: { type: DiscardResultType.Request }
-      });
-    } 
-    return false;
-  }
+  const onDrop = useCallback(async (loc: string) => {
+    switch (loc) {
+      case "stacks":
+        return await context.attemptPlayerAction({
+          type: GameEventType.Play,
+          player: player,
+          handSlot: index,
+          result: { type: PlayResultType.Request }
+        });
+      case "discard":
+        return await context.attemptPlayerAction({
+          type: GameEventType.Discard,
+          player: player,
+          handSlot: index,
+          result: { type: DiscardResultType.Request }
+        });
+      default:
+        return false;
+    }
+  }, [context, index, player]);
+
+  const floatOptions = useMemo(() => ({ onDrop, draggable: myTurn, injectProps: {opacity: "50%"} }), [myTurn, onDrop])
+  const style = useMemo(() => ({ width: "115px", height: "162px" }), [])
 
   return (
-    <CardFloatTarget index={cardIndex} style={{ width: "115px", height: "162px" }} options={{onDrop, draggable: myTurn}}/>
+    <CardFloatTarget index={card} style={style} options={floatOptions} />
   )
 }
 
@@ -61,19 +53,20 @@ type HBHandProps = {
 export function HBHand({ player }: HBHandProps) {
   const context = useContext(GameUIContext);
   const playerNames = context.getPlayerNames();
-  const cards = context.getCardsPerHand();
-  const cardSlots = [...Array(cards).keys()];
-  const [myTurn, setMyTurn]  = useState(context.isPlayerTurn(player));
+  const cards = context.getPlayerHand(player);
+  const [myTurn, setMyTurn] = useState(context.isPlayerTurn(player));
   useEffect(() => {
-    const callback = () => setMyTurn(context.isPlayerTurn(player));
-    const removeFunc = () => {context.off("game-update", callback)};
+    const callback = () => {
+      setMyTurn(context.isPlayerTurn(player));
+    };
+    const removeFunc = () => { context.off("game-update", callback) };
     context.on("game-update", callback);
     return removeFunc;
   });
   return (
     <div className="HBHand" style={myTurn ? { borderWidth: "2px", borderColor: "yellow", borderStyle: "solid", borderRadius: "5px" } : undefined}>
       <div className="handCardArea">
-        {cardSlots.map(i => <CardInHand myTurn={myTurn} player={player} index={i} key={i} />)}
+        {cards.map((n, i) => <CardInHand myTurn={myTurn} card={n} player={player} index={i} key={i} />)}
       </div>
       <div className="handNameArea">
         {playerNames[player]}
@@ -86,7 +79,7 @@ export function HBHand({ player }: HBHandProps) {
 type HBHandsAreaProps = {
   perspective: number
 }
-export function HBHandsArea({perspective}:HBHandsAreaProps) {
+export function HBHandsArea({ perspective }: HBHandsAreaProps) {
   const context = useContext(GameUIContext);
   const playerNames = context.getPlayerNames();
   const numPlayers = context.getNumberOfPlayers();
