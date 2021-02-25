@@ -21,7 +21,7 @@ export class DragRecognizer<EL extends HTMLElement = HTMLElement> {
       onPointerDown: (event: React.PointerEvent) => { rec.onPointerDown(event) },
       onPointerUp: (event: React.PointerEvent) => { rec.onPointerUp(event) },
       onPointerMove: (event: React.PointerEvent) => { rec.onPointerMove(event) }
-    }
+    };
   })(this);
   ref: RefObject<EL>;
   handler: DragEventHandler;

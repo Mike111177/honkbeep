@@ -1,15 +1,15 @@
-import HBClueArea from "./HBClueArea"
-import { HBStackArea } from "./HBStack"
-import HBDiscardPile from "./HBDiscardPile"
-import { DragArea } from "../util/Dragging"
-import { CardFloatLayer, CardFloatArea } from "./CardFloat"
-import { HBHandsArea } from "./HBHand"
-import { GameUIContext, GameUIInterface } from '../ReactFrontendInterface'
+import HBClueArea from "./HBClueArea";
+import { HBStackArea } from "./HBStack";
+import HBDiscardPile from "./HBDiscardPile";
+import { DragArea } from "../util/Dragging";
+import { CardFloatLayer, CardFloatArea } from "./CardFloat";
+import { HBHandsArea } from "./HBHand";
+import { GameUIContext, GameUIInterface } from '../ReactFrontendInterface';
 
-import './HBBoard.scss'
+import './HBBoard.scss';
 
 type HBBoardProps = {
-  game: GameUIInterface
+  game: GameUIInterface;
 }
 
 export default function HBBoard({ game }: HBBoardProps) {
@@ -35,5 +35,5 @@ export default function HBBoard({ game }: HBBoardProps) {
         </CardFloatArea>
       </DragArea>
     </GameUIContext.Provider >
-  )
+  );
 }

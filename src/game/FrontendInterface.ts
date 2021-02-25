@@ -1,4 +1,4 @@
-import { GameTracker } from "./Game"
+import { GameTracker } from "./Game";
 
 export default interface FrontendInterface {
   bind(game: GameTracker): void;

@@ -30,5 +30,5 @@ export default function HBDiscardPile() {
       flexWrap: " wrap"}}>
       {cardOrder.map(i=><CardFloatTarget style={{minWidth: "80px", height: "162px"}} key={i} index={i} />)}
     </DropZone>
-  )
+  );
 }

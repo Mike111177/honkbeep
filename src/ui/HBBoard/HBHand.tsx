@@ -1,16 +1,16 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from "react"
+import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 
-import { CardFloatTarget } from "./CardFloat"
-import { DiscardResultType, GameEventType, PlayResultType } from "../../game/GameTypes"
-import { GameUIContext } from '../ReactFrontendInterface'
+import { CardFloatTarget } from "./CardFloat";
+import { DiscardResultType, GameEventType, PlayResultType } from "../../game/GameTypes";
+import { GameUIContext } from '../ReactFrontendInterface';
 
-import "./HBHand.scss"
+import "./HBHand.scss";
 
 type CardInHandProps = {
-  player: number,
-  index: number,
-  myTurn: boolean,
-  card: number
+  player: number;
+  index: number;
+  myTurn: boolean;
+  card: number;
 }
 
 function CardInHand({ myTurn, player, index, card }: CardInHandProps) {
@@ -38,16 +38,16 @@ function CardInHand({ myTurn, player, index, card }: CardInHandProps) {
     }
   }, [context, index, player]);
 
-  const floatOptions = useMemo(() => ({ onDrop, draggable: myTurn, injectProps: {opacity: "50%"} }), [myTurn, onDrop])
-  const style = useMemo(() => ({ width: "115px", height: "162px" }), [])
+  const floatOptions = useMemo(() => ({ onDrop, draggable: myTurn, injectProps: {opacity: "50%"} }), [myTurn, onDrop]);
+  const style = useMemo(() => ({ width: "115px", height: "162px" }), []);
 
   return (
     <CardFloatTarget index={card} style={style} options={floatOptions} />
-  )
+  );
 }
 
 type HBHandProps = {
-  player: number
+  player: number;
 }
 
 export function HBHand({ player }: HBHandProps) {
@@ -72,12 +72,12 @@ export function HBHand({ player }: HBHandProps) {
         {playerNames[player]}
       </div>
     </div>
-  )
+  );
 
 }
 
 type HBHandsAreaProps = {
-  perspective: number
+  perspective: number;
 }
 export function HBHandsArea({ perspective }: HBHandsAreaProps) {
   const context = useContext(GameUIContext);
@@ -87,5 +87,5 @@ export function HBHandsArea({ perspective }: HBHandsAreaProps) {
     <div className="HBHandsArea" style={{ gridTemplateRows: `repeat(${numPlayers}, min-content)` }}>
       {playerNames.map((n, i) => <HBHand player={(i + perspective) % (numPlayers)} key={i} />)}
     </div>
-  )
+  );
 }

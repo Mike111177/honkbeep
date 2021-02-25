@@ -8,14 +8,14 @@ export function vecAdd(a:Vec2D,b:Vec2D): Vec2D{
   return {
     x: a.x+b.x,
     y: a.y+b.y
-  }
+  };
 }
 
 export function vecSub(a:Vec2D,b:Vec2D): Vec2D{
   return {
     x: a.x-b.x,
     y: a.y-b.y
-  }
+  };
 }
 
 export function vecNorm(a:Vec2D): number{

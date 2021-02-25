@@ -1,9 +1,9 @@
 import React from "react";
 
-import {GameUIContext} from '../ReactFrontendInterface'
-import Colors from "../colors"
+import {GameUIContext} from '../ReactFrontendInterface';
+import Colors from "../colors";
 
-import "./HBClueArea.scss"
+import "./HBClueArea.scss";
 
 enum ClueType {
     Color = 1,
@@ -11,8 +11,8 @@ enum ClueType {
 }
 
 type HBClueButtonProps = {
-    type: ClueType,
-    value: string | number
+    type: ClueType;
+    value: string | number;
 }
 
 function HBClueButton({ type, value }: HBClueButtonProps) {
@@ -48,5 +48,5 @@ export default function HBClueArea() {
                 Submit Clue
             </div>
         </div>
-    )
+    );
 }

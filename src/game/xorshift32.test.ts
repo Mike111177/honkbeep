@@ -1,4 +1,4 @@
-import xorshift32 from "./xorshift32"
+import xorshift32 from "./xorshift32";
 
 test("Gives expected results with input seed", () => {
   const testIter = (seed: number, iter: number) => {
@@ -7,7 +7,7 @@ test("Gives expected results with input seed", () => {
       gen.next();
     }
     return gen.next();
-  }
+  };
   expect(testIter(5, 30)).toEqual(2277783610);
   expect(testIter(23742, 2)).toEqual(2800163681);
   expect(testIter(1345, 70)).toEqual(1963767915);

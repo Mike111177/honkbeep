@@ -3,14 +3,14 @@ import { useContext, useEffect, useState } from "react";
 import { GameUIContext } from "../ReactFrontendInterface";
 import { DropZone } from "../util/Dragging";
 
-import colors from "../colors"
-import "./HBStackArea.scss"
-import "./HBStack.scss"
+import colors from "../colors";
+import "./HBStackArea.scss";
+import "./HBStack.scss";
 import { CardFloatTarget } from "./CardFloat";
 
 type HBStackProps = {
-  number: number,
-  suit: string
+  number: number;
+  suit: string;
 }
 
 export function HBStack({ suit, number }: HBStackProps) {
@@ -25,7 +25,7 @@ export function HBStack({ suit, number }: HBStackProps) {
   const [index, setIndex] = useState(getCurrentCard());
   useEffect(() => {
     const callback = () => {
-      setIndex(getCurrentCard())
+      setIndex(getCurrentCard());
     };
     const removeFunc = () => {context.off("game-update", callback)};
     context.on("game-update", callback);
@@ -47,5 +47,5 @@ export function HBStackArea() {
     <DropZone id="stacks" className="HBStackArea" style={{ gridTemplateColumns: `repeat(${suits.length}, auto)` }}>
       {suits.map((c, i) => <HBStack suit={c} key={i} number={i} />)}
     </DropZone>
-  )
+  );
 }

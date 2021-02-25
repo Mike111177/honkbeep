@@ -1,4 +1,4 @@
-import BackendInterface from "./BackendInterface"
+import BackendInterface from "./BackendInterface";
 import { GameTracker } from "./Game";
 import {
   CardData,
@@ -13,7 +13,7 @@ import {
   GamePlayEvent,
   GameDiscardEvent,
   DiscardResultType
-} from "./GameTypes"
+} from "./GameTypes";
 import { buildDeck, getShuffledOrder } from "./VariantBuilding";
 
 //Will be the substitute for a server in these local games
@@ -73,7 +73,7 @@ class Server {
   }
 
   isPlayersTurn(player: number) {
-    return player === this.lastTurn % this.variant.numPlayers
+    return player === this.lastTurn % this.variant.numPlayers;
   }
 
   cardFromHand(player: number, handSlot: number) {

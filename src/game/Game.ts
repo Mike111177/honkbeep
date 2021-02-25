@@ -1,5 +1,5 @@
 import BackendInterface from "./BackendInterface";
-import FrontendInterface from "./FrontendInterface"
+import FrontendInterface from "./FrontendInterface";
 import {
   CardData,
   Stack,
@@ -35,7 +35,7 @@ export class GameTracker {
   knownDeckOrder: number[];
 
   stacks: Stack[];
-  discardPile: {turn:number, index:number}[]
+  discardPile: {turn:number; index:number}[]
 
   //Shuffled order of deck for spectator and review mode, and displaying discovered cards
   //Ergo shuffledOrder[0] contains the card data index of the first card from deck
@@ -189,13 +189,13 @@ export class GameTracker {
     this.shuffledOrder = order;
   }
 
-  isPossiblyPlayable(cardIndex: number) { return true; }
-  isCardRevealed(cardIndex: number) { return this.knownDeckOrder[cardIndex] !== undefined; }
-  getSuits() { return this.backend.currentState().definition.variant.suits; }
-  getHandSize() { return this.backend.currentState().definition.variant.handSize; }
-  getPlayerNames() { return this.backend.currentState().definition.playerNames; }
-  getNumberOfPlayers(){ return this.backend.currentState().definition.variant.numPlayers; }
-  getDeckSize() { return this.cards.length; }
+  isPossiblyPlayable(cardIndex: number) { return true }
+  isCardRevealed(cardIndex: number) { return this.knownDeckOrder[cardIndex] !== undefined }
+  getSuits() { return this.backend.currentState().definition.variant.suits }
+  getHandSize() { return this.backend.currentState().definition.variant.handSize }
+  getPlayerNames() { return this.backend.currentState().definition.playerNames }
+  getNumberOfPlayers(){ return this.backend.currentState().definition.variant.numPlayers }
+  getDeckSize() { return this.cards.length }
 
   //Frontend Action Endpoint
   async attemptPlayerAction(action: GameEvent) {

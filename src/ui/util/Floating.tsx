@@ -1,8 +1,8 @@
 import { cloneElement, ComponentPropsWithoutRef, RefObject, useContext, useEffect, useRef, useState } from "react";
-import { animated, Controller, SpringConfig, SpringValue } from "react-spring/web.cjs"
+import { animated, Controller, SpringConfig, SpringValue } from "react-spring/web.cjs";
 import { DragRecognizer, DragStatus } from "./InputHandling";
 import { Vec2D, vecAdd } from "./Vector";
-import { DragContext, DragManager} from "./Dragging"
+import { DragContext, DragManager} from "./Dragging";
 
 
 // TODO: Implement some kind of sequencer, to give more control of the animation
@@ -69,7 +69,7 @@ export class FloatController {
   constructor() {
     this.state = {
       claimed: false
-    }
+    };
   }
 
   //For targets to claim card, this may be called
@@ -79,10 +79,10 @@ export class FloatController {
     this.state.claimed = true; //We be claimed now bois
     this.options = options;
     if (this.floatRef !== undefined){
-      this.initSpring()
+      this.initSpring();
       this.floatRef.setVectorDriver(this.fvDriver);
       this.options = options;
-      this.floatRef.setProps(this.options?.injectProps)
+      this.floatRef.setProps(this.options?.injectProps);
     }
     this.update();
   }
@@ -92,9 +92,9 @@ export class FloatController {
     this.bound = true;
     this.floatRef = bindref;
     if (this.state.claimed){
-      this.initSpring()
+      this.initSpring();
       this.floatRef.setVectorDriver(this.fvDriver);
-      this.floatRef.setProps(this.options?.injectProps)
+      this.floatRef.setProps(this.options?.injectProps);
     }
     this.update();
   }
@@ -106,14 +106,14 @@ export class FloatController {
   //Here is a guess for the meantime:
   unbind() {
     if (this.bound) {
-      this.spring?.stop()
+      this.spring?.stop();
       this.spring = undefined;
     }
     this.bound = false;
   }
 
 
-  private isActive() { return this.bound && this.state.claimed; }
+  private isActive() { return this.bound && this.state.claimed }
 
   //Internal helper function for whenever a bound floating card needs to know of a state change
   private update() {
@@ -217,7 +217,7 @@ export function FloatElement<T extends FloatElementID>({ floatID, children, cont
   const dragcontext = useContext(DragContext);
   //Make sure this element stays bound to its manager
   useEffect(() => {
-    controller(floatID).useBind({ setState, ref, dragcontext, setVectorDriver, setProps})
+    controller(floatID).useBind({ setState, ref, dragcontext, setVectorDriver, setProps});
   }, [x, y, claimed, setState, controller, floatID, props, dragcontext, setVectorDriver]);
 
   return claimed ? //If we are not claimed by a target we should be invisible dont render anything

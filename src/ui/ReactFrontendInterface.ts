@@ -2,11 +2,9 @@ import React from "react";
 import EventEmitter from "events";
 
 import { GameTracker } from "../game/Game";
-import FrontendInterface from "../game/FrontendInterface"
+import FrontendInterface from "../game/FrontendInterface";
 import { GameEvent } from "../game/GameTypes";
 
-
-type GameStateListener = () => void;
 export class GameUIInterface extends EventEmitter implements FrontendInterface {
   private game?: GameTracker;
 
@@ -21,14 +19,14 @@ export class GameUIInterface extends EventEmitter implements FrontendInterface {
 
   //Return method for handslots to attempt to play a card
   useHandSlot(player: number, index: number) { }
-  getPlayerNames() { return this.game!.getPlayerNames(); }
-  getNumberOfPlayers() { return this.game!.getNumberOfPlayers(); }
-  getCardsPerHand() { return this.game!.getHandSize(); }
-  getCardInHand(player: number, index: number) { return this.game!.getCardInHand(player, index, this.game!.turnsProcessed); }
-  getSuits() { return this.game!.getSuits(); }
-  getStack(index: number) { return this.game!.stacks[index]; }
-  getDeckSize() { return this.game!.getDeckSize(); }
-  getPlayerHand(player: number){return this.game!.getLatestPlayerHand(player);}
+  getPlayerNames() { return this.game!.getPlayerNames() }
+  getNumberOfPlayers() { return this.game!.getNumberOfPlayers() }
+  getCardsPerHand() { return this.game!.getHandSize() }
+  getCardInHand(player: number, index: number) { return this.game!.getCardInHand(player, index, this.game!.turnsProcessed) }
+  getSuits() { return this.game!.getSuits() }
+  getStack(index: number) { return this.game!.stacks[index] }
+  getDeckSize() { return this.game!.getDeckSize() }
+  getPlayerHand(player: number){return this.game!.getLatestPlayerHand(player)}
   getCardDisplayableProps(index: number) {
     if (this.game!.isCardRevealed(index)) {
       return this.game!.cards[this.game!.knownDeckOrder[index]];

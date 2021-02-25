@@ -1,9 +1,9 @@
-import "./HBCard.scss"
-import colors from "../colors"
+import "./HBCard.scss";
+import colors from "../colors";
 
 export type HBCardProps = {
-  rank: number,
-  suit: string
+  rank: number;
+  suit: string;
 }
 
 //For rendering frontface of absolutley known card

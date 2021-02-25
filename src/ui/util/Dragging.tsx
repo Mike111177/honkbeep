@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, createContext, ReactNode, useContext, useEffect, useRef, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useRef, useState } from "react";
 import { animated, useSpring } from "react-spring/web.cjs";
 
 import { useDrag } from "./InputHandling";
@@ -66,7 +66,7 @@ export function DropZone({ children, id, ...props }: any) {
     };
     window.addEventListener('mousemove', listener);
     return () => window.removeEventListener('mousemove', listener);
-  }, [dragContext, id, targeted])
+  }, [dragContext, id, targeted]);
   return (
     <div ref={element} {...props}>
       {children}
@@ -75,5 +75,5 @@ export function DropZone({ children, id, ...props }: any) {
 }
 
 export function DragArea({ children }: any) {
-  return <DragContext.Provider value={new DragManager()}>{children}</DragContext.Provider>
+  return <DragContext.Provider value={new DragManager()}>{children}</DragContext.Provider>;
 }

@@ -1,18 +1,18 @@
-import bluePip from "./pips/suits/no-variant/blue.svg"
-import redPip from "./pips/suits/no-variant/red.svg"
-import greenPip from "./pips/suits/no-variant/green.svg"
-import yellowPip from "./pips/suits/no-variant/yellow.svg"
-import purplePip from "./pips/suits/no-variant/purple.svg"
-import blackPip from "./pips/suits/variants/black.svg"
-import tealPip from "./pips/suits/variants/teal.svg"
-import pinkPip from "./pips/suits/variants/pink.svg"
-import brownPip from "./pips/suits/variants/brown.svg"
+import bluePip from "./pips/suits/no-variant/blue.svg";
+import redPip from "./pips/suits/no-variant/red.svg";
+import greenPip from "./pips/suits/no-variant/green.svg";
+import yellowPip from "./pips/suits/no-variant/yellow.svg";
+import purplePip from "./pips/suits/no-variant/purple.svg";
+import blackPip from "./pips/suits/variants/black.svg";
+import tealPip from "./pips/suits/variants/teal.svg";
+import pinkPip from "./pips/suits/variants/pink.svg";
+import brownPip from "./pips/suits/variants/brown.svg";
 
 type Color = {
-  name: string,
-  fill: string,
-  back?: string,
-  pip?: string,
+  name: string;
+  fill: string;
+  back?: string;
+  pip?: string;
 
 
 }
@@ -72,6 +72,6 @@ const colors: Record<string, Color> = {
     "back": "#c1bab5",
     "pip": brownPip
   }
-}
+};
 
 export default colors;

@@ -1,4 +1,4 @@
-import { vecAdd, vecNorm, vecSub } from "./Vector"
+import { vecAdd, vecNorm, vecSub } from "./Vector";
 
 test("Adding vectors", () => {
   expect(vecAdd({ x: 10, y: 20 }, { x: 2, y: -15 })).toStrictEqual({ x: 12, y: 5 });

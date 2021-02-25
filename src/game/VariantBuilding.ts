@@ -19,5 +19,5 @@ export function getShuffledOrder(length: number, seed: ShufflerInput = undefined
     order[s] = order[i];
     order[i] = tmp;
   }
-  return {order, seed: rng.seed()};
+  return { order, seed: rng.getSeed() };
 }

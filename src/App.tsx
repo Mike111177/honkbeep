@@ -1,12 +1,12 @@
-import React from 'react'
-import {BrowserRouter as Router, Route, Redirect} from "react-router-dom"
+import React from 'react';
+import {BrowserRouter as Router, Route, Redirect} from "react-router-dom";
 
-import { GameTracker } from "./game/Game"
-import LocalBackend from "./game/LocalBackend"
-import { GameUIInterface } from "./ui/ReactFrontendInterface"
-import HBBoard from './ui/HBBoard/HBBoard'
+import { GameTracker } from "./game/Game";
+import LocalBackend from "./game/LocalBackend";
+import { GameUIInterface } from "./ui/ReactFrontendInterface";
+import HBBoard from './ui/HBBoard/HBBoard';
 
-import background from "./background_black.jpg"
+import background from "./background_black.jpg";
 import './App.scss';
 
 
@@ -30,7 +30,7 @@ function App() {
             });
             const game = new GameTracker(localGame, uiInterface);
             game.useShuffler();
-            return <HBBoard game={uiInterface} />
+            return <HBBoard game={uiInterface} />;
           }}
         </Route>
       </div>
