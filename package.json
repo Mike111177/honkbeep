@@ -13,24 +13,11 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
+    "lint": "node node_modules/eslint/bin/eslint.js --config node_modules/eslint-config-react-app/index.js src",
+    "lintfix": "node node_modules/eslint/bin/eslint.js --config node_modules/eslint-config-react-app/index.js src --fix",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "plugins": [
-      "react-hooks"
-    ],
-    "rules": {
-      "react-hooks/rules-of-hooks": "error",
-      "react/no-unknown-property": "error",
-      "react-hooks/exhaustive-deps": "warn"
-    },
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "test": "react-scripts test"
   },
   "browserslist": {
     "production": [
