@@ -1,9 +1,8 @@
 import React from 'react';
 import {BrowserRouter as Router, Route, Redirect} from "react-router-dom";
 
-import { GameTracker } from "./game/Game";
 import LocalBackend from "./game/LocalBackend";
-import { GameUIInterface } from "./ui/ReactFrontendInterface";
+import ReactUIInterface from "./ui/ReactFrontendInterface";
 import HBBoard from './ui/HBBoard/HBBoard';
 
 import background from "./background_black.jpg";
@@ -19,7 +18,7 @@ function App() {
         </Route>
         <Route path="/game">
           {() => {
-            const uiInterface = new GameUIInterface();
+            
             const localGame = new LocalBackend({
               variant: {
                 suits: ["Red", "Yellow", "Green", "Blue", "Purple"],
@@ -28,8 +27,7 @@ function App() {
               },
               playerNames: ["Alice", "Bob", "Cathy", "Donald"]
             });
-            const game = new GameTracker(localGame, uiInterface);
-            game.useShuffler();
+            const uiInterface = new ReactUIInterface(localGame);
             return <HBBoard game={uiInterface} />;
           }}
         </Route>

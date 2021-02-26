@@ -1,9 +1,13 @@
-import { GameTracker } from "./Game";
+import EventEmitter from "events";
 import { GameEvent, GameState } from "./GameTypes";
 
-//GameTracker's exposure to either a local game or a server hosted game
-export default interface BackendInterface {
-  bind(game: GameTracker): void;
+//Responsible for tracking canonical server state from clients perspective
+//And notifying frontend of state changes
+//And allowing frontend to probe or act on server
+interface BackendInterface extends EventEmitter{
   currentState(): GameState;
+  isReady(): boolean;
   attemptPlayerAction(action: GameEvent): Promise<boolean>;
 }
+
+export default BackendInterface;

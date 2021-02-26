@@ -1,5 +1,6 @@
+import EventEmitter from "events";
 import BackendInterface from "./BackendInterface";
-import { GameTracker } from "./Game";
+import GameTracker from "./GameTracker";
 import {
   CardData,
   CardReveal,
@@ -252,12 +253,12 @@ class Server {
 }
 
 //Meant for dictating logic of local games or template games
-export default class LocalBackend implements BackendInterface {
+export default class LocalBackend extends EventEmitter implements BackendInterface {
   private state: GameState;
-  private game?: GameTracker;
   private server: Server;
 
   constructor(definition: GameDefinition) {
+    super();
     this.server = new Server(definition);
     this.state = {
       events: this.server.events,
@@ -265,18 +266,18 @@ export default class LocalBackend implements BackendInterface {
     };
   }
 
-  currentState(): GameState {
-    return this.state;
+  isReady(): boolean {
+    return true;
   }
 
-  bind(game: GameTracker) {
-    this.game = game;
+  currentState(): GameState {
+    return this.state;
   }
 
   async attemptPlayerAction(action: GameEvent) {
     const actionSuccess = await this.server.attemptPlayerAction(action);
     if (actionSuccess) {
-      this.game!.onNewEvents();
+      this.emit("gameStateChanged");
     }
     return actionSuccess;
   }

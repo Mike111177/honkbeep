@@ -4,12 +4,12 @@ import HBDiscardPile from "./HBDiscardPile";
 import { DragArea } from "../util/Dragging";
 import { CardFloatLayer, CardFloatArea } from "./CardFloat";
 import { HBHandsArea } from "./HBHand";
-import { GameUIContext, GameUIInterface } from '../ReactFrontendInterface';
+import ReactUIInterface, { GameUIContext } from '../ReactFrontendInterface';
 
 import './HBBoard.scss';
 
 type HBBoardProps = {
-  game: GameUIInterface;
+  game: ReactUIInterface;
 }
 
 export default function HBBoard({ game }: HBBoardProps) {

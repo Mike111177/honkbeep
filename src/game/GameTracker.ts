@@ -1,24 +1,19 @@
-import BackendInterface from "./BackendInterface";
-import FrontendInterface from "./FrontendInterface";
 import {
   CardData,
   Stack,
   CardKnowledgeHistory,
   HandHistory,
   ShufflerInput,
-  GameEvent,
   GameEventType,
   PlayResultType,
   GamePlayEvent,
   GameDiscardEvent,
+  GameState,
 } from "./GameTypes";
 import { buildDeck, getShuffledOrder } from "./VariantBuilding";
 
 // Calculates current board state as new turns are played
-export class GameTracker {
-  private backend: BackendInterface;
-  private frontend: FrontendInterface;
-
+export default class GameTracker {
   turnsProcessed: number = 0;
   topDeck: number = 0;
 
@@ -27,15 +22,15 @@ export class GameTracker {
   //do know where every card is, so this should provide a 
   //stable memoizable lookup table
   cardKnowledge: CardKnowledgeHistory[] = [];
-  handHistories: HandHistory[];
+  handHistories: HandHistory[] = [];
 
   //Unshuffled deck information
-  cards: CardData[];
+  cards: CardData[] = [];
 
-  knownDeckOrder: number[];
+  knownDeckOrder: number[] = [];
 
-  stacks: Stack[];
-  discardPile: {turn:number; index:number}[]
+  stacks: Stack[] = [];
+  discardPile: {turn:number; index:number}[] = []
 
   //Shuffled order of deck for spectator and review mode, and displaying discovered cards
   //Ergo shuffledOrder[0] contains the card data index of the first card from deck
@@ -45,23 +40,18 @@ export class GameTracker {
   //Linked copy, used for branches from hypotheticals
   hypothetical?: GameTracker;
 
-  constructor(backend: BackendInterface, frontend: FrontendInterface) {
-    this.backend = backend;
-    this.backend.bind(this);
-
-    this.frontend = frontend;
-    this.frontend.bind(this);
-
-    let state = backend.currentState();
+  init(state: GameState) {
+    //Build deck
     this.cards = buildDeck(state.definition.variant);
-    this.knownDeckOrder = [];
-
     //Init stacks
     this.stacks = state.definition.variant.suits.map<number[]>(_ => ([]));
+  }
 
-    //Init Discards
-    this.discardPile = [];
+  getLatestPlayerHand(player: number) {
+    return this.getHandState(player, this.turnsProcessed);
+  }
 
+  private processDealEvent(state: GameState) {
     //Turn 0, Deal
     this.handHistories = [];
     for (let p = 0; p < state.definition.variant.numPlayers; p++) {
@@ -74,16 +64,9 @@ export class GameTracker {
         this.topDeck++;
       }
     }
-
-    //Process State
-    this.propagateState();
   }
 
-  getLatestPlayerHand(player: number) {
-    return this.getHandState(player, this.turnsProcessed);
-  }
-
-  processPlayEvent(event: GamePlayEvent){
+  private processPlayEvent(event: GamePlayEvent){
     //Create copy of current hand to make new hand
     let newHand = Array.from(this.handHistories[event.player][this.handHistories[event.player].length - 1].result);
     //Remove played card from hand
@@ -108,7 +91,7 @@ export class GameTracker {
     this.topDeck++;
   }
 
-  processDiscardEvent(event: GameDiscardEvent){
+  private processDiscardEvent(event: GameDiscardEvent){
     //Create copy of current hand to make new hand
     let newHand = Array.from(this.handHistories[event.player][this.handHistories[event.player].length - 1].result);
     //Remove  discarded card from hand
@@ -128,14 +111,17 @@ export class GameTracker {
     this.topDeck++;
   }
 
-  propagateState() {
-    let events = this.backend.currentState().events;
+  propagateState(state: GameState) {
+    let events = state.events
     let newEvents = false;
     for (this.turnsProcessed; this.turnsProcessed < events.length; this.turnsProcessed++) {
       newEvents = true;
       let event = events[this.turnsProcessed];
       //Process Actions
       switch (event.type) {
+        case GameEventType.Deal:
+          this.processDealEvent(state);
+          break;
         case GameEventType.Play:
           this.processPlayEvent(event);
           break;
@@ -151,9 +137,7 @@ export class GameTracker {
       }
     }
     //If we processed new events, notify the frontend changes happened
-    if (newEvents) {
-      this.frontend.onGameStateChange();
-    }
+    return newEvents;
   }
 
   getCardDataFromDeck(index: number) {
@@ -187,24 +171,6 @@ export class GameTracker {
   useShuffler(si: ShufflerInput = undefined) {
     const { order } = getShuffledOrder(this.cards.length, si);
     this.shuffledOrder = order;
-  }
-
-  isPossiblyPlayable(cardIndex: number) { return true }
-  isCardRevealed(cardIndex: number) { return this.knownDeckOrder[cardIndex] !== undefined }
-  getSuits() { return this.backend.currentState().definition.variant.suits }
-  getHandSize() { return this.backend.currentState().definition.variant.handSize }
-  getPlayerNames() { return this.backend.currentState().definition.playerNames }
-  getNumberOfPlayers(){ return this.backend.currentState().definition.variant.numPlayers }
-  getDeckSize() { return this.cards.length }
-
-  //Frontend Action Endpoint
-  async attemptPlayerAction(action: GameEvent) {
-    return this.backend.attemptPlayerAction(action);
-  }
-
-  //Backend Endpoints
-  onNewEvents() {
-    this.propagateState();
   }
 }
 
