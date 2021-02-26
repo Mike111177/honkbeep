@@ -16,7 +16,7 @@ export default function HBCardFront({ suit, rank, ...props }: HBCardProps) {
   let pip = pips[suit];
   const num = rank;
   return (
-    <svg {...props}>
+    <svg {...props} viewBox="0 0 110 150">
       <defs>
         <filter id="outline">
           <feComponentTransfer>
@@ -38,11 +38,11 @@ export default function HBCardFront({ suit, rank, ...props }: HBCardProps) {
       </> : undefined}
       {/*Top And Bottom Pip*/ num > 1 ? <>
         <image href={pip} height="12.5%" x="40.5%" y="20%" filter="url(#outline)" />
-        <image href={pip} height="12.5%" x="40.5%" y="65%" filter="url(#outline)" />
+        <image href={pip} height="12.5%" x="40.5%" y="20%" filter="url(#outline)" transform="rotate(180 55 75)" />
       </> : undefined}
       {/*Left And Right Pip*/ num > 3 ? <>
         <image href={pip} height="12.5%" x="12.5%" y="42.5%" filter="url(#outline)" />
-        <image href={pip} height="12.5%" x="67.5%" y="42.5%" filter="url(#outline)"/>
+        <image href={pip} height="12.5%" x="12.5%" y="42.5%" filter="url(#outline)" transform="rotate(180 55 75)"/>
       </> : undefined}
       <text rotate="180" fill={colorData.fill} className='rank' x='105%' y='55%' fontSize='50px' textAnchor='middle' dominantBaseline='central' filter="url(#outline)">{num}</text>
     </svg>
