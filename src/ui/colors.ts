@@ -1,76 +1,54 @@
-import bluePip from "./pips/suits/no-variant/blue.svg";
-import redPip from "./pips/suits/no-variant/red.svg";
-import greenPip from "./pips/suits/no-variant/green.svg";
-import yellowPip from "./pips/suits/no-variant/yellow.svg";
-import purplePip from "./pips/suits/no-variant/purple.svg";
-import blackPip from "./pips/suits/variants/black.svg";
-import tealPip from "./pips/suits/variants/teal.svg";
-import pinkPip from "./pips/suits/variants/pink.svg";
-import brownPip from "./pips/suits/variants/brown.svg";
-
 type Color = {
   name: string;
   fill: string;
   back?: string;
-  pip?: string;
-
-
 }
 
 const colors: Record<string, Color> = {
   Red: {
     "name": "Red",
     "fill": "#e60000",
-    "back": "#f2b4b4",
-    "pip": redPip
+    "back": "#f2b4b4"
   },
   Yellow: {
     "name": "Yellow",
     "fill": "#e6e600",
-    "back": "#f2f2b4",
-    "pip": yellowPip
+    "back": "#f2f2b4"
   },
   Green: {
     "name": "Green",
     "fill": "#02ec00",
-    "back": "#b4f5b4",
-    "pip": greenPip
+    "back": "#b4f5b4"
   },
   Blue: {
     "name": "Blue",
     "fill": "#0037ff",
-    "back": "#b4b8ff",
-    "pip": bluePip
+    "back": "#b4b8ff"
   },
   Purple: {
     "name": "Purple",
     "fill": "#6600cc",
-    "back": "#c2b4e6",
-    "pip": purplePip
+    "back": "#c2b4e6"
   },
   Teal: {
     "name": "Teal",
     "fill": "#00cccc",
-    "back": "#b4e6e6",
-    "pip": tealPip
+    "back": "#b4e6e6"
   },
   Black: {
     "name": "Black",
     "fill": "#111111",
-    "back": "#b4b4b4",
-    "pip": blackPip
+    "back": "#b4b4b4"
   },
   Pink: {
     "name": "Pink",
     "fill": "#ff69b4",
-    "back": "#ffc3dc",
-    "pip": pinkPip
+    "back": "#ffc3dc"
   },
   Brown: {
     "name": "Brown",
     "fill": "#654321",
-    "back": "#c1bab5",
-    "pip": brownPip
+    "back": "#c1bab5"
   }
 };
 

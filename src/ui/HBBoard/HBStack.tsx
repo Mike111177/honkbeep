@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 
+import { CardFloatTarget } from "./CardFloat";
 import { GameUIContext } from "../ReactFrontendInterface";
 import { DropZone } from "../util/Dragging";
 
 import colors from "../colors";
+import pips from "./pips";
 import "./HBStackArea.scss";
 import "./HBStack.scss";
-import { CardFloatTarget } from "./CardFloat";
 
 type HBStackProps = {
   number: number;
@@ -35,7 +36,7 @@ export function HBStack({ suit, number }: HBStackProps) {
     <div>
       <CardFloatTarget index={index} style={{ width: "0", height: "0" }} />
       <div className="HBStack" style={{ borderColor: colorData.fill, backgroundColor: colorData.back + "7f", color: colorData.fill }}>
-        <img className="stackPip" src={colorData.pip} alt="" />
+        <img className="stackPip" src={pips[suit]} alt="" />
       </div>
     </div>
   );
