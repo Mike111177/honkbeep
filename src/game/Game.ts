@@ -145,7 +145,7 @@ export class GameTracker {
       }
       //Process Reveals
       if (event.reveals) {
-        for (let revealedCard of event.reveals) {
+        for (let revealedCard of event.reveals[0]) {
           this.knownDeckOrder[revealedCard.deck] = revealedCard.card;
         }
       }

@@ -24,6 +24,8 @@ export type ShufflerInput = number | undefined;
 //Meant for spectators and post game review
 
 export type CardReveal = {
+  player: number;
+  turn: number;
   deck: number;
   card: number;
 }
@@ -73,7 +75,7 @@ export enum GameEventType{
 
 export type GameDealEvent = {
   type: GameEventType.Deal;
-  reveals?: CardReveal[];
+  reveals?: CardReveal[][];
 }
 
 export type GamePlayEvent = {
@@ -81,7 +83,7 @@ export type GamePlayEvent = {
   player: number;
   handSlot: number;
   result: PlayResult;
-  reveals?: CardReveal[];
+  reveals?: CardReveal[][];
 }
 
 export type GameDiscardEvent = {
@@ -89,12 +91,12 @@ export type GameDiscardEvent = {
   player: number;
   handSlot: number;
   result: DiscardResult;
-  reveals?: CardReveal[];
+  reveals?: CardReveal[][];
 }
 
 export type GameClueEvent = {
   type: GameEventType.Clue;
-  reveals?: CardReveal[];
+  reveals?: CardReveal[][];
 }
 
 export type GameEvent = 

@@ -27,6 +27,7 @@ class Server {
   stacks: number[][];
   hands: number[][];
   discard: number[];
+  
   topDeck: number;
   lastTurn: number;
 
@@ -47,23 +48,34 @@ class Server {
     this.hands = [];
     this.topDeck = 0;
 
-    const initialReveals: CardReveal[] = [];
-    for (let p = 0; p < this.variant.numPlayers; p++) {
-      this.hands[p] = [];
-      for (let s = 0; s < this.variant.handSize; s++) {
-        this.hands[p].push(this.topDeck);
-        initialReveals.push({
-          deck: this.topDeck,
-          card: this.shuffleOrder[this.topDeck]
-        });
+    //Build initial hands and reveals
+    const initialRevealedCards: CardReveal[][] = [...Array(this.variant.numPlayers)].map(_ => []);
+    for (let playerOfHand = 0; playerOfHand < this.variant.numPlayers; playerOfHand++) {
+      //Create hand for player
+      const thisHand: number[] = [];
+      for (let slotOfPlayerHand = 0; slotOfPlayerHand < this.variant.handSize; slotOfPlayerHand++) {
+        //Add each card to player hand
+        thisHand.push(this.topDeck);
+        for (let playerOfReveal = 0; playerOfReveal < this.variant.numPlayers; playerOfReveal++) {
+          //Reveal each card to each player other than the one of this hand
+          if (playerOfReveal !== playerOfHand) {
+            initialRevealedCards[playerOfReveal].push({
+              player: playerOfReveal,
+              turn: 0,
+              deck: this.topDeck,
+              card: this.shuffleOrder[this.topDeck]
+            });
+          }
+        }
         this.topDeck++;
       }
+      this.hands[playerOfHand] = thisHand;
     }
-
+    
     //Set turn 0 as a pure reveal, of the cards in everyone's hands
     this.events = [{
       type: GameEventType.Deal,
-      reveals: initialReveals
+      reveals: initialRevealedCards
     }];
     this.lastTurn = 0;
   }
@@ -134,16 +146,20 @@ class Server {
             type: PlayResultType.Success,
             stack: i
           },
-          reveals: [
-            { //Reveal played card to all
+          reveals: [[
+            { //Reveal played card to player
+              player: action.player,
+              turn: this.lastTurn + 1,
               deck: attemptedPlayIndex,
               card: this.getCardIndexFromDeckIndex(attemptedPlayIndex)
             },
             { // Reveal new card to all
+              player: action.player,
+              turn: this.lastTurn + 1,
               deck: this.topDeck,
               card: this.getCardIndexFromDeckIndex(this.topDeck)
             }
-          ]
+          ]]
         });
         cardWasPlayed = true;
         break;
@@ -164,16 +180,20 @@ class Server {
         result: {
           type: PlayResultType.Misplay
         },
-        reveals: [
+        reveals: [[
           { //Reveal played card to all
+            player: action.player,
+            turn: this.lastTurn + 1,
             deck: attemptedPlayIndex,
             card: this.getCardIndexFromDeckIndex(attemptedPlayIndex)
           },
           { // Reveal new card to all
+            player: action.player,
+            turn: this.lastTurn + 1,
             deck: this.topDeck,
             card: this.getCardIndexFromDeckIndex(this.topDeck)
           }
-        ]
+        ]]
       });
     }
     this.topDeck++;
@@ -200,16 +220,20 @@ class Server {
       result: {
         type: DiscardResultType.Success
       },
-      reveals: [
+      reveals: [[
         { //Reveal played card to all
+          player: action.player,
+          turn: this.lastTurn + 1,
           deck: attemptedPlayIndex,
           card: this.getCardIndexFromDeckIndex(attemptedPlayIndex)
         },
         { // Reveal new card to all
+          player: action.player,
+          turn: this.lastTurn + 1,
           deck: this.topDeck,
           card: this.getCardIndexFromDeckIndex(this.topDeck)
         }
-      ]
+      ]]
     });
     this.topDeck++;
     this.lastTurn++;

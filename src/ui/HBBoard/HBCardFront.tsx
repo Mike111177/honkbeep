@@ -1,21 +1,22 @@
 import "./HBCard.scss";
 import colors from "../colors";
 import pips from "./pips";
+import { ComponentProps } from "react";
 
 export type HBCardProps = {
   rank: number;
   suit: string;
-}
+} & ComponentProps<"svg">
 
 //For rendering frontface of absolutley known card
 //TODO: The bottom and right-hand pips should be flipped 180 degrees
 //TODO: It might be a good idea to add a pre-render step for all of the possible card faces
-export default function HBCardFront({ suit, rank }: HBCardProps) {
+export default function HBCardFront({ suit, rank, ...props }: HBCardProps) {
   let colorData = colors[suit];
   let pip = pips[suit];
   const num = rank;
   return (
-    <svg height="150" width="110" style={{ margin: "2.5px", userSelect: "none" }}>
+    <svg {...props}>
       <defs>
         <filter id="outline">
           <feComponentTransfer>

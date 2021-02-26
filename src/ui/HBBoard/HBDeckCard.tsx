@@ -14,6 +14,6 @@ export default function HBDeckCard({ index }: any) {
     context.on("game-update", callback);
     return removeFunc;
   });
-  return <HBCardFront {...cardInfo} />;
+  return <HBCardFront height="150" width="110" style={{ margin: "2.5px", userSelect: "none" }} {...cardInfo} />;
 
 }
