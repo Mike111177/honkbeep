@@ -179,10 +179,11 @@ type FloatElementID = number | string | undefined;
 type FloatTargetProps<T extends FloatElementID> = {
   floatID?: T;
   options?: FloatTargetOptions;
+  children?: React.ReactElement;
   controller: (id: T) => FloatController;
 } & ComponentPropsWithoutRef<"div">;
 
-export function FloatTarget<T extends FloatElementID>({ floatID, options, controller, ...props }: FloatTargetProps<T>) {
+export function FloatTarget<T extends FloatElementID>({ floatID, options, children, controller, ...props }: FloatTargetProps<T>) {
   //Div element to grab target coordinates
   const element = useRef(null);
 
@@ -194,7 +195,11 @@ export function FloatTarget<T extends FloatElementID>({ floatID, options, contro
     }
   }, [floatID, controller, options]);
 
-  return <div ref={element} {...props} />;
+  if (children === undefined) {
+    return <div ref={element} {...props} />;
+  } else {
+    return cloneElement(children, {ref: element});
+  }
 }
 
 export type FloatElementProps<T extends FloatElementID> = {

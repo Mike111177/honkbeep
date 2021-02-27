@@ -42,6 +42,7 @@ export function CardFloatArea({ children }: any) {
 //Helper to make card targets
 type CardFloatTargetProps = {
   index?: number;
+  children?: React.ReactElement;
   options?: FloatTargetOptions;
 } & ComponentPropsWithoutRef<"div">;
 export function CardFloatTarget({ index, children, options, ...props }: CardFloatTargetProps) {
@@ -51,7 +52,9 @@ export function CardFloatTarget({ index, children, options, ...props }: CardFloa
     floatID={index}
      /*this lets us insert the wrapper function as children in the target component*/
     options={options}
-    controller={deckHandles!.getCardCallback} {...props} />
+      controller={deckHandles!.getCardCallback} {...props}>
+      {children}
+    </FloatTarget>
   );
 }
 
