@@ -38,8 +38,8 @@ function CardInHand({ myTurn, player, index, card }: CardInHandProps) {
     }
   }, [context, index, player]);
 
-  const floatOptions = useMemo(() => ({ onDrop, draggable: myTurn, injectProps: {opacity: "50%"} }), [myTurn, onDrop]);
-  const style = useMemo(() => ({ width: "115px", height: "162px" }), []);
+  const floatOptions = useMemo(() => ({ onDrop, draggable: myTurn }), [myTurn, onDrop]);
+  const style = useMemo(() => ({ width: "110px", height: "150px" }), []);
 
   return (
     <CardFloatTarget index={card} style={style} options={floatOptions} />
@@ -63,14 +63,15 @@ export function HBHand({ player }: HBHandProps) {
     context.on("game-update", callback);
     return removeFunc;
   });
+  const cardAreaStyle = useMemo(() => ({ gridTemplateColumns:"auto ".repeat(cards.length)}), [cards.length]);
   return (
-    <div className="HBHand" style={myTurn ? { borderWidth: "2px", borderColor: "yellow", borderStyle: "solid", borderRadius: "5px" } : undefined}>
-      <div className="handCardArea">
+    <div className={`HBHand${myTurn? " OnPlayerTurn" : ""}`}>
+      <div className="handCardArea" style={cardAreaStyle}>
         {cards.map((n, i) => <CardInHand myTurn={myTurn} card={n} player={player} index={i} key={i} />)}
       </div>
-      <div className="handNameArea">
+      <span className="handname">
         {playerNames[player]}
-      </div>
+      </span>
     </div>
   );
 

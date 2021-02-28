@@ -9,8 +9,8 @@ export default function HBDeckCard({ index }: any) {
   const context = useContext(GameUIContext);
   if (context.isCardRevealed(index)) {
     let cardInfo = context.getCardDisplayableProps(index);
-    return <HBCardFront height="150" style={{ margin: "2.5px", userSelect: "none" }} {...cardInfo} />;
+    return <HBCardFront style={{ userSelect: "none" }} {...cardInfo} />;
   } else {
-    return <HBCardBack height="150" style={{ margin: "2.5px", userSelect: "none" }} suits={context.getSuits()} />;
+    return <HBCardBack style={{ userSelect: "none" }} suits={context.getSuits()} />;
   }
 }

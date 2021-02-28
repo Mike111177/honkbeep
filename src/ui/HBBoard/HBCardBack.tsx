@@ -1,4 +1,5 @@
 import { ComponentProps } from "react";
+import {OutlineFilter, CardDim} from "./CardUtil";
 import { Vec2D, vecAdd, vecMul, vecSub } from "../util/Vector";
 
 import pips from "./pips";
@@ -7,12 +8,8 @@ type HBCardBackProps = {
   suits: string[];
 } & ComponentProps<"svg">;
 
-
-const view = { x: 110, y: 150 };
+const { mid, viewBox } = CardDim;
 const pipHeight = 17.5;
-
-const viewBox = `0 0 ${view.x} ${view.y}`;
-const mid = vecMul(view, 0.5);
 const pipOff = { x: - pipHeight / 2, y: - pipHeight / 2 };
 const pipCenter = vecAdd(mid, pipOff);
 
@@ -21,20 +18,7 @@ export default function HBCardBack({ suits, ...props }: HBCardBackProps) {
 
   return (
     <svg {...props} viewBox={viewBox}>
-      <defs>
-        <filter id="outline">
-          <feComponentTransfer>
-            <feFuncR type="linear" slope="0" />
-            <feFuncG type="linear" slope="0" />
-            <feFuncB type="linear" slope="0" />
-          </feComponentTransfer>
-          <feMorphology operator="dilate" radius="1" />
-          <feMerge>
-            <feMergeNode />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-      </defs>
+      {OutlineFilter}
       <rect x="5%" y="5%" width="90%" height="90%" fill="#cccccc" strokeWidth="2.5%" stroke="#777777" rx="5%" />
       {
         suits.map((s, n) => {

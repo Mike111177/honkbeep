@@ -1,8 +1,10 @@
 import "./HBCard.scss";
-import colors from "../colors";
+import colors from "../BaseColors";
 import pips from "./pips";
 import { ComponentProps } from "react";
 import { vecAdd, vecMul, vecSub } from "../util/Vector";
+import { OutlineFilter, CardDim } from "./CardUtil";
+import chroma from "chroma-js";
 
 export type HBCardProps = {
   rank: number;
@@ -10,7 +12,6 @@ export type HBCardProps = {
 } & ComponentProps<"svg">
 
 //Tweakables
-const view = { x: 110, y: 150 };
 const rPipHeight = 17.5;
 const cPipHeight = 27.5;
 const pipDist = { x: 30, y: 35 };
@@ -18,8 +19,7 @@ const numOffset = { x: 22.5, y: 30 };
 const numSize = 50;
 
 //Calculated Constants
-const viewBox = `0 0 ${view.x} ${view.y}`;
-const mid = vecMul(view, 0.5);
+const { mid, viewBox } = CardDim;
 
 const pipCorner = vecSub(mid, pipDist);
 
@@ -36,28 +36,16 @@ const pipC = vecAdd(mid, cPipOff);
 //TODO: The bottom and right-hand pips should be flipped 180 degrees
 //TODO: It might be a good idea to add a pre-render step for all of the possible card faces
 export default function HBCardFront({ suit, rank, ...props }: HBCardProps) {
-  let colorData = colors[suit];
+  let color = colors(suit);
   let pip = pips[suit];
   const num = rank;
+  const backgroundColor = chroma.mix(color,"#FFFFFF", 0.5, "lrgb").hex();
   return (
     <svg {...props} viewBox={viewBox}>
-      <defs>
-        <filter id="outline">
-          <feComponentTransfer>
-            <feFuncR type="linear" slope="0" />
-            <feFuncG type="linear" slope="0" />
-            <feFuncB type="linear" slope="0" />
-          </feComponentTransfer>
-          <feMorphology operator="dilate" radius="1" />
-          <feMerge>
-            <feMergeNode />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-      </defs>
-      <rect x="5%" y="5%" width="90%" height="90%" fill={colorData.back} strokeWidth="2.5%" stroke={colorData.fill} rx="5%" />
-      <text fill={colorData.fill} {...numOffset} fontSize={numSize} textAnchor='middle' dominantBaseline='central' filter="url(#outline)">{num}</text>
-      <text fill={colorData.fill} {...numOffset} fontSize={numSize} textAnchor='middle' dominantBaseline='central' filter="url(#outline)" transform={pipFlip}>{num}</text>
+      {OutlineFilter}
+      <rect x="5%" y="5%" width="90%" height="90%" fill={backgroundColor} strokeWidth="2.5%" stroke={color} rx="5%" />
+      <text fill={color} {...numOffset} fontSize={numSize} textAnchor='middle' dominantBaseline='central' filter="url(#outline)">{num}</text>
+      <text fill={color} {...numOffset} fontSize={numSize} textAnchor='middle' dominantBaseline='central' filter="url(#outline)" transform={pipFlip}>{num}</text>
       { num % 2 === 1 ? /*Center Pip*/ <>
         <image href={pip} height={cPipHeight} {...pipC} filter="url(#outline)" />
       </> : undefined}

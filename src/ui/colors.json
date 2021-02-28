@@ -1,0 +1,39 @@
+[
+  {
+    "name": "Red",
+    "color": "#e60000"
+  },
+  {
+    "name": "Yellow",
+    "color": "#e6e600"
+  },
+  {
+    "name": "Green",
+    "color": "#02ec00"
+  },
+  {
+    "name": "Blue",
+    "color": "#0037ff"
+  },
+  {
+    "name": "Purple",
+    "color": "#6600cc"
+  },
+  {
+    "name": "Teal",
+    "color": "#00cccc"
+  },
+  {
+    "name": "Black",
+    "color": "#111111"
+  },
+  {
+    "name": "Pink",
+    "color": "#ff69b4"
+  },
+  {
+    "name": "Browm",
+    "color": "#654321"
+  }
+]
+

@@ -1,24 +1,30 @@
 .HBBoard{
-    display: grid;
-    grid-template-columns: min-content min-content auto;
-    grid-template-rows: 25% 25% 25% 25%;
-    font-size: calc(10px + 2vmin);
-    color: white;
-    height: 100%;
-    overflow: hidden;
+  display: grid;
+  grid-template-columns: 45% 30% 25%;
+  grid-template-rows: 25% 25% 25% 25%;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  height: 100%;
+  overflow: hidden;
 }
 
 .handsWrapper{
-    position: relative;
-    display: flex;
-    justify-content: center;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  grid-row-start: 1;
+  grid-row-end: 6;
+  grid-column: 2;
 }
 
-.HBPlayHistory,
-.HBClueHistory,
-.HBDiscardArea,
-.HBGeneralControls {
-    border-radius: 20px;
-    margin: 10px;
-    background-color: rgba(0,0,0,0.5);
+.clueHistoryWrapper{
+  grid-row-start: 1;
+  grid-row-end: 3;
+  grid-column: 3;
+}
+
+.discardWrapper{
+  grid-row-start: 3;
+  grid-row-end: 5;
+  grid-column: 3;
 }

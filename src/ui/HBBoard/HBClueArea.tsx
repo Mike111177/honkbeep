@@ -1,7 +1,7 @@
 import React from "react";
 
 import {GameUIContext} from '../ReactFrontendInterface';
-import Colors from "../colors";
+import colors from "../BaseColors";
 
 import "./HBClueArea.scss";
 
@@ -17,10 +17,10 @@ type HBClueButtonProps = {
 
 function HBClueButton({ type, value }: HBClueButtonProps) {
     if (type === ClueType.Color) {
-        const color = Colors[value];
+        const color = colors(value as string);
         return (
             <div className="clueButton">
-                <div className="clueButtonIconColor" style={{ backgroundColor: color.fill }} />
+                <div className="clueButtonIconColor" style={{ backgroundColor: color }} />
             </div>
         );
     } else {

@@ -8,7 +8,12 @@ export default function HBDiscardPile() {
   const context = useContext(GameUIContext);
   const [cards, setCards] = useState(context.getDiscardPile());
   useEffect(() => {
-    const callback = () => setCards(context.getDiscardPile());
+    const callback = () => {
+      const newCards = context.getDiscardPile();
+      if (newCards.length !== cards.length) {
+        setCards(newCards);
+      }
+    };
     const removeFunc = () => {context.off("game-update", callback)};
     context.on("game-update", callback);
     return removeFunc;

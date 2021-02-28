@@ -1,21 +1,30 @@
 import { useContext, useEffect, useState } from "react";
+import chroma from "chroma-js";
 
 import { CardFloatTarget } from "./CardFloat";
 import { GameUIContext } from "../ReactFrontendInterface";
 import { DropZone } from "../util/Dragging";
+import { CardDim, OutlineFilter } from "./CardUtil";
+import { vecAdd } from "../util/Vector";
 
-import colors from "../colors";
+import colors from "../BaseColors";
 import pips from "./pips";
-import "./HBStackArea.scss";
 import "./HBStack.scss";
+
+
 
 type HBStackProps = {
   number: number;
   suit: string;
 }
 
+const { mid, viewBox } = CardDim;
+const pipHeight = 35;
+const pipOff = { x: - pipHeight / 2, y: - pipHeight / 2 };
+const pipCenter = vecAdd(mid, pipOff);
+
 export function HBStack({ suit, number }: HBStackProps) {
-  const colorData = colors[suit];
+  const color = colors(suit);
 
   const context = useContext(GameUIContext);
 
@@ -28,17 +37,19 @@ export function HBStack({ suit, number }: HBStackProps) {
     const callback = () => {
       setIndex(getCurrentCard());
     };
-    const removeFunc = () => {context.off("game-update", callback)};
+    const removeFunc = () => { context.off("game-update", callback) };
     context.on("game-update", callback);
     return removeFunc;
   });
+  const backgroundColor = chroma.mix(color,"#FFFFFF", 0.9, "lrgb").alpha(0.4).hex();
   return (
-    <div>
-      <CardFloatTarget index={index} style={{ width: "0", height: "0" }} />
-      <div className="HBStack" style={{ borderColor: colorData.fill, backgroundColor: colorData.back + "7f", color: colorData.fill }}>
-        <img className="stackPip" src={pips[suit]} alt="" />
-      </div>
-    </div>
+    <CardFloatTarget index={index}>
+      <svg height="200" viewBox={viewBox}>
+        {OutlineFilter}
+        <rect x="5%" y="5%" width="90%" height="90%" fill={backgroundColor} strokeWidth="2.5%" stroke={color} rx="5%" />
+        <image href={pips[suit]} height={pipHeight} {...pipCenter} {...pipCenter} filter="url(#outline)" />
+      </svg>
+    </CardFloatTarget>
   );
 }
 
