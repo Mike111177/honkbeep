@@ -5,6 +5,7 @@ import { GameEvent, GameState } from "./GameTypes";
 //And notifying frontend of state changes
 //And allowing frontend to probe or act on server
 interface BackendInterface extends EventEmitter{
+  onReady(callback: ()=>void): void;
   currentState(): GameState;
   isReady(): boolean;
   attemptPlayerAction(action: GameEvent): Promise<boolean>;

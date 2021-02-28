@@ -7,22 +7,22 @@ import NullBackend from "../game/NullBackend";
 import { GameEvent } from "../game/GameTypes";
 
 export default class ReactUIInterface extends EventEmitter {
-  private game: GameTracker;
+  private tracker: GameTracker;
   private backend: BackendInterface;
 
   constructor(backend: BackendInterface) {
     super();
     this.setMaxListeners(100);
     this.backend = backend;
-    this.game = new GameTracker();
-    if (this.backend.isReady()) {
-      this.game.init(this.backend.currentState());
-      this.game.propagateState(this.backend.currentState());
+    this.tracker = new GameTracker();
+    this.backend.onReady(() => {
+      this.tracker.init(this.backend.currentState());
+      this.tracker.propagateState(this.backend.currentState());
       this.backend.on("gameStateChanged", () => {
-        this.game.propagateState(this.backend.currentState());
+        this.tracker.propagateState(this.backend.currentState());
         this.emit("game-update");
       });
-    }
+    });
   }
 
   //React Facing API
@@ -31,28 +31,35 @@ export default class ReactUIInterface extends EventEmitter {
   }
 
   isPossiblyPlayable(cardIndex: number) { return true }
-  isCardRevealed(cardIndex: number) { return this.game.knownDeckOrder[cardIndex] !== undefined }
+  isCardRevealed(cardIndex: number) { return this.tracker.knownDeckOrder[cardIndex] !== undefined }
   useHandSlot(player: number, index: number) { }
   getPlayerNames() { return this.backend.currentState().definition.playerNames }
   getNumberOfPlayers() { return this.backend.currentState().definition.variant.numPlayers }
   getHandSize() { return this.backend.currentState().definition.variant.handSize }
-  getCardInHand(player: number, index: number) { return this.game!.getCardInHand(player, index, this.game!.turnsProcessed) }
+  getCardInHand(player: number, index: number) { return this.tracker!.getCardInHand(player, index, this.tracker!.turnsProcessed) }
   getSuits() { return this.backend.currentState().definition.variant.suits }
-  getStack(index: number) { return this.game.stacks[index] }
-  getDeckSize() { return this.game.cards.length }
-  getPlayerHand(player: number) { return this.game.getLatestPlayerHand(player) }
+  getStack(index: number) { return this.tracker.stacks[index] }
+  getDeckSize() { return this.tracker.cards.length }
+  getPlayerHand(player: number) { return this.tracker.getLatestPlayerHand(player) }
   getCardDisplayableProps(index: number) {
     if (this.isCardRevealed(index)) {
-      return this.game.cards[this.game.knownDeckOrder[index]];
+      return this.tracker.cards[this.tracker.knownDeckOrder[index]];
     } else {
       return { rank: 6, suit: "Black" };
     }
   }
   isPlayerTurn(player: number) {
-    return player === (this.game.turnsProcessed - 1) % this.getNumberOfPlayers();
+    return player === (this.tracker.turnsProcessed - 1) % this.getNumberOfPlayers();
   }
   getDiscardPile() {
-    return this.game.discardPile.map(i => i.index);
+    return this.tracker.discardPile.map(i => i.index);
+  }
+
+  onReady(callback: () => void) {
+    this.backend.onReady(callback);
+  }
+  isReady(): boolean {
+    return this.backend.isReady();
   }
 }
 

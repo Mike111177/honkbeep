@@ -56,5 +56,6 @@ export default class NullBackend implements BackendInterface{
   isReady(): boolean {
     return false;
   }
+  onReady(callback: () => void): void{}
   
 }

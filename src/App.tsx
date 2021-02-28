@@ -1,5 +1,5 @@
-import React from 'react';
-import {BrowserRouter as Router, Route, Redirect} from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 
 import LocalBackend from "./game/LocalBackend";
 import ReactUIInterface from "./ui/ReactFrontendInterface";
@@ -7,9 +7,33 @@ import HBBoard from './ui/HBBoard/HBBoard';
 
 import background from "./background_black.jpg";
 import './App.scss';
+import LocalServer from './game/LocalServer';
 
+
+  //Create virtual local Server
+  const server = new LocalServer({
+    variant: {
+      suits: ["Red", "Yellow", "Green", "Blue", "Purple"],
+      numPlayers: 4,
+      handSize: 5
+    },
+    playerNames: ["Alice", "Bob", "Cathy", "Donald"]
+  });
+
+  //Connect to local server as player 0
+  const backend = new LocalBackend(0, server);
+
+  //Attach UI interface to backend adapter
+  const UIInterface =new ReactUIInterface(backend);
 
 function App() {
+  //State to wait for 
+  const [attach, setAttach] = useState<undefined | ReactUIInterface>(undefined);
+
+  useEffect(() => {
+    UIInterface.onReady(() => setAttach(UIInterface));
+  }, [UIInterface]);
+
   return (
     <Router>
       <div className="App" style={{ backgroundImage: `url(${background})` }}>
@@ -17,19 +41,7 @@ function App() {
           <Redirect to="/game" />
         </Route>
         <Route path="/game">
-          {() => {
-            
-            const localGame = new LocalBackend({
-              variant: {
-                suits: ["Red", "Yellow", "Green", "Blue", "Purple"],
-                numPlayers: 4,
-                handSize: 5
-              },
-              playerNames: ["Alice", "Bob", "Cathy", "Donald"]
-            });
-            const uiInterface = new ReactUIInterface(localGame);
-            return <HBBoard game={uiInterface} />;
-          }}
+          {attach !== undefined ? <HBBoard game={attach} /> : <></>}
         </Route>
       </div>
     </Router>
