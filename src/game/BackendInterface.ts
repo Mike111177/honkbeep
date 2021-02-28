@@ -1,5 +1,5 @@
 import EventEmitter from "events";
-import { GameEvent, GameState } from "./GameTypes";
+import { GameAttempt, GameEvent, GameState } from "./GameTypes";
 
 //Responsible for tracking canonical server state from clients perspective
 //And notifying frontend of state changes
@@ -8,7 +8,7 @@ interface BackendInterface extends EventEmitter{
   onReady(callback: ()=>void): void;
   currentState(): GameState;
   isReady(): boolean;
-  attemptPlayerAction(action: GameEvent): Promise<boolean>;
+  attemptPlayerAction(action: GameAttempt): Promise<boolean>;
 }
 
 export default BackendInterface;

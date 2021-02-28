@@ -1,16 +1,16 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 import { CardFloatTarget } from "./CardFloat";
-import { DiscardResultType, GameEventType, PlayResultType } from "../../game/GameTypes";
+import { GameEventType } from "../../game/GameTypes";
 import { GameUIContext } from '../ReactFrontendInterface';
 
 import "./HBHand.scss";
 
 type CardInHandProps = {
-  player: number;
   index: number;
   myTurn: boolean;
   card: number;
+  player: number;
 }
 
 function CardInHand({ myTurn, player, index, card }: CardInHandProps) {
@@ -22,23 +22,19 @@ function CardInHand({ myTurn, player, index, card }: CardInHandProps) {
       case "stacks":
         return await context.attemptPlayerAction({
           type: GameEventType.Play,
-          player: player,
-          handSlot: index,
-          result: { type: PlayResultType.Request }
+          handSlot: index
         });
       case "discard":
         return await context.attemptPlayerAction({
           type: GameEventType.Discard,
-          player: player,
-          handSlot: index,
-          result: { type: DiscardResultType.Request }
+          handSlot: index
         });
       default:
         return false;
     }
-  }, [context, index, player]);
+  }, [context, index]);
 
-  const floatOptions = useMemo(() => ({ onDrop, draggable: myTurn }), [myTurn, onDrop]);
+  const floatOptions = useMemo(() => ({ onDrop, draggable: myTurn&&(player===0) }), [myTurn, onDrop, player]);
   const style = useMemo(() => ({ width: "110px", height: "150px" }), []);
 
   return (
@@ -67,7 +63,7 @@ export function HBHand({ player }: HBHandProps) {
   return (
     <div className={`HBHand${myTurn? " OnPlayerTurn" : ""}`}>
       <div className="handCardArea" style={cardAreaStyle}>
-        {cards.map((n, i) => <CardInHand myTurn={myTurn} card={n} player={player} index={i} key={i} />)}
+        {cards.map((n, i) => <CardInHand myTurn={myTurn} player={player} card={n} index={i} key={i} />)}
       </div>
       <span className="handname">
         {playerNames[player]}

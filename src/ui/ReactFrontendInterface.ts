@@ -4,7 +4,7 @@ import EventEmitter from "events";
 import GameTracker from "../game/GameTracker";
 import BackendInterface from "../game/BackendInterface";
 import NullBackend from "../game/NullBackend";
-import { GameEvent } from "../game/GameTypes";
+import { GameAttempt, GameEvent } from "../game/GameTypes";
 
 export default class ReactUIInterface extends EventEmitter {
   private tracker: GameTracker;
@@ -26,7 +26,7 @@ export default class ReactUIInterface extends EventEmitter {
   }
 
   //React Facing API
-  async attemptPlayerAction(action: GameEvent) {
+  async attemptPlayerAction(action: GameAttempt) {
     return this.backend.attemptPlayerAction(action);
   }
 

@@ -9,22 +9,30 @@ import background from "./background_black.jpg";
 import './App.scss';
 import LocalServer from './game/LocalServer';
 
+const gamedef = {
+  variant: {
+    suits: ["Red", "Yellow", "Green", "Blue", "Purple"],
+    numPlayers: 4,
+    handSize: 5
+  },
+  playerNames: ["Alice", "Bob", "Cathy", "Donald"]
+};
 
-  //Create virtual local Server
-  const server = new LocalServer({
-    variant: {
-      suits: ["Red", "Yellow", "Green", "Blue", "Purple"],
-      numPlayers: 4,
-      handSize: 5
-    },
-    playerNames: ["Alice", "Bob", "Cathy", "Donald"]
-  });
+//Create virtual local Server 
+const server = new LocalServer(gamedef);
 
-  //Connect to local server as player 0
-  const backend = new LocalBackend(0, server);
+//For debugging:
+(window as any).HONKLocalServer = server;
+/*
+let turn = 0;
+HONKLocalServer.attemptPlayerAction(turn++%4, {type: 2, handSlot: Math.floor(Math.random() * 5)});
+*/
 
-  //Attach UI interface to backend adapter
-  const UIInterface =new ReactUIInterface(backend);
+//Connect to local server as player 0
+const backend = new LocalBackend(0, server);
+
+//Attach UI interface to backend adapter
+const UIInterface = new ReactUIInterface(backend);
 
 function App() {
   //State to wait for 

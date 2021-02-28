@@ -1,5 +1,5 @@
 import BackendInterface from "./BackendInterface";
-import { GameState, GameEvent } from "./GameTypes";
+import { GameState, GameAttempt } from "./GameTypes";
 
 export default class NullBackend implements BackendInterface{
   addListener(event: string | symbol, listener: (...args: any[]) => void): this {
@@ -50,7 +50,7 @@ export default class NullBackend implements BackendInterface{
   currentState(): GameState {
     throw new Error("Attempted to use NullBackend");
   }
-  attemptPlayerAction(action: GameEvent): Promise<boolean> {
+  attemptPlayerAction(action: GameAttempt): Promise<boolean> {
     throw new Error("Attempted to use NullBackend");
   }
   isReady(): boolean {

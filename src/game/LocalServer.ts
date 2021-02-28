@@ -2,16 +2,22 @@ import {
   CardData,
   CardReveal,
   GameDefinition,
-  VariantDefinition,
-  GameEventSeries,
   GameEventType,
   GameEvent,
-  PlayResultType,
-  GamePlayEvent,
   GameDiscardEvent,
-  DiscardResultType
+  GameAttempt,
+  GamePlayAttempt,
+  GameEventMessage,
+  GamePlayResultType
 } from "./GameTypes";
 import { buildDeck, getShuffledOrder } from "./VariantBuilding";
+
+type PlayerRevealTurn = {
+  turn: number;
+  reveals: CardReveal[];
+}
+
+type PlayerRevealHistory = PlayerRevealTurn[];
 
 //Will be the substitute for a server in these local games
 export default class LocalServer {
@@ -24,11 +30,17 @@ export default class LocalServer {
   private stacks: number[][];
   private hands: number[][];
   private discard: number[];
-  
+
   private topDeck: number;
   private lastTurn: number;
 
-  private events: GameEventSeries;
+  private events: GameEvent[];
+  private reveals: PlayerRevealHistory[];
+
+  private connections: {
+    player: number;
+    callback: (e: GameEventMessage) => void;
+  }[];
 
   constructor(definition: GameDefinition) {
     //Variant Info
@@ -47,37 +59,63 @@ export default class LocalServer {
     this.topDeck = 0;
 
     //Build initial hands and reveals
-    const initialRevealedCards: CardReveal[][] = [...Array(this.definition.variant.numPlayers)].map(_ => []);
+    this.reveals = [...Array(this.definition.variant.numPlayers)].map(_ => [{ turn: 0, reveals: []}]);
     for (let playerOfHand = 0; playerOfHand < this.definition.variant.numPlayers; playerOfHand++) {
       //Create hand for player
       const thisHand: number[] = [];
       for (let slotOfPlayerHand = 0; slotOfPlayerHand < this.definition.variant.handSize; slotOfPlayerHand++) {
         //Add each card to player hand
         thisHand.push(this.topDeck);
-        for (let playerOfReveal = 0; playerOfReveal < this.definition.variant.numPlayers; playerOfReveal++) {
-          //Reveal each card to each player other than the one of this hand
-          if (playerOfReveal !== playerOfHand) {
-            initialRevealedCards[playerOfReveal].push({
-              player: playerOfReveal,
-              turn: 0,
-              deck: this.topDeck,
-              card: this.shuffleOrder[this.topDeck]
-            });
-          }
-        }
+        this.revealCardToAllButOnePlayer(this.topDeck, playerOfHand, 0);
         this.topDeck++;
       }
       this.hands[playerOfHand] = thisHand;
     }
-    
-    //Set turn 0 as a pure reveal, of the cards in everyone's hands
-    this.events = [{
-      type: GameEventType.Deal,
-      reveals: initialRevealedCards
-    }];
+
+    this.events = [{turn: 0, type: GameEventType.Deal}];
     this.lastTurn = 0;
+
+    this.connections = [];
   }
 
+  private revealCardToPlayer(card: number, player: number, turn: number = this.lastTurn + 1) {
+    let revs = this.reveals[player].find(el => el.turn === turn);
+    if (revs === undefined) {
+      let nIndex = this.reveals[player].push({ turn, reveals: [] }) - 1;
+      revs = this.reveals[player][nIndex];
+    }
+    revs.reveals.push({
+      deck: card,
+      card: this.shuffleOrder[card]
+    });
+  }
+
+  private revealCardToAllButOnePlayer(card: number, player: number, turn: number = this.lastTurn + 1) {
+    for (let playerOfReveal = 0; playerOfReveal < this.definition.variant.numPlayers; playerOfReveal++) {
+      //Reveal each card to each player other than the one named
+      if (playerOfReveal !== player) {
+        this.revealCardToPlayer(card, playerOfReveal, turn);
+      }
+    }
+  }
+
+  private getReveals(player: number, turn: number) {
+    return this.reveals[player].find(el => el.turn === turn)?.reveals;
+  }
+
+  private buildEventMessage(player: number, turn: number): GameEventMessage {
+    return {
+      event: this.events[turn],
+      reveals: this.getReveals(player, turn)
+    };
+  }
+  private buildStateHistory(player: number): GameEventMessage[] {
+    let history = [];
+    for (let i = 0; i < this.lastTurn + 1; i++){
+      history.push(this.buildEventMessage(player, i));
+    }
+    return history;
+  }
   private getLatestEvent() {
     return this.events[this.events.length - 1];
   }
@@ -121,43 +159,27 @@ export default class LocalServer {
     return false;
   }
 
-  private attemptPlay(action: GamePlayEvent) {
+  private attemptPlay(player: number, action: GamePlayAttempt) {
     //Check to make sure its this players turn
-    if (!this.isPlayersTurn(action.player)) return false;
+    if (!this.isPlayersTurn(player)) return false;
     //Check if card is playable
-    const attemptedPlayIndex = this.cardFromHand(action.player, action.handSlot);
+    const attemptedPlayIndex = this.cardFromHand(player, action.handSlot);
     let cardWasPlayed = false;
     for (let i = 0; i < this.definition.variant.suits.length; i++) {
       if (this.isCardPlayableOnStack(attemptedPlayIndex, i)) {
         //Remove Card from Hand
-        this.hands[action.player].splice(action.handSlot, 1);
+        this.hands[player].splice(action.handSlot, 1);
         //Add card to end of stack
         this.stacks[i].push(attemptedPlayIndex);
         //Replace card in hand with the card at the top of the deck
-        this.hands[action.player].unshift(this.topDeck);
+        this.hands[player].unshift(this.topDeck);
         //Build new event and add it to event list
         this.events.push({
+          turn: this.lastTurn + 1,
           type: GameEventType.Play,
-          player: action.player,
-          handSlot: action.handSlot,
-          result: {
-            type: PlayResultType.Success,
-            stack: i
-          },
-          reveals: [[
-            { //Reveal played card to player
-              player: action.player,
-              turn: this.lastTurn + 1,
-              deck: attemptedPlayIndex,
-              card: this.getCardIndexFromDeckIndex(attemptedPlayIndex)
-            },
-            { // Reveal new card to all
-              player: action.player,
-              turn: this.lastTurn + 1,
-              deck: this.topDeck,
-              card: this.getCardIndexFromDeckIndex(this.topDeck)
-            }
-          ]]
+          result: GamePlayResultType.Success,
+          stack: i,
+          handSlot: action.handSlot
         });
         cardWasPlayed = true;
         break;
@@ -165,93 +187,88 @@ export default class LocalServer {
     }
     if (!cardWasPlayed) {
       //Well it wasn't playable, misplay time
-      this.hands[action.player].splice(action.handSlot, 1);
+      this.hands[player].splice(action.handSlot, 1);
       //Add card to end of discard
       this.discard.push(attemptedPlayIndex);
       //Replace card in hand with the card at the top of the deck
-      this.hands[action.player].unshift(this.topDeck);
+      this.hands[player].unshift(this.topDeck);
       //Build new event and add it to event list
       this.events.push({
+        turn: this.lastTurn + 1,
         type: GameEventType.Play,
-        player: action.player,
-        handSlot: action.handSlot,
-        result: {
-          type: PlayResultType.Misplay
-        },
-        reveals: [[
-          { //Reveal played card to all
-            player: action.player,
-            turn: this.lastTurn + 1,
-            deck: attemptedPlayIndex,
-            card: this.getCardIndexFromDeckIndex(attemptedPlayIndex)
-          },
-          { // Reveal new card to all
-            player: action.player,
-            turn: this.lastTurn + 1,
-            deck: this.topDeck,
-            card: this.getCardIndexFromDeckIndex(this.topDeck)
-          }
-        ]]
+        result: GamePlayResultType.Misplay,
+        handSlot: action.handSlot
       });
     }
+    //Reveal the played card to player
+    this.revealCardToPlayer(attemptedPlayIndex, player);
+    //Reveal the card replacing it in his hand to the rest of the players
+    this.revealCardToAllButOnePlayer(this.topDeck, player);
     this.topDeck++;
     this.lastTurn++;
     return true;
   }
 
-  private attemptDiscard(action: GameDiscardEvent) {
+  private attemptDiscard(player: number, action: GameDiscardEvent) {
     //Check to make sure its this players turn
-    if (!this.isPlayersTurn(action.player)) return false;
+    if (!this.isPlayersTurn(player)) return false;
     //Check if card is playable
-    const attemptedPlayIndex = this.cardFromHand(action.player, action.handSlot);
+    const attemptedPlayIndex = this.cardFromHand(player, action.handSlot);
     //Remove Card from Hand
-    this.hands[action.player].splice(action.handSlot, 1);
+    this.hands[player].splice(action.handSlot, 1);
     //Add card to end of discard
     this.discard.push(attemptedPlayIndex);
     //Replace card in hand with the card at the top of the deck
-    this.hands[action.player].unshift(this.topDeck);
+    this.hands[player].unshift(this.topDeck);
     //Build new event and add it to event list
     this.events.push({
       type: GameEventType.Discard,
-      player: action.player,
+      turn: this.lastTurn + 1,
       handSlot: action.handSlot,
-      result: {
-        type: DiscardResultType.Success
-      },
-      reveals: [[
-        { //Reveal played card to all
-          player: action.player,
-          turn: this.lastTurn + 1,
-          deck: attemptedPlayIndex,
-          card: this.getCardIndexFromDeckIndex(attemptedPlayIndex)
-        },
-        { // Reveal new card to all
-          player: action.player,
-          turn: this.lastTurn + 1,
-          deck: this.topDeck,
-          card: this.getCardIndexFromDeckIndex(this.topDeck)
-        }
-      ]]
     });
+    //Reveal the played card to player
+    this.revealCardToPlayer(attemptedPlayIndex, player);
+    //Reveal the card replacing it in his hand to the rest of the players
+    this.revealCardToAllButOnePlayer(this.topDeck, player);
     this.topDeck++;
     this.lastTurn++;
     return true;
   }
 
-  public async attemptPlayerAction(action: GameEvent) {
+  private async broadcastLatestEvent() {
+    let turn = this.lastTurn;
+    this.connections.forEach(c => {
+      let message = this.buildEventMessage(c.player, turn);
+      c.callback(message);
+    });
+  }
+
+  private processPlayerAction(player: number, action: GameAttempt): boolean{
     switch (action.type) {
       case GameEventType.Play:
-        return this.attemptPlay(action);
+        return this.attemptPlay(player, action);
       case GameEventType.Discard:
-        return this.attemptDiscard(action);
+        return this.attemptDiscard(player, action);
     }
     return false;
+  }
+
+  public async attemptPlayerAction(player: number, action: GameAttempt) {
+    if (this.processPlayerAction(player, action)) {
+      this.broadcastLatestEvent();
+      return true;
+    }
+    return false;   
   }
 
   public async requestInitialState(player: number) {
     return {
       definition: this.definition,
-      events: this.events
+      events: this.buildStateHistory(player)
     };
+  }
+
+  public async connect(player: number, callback: (e:GameEventMessage)=>void) {
+    this.connections.push({ player, callback });
   }
 }

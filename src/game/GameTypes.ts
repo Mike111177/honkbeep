@@ -1,17 +1,20 @@
-
+//Data required to describe a card
 export type CardData = {
   rank: number;
   suit: string;
 };
 
+//Data required to describe suit
 export type SuitData = string;
 
+//Minimum data to build decks and get initial state
 export type VariantDefinition = {
   suits: SuitData[];
   numPlayers: number;
   handSize: number;
 }
 
+//Minimum Data to start game
 export type GameDefinition = {
   variant: VariantDefinition;
   playerNames: string[];
@@ -24,118 +27,74 @@ export type ShufflerInput = number | undefined;
 //Meant for spectators and post game review
 
 export type CardReveal = {
-  player: number;
-  turn: number;
   deck: number;
   card: number;
 }
 
-export enum PlayResultType{
-  Request = 1,
-  Success,
-  Misplay
-}
-
-type PlayRequestResult = {
-  type: PlayResultType.Request;
-}
-
-type PlaySuccessResult = {
-  type: PlayResultType.Success;
-  stack: number;
-}
-
-type PlayMisplayResult=  {
-  type: PlayResultType.Misplay;
-}
-
-export type PlayResult = PlaySuccessResult | PlayMisplayResult | PlayRequestResult;
-
-export enum DiscardResultType{
-  Request = 1,
-  Success
-}
-
-type DiscardRequestResult = {
-  type: DiscardResultType.Request;
-}
-
-type DiscardSuccessResult = {
-  type: DiscardResultType.Success;
-}
-
-export type DiscardResult = DiscardSuccessResult | DiscardRequestResult;
-
-export enum GameEventType{
-  Deal = 1, 
-  Play, 
+export enum GameEventType {
+  Deal = 1,
+  Play,
   Discard,
   Clue
 }
 
+//GameDeal
 export type GameDealEvent = {
   type: GameEventType.Deal;
-  reveals?: CardReveal[][];
 }
 
-export type GamePlayEvent = {
+//GamePlay
+export type GamePlayAttempt = {
   type: GameEventType.Play;
-  player: number;
   handSlot: number;
-  result: PlayResult;
-  reveals?: CardReveal[][];
-}
+};
+export enum GamePlayResultType { Success = 1, Misplay }
+export type GamePlayResultSuccess = { result: GamePlayResultType.Success; stack: number } 
+export type GamePlayResultMisplay = { result: GamePlayResultType.Misplay }
+export type GamePlayResult = GamePlayResultSuccess | GamePlayResultMisplay;
+export type GamePlayEvent = GamePlayAttempt & GamePlayResult;
 
-export type GameDiscardEvent = {
+//GameDiscard
+export type GameDiscardAttempt = {
   type: GameEventType.Discard;
-  player: number;
   handSlot: number;
-  result: DiscardResult;
-  reveals?: CardReveal[][];
-}
+};
+export type GameDiscardEvent = GameDiscardAttempt;
 
-export type GameClueEvent = {
+//Clue description
+export type Clue = string;
+
+export type GameClueAttempt = {
   type: GameEventType.Clue;
-  reveals?: CardReveal[][];
+  targetPlayer: number;
+  clue: Clue;
 }
+export type GameClueEvent = GameClueAttempt;
 
-export type GameEvent = 
-  GameDealEvent |
-  GamePlayEvent | 
-  GameDiscardEvent |
-  GameClueEvent;
+//Represents any action taken by a player that could advance to the next turn (or deal)
+export type GameEvent = {
+  turn: number;
+} &
+  (GameDealEvent |
+    GamePlayEvent |
+    GameDiscardEvent |
+    GameClueEvent);
 
+//Data representing players attempt cause an event
+export type GameAttempt = GamePlayAttempt | GameDiscardAttempt | GameClueAttempt;
 
 export type GameEventSeries = GameEvent[];
 
 //Minimum data to construct entire game state
 export type GameState = {
-  events: GameEventSeries;
+  events: GameEventMessage[];
   definition: GameDefinition;
 }
 
-export enum PipStatus {
-  Possible = 1,
-  Impossible,
-  KnownImpossible
+//Game event data tailored for client consumption
+export type GameEventMessage = {
+  event: GameEvent;
+  reveals?: CardReveal[];
 }
-
-export type HandUpdate = {
-  turn: number; //The turn this update was made on / this should be unique in a hands history
-  played?: number; //Card that was played to cause this hand state
-  replacement?: number; //Card that replaced slot 1 from deck
-  result: number[]; //Cards (by deck index) in hand after play
-}
-
-export type HandHistory = HandUpdate[]
-
-export type CardKnowledgeUpdate = {
-  turn: number; //The turn this update was made on / this should be unique in a cards history
-  pips: PipStatus;
-}
-
-export type CardKnowledgeHistory = CardKnowledgeUpdate[];
-
-export type Stack = number[];
 
 

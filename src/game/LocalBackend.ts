@@ -2,31 +2,38 @@ import EventEmitter from "events";
 import BackendInterface from "./BackendInterface";
 import {
   GameState,
-  GameEvent} from "./GameTypes";
+  GameAttempt,
+  GameEventMessage
+} from "./GameTypes";
 import LocalServer from "./LocalServer";
 
 
 
 //Meant for dictating logic of local games or template games
 export default class LocalBackend extends EventEmitter implements BackendInterface {
-  private state?: GameState;
-  private server: LocalServer;
-  private ready: boolean = false;
   private player: number;
+  private server: LocalServer;
+  private state?: GameState;
 
   constructor(player: number, server: LocalServer) {
     super();
     this.player = player;
-    server.requestInitialState(this.player).then(state => {
-      this.state = state;
-      this.ready = true;
-      this.emit("ready");
-    });
     this.server = server;
+    this.initConnection(); 
+  }
+
+  private async initConnection() {
+    //Connect to "Server"
+    await this.server.connect(this.player, this.onEvent.bind(this));
+    
+    //"Download" game events up to this point
+    this.state = await this.server.requestInitialState(this.player);
+  
+    this.emit("ready");
   }
 
   isReady(): boolean {
-    return this.ready;
+    return this.state !== undefined;
   }
 
   onReady(callback: () => void) {
@@ -41,11 +48,13 @@ export default class LocalBackend extends EventEmitter implements BackendInterfa
     return this.state!;
   }
 
-  async attemptPlayerAction(action: GameEvent) {
-    const actionSuccess = await this.server.attemptPlayerAction(action);
-    if (actionSuccess) {
-      this.emit("gameStateChanged");
-    }
+  onEvent(e: GameEventMessage) {
+    this.state!.events[e.event.turn] = e;
+    this.emit("gameStateChanged");
+  }
+
+  async attemptPlayerAction(action: GameAttempt) {
+    const actionSuccess = await this.server.attemptPlayerAction(this.player, action);
     return actionSuccess;
   }
 }

@@ -1,16 +1,38 @@
 import {
   CardData,
-  Stack,
-  CardKnowledgeHistory,
-  HandHistory,
   ShufflerInput,
   GameEventType,
-  PlayResultType,
   GamePlayEvent,
   GameDiscardEvent,
   GameState,
+  GamePlayResultType,
+  GameDefinition,
 } from "./GameTypes";
 import { buildDeck, getShuffledOrder } from "./VariantBuilding";
+
+export enum PipStatus {
+  Possible = 1,
+  Impossible,
+  KnownImpossible
+}
+
+export type HandUpdate = {
+  turn: number; //The turn this update was made on / this should be unique in a hands history
+  played?: number; //Card that was played to cause this hand state
+  replacement?: number; //Card that replaced slot 1 from deck
+  result: number[]; //Cards (by deck index) in hand after play
+}
+
+export type HandHistory = HandUpdate[]
+
+export type CardKnowledgeUpdate = {
+  turn: number; //The turn this update was made on / this should be unique in a cards history
+  pips: PipStatus;
+}
+
+export type CardKnowledgeHistory = CardKnowledgeUpdate[];
+
+export type Stack = number[];
 
 // Calculates current board state as new turns are played
 export default class GameTracker {
@@ -51,37 +73,37 @@ export default class GameTracker {
     return this.getHandState(player, this.turnsProcessed);
   }
 
-  private processDealEvent(state: GameState) {
+  private processDealEvent(definition: GameDefinition) {
     //Turn 0, Deal
     this.handHistories = [];
-    for (let p = 0; p < state.definition.variant.numPlayers; p++) {
+    for (let p = 0; p < definition.variant.numPlayers; p++) {
       this.handHistories[p] = [{
         turn: 0,
         result: []
       }];
-      for (let s = 0; s < state.definition.variant.handSize; s++) {
+      for (let s = 0; s < definition.variant.handSize; s++) {
         this.handHistories[p][0].result.push(this.topDeck);
         this.topDeck++;
       }
     }
   }
 
-  private processPlayEvent(event: GamePlayEvent){
+  private processPlayEvent(player: number, event: GamePlayEvent){
     //Create copy of current hand to make new hand
-    let newHand = Array.from(this.handHistories[event.player][this.handHistories[event.player].length - 1].result);
+    let newHand = Array.from(this.handHistories[player][this.handHistories[player].length - 1].result);
     //Remove played card from hand
     let card = newHand.splice(event.handSlot, 1)[0];
-    if (event.result.type === PlayResultType.Success){
+    if (event.result === GamePlayResultType.Success){
       //If it was a successful play, add card to proper stack
-      this.stacks[event.result.stack].push(card);
-    } else if (event.result.type === PlayResultType.Misplay){
+      this.stacks[event.stack].push(card);
+    } else if (event.result === GamePlayResultType.Misplay){
       //if it was a missplay put it in the discard pile 
       this.discardPile.push({index: card, turn: this.turnsProcessed});
     }
     //Put card on top of deck in leftmost slot
     newHand.unshift(this.topDeck);
     //Update the players hand
-    this.handHistories[event.player].push({
+    this.handHistories[player].push({
       turn: this.turnsProcessed,
       result: newHand,
       played: event.handSlot,
@@ -91,9 +113,9 @@ export default class GameTracker {
     this.topDeck++;
   }
 
-  private processDiscardEvent(event: GameDiscardEvent){
+  private processDiscardEvent(player: number, event: GameDiscardEvent){
     //Create copy of current hand to make new hand
-    let newHand = Array.from(this.handHistories[event.player][this.handHistories[event.player].length - 1].result);
+    let newHand = Array.from(this.handHistories[player][this.handHistories[player].length - 1].result);
     //Remove  discarded card from hand
     let card = newHand.splice(event.handSlot, 1)[0];
     //Put it in the discard pile
@@ -101,7 +123,7 @@ export default class GameTracker {
     //Put card on top of deck in leftmost slot
     newHand.unshift(this.topDeck);
     //Update the players hand
-    this.handHistories[event.player].push({
+    this.handHistories[player].push({
       turn: this.turnsProcessed,
       result: newHand,
       played: event.handSlot,
@@ -112,26 +134,27 @@ export default class GameTracker {
   }
 
   propagateState(state: GameState) {
-    let events = state.events
+    let messages = state.events;
     let newEvents = false;
-    for (this.turnsProcessed; this.turnsProcessed < events.length; this.turnsProcessed++) {
+    for (this.turnsProcessed; this.turnsProcessed < messages.length; this.turnsProcessed++) {
       newEvents = true;
-      let event = events[this.turnsProcessed];
+      const { event, reveals } = messages[this.turnsProcessed];
+      let player = (event.turn - 1) % state.definition.variant.numPlayers;
       //Process Actions
       switch (event.type) {
         case GameEventType.Deal:
-          this.processDealEvent(state);
+          this.processDealEvent(state.definition);
           break;
         case GameEventType.Play:
-          this.processPlayEvent(event);
+          this.processPlayEvent(player, event);
           break;
         case GameEventType.Discard:
-          this.processDiscardEvent(event);
+          this.processDiscardEvent(player, event);
           break;
       }
       //Process Reveals
-      if (event.reveals) {
-        for (let revealedCard of event.reveals[0]) {
+      if (reveals) {
+        for (let revealedCard of reveals) {
           this.knownDeckOrder[revealedCard.deck] = revealedCard.card;
         }
       }
