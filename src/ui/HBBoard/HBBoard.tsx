@@ -4,6 +4,7 @@ import HBDiscardPile from "./HBDiscardPile";
 import { DragArea } from "../util/Dragging";
 import { CardFloatLayer, CardFloatArea } from "./CardFloat";
 import { HBHandsArea } from "./HBHand";
+import HBPlayHistory from "./HBPlayHistory";
 import ReactUIInterface, { GameUIContext } from '../ReactFrontendInterface';
 
 import './HBBoard.scss';
@@ -18,18 +19,25 @@ export default function HBBoard({ game }: HBBoardProps) {
       <DragArea>
         <CardFloatArea>
           <div className="HBBoard">
-            <div className="HBPlayHistory">
+            <div className="playHistoryWrapper">
+              <HBPlayHistory/>
             </div>
             <div className="handsWrapper">
               <HBHandsArea perspective={0} />
             </div>
-            <div className="clueHistoryWrapper"/>
+            <div className="clueHistoryWrapper">
+
+            </div>
             <div className="discardWrapper">
               <HBDiscardPile/>
             </div>
-            <HBStackArea />
-            <HBClueArea />
-            <div className="HBGeneralControls" />
+            <div className="stackAreaWrapper">
+              <HBStackArea />
+            </div>
+            <div className="stackClueAreaWrapper">
+              <HBClueArea />
+            </div>
+            <div className="controlsPlaceHolder" />
           </div>
           <CardFloatLayer />
         </CardFloatArea>

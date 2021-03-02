@@ -9,9 +9,6 @@
 }
 
 .handsWrapper{
-  position: relative;
-  display: flex;
-  justify-content: center;
   grid-row-start: 1;
   grid-row-end: 6;
   grid-column: 2;
@@ -27,4 +24,16 @@
   grid-row-start: 3;
   grid-row-end: 5;
   grid-column: 3;
+}
+
+.playHistoryWrapper{
+  overflow: auto;
+}
+
+.playHistoryWrapper,
+.clueHistoryWrapper,
+.discardWrapper {
+  border-radius: 10px;
+  margin: 10px;
+  background-color: rgba(0,0,0,0.5);
 }

@@ -36,7 +36,9 @@ export default class ReactUIInterface extends EventEmitter {
   getPlayerNames() { return this.backend.currentState().definition.playerNames }
   getNumberOfPlayers() { return this.backend.currentState().definition.variant.numPlayers }
   getHandSize() { return this.backend.currentState().definition.variant.handSize }
-  getCardInHand(player: number, index: number) { return this.tracker!.getCardInHand(player, index, this.tracker!.turnsProcessed) }
+  getCardInHand(player: number, index: number, turn: number = this.tracker!.turnsProcessed) {
+    return this.tracker!.getCardInHand(player, index, turn);
+  }
   getSuits() { return this.backend.currentState().definition.variant.suits }
   getStack(index: number) { return this.tracker.stacks[index] }
   getDeckSize() { return this.tracker.cards.length }
@@ -54,6 +56,12 @@ export default class ReactUIInterface extends EventEmitter {
   getDiscardPile() {
     return this.tracker.discardPile.map(i => i.index);
   }
+  getCurrentTurn() {
+    return this.tracker.turnsProcessed;
+  }
+  getMessage(index: number){
+    return this.backend.currentState().events[index];
+  }
 
   onReady(callback: () => void) {
     this.backend.onReady(callback);
@@ -61,6 +69,7 @@ export default class ReactUIInterface extends EventEmitter {
   isReady(): boolean {
     return this.backend.isReady();
   }
+
 }
 
 export const GameUIContext = React.createContext<ReactUIInterface>(new ReactUIInterface(new NullBackend()));
