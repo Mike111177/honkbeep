@@ -62,14 +62,27 @@ export type GameDiscardAttempt = {
 export type GameDiscardEvent = GameDiscardAttempt;
 
 //Clue description
-export type Clue = string;
+export enum ClueType{
+  Number = 1,
+  Color
+}
+type NumberClue = {
+  type: ClueType.Number;
+  number: number;
+}
+type ColorClue = {
+  type: ClueType.Color;
+  color: string;
+}
+export type Clue = NumberClue | ColorClue;
 
 export type GameClueAttempt = {
   type: GameEventType.Clue;
-  targetPlayer: number;
+  target: number;
   clue: Clue;
 }
-export type GameClueEvent = GameClueAttempt;
+export type GameClueResult = {touched: number[];}
+export type GameClueEvent = GameClueAttempt & GameClueResult;
 
 //Represents any action taken by a player that could advance to the next turn (or deal)
 export type GameEvent = {

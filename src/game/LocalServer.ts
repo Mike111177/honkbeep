@@ -8,8 +8,10 @@ import {
   GameAttempt,
   GamePlayAttempt,
   GameEventMessage,
-  GamePlayResultType
+  GamePlayResultType,
+  GameClueAttempt
 } from "./GameTypes";
+import { doesClueMatchCard } from "./Rules";
 import { buildDeck, getShuffledOrder } from "./VariantBuilding";
 
 type PlayerRevealTurn = {
@@ -42,15 +44,15 @@ export default class LocalServer {
     callback: (e: GameEventMessage) => void;
   }[];
 
-  constructor(definition: GameDefinition) {
+  constructor(definition: GameDefinition, seed?: number) {
     //Variant Info
     this.definition = definition;
 
     //Build Deck
     this.deck = buildDeck(this.definition.variant);
-    const { order, seed } = getShuffledOrder(this.deck.length);
-    this.shuffleOrder = order;
-    this.seed = seed;
+    const shuffle = getShuffledOrder(this.deck.length, seed);
+    this.shuffleOrder = shuffle.order;
+    this.seed = shuffle.seed;
 
     //Build Server side game state
     this.stacks = [...Array(this.definition.variant.suits.length)].map(_ => []);
@@ -59,7 +61,7 @@ export default class LocalServer {
     this.topDeck = 0;
 
     //Build initial hands and reveals
-    this.reveals = [...Array(this.definition.variant.numPlayers)].map(_ => [{ turn: 0, reveals: []}]);
+    this.reveals = [...Array(this.definition.variant.numPlayers)].map(_ => [{ turn: 0, reveals: [] }]);
     for (let playerOfHand = 0; playerOfHand < this.definition.variant.numPlayers; playerOfHand++) {
       //Create hand for player
       const thisHand: number[] = [];
@@ -72,7 +74,7 @@ export default class LocalServer {
       this.hands[playerOfHand] = thisHand;
     }
 
-    this.events = [{turn: 0, type: GameEventType.Deal}];
+    this.events = [{ turn: 0, type: GameEventType.Deal }];
     this.lastTurn = 0;
 
     this.connections = [];
@@ -111,7 +113,7 @@ export default class LocalServer {
   }
   private buildStateHistory(player: number): GameEventMessage[] {
     let history = [];
-    for (let i = 0; i < this.lastTurn + 1; i++){
+    for (let i = 0; i < this.lastTurn + 1; i++) {
       history.push(this.buildEventMessage(player, i));
     }
     return history;
@@ -132,7 +134,7 @@ export default class LocalServer {
     return this.shuffleOrder[index];
   }
 
-  private cardInfoFromDeckIndex(index: number) {
+  private getCardInfoFromDeckIndex(index: number) {
     return this.deck[this.getCardIndexFromDeckIndex(index)];
   }
 
@@ -142,7 +144,7 @@ export default class LocalServer {
 
   //Obviously will become more complicated as variants are implemented
   private isCardPlayableOnStack(card: number, stack: number) {
-    const cardInfo = this.cardInfoFromDeckIndex(card);
+    const cardInfo = this.getCardInfoFromDeckIndex(card);
     const suit = this.definition.variant.suits[stack];
     if (suit === cardInfo.suit) {
       if (this.stacks[stack].length === 0) {
@@ -150,7 +152,7 @@ export default class LocalServer {
           return true;
         }
       } else {
-        const { rank } = this.cardInfoFromDeckIndex(this.getLastCardOnStack(stack));
+        const { rank } = this.getCardInfoFromDeckIndex(this.getLastCardOnStack(stack));
         if (rank === cardInfo.rank - 1) {
           return true;
         }
@@ -162,8 +164,9 @@ export default class LocalServer {
   private attemptPlay(player: number, action: GamePlayAttempt) {
     //Check to make sure its this players turn
     if (!this.isPlayersTurn(player)) return false;
-    //Check if card is playable
+    //Get the card the player is trying to play
     const attemptedPlayIndex = this.cardFromHand(player, action.handSlot);
+    //Try to play card on each stack, until we find one that works
     let cardWasPlayed = false;
     for (let i = 0; i < this.definition.variant.suits.length; i++) {
       if (this.isCardPlayableOnStack(attemptedPlayIndex, i)) {
@@ -185,6 +188,7 @@ export default class LocalServer {
         break;
       }
     }
+    //If it matched no stacks, this is a misplay, it goes to discard
     if (!cardWasPlayed) {
       //Well it wasn't playable, misplay time
       this.hands[player].splice(action.handSlot, 1);
@@ -212,7 +216,7 @@ export default class LocalServer {
   private attemptDiscard(player: number, action: GameDiscardEvent) {
     //Check to make sure its this players turn
     if (!this.isPlayersTurn(player)) return false;
-    //Check if card is playable
+    //Get the card the player is trying to play
     const attemptedPlayIndex = this.cardFromHand(player, action.handSlot);
     //Remove Card from Hand
     this.hands[player].splice(action.handSlot, 1);
@@ -235,6 +239,33 @@ export default class LocalServer {
     return true;
   }
 
+  private attemptClue(player: number, {clue, target}: GameClueAttempt) {
+    //Check to make sure its this players turn
+    if (!this.isPlayersTurn(player)) return false;
+    //Make sure the player they are cluing exist
+    if (target>= this.definition.variant.numPlayers) return false;
+    //Make sure the player they are cluing is not themself
+    if (target === player) return false;
+    
+    //See which cards in target hand get touched
+    const targetHand = this.hands[target];
+    let touched = targetHand.filter(card => doesClueMatchCard(clue, this.getCardInfoFromDeckIndex(card)));
+
+    //If no cards were touched, this clue is illegal
+    if (touched.length === 0) return false;
+
+    //Create the cluining
+    this.events.push({
+      turn: this.lastTurn + 1,
+      type: GameEventType.Clue,
+      clue,
+      target,
+      touched
+    });
+    this.lastTurn++;
+    return true;
+  }
+
   private async broadcastLatestEvent() {
     let turn = this.lastTurn;
     this.connections.forEach(c => {
@@ -243,14 +274,17 @@ export default class LocalServer {
     });
   }
 
-  private processPlayerAction(player: number, action: GameAttempt): boolean{
+  private processPlayerAction(player: number, action: GameAttempt): boolean {
     switch (action.type) {
       case GameEventType.Play:
         return this.attemptPlay(player, action);
       case GameEventType.Discard:
         return this.attemptDiscard(player, action);
+      case GameEventType.Clue:
+        return this.attemptClue(player, action);
+      default:
+        return false; //Invalid event, so obviously not valid attempt
     }
-    return false;
   }
 
   public async attemptPlayerAction(player: number, action: GameAttempt) {
@@ -258,7 +292,7 @@ export default class LocalServer {
       this.broadcastLatestEvent();
       return true;
     }
-    return false;   
+    return false;
   }
 
   public async requestInitialState(player: number) {
@@ -268,7 +302,7 @@ export default class LocalServer {
     };
   }
 
-  public async connect(player: number, callback: (e:GameEventMessage)=>void) {
+  public async connect(player: number, callback: (e: GameEventMessage) => void) {
     this.connections.push({ player, callback });
   }
 }
