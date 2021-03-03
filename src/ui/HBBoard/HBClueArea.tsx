@@ -1,36 +1,28 @@
 import React from "react";
 
-import {GameUIContext} from '../ReactFrontendInterface';
+import { GameUIContext } from '../ReactFrontendInterface';
+import { Clue, ClueType } from "../../game/GameTypes";
 import colors from "../BaseColors";
 
 import "./HBClueArea.scss";
 
-enum ClueType {
-    Color = 1,
-    Number = 2
-}
-
-type HBClueButtonProps = {
-    type: ClueType;
-    value: string | number;
-}
-
-function HBClueButton({ type, value }: HBClueButtonProps) {
-    if (type === ClueType.Color) {
-        const color = colors(value as string);
+function HBClueButton({clue}:{clue:Clue}) {
+    if (clue.type === ClueType.Color) {
+        const color = colors(clue.color);
         return (
-            <div className="clueButton">
-                <div className="clueButtonIconColor" style={{ backgroundColor: color }} />
-            </div>
+          <svg height="60px" viewBox="0 0 100 100">
+            <rect x="10%" y="10%" width="80%" height="80%" rx="10%" fill={color} stroke="#000000" strokeWidth="10%"/>  
+          </svg>
+        );
+    } else if (clue.type === ClueType.Number){
+        return (
+          <svg height="60px" viewBox="0 0 100 100">
+            <rect x="10%" y="10%" width="80%" height="80%" rx="10%" fill="#000000" stroke="#000000" strokeWidth="10%" /> 
+            <text fill="#FFFFFF" fontSize="80" x="50%" y="47.5%" textAnchor='middle' dominantBaseline='central'>{clue.number}</text>
+          </svg>
         );
     } else {
-        return (
-            <div className="clueButton">
-                <div className="clueButtonIconNumber">
-                    {value.toString()}
-                </div>
-            </div>
-        );
+      return <></>;
     }
 }
 
@@ -39,10 +31,10 @@ export default function HBClueArea() {
     return (
         <div className="HBClueArea">
             <div className="HBClueButtonAreaSuit" style={{ gridTemplateColumns: `repeat(${suits.length}, auto)` }}>
-                {suits.map((c, i) => <HBClueButton type={ClueType.Color} key={i} value={c} />)}
+                {suits.map((c, i) => <HBClueButton key={i}  clue={{type: ClueType.Color, color: c }}/>)}
             </div>
             <div className="HBClueButtonAreaNumber">
-                {[1, 2, 3, 4, 5].map((i, n) => <HBClueButton type={ClueType.Number} key={n} value={i} />)}
+                {[1, 2, 3, 4, 5].map((i, n) => <HBClueButton key={n} clue={{type: ClueType.Number, number: i }} />)}
             </div>
             <div className="submitButton">
                 Submit Clue

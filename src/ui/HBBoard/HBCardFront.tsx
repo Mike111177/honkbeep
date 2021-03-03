@@ -15,7 +15,7 @@ export type HBCardProps = {
 const rPipHeight = 17.5;
 const cPipHeight = 27.5;
 const pipDist = { x: 30, y: 35 };
-const numOffset = { x: 22.5, y: 30 };
+const numOffset = { x: 25, y: 30 };
 const numSize = 50;
 
 //Calculated Constants
@@ -33,7 +33,6 @@ const pipR = vecAdd({ x: pipCorner.x, y: mid.y }, rPipOff);
 const pipC = vecAdd(mid, cPipOff);
 
 //For rendering frontface of absolutley known card
-//TODO: The bottom and right-hand pips should be flipped 180 degrees
 //TODO: It might be a good idea to add a pre-render step for all of the possible card faces
 export default function HBCardFront({ suit, rank, ...props }: HBCardProps) {
   let color = colors(suit);
@@ -43,7 +42,9 @@ export default function HBCardFront({ suit, rank, ...props }: HBCardProps) {
   return (
     <svg {...props} viewBox={viewBox}>
       {OutlineFilter}
-      <rect x="5%" y="5%" width="90%" height="90%" fill={backgroundColor} strokeWidth="2.5%" stroke={color} rx="5%" />
+      <rect x="5%" y="5%" width="90%" height="90%" fill={backgroundColor} rx="5%" />
+      <rect x="5%" y="5%" width="90%" height="90%" fill="#00000000" strokeWidth="4%" stroke="#000000" rx="5%" />
+      <rect x="5%" y="5%" width="90%" height="90%" fill="#00000000" strokeWidth="2.5%" stroke={color} rx="5%" />
       <text fill={color} {...numOffset} fontSize={numSize} textAnchor='middle' dominantBaseline='central' filter="url(#outline)">{num}</text>
       <text fill={color} {...numOffset} fontSize={numSize} textAnchor='middle' dominantBaseline='central' filter="url(#outline)" transform={pipFlip}>{num}</text>
       { num % 2 === 1 ? /*Center Pip*/ <>

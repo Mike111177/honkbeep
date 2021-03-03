@@ -12,8 +12,10 @@ export default function HBCardIcon({ suit, rank, ...props }: HBCardProps) {
   return (
     <svg {...props} viewBox={viewBox}>
       {ThickOutlineFilter}
-      <rect x="5%" y="5%" width="90%" height="90%" fill={backgroundColor} strokeWidth="2.5%" stroke={color} rx="5%" />
-      <text fill={color} fontSize="130px"
+      <rect x="5%" y="5%" width="90%" height="90%" fill={backgroundColor}  rx="5%" />
+      <rect x="5%" y="5%" width="90%" height="90%" fill="#00000000" strokeWidth="11%" stroke="#000000" rx="5%" />
+      <rect x="5%" y="5%" width="90%" height="90%" fill="#00000000" strokeWidth="8%" stroke={color} rx="5%" />
+      <text fill={color} fontSize="120px"
         x="50%"
         y="50%"
         textAnchor='middle'

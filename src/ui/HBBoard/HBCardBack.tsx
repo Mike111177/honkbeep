@@ -19,7 +19,9 @@ export default function HBCardBack({ suits, ...props }: HBCardBackProps) {
   return (
     <svg {...props} viewBox={viewBox}>
       {OutlineFilter}
-      <rect x="5%" y="5%" width="90%" height="90%" fill="#cccccc" strokeWidth="2.5%" stroke="#777777" rx="5%" />
+      <rect x="5%" y="5%" width="90%" height="90%" fill="#cccccc" rx="5%" />
+      <rect x="5%" y="5%" width="90%" height="90%" fill="#00000000" strokeWidth="4%" stroke="#000000" rx="5%" />
+      <rect x="5%" y="5%" width="90%" height="90%" fill="#00000000" strokeWidth="2.5%" stroke="#777777" rx="5%" />
       {
         suits.map((s, n) => {
           let angle = 2 * Math.PI * n / suits.length;
