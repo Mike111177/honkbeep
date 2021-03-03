@@ -1,9 +1,50 @@
+import chroma from "chroma-js";
+import colors from "../BaseColors";
 import { useContext, useEffect, useState } from "react";
-import { GameDiscardEvent, GameEventMessage, GameEventType, GamePlayEvent, GamePlayResultType } from "../../game/GameTypes";
+import { ClueType, GameClueEvent, GameDiscardEvent, GameEventType, GamePlayEvent, GamePlayResultType } from "../../game/GameTypes";
 import { GameUIContext } from "../ReactFrontendInterface";
 import HBCardIcon from "./HBCardIcon";
 
 import "./HBPlayHistory.scss";
+
+const NaturalNums = ["zero", "one", "two", "three", "four", "five"];
+
+type CluePlayDescriberProps = { turn: number; event: GameClueEvent };
+function CluePlayDescriber({ turn, event: { touched, clue, target } }: CluePlayDescriberProps) {
+  const context = useContext(GameUIContext);
+  const numPlayers = context.getNumberOfPlayers();
+  const player = (turn - 1) % numPlayers;
+  const playernames = context.getPlayerNames();
+  const giverName = playernames[player];
+  const targetName = playernames[target];
+  const numTouched = touched.length;
+  const subject = clue.type === ClueType.Number ? `#${clue.number}`: clue.color;
+  let subjectstyle:any = {};
+  if (clue.type === ClueType.Color) {
+    const color = colors(clue.color);
+    const backgroundColor = chroma.mix(color,"#FFFFFF", 0.5, "lrgb").hex();
+    subjectstyle = {
+      color,
+      height: "40px",
+      fontSize: "30px",
+      backgroundColor,
+      borderRadius: "5px",
+      borderStyle: "solid",
+      display: "inline-block",
+      mask: "url(#outline)"
+    };
+  } else if (clue.type === ClueType.Number) {
+    subjectstyle = {
+      height: "40px",
+      fontSize: "30px",
+      borderRadius: "5px",
+      borderStyle: "solid",
+      display: "inline-block",
+    };
+  }
+  return <span>{`${giverName} tells ${targetName} about ${NaturalNums[numTouched]} `} <div style={subjectstyle}>{subject}</div>{`${numTouched!==1 ? "s" : ""}`}</span>;
+}
+
 
 type DiscardPlayDescriberProps = { turn: number; event: GameDiscardEvent };
 function DiscardPlayDescriber({ turn, event }: DiscardPlayDescriberProps) {
@@ -60,6 +101,8 @@ function PlayDescriber({ message }: PlayDescriberProps) {
       return <PlayPlayDescriber turn={message} event={event} />;
     case GameEventType.Discard:
       return <DiscardPlayDescriber turn={message} event={event} />;
+    case GameEventType.Clue:
+      return <CluePlayDescriber turn={message} event={event} />;
     default:
       return <span>Unknown Event</span>;
   }
