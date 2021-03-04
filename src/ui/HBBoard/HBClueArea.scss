@@ -5,35 +5,65 @@
     user-select: none;
 }
 
+.ClueSelecter {
+  display: grid;
+  height: 100%;
+  grid-template-rows: 50% 50%;
+  justify-content: center;
+  align-content: center;
+}
+
 .HBClueButtonAreaSuit {
     display: grid;
     justify-content: center;
     align-content: center;
+    justify-items: center;
 }
 
 .HBClueButtonAreaNumber {
     display: grid;
     justify-content: center;
+    justify-items: center;
     align-content: center;
     grid-template-columns: repeat(5, auto);
 }
+
+.HBClueButtonAreaPlayer{
+  display: grid;
+  justify-content: center;
+  text-align: center;
+  font-size: 20px;
+  height: min-content;
+}
+
+.PlayerClueButton{
+  margin: 3px;
+  padding: 3px;
+  background-color: black;
+  border-radius: 5px;
+}
+
+.PlayerClueButton.SelectedPlayerButton {
+  color: black;
+  background-color: white;
+}
+
+
+
+.ClueButton{
+  height: 60px;
+}
+
 .submitButton{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    align-content: center;
-    margin: 10px;
-    background-color: rgba($color: #000000, $alpha: 0.5);
-    border-radius: 20px;
-}
-
-.clueButtonIconColor{
-    height: 80%;
-    width: 80%;
-    margin: 0 auto;
-    border-radius: 30%;
-}
-
-.clueButtonIconNumber{
-    font-size: 200%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  margin: 3px;
+  padding: 5px;
+  background-color: #000000;
+  border-radius: 5px;
+  color: green;
+  font-weight: 1000;
+  font-size: 50px;
 }
