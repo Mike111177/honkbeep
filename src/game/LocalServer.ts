@@ -44,15 +44,20 @@ export default class LocalServer {
     callback: (e: GameEventMessage) => void;
   }[];
 
-  constructor(definition: GameDefinition, seed?: number) {
+  constructor(definition: GameDefinition, deckDef?: number | { order: number[]; seed: number }) {
     //Variant Info
     this.definition = definition;
 
     //Build Deck
     this.deck = buildDeck(this.definition.variant);
-    const shuffle = getShuffledOrder(this.deck.length, seed);
-    this.shuffleOrder = shuffle.order;
-    this.seed = shuffle.seed;
+    if (deckDef === undefined || typeof deckDef === "number") {
+      const shuffle = getShuffledOrder(this.deck.length, deckDef);
+      this.shuffleOrder = shuffle.order;
+      this.seed = shuffle.seed;
+    } else {
+      this.shuffleOrder = deckDef.order;
+      this.seed = deckDef.seed;
+    }
 
     //Build Server side game state
     this.stacks = [...Array(this.definition.variant.suits.length)].map(_ => []);

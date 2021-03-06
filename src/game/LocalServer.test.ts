@@ -1,5 +1,6 @@
 import LocalServer from "./LocalServer";
 import { ClueType, GameClueAttempt, GameEventType } from "./GameTypes";
+import { buildDeck, createProcuredOrder } from "./DeckBuilding";
 
 test('Initializes without error', () => {
   const gamedef = {
@@ -24,8 +25,15 @@ test('Does not allow player to take turn twice in a row', async () => {
     },
     playerNames: ["Alice", "Bob", "Cathy", "Donald"]
   };
+  const deck = buildDeck(gamedef.variant);
+  const deckDef = createProcuredOrder(deck, [
+    { rank: 1, suit: "Red" }, { rank: 1, suit: "Red" }, { rank: 1, suit: "Red" }, { rank: 2, suit: "Red" }, { rank: 2, suit: "Red" }, //Player 1
+    { rank: 3, suit: "Green" }, { rank: 4, suit: "Purple" }, { rank: 5, suit: "Red" }, { rank: 1, suit: "Blue" }, { rank: 1, suit: "Yellow" }, //Player 2
+    { rank: 1, suit: "Green" }, { rank: 4, suit: "Blue" }, { rank: 1, suit: "Yellow" }, { rank: 2, suit: "Green" }, { rank: 5, suit: "Purple" }, //Player 3
+    { rank: 3, suit: "Purple" }, { rank: 2, suit: "Yellow" }, { rank: 2, suit: "Green" }, { rank: 4, suit: "Yellow" }, { rank: 3, suit: "Red" }, //Player 4
+  ]);
   //Create virtual local Server 
-  const server = new LocalServer(gamedef, 0);
+  const server = new LocalServer(gamedef, deckDef);
   //Test having player 1 make a play 2 times
   expect(await server.attemptPlayerAction(0, { type: GameEventType.Play, handSlot: 0 })).toBe(true);
   expect(await server.attemptPlayerAction(0, { type: GameEventType.Play, handSlot: 0 })).toBe(false);
@@ -33,8 +41,8 @@ test('Does not allow player to take turn twice in a row', async () => {
   expect(await server.attemptPlayerAction(1, { type: GameEventType.Discard, handSlot: 0 })).toBe(true);
   expect(await server.attemptPlayerAction(1, { type: GameEventType.Discard, handSlot: 0 })).toBe(false);
   //Test having player 3 make a clue 2 times
-  expect(await server.attemptPlayerAction(2, { type: GameEventType.Clue, target: 0, clue: {type: ClueType.Number, number: 2} })).toBe(true);
-  expect(await server.attemptPlayerAction(2, { type: GameEventType.Clue, target: 0, clue: {type: ClueType.Number, number: 1} })).toBe(false);
+  expect(await server.attemptPlayerAction(2, { type: GameEventType.Clue, target: 0, clue: { type: ClueType.Color, color: "Red" } })).toBe(true);
+  expect(await server.attemptPlayerAction(2, { type: GameEventType.Clue, target: 0, clue: { type: ClueType.Number, number: 1 } })).toBe(false);
 });
 
 test('Does not allow clues sent to invalid players', async () => {
@@ -46,12 +54,19 @@ test('Does not allow clues sent to invalid players', async () => {
     },
     playerNames: ["Alice", "Bob", "Cathy", "Donald"]
   };
+  const deck = buildDeck(gamedef.variant);
+  const deckDef = createProcuredOrder(deck, [
+    { rank: 1, suit: "Red" }, { rank: 1, suit: "Red" }, { rank: 1, suit: "Red" }, { rank: 2, suit: "Red" }, { rank: 2, suit: "Red" }, //Player 1
+    { rank: 3, suit: "Green" }, { rank: 4, suit: "Purple" }, { rank: 5, suit: "Red" }, { rank: 1, suit: "Blue" }, { rank: 1, suit: "Yellow" }, //Player 2
+    { rank: 1, suit: "Green" }, { rank: 4, suit: "Blue" }, { rank: 1, suit: "Yellow" }, { rank: 2, suit: "Green" }, { rank: 5, suit: "Purple" }, //Player 3
+    { rank: 3, suit: "Purple" }, { rank: 2, suit: "Yellow" }, { rank: 2, suit: "Green" }, { rank: 4, suit: "Yellow" }, { rank: 3, suit: "Red" }, //Player 4
+  ]);
   //Create virtual local Server with 4 players
-  const server = new LocalServer(gamedef, 0);
+  const server = new LocalServer(gamedef, deckDef);
 
   const player1GoodClue: GameClueAttempt = { type: GameEventType.Clue, target: 3, clue: { type: ClueType.Number, number: 2 } };
   const player2BadTClue: GameClueAttempt = { type: GameEventType.Clue, target: 4, clue: { type: ClueType.Number, number: 2 } };
-  const player2SelfClue: GameClueAttempt = { type: GameEventType.Clue, target: 1, clue: { type: ClueType.Number, number: 2 } };
+  const player2SelfClue: GameClueAttempt = { type: GameEventType.Clue, target: 1, clue: { type: ClueType.Color, color: "Blue" } };
 
   //Test having player 1 make a clue for existing player 4 (index 3)
   expect(await server.attemptPlayerAction(0, player1GoodClue)).toBe(true);
