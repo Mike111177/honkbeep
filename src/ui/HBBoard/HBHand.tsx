@@ -38,7 +38,9 @@ function CardInHand({ myTurn, player, index, card }: CardInHandProps) {
   const style = useMemo(() => ({ width: "110px", height: "150px" }), []);
 
   return (
-    <CardFloatTarget index={card} style={style} options={floatOptions} />
+    <CardFloatTarget index={card} style={style} options={floatOptions}>
+      <svg viewBox="0 0 110 150"></svg>
+    </CardFloatTarget>
   );
 }
 
