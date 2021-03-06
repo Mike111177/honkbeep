@@ -1,25 +1,24 @@
 import React from "react";
 import EventEmitter from "events";
 
-import GameTracker from "../game/GameTracker";
+import { GameState, initBlankGameState, reduceGameStateFromGameData } from "../game/GameState";
 import BackendInterface from "../game/BackendInterface";
 import NullBackend from "../game/NullBackend";
-import { GameAttempt, GameEvent } from "../game/GameTypes";
+import { GameAttempt } from "../game/GameTypes";
 
 export default class ReactUIInterface extends EventEmitter {
-  private tracker: GameTracker;
+  private state: GameState;
   private backend: BackendInterface;
 
   constructor(backend: BackendInterface) {
     super();
     this.setMaxListeners(100);
     this.backend = backend;
-    this.tracker = new GameTracker();
+    this.state = initBlankGameState();
     this.backend.onReady(() => {
-      this.tracker.init(this.backend.currentState());
-      this.tracker.propagateState(this.backend.currentState());
+      this.state = reduceGameStateFromGameData(this.state, this.backend.currentState());
       this.backend.on("gameStateChanged", () => {
-        this.tracker.propagateState(this.backend.currentState());
+        this.state = reduceGameStateFromGameData(this.state, this.backend.currentState());
         this.emit("game-update");
       });
     });
@@ -31,43 +30,51 @@ export default class ReactUIInterface extends EventEmitter {
   }
 
   isPossiblyPlayable(cardIndex: number) { return true }
-  isCardRevealed(cardIndex: number) { return this.tracker.knownDeckOrder[cardIndex] !== undefined }
+  isCardRevealed(cardIndex: number) { return this.state.knownDeckOrder[cardIndex] !== undefined }
   useHandSlot(player: number, index: number) { }
   getPlayerNames() { return this.backend.currentState().definition.playerNames }
   getNumberOfPlayers() { return this.backend.currentState().definition.variant.numPlayers }
   getHandSize() { return this.backend.currentState().definition.variant.handSize }
-  getCardInHand(player: number, index: number, turn: number = this.tracker!.turnsProcessed) {
-    return this.tracker!.getCardInHand(player, index, turn);
-  }
   getSuits() { return this.backend.currentState().definition.variant.suits }
-  getStack(index: number) { return this.tracker.stacks[index] }
-  getDeckSize() { return this.tracker.cards.length }
-  getPlayerHand(player: number) { return this.tracker.getLatestPlayerHand(player) }
+  getStack(index: number) { return this.state.stacks[index] }
+  getDeckSize() { return this.state.cards.length }
+
   getCardDisplayableProps(index: number) {
     if (this.isCardRevealed(index)) {
-      return this.tracker.cards[this.tracker.knownDeckOrder[index]];
+      return this.state.cards[this.state.knownDeckOrder[index]];
     } else {
       return { rank: 6, suit: "Black" };
     }
   }
   isPlayerTurn(player: number) {
-    return player === (this.tracker.turnsProcessed - 1) % this.getNumberOfPlayers();
+    return player === (this.state.turn - 1) % this.getNumberOfPlayers();
   }
   getDiscardPile() {
-    return this.tracker.discardPile.map(i => i.index);
+    return this.state.discardPile;
   }
   getCurrentTurn() {
-    return this.tracker.turnsProcessed;
+    return this.state.turn;
   }
-  getMessage(index: number){
+  getMessage(index: number) {
     return this.backend.currentState().events[index];
   }
 
   onReady(callback: () => void) {
     this.backend.onReady(callback);
   }
+
   isReady(): boolean {
     return this.backend.isReady();
+  }
+
+  getStateOfTurn(turn: number) {
+    return reduceGameStateFromGameData(initBlankGameState(), this.backend.currentState(), turn);
+  }
+  getPlayerHand(player: number, turn: number = this.state.turn) { 
+    return this.getStateOfTurn(turn).hands[player];    
+  }
+  getCardInHand(player: number, index: number, turn: number) {
+    return this.getPlayerHand(player, turn)[index];
   }
 
 }

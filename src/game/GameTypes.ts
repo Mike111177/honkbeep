@@ -99,7 +99,7 @@ export type GameAttempt = GamePlayAttempt | GameDiscardAttempt | GameClueAttempt
 export type GameEventSeries = GameEvent[];
 
 //Minimum data to construct entire game state
-export type GameState = {
+export type GameData = {
   events: GameEventMessage[];
   definition: GameDefinition;
 }

@@ -1,7 +1,7 @@
 import EventEmitter from "events";
 import BackendInterface from "./BackendInterface";
 import {
-  GameState,
+  GameData,
   GameAttempt,
   GameEventMessage
 } from "./GameTypes";
@@ -13,7 +13,7 @@ import LocalServer from "./LocalServer";
 export default class LocalBackend extends EventEmitter implements BackendInterface {
   private player: number;
   private server: LocalServer;
-  private state?: GameState;
+  private state?: GameData;
 
   constructor(player: number, server: LocalServer) {
     super();
@@ -44,7 +44,7 @@ export default class LocalBackend extends EventEmitter implements BackendInterfa
     }
   }
 
-  currentState(): GameState {
+  currentState(): GameData {
     return this.state!;
   }
 
