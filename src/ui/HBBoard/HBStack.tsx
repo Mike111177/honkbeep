@@ -44,7 +44,7 @@ export function HBStack({ suit, number }: HBStackProps) {
   const backgroundColor = chroma.mix(color,"#FFFFFF", 0.3, "lrgb").alpha(0.4).hex();
   return (
     <CardFloatTarget index={index}>
-      <svg height="200" viewBox={viewBox}>
+      <svg preserveAspectRatio="xMidYMid meet" height="100%" width="100%" viewBox={viewBox}>
         {OutlineFilter}
         <rect x="5%" y="5%" width="90%" height="90%" fill={backgroundColor} rx="5%" />
         <rect x="5%" y="5%" width="90%" height="90%" fill="#00000000" strokeWidth="4%" stroke="#000000" rx="5%" />
