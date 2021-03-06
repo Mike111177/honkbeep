@@ -247,7 +247,7 @@ export function FloatElement<T extends FloatElementID>({ floatID, children, cont
 //TODO: add context provider to give children knowlege of their spacial limits
 export function FloatLayer({ children, style, ...props }: ComponentPropsWithoutRef<"div">) {
   return (
-    <div {...props} style={{ position: "absolute", ...style }}>
+    <div {...props} style={{ position: "absolute", overflow: "hidden", height:"100%", width:"100%", ...style }}>
       {children}
     </div>
   );
