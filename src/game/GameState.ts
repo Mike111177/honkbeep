@@ -145,14 +145,16 @@ export function initGameStateFromVarient(variant: VariantDefinition): GameState 
   };
 }
 
-export function reduceGameStateFromGameData(state: GameState, data: GameData, max_turn: number = data.events.length){
+export function reduceGameStateFromGameData(state: GameState, data: GameData, max_turn: number = data.events.length) {
   let messages = data.events;
   if (state.turn === -1) {
     state = initGameStateFromVarient(data.definition.variant);
   }
-  for (let i = state.turn; i < Math.min(messages.length, max_turn+1); i++) {
-    state = produce(state, (s) => reduceEventMessage(s, data, messages[i]));
-  }
+  state = produce(state, s => {
+    for (let i = s.turn; i < Math.min(messages.length, max_turn + 1); i++) {
+      reduceEventMessage(s, data, messages[i]);
+    }
+  });
   return state;
 }
 
