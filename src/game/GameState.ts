@@ -98,6 +98,10 @@ function reduceDiscardEvent(state: GameState, player: number, event: GameDiscard
   state.turn++;
 }
 
+function reduceClueEvent(state: GameState) {
+  state.turn++;
+}
+
 function reduceEventMessage(state: GameState, data: GameData, message: GameEventMessage) {
   //Process Actions
   const { event, reveals } = message;
@@ -111,6 +115,9 @@ function reduceEventMessage(state: GameState, data: GameData, message: GameEvent
       break;
     case GameEventType.Discard:
       reduceDiscardEvent(state, player, event);
+      break;
+    case GameEventType.Clue:
+      reduceClueEvent(state);
       break;
   }
   //Process Reveals
