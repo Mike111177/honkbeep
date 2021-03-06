@@ -11,7 +11,7 @@ import {
   GameEventMessage,
   VariantDefinition,
 } from "./GameTypes";
-import { buildDeck } from "./VariantBuilding";
+import { buildDeck } from "./DeckBuilding";
 
 export enum PipStatus {
   Possible = 1,

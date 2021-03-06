@@ -12,7 +12,7 @@ import {
   GameClueAttempt
 } from "./GameTypes";
 import { doesClueMatchCard } from "./Rules";
-import { buildDeck, getShuffledOrder } from "./VariantBuilding";
+import { buildDeck, getShuffledOrder } from "./DeckBuilding";
 
 type PlayerRevealTurn = {
   turn: number;
