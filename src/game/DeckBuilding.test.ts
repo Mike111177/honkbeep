@@ -1,10 +1,10 @@
-import iota from "../util/iota";
-import { buildDeck, createProcuredOrder } from "./DeckBuilding";
+import ArrayUtil from "../util/ArrayUtil";
+import { Deck, createProcuredOrder } from "./DeckBuilding";
 
 
 describe("createProcuredOrder", () => {
   test("Creates correct procedures", () => {
-    let deck = buildDeck({
+    let deck = new Deck({
       suits: ["Red", "Yellow", "Green", "Blue", "Purple"],
       numPlayers: 4,
       handSize: 5
@@ -22,16 +22,16 @@ describe("createProcuredOrder", () => {
     let { order } = createProcuredOrder(deck, requestedOrder);
     
     //Check we have cards in the requested order
-    requestedOrder.forEach((card, i) => expect(deck[order[i]]).toStrictEqual(typeof card === "number" ? deck[card] : card));
+    requestedOrder.forEach((card, i) => expect(deck.getCard(order[i])).toStrictEqual(typeof card === "number" ? deck.getCard(card) : card));
 
     //Make sure it is a valid order
     expect(order).toHaveLength(deck.length); //Has the same length as the deck
-    expect(order).toHaveLength(new Set<number>(order).size); //Every item is unique
-    expect(order).toEqual(expect.arrayContaining(iota(deck.length))); //Every Item in the deck is accounted for
+    expect(order).toBeSet(); //Every item is unique
+    expect(order).toEqual(expect.arrayContaining(ArrayUtil.iota(deck.length))); //Every Item in the deck is accounted for
   });
 
   test("Throws when bad card requested", () => {
-    let deck = buildDeck({
+    let deck =  new Deck({
       suits: ["Red", "Yellow", "Green", "Blue", "Purple"],
       numPlayers: 4,
       handSize: 5
@@ -46,7 +46,7 @@ describe("createProcuredOrder", () => {
   });
 
   test("Throws when invalid card index given", () => {
-    let deck = buildDeck({
+    let deck = new Deck({
       suits: ["Red", "Yellow", "Green", "Blue", "Purple"],
       numPlayers: 4,
       handSize: 5
@@ -60,7 +60,7 @@ describe("createProcuredOrder", () => {
   });
 
   test("Throws when card depleted", () => {
-    let deck = buildDeck({
+    let deck = new Deck({
       suits: ["Red", "Yellow", "Green", "Blue", "Purple"],
       numPlayers: 4,
       handSize: 5

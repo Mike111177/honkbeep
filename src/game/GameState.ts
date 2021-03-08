@@ -1,7 +1,6 @@
 import { produce } from "immer";
 
 import {
-  CardData,
   GameEventType,
   GamePlayEvent,
   GameDiscardEvent,
@@ -11,7 +10,7 @@ import {
   GameEventMessage,
   VariantDefinition,
 } from "./GameTypes";
-import { buildDeck } from "./DeckBuilding";
+import { Deck } from "./DeckBuilding";
 
 export enum PipStatus {
   Possible = 1,
@@ -36,7 +35,7 @@ export type CardKnowledgeUpdate = {
 export type Stack = number[];
 
 export type GameState = {
-  readonly cards: CardData[];
+  deck: Deck;
   turn: number;
   knownDeckOrder: number[];
   hands: number[][];
@@ -130,7 +129,7 @@ function reduceEventMessage(state: GameState, data: GameData, message: GameEvent
 
 export function initBlankGameState(): GameState {
   return {
-    cards: [],
+    deck: new Deck(),
     turn: -1,
     knownDeckOrder: [],
     hands: [],
@@ -142,7 +141,7 @@ export function initBlankGameState(): GameState {
 
 export function initGameStateFromVarient(variant: VariantDefinition): GameState {
   return {
-    cards: buildDeck(variant),
+    deck: new Deck(variant),
     turn: 0,
     knownDeckOrder: [],
     hands: [],

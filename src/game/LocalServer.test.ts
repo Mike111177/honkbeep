@@ -1,6 +1,6 @@
 import LocalServer from "./LocalServer";
 import { ClueType, GameClueAttempt, GameEventType } from "./GameTypes";
-import { buildDeck, createProcuredOrder } from "./DeckBuilding";
+import { Deck, createProcuredOrder } from "./DeckBuilding";
 
 test('Initializes without error', () => {
   const gamedef = {
@@ -25,7 +25,7 @@ test('Does not allow player to take turn twice in a row', async () => {
     },
     playerNames: ["Alice", "Bob", "Cathy", "Donald"]
   };
-  const deck = buildDeck(gamedef.variant);
+  const deck = new Deck(gamedef.variant);
   const deckDef = createProcuredOrder(deck, [
     { rank: 1, suit: "Red" }, { rank: 1, suit: "Red" }, { rank: 1, suit: "Red" }, { rank: 2, suit: "Red" }, { rank: 2, suit: "Red" }, //Player 1
     { rank: 3, suit: "Green" }, { rank: 4, suit: "Purple" }, { rank: 5, suit: "Red" }, { rank: 1, suit: "Blue" }, { rank: 1, suit: "Yellow" }, //Player 2
@@ -54,7 +54,7 @@ test('Does not allow clues sent to invalid players', async () => {
     },
     playerNames: ["Alice", "Bob", "Cathy", "Donald"]
   };
-  const deck = buildDeck(gamedef.variant);
+  const deck = new Deck(gamedef.variant);
   const deckDef = createProcuredOrder(deck, [
     { rank: 1, suit: "Red" }, { rank: 1, suit: "Red" }, { rank: 1, suit: "Red" }, { rank: 2, suit: "Red" }, { rank: 2, suit: "Red" }, //Player 1
     { rank: 3, suit: "Green" }, { rank: 4, suit: "Purple" }, { rank: 5, suit: "Red" }, { rank: 1, suit: "Blue" }, { rank: 1, suit: "Yellow" }, //Player 2

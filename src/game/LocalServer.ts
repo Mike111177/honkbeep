@@ -12,7 +12,7 @@ import {
   GameClueAttempt
 } from "./GameTypes";
 import { doesClueMatchCard } from "./Rules";
-import { buildDeck, getShuffledOrder } from "./DeckBuilding";
+import { Deck, getShuffledOrder } from "./DeckBuilding";
 
 type PlayerRevealTurn = {
   turn: number;
@@ -25,7 +25,7 @@ type PlayerRevealHistory = PlayerRevealTurn[];
 export default class LocalServer {
   private definition: GameDefinition;
 
-  private deck: CardData[];
+  private deck: Deck;
   private shuffleOrder: number[];
   private seed: number;
 
@@ -49,7 +49,7 @@ export default class LocalServer {
     this.definition = definition;
 
     //Build Deck
-    this.deck = buildDeck(this.definition.variant);
+    this.deck = new Deck(this.definition.variant);
     if (deckDef === undefined || typeof deckDef === "number") {
       const shuffle = getShuffledOrder(this.deck.length, deckDef);
       this.shuffleOrder = shuffle.order;
@@ -140,7 +140,7 @@ export default class LocalServer {
   }
 
   private getCardInfoFromDeckIndex(index: number) {
-    return this.deck[this.getCardIndexFromDeckIndex(index)];
+    return this.deck.getCard(this.getCardIndexFromDeckIndex(index));
   }
 
   private getLastCardOnStack(stack: number) {

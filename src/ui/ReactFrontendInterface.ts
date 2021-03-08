@@ -39,11 +39,11 @@ export default class ReactUIInterface extends EventEmitter {
   getHandSize() { return this.backend.currentState().definition.variant.handSize }
   getSuits() { return this.backend.currentState().definition.variant.suits }
   getStack(index: number) { return this.latestState.stacks[index] }
-  getDeckSize() { return this.latestState.cards.length }
+  getDeckSize() { return this.latestState.deck.length }
 
   getCardDisplayableProps(index: number) {
     if (this.isCardRevealed(index)) {
-      return this.latestState.cards[this.latestState.knownDeckOrder[index]];
+      return this.latestState.deck.getCard(this.latestState.knownDeckOrder[index]);
     } else {
       return { rank: 6, suit: "Black" };
     }
