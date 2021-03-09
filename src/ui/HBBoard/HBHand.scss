@@ -1,9 +1,5 @@
 .HBHand{
   display: grid;
-  justify-content: center;
-  align-content: center;
-  grid-template-rows: auto min-content;
-  text-justify: center;
   border-width: 2px;
   border-color: #00000000; 
   border-style: solid; 
@@ -16,8 +12,7 @@
 }
 
 .HBHandsArea{
-  display: grid;
-  justify-content: center;
+
 }
 
 .handname{
@@ -27,8 +22,5 @@
 
 .handCardArea{
   display: grid;
-  justify-self: stretch;
-}
-
-.cardslot{
+  grid-auto-flow: column;
 }

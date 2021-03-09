@@ -231,7 +231,7 @@ export function FloatElement<T extends FloatElementID>({ floatID, children, cont
   }, [driver, claimed, setClaimed, setListeners, controller, floatID, props, dragcontext, setFloatDriver]);
 
   return claimed ? //If we are not claimed by a target we should be invisible dont render anything
-    <animated.div ref={ref} {...listeners} style={{ ...driver, position: "absolute" }}>
+    <animated.div ref={ref} {...listeners} style={{ ...driver, position: "absolute", pointerEvents: "auto" }}>
       {children !== undefined ? cloneElement(children, props) : undefined}
     </animated.div>
     : <></>;
@@ -240,7 +240,7 @@ export function FloatElement<T extends FloatElementID>({ floatID, children, cont
 //TODO: add context provider to give children knowlege of their spacial limits
 export function FloatLayer({ children, style, ...props }: ComponentPropsWithoutRef<"div">) {
   return (
-    <div {...props} style={{ position: "absolute", ...style }}>
+    <div {...props} style={{ position: "absolute", overflow: "hidden", height:"100%", width:"100%", pointerEvents: "none", ...style }}>
       {children}
     </div>
   );

@@ -35,10 +35,11 @@ function CardInHand({ myTurn, player, index, card }: CardInHandProps) {
   }, [context, index]);
 
   const floatOptions = useMemo(() => ({ onDrop, draggable: myTurn&&(player===0) }), [myTurn, onDrop, player]);
-  const style = useMemo(() => ({ width: "110px", height: "150px" }), []);
 
   return (
-    <CardFloatTarget index={card} style={style} options={floatOptions} />
+    <CardFloatTarget index={card} options={floatOptions}>
+      <svg viewBox="0 0 110 150" preserveAspectRatio="xMidYMid meet"></svg>
+    </CardFloatTarget>
   );
 }
 
@@ -59,10 +60,10 @@ export function HBHand({ player }: HBHandProps) {
     context.on("game-update", callback);
     return removeFunc;
   });
-  const cardAreaStyle = useMemo(() => ({ gridTemplateColumns:"auto ".repeat(cards.length)}), [cards.length]);
+
   return (
     <div className={`HBHand${myTurn? " OnPlayerTurn" : ""}`}>
-      <div className="handCardArea" style={cardAreaStyle}>
+      <div className="handCardArea">
         {cards.map((n, i) => <CardInHand myTurn={myTurn} player={player} card={n} index={i} key={i} />)}
       </div>
       <span className="handname">
@@ -81,7 +82,7 @@ export function HBHandsArea({ perspective }: HBHandsAreaProps) {
   const playerNames = context.getPlayerNames();
   const numPlayers = context.getNumberOfPlayers();
   return (
-    <div className="HBHandsArea" style={{ gridTemplateRows: `repeat(${numPlayers}, min-content)` }}>
+    <div className="HBHandsArea">
       {playerNames.map((n, i) => <HBHand player={(i + perspective) % (numPlayers)} key={i} />)}
     </div>
   );
