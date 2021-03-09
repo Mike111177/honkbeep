@@ -1,3 +1,5 @@
+import { Clue } from "./types/Clue";
+
 //Data required to describe a card
 export type CardData = {
   rank: number;
@@ -60,21 +62,6 @@ export type GameDiscardAttempt = {
   handSlot: number;
 };
 export type GameDiscardEvent = GameDiscardAttempt;
-
-//Clue description
-export enum ClueType{
-  Number = 1,
-  Color
-}
-type NumberClue = {
-  type: ClueType.Number;
-  number: number;
-}
-type ColorClue = {
-  type: ClueType.Color;
-  color: string;
-}
-export type Clue = NumberClue | ColorClue;
 
 export type GameClueAttempt = {
   type: GameEventType.Clue;

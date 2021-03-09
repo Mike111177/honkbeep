@@ -1,8 +1,9 @@
-import { CardData, Clue, ClueType } from "./GameTypes";
+import { CardData } from "./GameTypes";
+import { Clue, ClueType } from "./types/Clue";
 
 export function doesClueMatchCard(clue: Clue, info: CardData) {
   return (
-    (clue.type === ClueType.Number && clue.number === info.rank) ||
-    (clue.type === ClueType.Color && clue.color === info.suit)
+    (clue.type === ClueType.Number && clue.value === info.rank) ||
+    (clue.type === ClueType.Color && clue.value === info.suit)
   );
 }

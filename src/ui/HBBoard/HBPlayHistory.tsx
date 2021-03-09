@@ -1,11 +1,13 @@
 import chroma from "chroma-js";
 import colors from "../BaseColors";
 import { useContext, useEffect, useState } from "react";
-import { ClueType, GameClueEvent, GameDiscardEvent, GameEventType, GamePlayEvent, GamePlayResultType } from "../../game/GameTypes";
+import { ClueType } from "../../game/types/Clue";
+import { GameClueEvent, GameDiscardEvent, GameEventType, GamePlayEvent, GamePlayResultType } from "../../game/GameTypes";
 import { GameUIContext } from "../ReactFrontendInterface";
 import HBCardIcon from "./HBCardIcon";
 
 import "./HBPlayHistory.scss";
+
 
 const NaturalNums = ["zero", "one", "two", "three", "four", "five"];
 
@@ -18,10 +20,10 @@ function CluePlayDescriber({ turn, event: { touched, clue, target } }: CluePlayD
   const giverName = playernames[player];
   const targetName = playernames[target];
   const numTouched = touched.length;
-  const subject = clue.type === ClueType.Number ? `#${clue.number}`: clue.color;
+  const subject = clue.type === ClueType.Number ? `#${clue.value}`: clue.value;
   let subjectstyle:any = {};
   if (clue.type === ClueType.Color) {
-    const color = colors(clue.color);
+    const color = colors(clue.value);
     const backgroundColor = chroma.mix(color,"#FFFFFF", 0.5, "lrgb").hex();
     subjectstyle = {
       color,
