@@ -39,7 +39,7 @@ function CardInHand({ myTurn, player, index, card }: CardInHandProps) {
 
   return (
     <CardFloatTarget index={card} style={style} options={floatOptions}>
-      <svg viewBox="0 0 110 150" preserveAspectRatio="xMidYMid meet" height="100%" width="100%"></svg>
+      <svg viewBox="0 0 110 150" preserveAspectRatio="xMidYMid meet"></svg>
     </CardFloatTarget>
   );
 }
@@ -64,7 +64,7 @@ export function HBHand({ player }: HBHandProps) {
   const cardAreaStyle = useMemo(() => ({ gridTemplateColumns:"auto ".repeat(cards.length)}), [cards.length]);
   return (
     <div className={`HBHand${myTurn? " OnPlayerTurn" : ""}`}>
-      <div className="handCardArea" style={cardAreaStyle}>
+      <div className="handCardArea">
         {cards.map((n, i) => <CardInHand myTurn={myTurn} player={player} card={n} index={i} key={i} />)}
       </div>
       <span className="handname">
@@ -83,7 +83,7 @@ export function HBHandsArea({ perspective }: HBHandsAreaProps) {
   const playerNames = context.getPlayerNames();
   const numPlayers = context.getNumberOfPlayers();
   return (
-    <div className="HBHandsArea" style={{ gridTemplateRows: `repeat(${numPlayers}, 1fr)` }}>
+    <div className="HBHandsArea">
       {playerNames.map((n, i) => <HBHand player={(i + perspective) % (numPlayers)} key={i} />)}
     </div>
   );
