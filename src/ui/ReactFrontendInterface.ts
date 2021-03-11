@@ -5,6 +5,7 @@ import { GameState, initBlankGameState, reduceGameStateFromGameData } from "../g
 import BackendInterface from "../game/BackendInterface";
 import NullBackend from "../game/NullBackend";
 import { GameAttempt } from "../game/GameTypes";
+import { FloatAreaPath } from "./util/Floating";
 
 export default class ReactUIInterface extends EventEmitter {
   //Game State after Deal Event, blank until Deal event processed
@@ -195,6 +196,52 @@ export default class ReactUIInterface extends EventEmitter {
   setViewTurn(turn: number) {
     this.viewState = this.getStateOfTurn(turn);
     this.emit("game-update");
+  }
+
+  /**
+   * get the path of a target element for a card in the deck
+   * @param index card number
+   * @returns path of target home
+   * @todo this is slow, find a better way
+   */
+  getCardHome(index: number): FloatAreaPath {
+    //Search hands
+    for (let h = 0; h < this.viewState.hands.length; h++){
+      const hand = this.viewState.hands[h];
+      for (let c = 0; c < hand.length; c++){
+        if (index === hand[c]) {
+          return ["hands", h, c];
+        }
+      }
+    }
+    //Search Stacks
+    for (let s = 0; s < this.viewState.stacks.length; s++){
+      const stack = this.viewState.stacks[s];
+      for (let c = 0; c < stack.length; c++){
+        if (index === stack[c]) {
+          return ["stacks", s];
+        }
+      }
+    }
+    //Search discard
+    for (let c = 0; c < this.viewState.discardPile.length; c++){
+      if (index === this.viewState.discardPile[c]) {
+        return ["discard", index];
+      }
+    }
+
+    return ["deck"];
+  }
+
+  /**
+   * Runs a given callback whenever the game state changes
+   * @param callback callback to run
+   * @returns function to unsubscribe
+   */
+  subscribeToStateChange(callback: ()=>void) {
+    const removeFunc = () => { this.off("game-update", callback) };
+    this.on("game-update", callback);
+    return removeFunc;
   }
 
 }

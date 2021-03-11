@@ -1,3 +1,4 @@
+import React from "react";
 import { Vec2D, vecAdd, vecMul, vecSub } from "../util/Vector";
 
 export const OutlineFilter = (
@@ -37,6 +38,18 @@ export const ThickOutlineFilter = (
 const view: Vec2D = { x: 110, y: 150 };
 const viewBox: string = `0 0 ${view.x} ${view.y}`;
 const mid: Vec2D = vecMul(view, 0.5);
+
+type CardSVGProps = {
+  children?: React.ReactNode;
+} & React.ComponentProps<"svg">;
+export const CardSVG = React.forwardRef<SVGSVGElement, CardSVGProps>(({ children, ...props }, ref) => {
+  return (
+    <svg ref={ref} viewBox={viewBox} preserveAspectRatio="xMidYMid meet" {...props}>
+      {children}
+    </svg>
+  );
+});
+CardSVG.displayName = "CardSVG";
 
 export const CardDim = { view, viewBox, mid };
 

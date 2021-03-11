@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 
-import { CardFloatTarget } from "./CardFloat";
+import { CardTarget } from "./CardFloat";
 import { GameEventType } from "../../game/GameTypes";
 import { GameUIContext } from '../ReactFrontendInterface';
 
@@ -9,11 +9,11 @@ import "./HBHand.scss";
 type CardInHandProps = {
   index: number;
   myTurn: boolean;
-  card: number;
+  slot: number;
   player: number;
 }
 
-function CardInHand({ myTurn, player, index, card }: CardInHandProps) {
+function CardInHand({ myTurn, player, index, slot }: CardInHandProps) {
   const context = useContext(GameUIContext);
 
   //Make it draggable
@@ -34,12 +34,10 @@ function CardInHand({ myTurn, player, index, card }: CardInHandProps) {
     }
   }, [context, index]);
 
-  const floatOptions = useMemo(() => ({ onDrop, draggable: myTurn&&(player===0) }), [myTurn, onDrop, player]);
+  const floatOptions = useMemo(() => ({ onDrop, draggable: myTurn && (player === 0) }), [myTurn, onDrop, player]);
 
   return (
-    <CardFloatTarget index={card} options={floatOptions}>
-      <svg viewBox="0 0 110 150" preserveAspectRatio="xMidYMid meet"></svg>
-    </CardFloatTarget>
+    <CardTarget areaPath={["hands", player, slot]}/>
   );
 }
 
@@ -64,7 +62,7 @@ export function HBHand({ player }: HBHandProps) {
   return (
     <div className={`HBHand${myTurn? " OnPlayerTurn" : ""}`}>
       <div className="handCardArea">
-        {cards.map((n, i) => <CardInHand myTurn={myTurn} player={player} card={n} index={i} key={i} />)}
+        {cards.map((n, i) => <CardInHand myTurn={myTurn} player={player} slot={i} index={i} key={i} />)}
       </div>
       <span className="handname">
         {playerNames[player]}

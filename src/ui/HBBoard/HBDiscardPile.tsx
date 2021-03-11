@@ -1,8 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 
 import { GameUIContext } from "../ReactFrontendInterface";
-import { CardFloatTarget } from "./CardFloat";
-import { DropZone } from "../util/Dragging";
+import { FloatArea } from "../util/Floating";
 
 export default function HBDiscardPile() {
   const context = useContext(GameUIContext);
@@ -25,15 +24,15 @@ export default function HBDiscardPile() {
     .sort((a,b)=>(a.suit < b.suit ? -1 : a.suit > b.suit ? 1 : a.rank - b.rank))
     .map(i=>i.index);
   return (
-    <DropZone id="discard" style={{
-      width:"70%", 
-      height:"100%", 
-      display:"flex", 
-      flexDirection:"row",
+    <div id="discard" style={{
+      width: "100%",
+      height: "100%",
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
       justifyContent: "space-evenly",
-      alignContent: "center",
-      flexWrap: " wrap"}}>
-      {cardOrder.map(i=><CardFloatTarget style={{minWidth: "80px", height: "162px"}} key={i} index={i} />)}
-    </DropZone>
+      alignContent: "center"
+    }}>
+      {cardOrder.map(i => <FloatArea style={{ minWidth: "80px", height: "162px" }} key={i} areaPath={["discard", i]} />)}
+    </div>
   );
 }

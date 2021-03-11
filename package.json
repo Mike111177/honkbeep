@@ -19,7 +19,8 @@
     "lintfix": "node node_modules/eslint/bin/eslint.js --config node_modules/eslint-config-react-app/index.js src --fix",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test"
+    "test": "react-scripts test",
+    "serve": "serve -s build"
   },
   "browserslist": {
     "production": [

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import chroma from "chroma-js";
 
-import { CardFloatTarget } from "./CardFloat";
+import { CardTarget } from "./CardFloat";
 import { GameUIContext } from "../ReactFrontendInterface";
 import { DropZone } from "../util/Dragging";
 import { CardDim, OutlineFilter } from "./CardUtil";
@@ -41,17 +41,15 @@ export function HBStack({ suit, number }: HBStackProps) {
     context.on("game-update", callback);
     return removeFunc;
   });
-  const backgroundColor = chroma.mix(color,"#FFFFFF", 0.3, "lrgb").alpha(0.4).hex();
+  const backgroundColor = chroma.mix(color, "#FFFFFF", 0.3, "lrgb").alpha(0.4).hex();
   return (
-    <CardFloatTarget index={index}>
-      <svg preserveAspectRatio="xMidYMid meet" height="100%" width="100%" viewBox={viewBox}>
-        {OutlineFilter}
-        <rect x="5%" y="5%" width="90%" height="90%" fill={backgroundColor} rx="5%" />
-        <rect x="5%" y="5%" width="90%" height="90%" fill="#00000000" strokeWidth="4%" stroke="#000000" rx="5%" />
-         <rect x="5%" y="5%" width="90%" height="90%" fill="#00000000" strokeWidth="2.5%" stroke={color} rx="5%" />
-        <image href={pips[suit]} height={pipHeight} {...pipCenter} {...pipCenter} filter="url(#outline)" />
-      </svg>
-    </CardFloatTarget>
+    <CardTarget height="100%" width="100%" areaPath={["stacks", number]}>
+      {OutlineFilter}
+      <rect x="5%" y="5%" width="90%" height="90%" fill={backgroundColor} rx="5%" />
+      <rect x="5%" y="5%" width="90%" height="90%" fill="#00000000" strokeWidth="4%" stroke="#000000" rx="5%" />
+      <rect x="5%" y="5%" width="90%" height="90%" fill="#00000000" strokeWidth="2.5%" stroke={color} rx="5%" />
+      <image href={pips[suit]} height={pipHeight} {...pipCenter} {...pipCenter} filter="url(#outline)" />
+    </CardTarget>
   );
 }
 

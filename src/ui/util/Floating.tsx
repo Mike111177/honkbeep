@@ -1,247 +1,166 @@
-import { cloneElement, ComponentPropsWithoutRef, RefObject, useContext, useEffect, useRef, useState } from "react";
-import { animated, Controller, ControllerUpdate, SpringConfig, SpringValue } from "react-spring/web.cjs";
-import { DragRecognizer, DragStatus } from "./InputHandling";
-import { Vec2D, vecAdd } from "./Vector";
-import { DragContext, DragManager } from "./Dragging";
+import { useContext, useEffect, useRef } from "react";
+import React from "react";
 
-
-// TODO: Implement some kind of sequencer, to give more control of the animation
-// TODO: Give control over z-index somehow, to prevent bugs where items
-
-type FloatDriver = {
-  x?: SpringValue<number> | number;
-  y?: SpringValue<number> | number;
-  width?: SpringValue<number> | number;
-  height?: SpringValue<number> | number;
-}
-
-type Rect = {
+export type Rectangle = {
+  x: number;
+  y: number;
   width: number;
   height: number;
-} & Vec2D;
-
-type FloatInjectedProps = any;
-
-//Everything a FloatElement needs to give a FloatContoller to give it control
-type FloatBindRef = {
-  ref: RefObject<HTMLElement>;
-  setFloatDriver: React.Dispatch<React.SetStateAction<FloatDriver>>;
-  setClaimed: React.Dispatch<React.SetStateAction<boolean>>;
-  setListeners: React.Dispatch<React.SetStateAction<any>>;
-  setProps: React.Dispatch<React.SetStateAction<FloatInjectedProps>>;
-  dragcontext: DragManager;
 }
 
-//Everything A FloatTarget Wants to communicate to the floating element
-export type FloatTargetOptions = {
-  //Whether or not to allow user to drag element
-
-  draggable?: boolean;
-  // onDrop Event Handler for when user drops element on dropzone
-  // The if supplied, FloatElement will not return to its origin 
-  // until the promise is resolved true
-
-  onDrop?: (e: string) => Promise<boolean>;
-  // Properties to inject into the floating element
-  injectProps?: any;
+type AreaListener = (event: FloatAreaEvent) => any;
+export type FloatAreaPath = [string, ...(number | string)[]];
+export enum FloatAreaEventType {
+  Register = 1,
+  Resize,
+  DragEnter,
+  DragLeave
 }
+export type FloatAreaEvent = {
+  area: FloatAreaData;
+  type: FloatAreaEventType;
+};
+class FloatAreaData {
+  ref?: React.RefObject<HTMLElement>;
+  listeners: AreaListener[] = [];
 
-function targetRect(el: HTMLElement): Rect {
-  const rect = el.getBoundingClientRect();
-  return { x: rect.x, y: rect.y, width: rect.width, height: rect.height };
-}
-
-const DEFAULT_SPRING: SpringConfig = { friction: 20, tension: 100 };
-
-//Manages the shared state between a bound float and a claiming target
-export class FloatController {
-  //TODO: add scaling transforms
-  //TODO: add relative coordinate support to handle non-full screen zones
-  private bound: boolean = false;
-  private targetBox: Rect = { x: 0, y: 0, width: 0, height: 0 };
-  private floatTarget: Rect = { x: 0, y: 0, width: 0, height: 0 };
-  private offset: Vec2D = { x: 0, y: 0 };
-  private springCfg: SpringConfig = DEFAULT_SPRING;
-  private listeners: any;
-  private fvDriver: FloatDriver = { x: 0, y: 0 };
-  private claimer?: HTMLDivElement;
-  private detachTarget: () => void = () => { };
-  private options?: FloatTargetOptions;
-  private spring?: Controller<Rect>;
-  private drag?: DragRecognizer;
-  private floatRef?: FloatBindRef;
-
-  //For targets to claim card, this may be called
-  //multiple times by the claimer to update the bound card
-  claim(claimer: HTMLDivElement, options?: FloatTargetOptions) {
-    this.targetBox = targetRect(claimer);
-
-    //Listen to target dom element resizes
-    if (claimer !== this.claimer) {
-      this.detachTarget();
-      const callback = (e: UIEvent) =>{
-        this.updateTargetBox();
-        this.updateLocation({immediate: true});
-      };
-      this.detachTarget = () => window.removeEventListener("resize", callback);
-      window.addEventListener("resize", callback);
-    }
-    
-    this.claimer = claimer;
-    this.options = options;
-    this.link();
-  }
-
-  //Floating cards use this to attach then selfs to the context
-  bind(bindref: FloatBindRef) {
-    this.bound = true;
-    this.floatRef = bindref;
-    this.link();
-  }
-
-  //Refresh everything linking bound element and target
-  private link() {
-    if (this.floatRef !== undefined && this.claimer !== undefined) {
-      this.initSpring();
-      this.floatRef.setFloatDriver(this.fvDriver);
-      this.floatRef.setProps(this.options?.injectProps);
-      this.updateDrag();
-      this.updateTargetBox();
-      this.updateLocation();
-      this.floatRef.setClaimed(this.claimer !== undefined);
-      this.floatRef.setListeners(this.listeners);
-    }
-  }
-
-  unbind() {
-    if (this.bound) {
-      this.spring?.stop();
-      this.spring = undefined;
-    }
-    this.floatRef = undefined;
-  }
-
-  isActive() { return this.floatRef !== undefined && this.claimer !== undefined }
-  private initSpring() {
-    if (this.spring === undefined) {
-      this.spring = new Controller<Rect>();
-      this.fvDriver = this.spring.springs;
-    }
-  }
-
-  private updateDrag() {
-    if (this.options?.draggable && this.isActive()) {
-      if (this.drag === undefined) {
-        this.drag = new DragRecognizer(this.floatRef!.ref, event => this.onDragEvent(event));
-      }
-      this.listeners = this.drag.listeners;
+  getRect() {
+    const rect = this.ref?.current?.getBoundingClientRect();
+    if (rect) {
+      return { x: rect.x, y: rect.y, width: rect.width, height: rect.height };
     } else {
-      this.drag = undefined;
-      this.listeners = undefined;
-      this.offset = { x: 0, y: 0 };
+      return undefined;
     }
   }
 
-  private updateFloatTarget(){
-    const { x, y } = vecAdd(this.targetBox, this.offset);
-    const { width, height } = this.targetBox;
-    this.floatTarget = { x, y, width, height };
+  update(reason: FloatAreaEventType) {
+    this.listeners.forEach((callback: AreaListener) => callback({ type: reason, area: this }));
   }
+}
 
-  private updateLocation(params?: any) {
-    if (this.spring !== undefined) {
-      this.updateFloatTarget();
-      this.spring.start({ ...this.floatTarget, ...params, config: this.springCfg });
-    }
-  }
-
-  private updateTargetBox() {
-    if (this.claimer !== undefined) {
-      this.targetBox = targetRect(this.claimer);
-    }
-  }
-
-  //TODO: this works okay but it probably could be made more robust
-  private async onDragEvent({ down, offset }: DragStatus) {
-    if (down) {
-      this.offset = offset;
-      if (this.floatRef !== undefined) {
-        this.floatRef.dragcontext.dragging = true;
+export class FloatContextData {
+  areas: any = {};
+  private initialized: boolean = false;
+  private getOrCreateArea(path: FloatAreaPath): FloatAreaData {
+    let area = this.areas;
+    let i = 0;
+    //Search recursively along path
+    for (i; i < path.length - 1; i++) {
+      //If the next link in the path is undefined
+      //Create it based on the next path item
+      if (area[path[i]] === undefined) {
+        switch (typeof path[i + 1]) {
+          //If the next path item is a string, we create an object
+          case "string":
+            area[path[i]] = {};
+            break;
+          //However if it is a number we prefer to use an array for better lookup perf
+          case "number":
+            area[path[i]] = [];
+            break;
+          default:
+            throw new Error("Unsupported path variable");
+        }
+      } else if (area[path[i]] instanceof FloatAreaData) {
+        //Do not recurse through a FloatAreaData, this request was malformed
+        throw new Error("Area found in middle of path.");
       }
-      this.updateLocation({ immediate: true });
+      area = area[path[i]];
+    }
+
+    if (area[path[i]] === undefined) {
+      //If the last item in the path is undef, we create it now and return it
+      const newArea = new FloatAreaData();
+      area[path[i]] = newArea;
+      return newArea;
+    } else if (area[path[i]] instanceof FloatAreaData) {
+      //else if the last item in the path is a FloatAreaData, we found it! return it
+      return area[path[i]] as FloatAreaData;
     } else {
-      if (this.floatRef?.dragcontext.zone !== undefined &&
-        this.options?.onDrop !== undefined &&
-        await this.options.onDrop(this.floatRef.dragcontext.zone)) {
-        return;
-      } else {
-        this.offset = { x: 0, y: 0 };
+      //Else the next item is not a valid area, the request was malformed
+      throw new Error("Incomplete area path");
+    }
+  }
+
+  private *allAreas() {
+    function* helper(areas: any): Generator<FloatAreaData, void, unknown> {
+      for (let child of Object.keys(areas)) {
+        if (areas[child] !== undefined) {
+          if (areas[child] instanceof FloatAreaData) {
+            yield areas[child];
+          } else {
+            yield* helper(areas[child]);
+          }
+        }
       }
-      this.updateLocation();
     }
+    yield* helper(this.areas);
+  }
+
+  getRect(path: FloatAreaPath) {
+    return this.getOrCreateArea(path).getRect();
+  }
+
+  private onWindowResize() {
+    for (let area of this.allAreas()) {
+      if (area.ref !== undefined) {
+        area.update(FloatAreaEventType.Resize);
+      }
+    }
+  }
+
+  init() {
+    if (!this.initialized) {
+      window.addEventListener("resize", this.onWindowResize.bind(this));
+      this.initialized = true;
+    }
+  }
+
+  subscribeToArea(path: FloatAreaPath, callback: AreaListener) {
+    const area = this.getOrCreateArea(path);
+    area.listeners.push(callback);
+    return () => { area.listeners.splice(area.listeners.findIndex((e: AreaListener) => e === callback), 1) };
+  }
+
+  registerArea(path: FloatAreaPath, value: any) {
+    const area = this.getOrCreateArea(path);
+    area.ref = value;
+    area.update(FloatAreaEventType.Register);
   }
 }
 
-type FloatElementID = number | string | undefined;
+export const FloatContext = React.createContext<FloatContextData>(new FloatContextData());
 
-type FloatTargetProps<T extends FloatElementID> = {
-  floatID?: T;
-  options?: FloatTargetOptions;
+type FloatAreaProps = {
+  areaPath: FloatAreaPath;
   children?: React.ReactElement;
-  controller: (id: T) => FloatController;
-} & ComponentPropsWithoutRef<"div">;
-
-export function FloatTarget<T extends FloatElementID>({ floatID, options, children, controller, ...props }: FloatTargetProps<T>) {
-  //Div element to grab target coordinates
-  const element = useRef(null);
-
-  //Claim the card. Anytime this component updates, the CardManager will 
-  //update the bound floating card
-  useEffect(() => {
-    if (floatID !== undefined) {
-      controller(floatID).claim(element.current!, options);
-    }
-  }, [floatID, controller, options]);
-
-  if (children === undefined) {
-    return <div ref={element} {...props} />;
-  } else {
-    return cloneElement(children, { ref: element });
-  }
+  style?: React.CSSProperties;
+  className?: string;
 }
-
-export type FloatElementProps<T extends FloatElementID> = {
-  floatID: T;
-  children?: React.ReactElement;
-  controller: (id: T) => FloatController;
-}
-
-//Wrapper for any element meant to float
-export function FloatElement<T extends FloatElementID>({ floatID, children, controller }: FloatElementProps<T>) {
-  const [driver, setFloatDriver] = useState<FloatDriver>({});
-  const [props, setProps] = useState<FloatInjectedProps>(undefined);
-  const [listeners, setListeners] = useState<FloatInjectedProps>(undefined);
-  const [claimed, setClaimed] = useState<boolean>(false);
-
+export function FloatArea({ areaPath, children, ...props }: FloatAreaProps) {
+  const floatContext = useContext(FloatContext);
   const ref = useRef(null);
-  const dragcontext = useContext(DragContext);
-  //Make sure this element stays bound to its manager
-  useEffect(() => {
-    controller(floatID).bind({ setClaimed, setListeners, ref, dragcontext, setFloatDriver, setProps });
-  }, [driver, claimed, setClaimed, setListeners, controller, floatID, props, dragcontext, setFloatDriver]);
+  useEffect(() => floatContext.registerArea(areaPath, ref), [floatContext, areaPath, ref]);
 
-  return claimed ? //If we are not claimed by a target we should be invisible dont render anything
-    <animated.div ref={ref} {...listeners} style={{ ...driver, position: "absolute", pointerEvents: "auto" }}>
-      {children !== undefined ? cloneElement(children, props) : undefined}
-    </animated.div>
-    : <></>;
+  if (children !== undefined) {
+    return React.cloneElement(children, { ref: ref, ...props });
+  } else {
+    return <div ref={ref} {...props}></div>;
+  }
+}
+/*
+type FloatElementProps = {
+  areaPath: FloatAreaPath;
+  children?: React.ReactElement;
+} & ComponentPropsWithoutRef<"div">
+export function FloatElement({ areaPath, children }: FloatElementProps) {
+  const floatContext = useContext(FloatContext);
+  const ref = useRef(null);
+
+  const [spring, setSpring] = useSpring(() => ({ x: 0, y: 0, width: 0, height: 0 }));
+
+  useEffect(() => floatContext.subscribeToArea(areaPath, setSpring), [areaPath, floatContext, setSpring]);
+  return <animated.div ref={ref} style={{ position: "absolute", ...spring }}>{children}</animated.div>;
 }
 
-//TODO: add context provider to give children knowlege of their spacial limits
-export function FloatLayer({ children, style, ...props }: ComponentPropsWithoutRef<"div">) {
-  return (
-    <div {...props} style={{ position: "absolute", overflow: "hidden", height:"100%", width:"100%", pointerEvents: "none", ...style }}>
-      {children}
-    </div>
-  );
-}
+*/
