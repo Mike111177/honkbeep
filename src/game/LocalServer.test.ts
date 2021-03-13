@@ -1,6 +1,7 @@
 import LocalServer from "./LocalServer";
-import { ClueType, GameClueAttempt, GameEventType } from "./GameTypes";
+import { GameClueAttempt, GameEventType } from "./GameTypes";
 import { Deck, createProcuredOrder } from "./DeckBuilding";
+import { ClueType } from "./types/Clue";
 
 test('Initializes without error', () => {
   const gamedef = {
@@ -41,8 +42,8 @@ test('Does not allow player to take turn twice in a row', async () => {
   expect(await server.attemptPlayerAction(1, { type: GameEventType.Discard, handSlot: 0 })).toBe(true);
   expect(await server.attemptPlayerAction(1, { type: GameEventType.Discard, handSlot: 0 })).toBe(false);
   //Test having player 3 make a clue 2 times
-  expect(await server.attemptPlayerAction(2, { type: GameEventType.Clue, target: 0, clue: { type: ClueType.Color, color: "Red" } })).toBe(true);
-  expect(await server.attemptPlayerAction(2, { type: GameEventType.Clue, target: 0, clue: { type: ClueType.Number, number: 1 } })).toBe(false);
+  expect(await server.attemptPlayerAction(2, { type: GameEventType.Clue, target: 0, clue: { type: ClueType.Color, value: "Red" } })).toBe(true);
+  expect(await server.attemptPlayerAction(2, { type: GameEventType.Clue, target: 0, clue: { type: ClueType.Number, value: 1 } })).toBe(false);
 });
 
 test('Does not allow clues sent to invalid players', async () => {
@@ -64,9 +65,9 @@ test('Does not allow clues sent to invalid players', async () => {
   //Create virtual local Server with 4 players
   const server = new LocalServer(gamedef, deckDef);
 
-  const player1GoodClue: GameClueAttempt = { type: GameEventType.Clue, target: 3, clue: { type: ClueType.Number, number: 2 } };
-  const player2BadTClue: GameClueAttempt = { type: GameEventType.Clue, target: 4, clue: { type: ClueType.Number, number: 2 } };
-  const player2SelfClue: GameClueAttempt = { type: GameEventType.Clue, target: 1, clue: { type: ClueType.Color, color: "Blue" } };
+  const player1GoodClue: GameClueAttempt = { type: GameEventType.Clue, target: 3, clue: { type: ClueType.Number, value: 2 } };
+  const player2BadTClue: GameClueAttempt = { type: GameEventType.Clue, target: 4, clue: { type: ClueType.Number, value: 2 } };
+  const player2SelfClue: GameClueAttempt = { type: GameEventType.Clue, target: 1, clue: { type: ClueType.Color, value: "Blue" } };
 
   //Test having player 1 make a clue for existing player 4 (index 3)
   expect(await server.attemptPlayerAction(0, player1GoodClue)).toBe(true);
