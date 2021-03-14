@@ -13,7 +13,7 @@ const gamedef = {
   variant: {
     suits: ["Red", "Yellow", "Green", "Blue", "Purple"],
     numPlayers: 4,
-    handSize: 5
+    handSize: 4
   },
   playerNames: ["Alice", "Bob", "Cathy", "Donald"]
 };
@@ -25,7 +25,7 @@ const server = new LocalServer(gamedef);
 (window as any).HONKLocalServer = server;
 /*
 let turn = 0;
-HONKLocalServer.attemptPlayerAction(turn++%4, {type: 2, handSlot: Math.floor(Math.random() * 5)});
+HONKLocalServer.attemptPlayerAction(turn++%4, {type: 2, handSlot: Math.floor(Math.random() * 4)});
 */
 
 //Connect to local server as player 0
