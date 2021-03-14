@@ -1,7 +1,7 @@
 import { ComponentPropsWithoutRef, useContext, useEffect, useState } from "react";
 
 import HBDeckCard from "./HBDeckCard";
-import { FloatArea, FloatAreaEventType, FloatAreaPath, FloatContext, Rectangle } from "../util/Floating";
+import { FloatArea, FloatAreaEventType, FloatAreaPath, FloatContext, Rectangle, useFloatArea } from "../util/Floating";
 import { CardSVG } from "./CardUtil";
 import { GameUIContext } from "../ReactFrontendInterface";
 import ArrayUtil from "../../util/ArrayUtil";
@@ -13,11 +13,9 @@ type CardTargetProps = {
 } & ComponentPropsWithoutRef<"svg">;
 export function CardTarget({ areaPath, children, ...props }: CardTargetProps) {
   return (
-    <FloatArea areaPath={areaPath}>
-      <CardSVG {...props}>
-        {children}
-      </CardSVG>
-    </FloatArea>
+    <CardSVG ref={useFloatArea(areaPath)} {...props}>
+      {children}
+    </CardSVG>
   );
 }
 

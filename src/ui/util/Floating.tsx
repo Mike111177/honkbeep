@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react";
+import { ComponentPropsWithoutRef, useContext, useEffect, useRef } from "react";
 import React from "react";
 
 export type Rectangle = {
@@ -131,36 +131,16 @@ export class FloatContextData {
 
 export const FloatContext = React.createContext<FloatContextData>(new FloatContextData());
 
+export function useFloatArea(path: FloatAreaPath) {
+  const floatContext = useContext(FloatContext);
+  const ref = useRef(null);
+  useEffect(() => floatContext.registerArea(path, ref), [floatContext, path, ref]);
+  return ref;
+}
+
 type FloatAreaProps = {
   areaPath: FloatAreaPath;
-  children?: React.ReactElement;
-  style?: React.CSSProperties;
-  className?: string;
-}
+} & ComponentPropsWithoutRef<"div">;
 export function FloatArea({ areaPath, children, ...props }: FloatAreaProps) {
-  const floatContext = useContext(FloatContext);
-  const ref = useRef(null);
-  useEffect(() => floatContext.registerArea(areaPath, ref), [floatContext, areaPath, ref]);
-
-  if (children !== undefined) {
-    return React.cloneElement(children, { ref: ref, ...props });
-  } else {
-    return <div ref={ref} {...props}></div>;
-  }
+  return <div ref={useFloatArea(areaPath)} {...props}>{children}</div>;
 }
-/*
-type FloatElementProps = {
-  areaPath: FloatAreaPath;
-  children?: React.ReactElement;
-} & ComponentPropsWithoutRef<"div">
-export function FloatElement({ areaPath, children }: FloatElementProps) {
-  const floatContext = useContext(FloatContext);
-  const ref = useRef(null);
-
-  const [spring, setSpring] = useSpring(() => ({ x: 0, y: 0, width: 0, height: 0 }));
-
-  useEffect(() => floatContext.subscribeToArea(areaPath, setSpring), [areaPath, floatContext, setSpring]);
-  return <animated.div ref={ref} style={{ position: "absolute", ...spring }}>{children}</animated.div>;
-}
-
-*/
