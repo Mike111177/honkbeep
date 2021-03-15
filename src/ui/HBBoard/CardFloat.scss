@@ -1,0 +1,16 @@
+.CardFloatLayer { 
+  position: absolute; 
+  overflow: hidden; 
+  pointer-events: none; 
+  width: 100%; 
+  height: 100%; 
+}
+
+.FloatingCard {
+  position: absolute;
+  pointer-events: auto; 
+}
+
+.FloatingCard.dragging {
+   z-index: 10;
+}

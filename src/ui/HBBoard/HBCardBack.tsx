@@ -17,7 +17,7 @@ const pipCenter = vecAdd(mid, pipOff);
 export default function HBCardBack({ suits, ...props }: HBCardBackProps) {
 
   return (
-    <svg {...props} viewBox={viewBox}>
+    <svg className="HBCardBack" {...props} viewBox={viewBox}>
       {OutlineFilter}
       <rect x="5%" y="5%" width="90%" height="90%" fill="#cccccc" rx="5%" />
       <rect x="5%" y="5%" width="90%" height="90%" fill="#00000000" strokeWidth="4%" stroke="#000000" rx="5%" />

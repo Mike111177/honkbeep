@@ -9,6 +9,8 @@ import { animated, useSpring } from "react-spring/web.cjs";
 import { useDrag } from "../util/InputHandling";
 import { vecAdd } from "../util/Vector";
 
+import "./CardFloat.scss";
+
 //Helper to make card targets
 type CardTargetProps = {
   areaPath: FloatAreaPath;
@@ -36,6 +38,7 @@ export function FloatCard({ index }: FloatCardProps) {
   const floatContext = useContext(FloatContext);
 
   const [home, setHome] = useState(() => gameContext.getCardHome(index));
+  const [dragging, setDragging] = useState(false);
   const [spring, setSpring] = useSpring<Rectangle>(() => (floatContext.getRect(home) ?? { x: 0, y: 0, width: 0, height: 0 }));
   const ref = useRef(null);
 
@@ -60,17 +63,19 @@ export function FloatCard({ index }: FloatCardProps) {
       if (down) {
         const { x, y } = homeRect;
         const dragTarget = vecAdd({ x, y }, offset);
-        setSpring({ ...dragTarget, immediate:true});
+        setSpring({ ...dragTarget, immediate: true });
+        setDragging(true);
       } else {
         //Relaxed parameters to make bounce back pretty
         setSpring({ ...homeRect, config: { friction: 25, tension: 750 } });
+        setDragging(false);
       }
     }
   });
 
   if (home[0] === "deck") return <>{undefined}</>;
   return (
-    <animated.div ref={ref} {...attach} style={{ position: "absolute", pointerEvents: "auto", ...spring }}>
+    <animated.div className={`FloatingCard${dragging? " dragging" : ""}`} ref={ref} {...attach} style={spring}>
       <HBDeckCard index={index} />
     </animated.div>
   );
@@ -81,7 +86,7 @@ export function FloatCard({ index }: FloatCardProps) {
 export function CardFloatLayer() {
   const context = useContext(GameUIContext);
   return (
-    <div className="CardFloatLayer" style={{ position: "absolute", overflow: "hidden", pointerEvents: "none", width: "100%", height: "100%" }}>
+    <div className="CardFloatLayer">
       {ArrayUtil.iota(context.getDeckSize()).map(i => <FloatCard key={i} index={i} />)}
     </div >
   );

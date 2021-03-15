@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 
 import HBCardFront from "./HBCardFront";
 import { GameUIContext } from "../ReactFrontendInterface";
@@ -9,8 +9,8 @@ export default function HBDeckCard({ index, ...props }: any) {
   const context = useContext(GameUIContext);
   if (context.isCardRevealed(index)) {
     let cardInfo = context.getCardDisplayableProps(index);
-    return <HBCardFront style={{ userSelect: "none" }} {...cardInfo} {...props} />;
+    return <HBCardFront {...cardInfo} {...props} />;
   } else {
-    return <HBCardBack style={{ userSelect: "none" }} suits={context.getSuits()} {...props}  />;
+    return <HBCardBack suits={context.getSuits()} {...props}  />;
   }
 }

@@ -40,7 +40,7 @@ export default function HBCardFront({ suit, rank, ...props }: HBCardProps) {
   const num = rank;
   const backgroundColor = chroma.mix(color,"#FFFFFF", 0.5, "lrgb").hex();
   return (
-    <svg {...props} viewBox={viewBox}>
+    <svg className="HBCardFront" {...props} viewBox={viewBox}>
       {OutlineFilter}
       <rect x="5%" y="5%" width="90%" height="90%" fill={backgroundColor} rx="5%" />
       <rect x="5%" y="5%" width="90%" height="90%" fill="#00000000" strokeWidth="4%" stroke="#000000" rx="5%" />
