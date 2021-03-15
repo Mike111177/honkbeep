@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, useContext, useEffect, useState } from "react";
+import { ComponentPropsWithoutRef, useContext, useEffect, useRef, useState } from "react";
 
 import HBDeckCard from "./HBDeckCard";
 import { FloatArea, FloatAreaEventType, FloatAreaPath, FloatContext, Rectangle, useFloatArea } from "../util/Floating";
@@ -6,6 +6,8 @@ import { CardSVG } from "./CardUtil";
 import { GameUIContext } from "../ReactFrontendInterface";
 import ArrayUtil from "../../util/ArrayUtil";
 import { animated, useSpring } from "react-spring/web.cjs";
+import { useDrag } from "../util/InputHandling";
+import { vecAdd } from "../util/Vector";
 
 //Helper to make card targets
 type CardTargetProps = {
@@ -35,6 +37,7 @@ export function FloatCard({ index }: FloatCardProps) {
 
   const [home, setHome] = useState(() => gameContext.getCardHome(index));
   const [spring, setSpring] = useSpring<Rectangle>(() => (floatContext.getRect(home) ?? { x: 0, y: 0, width: 0, height: 0 }));
+  const ref = useRef(null);
 
   useEffect(() => {
     setSpring(floatContext.getRect(home));
@@ -51,9 +54,23 @@ export function FloatCard({ index }: FloatCardProps) {
     setSpring({ immediate, ...area.getRect() });
   }), [home, floatContext, setSpring]);
 
+  const attach = useDrag(ref, ({ down, offset }) => {
+    const homeRect = floatContext.getRect(home);
+    if (homeRect !== undefined) {
+      if (down) {
+        const { x, y } = homeRect;
+        const dragTarget = vecAdd({ x, y }, offset);
+        setSpring({ ...dragTarget, immediate:true});
+      } else {
+        //Relaxed parameters to make bounce back pretty
+        setSpring({ ...homeRect, config: { friction: 25, tension: 750 } });
+      }
+    }
+  });
+
   if (home[0] === "deck") return <>{undefined}</>;
   return (
-    <animated.div style={{ position: "absolute", pointerEvents: "auto", ...spring }}>
+    <animated.div ref={ref} {...attach} style={{ position: "absolute", pointerEvents: "auto", ...spring }}>
       <HBDeckCard index={index} />
     </animated.div>
   );

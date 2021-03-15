@@ -1,9 +1,9 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import chroma from "chroma-js";
 
 import { CardTarget } from "./CardFloat";
 import { GameUIContext } from "../ReactFrontendInterface";
-import { DropZone } from "../util/Dragging";
+import { useFloatArea } from "../util/Floating";
 import { CardDim, OutlineFilter } from "./CardUtil";
 import { vecAdd } from "../util/Vector";
 
@@ -11,36 +11,18 @@ import colors from "../BaseColors";
 import pips from "./pips";
 import "./HBStack.scss";
 
-
-
 type HBStackProps = {
   number: number;
   suit: string;
 }
 
-const { mid, viewBox } = CardDim;
+const { mid } = CardDim;
 const pipHeight = 35;
 const pipOff = { x: - pipHeight / 2, y: - pipHeight / 2 };
 const pipCenter = vecAdd(mid, pipOff);
 
 export function HBStack({ suit, number }: HBStackProps) {
   const color = colors(suit);
-
-  const context = useContext(GameUIContext);
-
-  function getCurrentCard(): number | undefined {
-    const stack = context.getStack(number);
-    return stack[stack.length - 1];
-  }
-  const [index, setIndex] = useState(getCurrentCard());
-  useEffect(() => {
-    const callback = () => {
-      setIndex(getCurrentCard());
-    };
-    const removeFunc = () => { context.off("game-update", callback) };
-    context.on("game-update", callback);
-    return removeFunc;
-  });
   const backgroundColor = chroma.mix(color, "#FFFFFF", 0.3, "lrgb").alpha(0.4).hex();
   return (
     <CardTarget height="100%" width="100%" areaPath={["stacks", number]}>
@@ -55,9 +37,10 @@ export function HBStack({ suit, number }: HBStackProps) {
 
 export function HBStackArea() {
   const suits = useContext(GameUIContext).getSuits();
+  const ref = useFloatArea(["stackArea"], {dropZone: true});
   return (
-    <DropZone id="stacks" className="HBStackArea" style={{ gridTemplateColumns: `repeat(${suits.length}, auto)` }}>
+    <div ref={ref} id="stacks" className="HBStackArea">
       {suits.map((c, i) => <HBStack suit={c} key={i} number={i} />)}
-    </DropZone>
+    </div>
   );
 }

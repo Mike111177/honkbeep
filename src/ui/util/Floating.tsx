@@ -8,6 +8,10 @@ export type Rectangle = {
   height: number;
 }
 
+type FloatAreaConfig = {
+  dropZone?: boolean;
+}
+
 type AreaListener = (event: FloatAreaEvent) => any;
 export type FloatAreaPath = [string, ...(number | string)[]];
 export enum FloatAreaEventType {
@@ -21,8 +25,14 @@ export type FloatAreaEvent = {
   type: FloatAreaEventType;
 };
 class FloatAreaData {
+  readonly path: FloatAreaPath;
   ref?: React.RefObject<HTMLElement>;
+  config?: FloatAreaConfig;
   listeners: AreaListener[] = [];
+
+  constructor(path: FloatAreaPath) {
+    this.path = [...path];
+  }
 
   getRect() {
     const rect = this.ref?.current?.getBoundingClientRect();
@@ -40,6 +50,7 @@ class FloatAreaData {
 
 export class FloatContextData {
   areas: any = {};
+  dropZones: FloatAreaData[] = [];
   private initialized: boolean = false;
   private getOrCreateArea(path: FloatAreaPath): FloatAreaData {
     let area = this.areas;
@@ -70,7 +81,7 @@ export class FloatContextData {
 
     if (area[path[i]] === undefined) {
       //If the last item in the path is undef, we create it now and return it
-      const newArea = new FloatAreaData();
+      const newArea = new FloatAreaData(path);
       area[path[i]] = newArea;
       return newArea;
     } else if (area[path[i]] instanceof FloatAreaData) {
@@ -122,25 +133,39 @@ export class FloatContextData {
     return () => { area.listeners.splice(area.listeners.findIndex((e: AreaListener) => e === callback), 1) };
   }
 
-  registerArea(path: FloatAreaPath, value: any) {
+  registerArea(path: FloatAreaPath, ref: React.MutableRefObject<null>, config?: FloatAreaConfig) {
     const area = this.getOrCreateArea(path);
-    area.ref = value;
+    //Cleanup old config for area
+    if (area.config?.dropZone) {
+      this.dropZones = this.dropZones.filter(a => area !== a);
+    }
+    area.ref = ref;
+    area.config = config;
+    //Setup new config for area
+    if (area.config?.dropZone) {
+      this.dropZones.push(area);
+    }
     area.update(FloatAreaEventType.Register);
   }
 }
 
 export const FloatContext = React.createContext<FloatContextData>(new FloatContextData());
 
-export function useFloatArea(path: FloatAreaPath) {
+
+export function useFloatArea(path: FloatAreaPath, config?: FloatAreaConfig) {
   const floatContext = useContext(FloatContext);
   const ref = useRef(null);
-  useEffect(() => floatContext.registerArea(path, ref), [floatContext, path, ref]);
+  useEffect(() => {
+    return floatContext.registerArea(path, ref, config);
+  }, [floatContext, path, ref, config]);
   return ref;
 }
 
 type FloatAreaProps = {
   areaPath: FloatAreaPath;
+  config?: FloatAreaConfig;
 } & ComponentPropsWithoutRef<"div">;
-export function FloatArea({ areaPath, children, ...props }: FloatAreaProps) {
-  return <div ref={useFloatArea(areaPath)} {...props}>{children}</div>;
+export function FloatArea({ areaPath, config, children, ...props }: FloatAreaProps) {
+  return <div ref={useFloatArea(areaPath, config)} {...props}>{children}</div>;
 }
+
