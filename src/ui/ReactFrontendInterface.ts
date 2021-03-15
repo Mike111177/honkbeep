@@ -1,19 +1,52 @@
 import React from "react";
+import produce, { Draft } from "immer";
 import EventEmitter from "events";
 
-import { GameState, initBlankGameState, reduceGameStateFromGameData } from "../game/GameState";
+import { GameState, initGameStateFromDefinition, reduceGameEvent } from "../game/GameState";
 import BackendInterface from "../game/BackendInterface";
 import NullBackend from "../game/NullBackend";
-import { GameAttempt } from "../game/GameTypes";
+import { GameAttempt, GameData, GameDefinition, GameEventMessage } from "../game/GameTypes";
 import { FloatAreaPath } from "./util/Floating";
+
+
+type ClientState = {
+  game: GameState;
+  shuffleOrder: number[];
+}
+
+function initClientState(definition: GameDefinition) {
+  return {
+    game: initGameStateFromDefinition(definition),
+    shuffleOrder: []
+  };
+}
+
+const reduceClientMessage = produce((state: Draft<ClientState>, { event, reveals }: GameEventMessage) => {
+  //Notify gamestate of new event
+  state.game = reduceGameEvent(state.game, event);
+  //Process Reveals
+  if (reveals) {
+    for (let revealedCard of reveals) {
+      state.shuffleOrder[revealedCard.deck] = revealedCard.card;
+    }
+  }
+});
+
+function reduceGameStateFromGameData(state: ClientState, data: GameData, max_turn: number = data.events.length) {
+  let messages = data.events;
+  for (let i = state.game.turn; i < Math.min(messages.length, max_turn + 1); i++) {
+    state = reduceClientMessage(state, messages[i]);
+  }
+  return state;
+}
 
 export default class ReactUIInterface extends EventEmitter {
   //Game State after Deal Event, blank until Deal event processed
-  private initialState = initBlankGameState();
+  private initialState?: ClientState;
   //Most recent canonical game state
-  private latestState: GameState = this.initialState;
+  private latestState?: ClientState;
   //Game state currently being viewed, this could be the latest state, a replay state or a hypothetical state
-  private viewState: GameState = this.latestState;   
+  private viewState?: ClientState;   
   //Adapter to use to communicate with server
   private backend: BackendInterface;
 
@@ -25,13 +58,15 @@ export default class ReactUIInterface extends EventEmitter {
 
     //Wait for the backend to be ready
     this.backend.onReady(() => {
+      //Create new GameState
+      const state0 = initClientState(this.backend.currentState().definition);
       //Set the initial state to the turn after the deal
-      this.initialState = reduceGameStateFromGameData(this.latestState, this.backend.currentState(), 1);
+      this.initialState = reduceGameStateFromGameData(state0, this.backend.currentState(),  1);
       //Set the view state and latest state to be the most recent calculable from the Game Event data we have
       this.viewState = this.latestState = reduceGameStateFromGameData(this.initialState, this.backend.currentState());
       //Listen for further game events
       this.backend.on("gameStateChanged", () => {
-        this.viewState = this.latestState = reduceGameStateFromGameData(this.latestState, this.backend.currentState());
+        this.viewState = this.latestState = reduceGameStateFromGameData(this.latestState!, this.backend.currentState());
         this.emit("game-update");
       });
     });
@@ -54,7 +89,7 @@ export default class ReactUIInterface extends EventEmitter {
    * @returns {boolean} Whether or not the given card index has been revealed to this player
    */
   isCardRevealed(index: number): boolean {
-    return this.latestState.knownDeckOrder[index] !== undefined;
+    return this.latestState!.shuffleOrder[index] !== undefined;
   }
 
   /**
@@ -90,14 +125,14 @@ export default class ReactUIInterface extends EventEmitter {
    * @param {number} index The stack number to get the cards from
    */
   getStack(index: number) {
-    return this.latestState.stacks[index];
+    return this.latestState!.game.stacks[index];
   }
 
   /**
    *  `getDeckSize` returns the amount of cards in the deck
    */
   getDeckSize() {
-    return this.latestState.deck.length;
+    return this.latestState!.game.deck.length;
   }
 
   /**
@@ -107,7 +142,7 @@ export default class ReactUIInterface extends EventEmitter {
    */
   getCardDisplayableProps(index: number) {
     if (this.isCardRevealed(index)) {
-      return this.latestState.deck.getCard(this.latestState.knownDeckOrder[index]);
+      return this.latestState!.game.deck.getCard(this.latestState!.shuffleOrder[index]);
     } else {
       return { rank: 6, suit: "Black" };
     }
@@ -118,21 +153,21 @@ export default class ReactUIInterface extends EventEmitter {
    * @param {number} player player index to check turn of
    */
   isPlayerTurn(player: number) {
-    return player === (this.viewState.turn - 1) % this.getNumberOfPlayers();
+    return player === (this.viewState!.game.turn - 1) % this.getNumberOfPlayers();
   }
 
   /**
    * `getDiscardPile` returns an array of all the cards that have been discard
    */
   getDiscardPile() {
-    return this.viewState.discardPile;
+    return this.viewState!.game.discardPile;
   }
 
   /**
    * `getCurrentTurn` returns the turn number of the current view
    */
   getCurrentTurn() {
-    return this.viewState.turn;
+    return this.viewState!.game.turn;
   }
 
   /**
@@ -168,15 +203,15 @@ export default class ReactUIInterface extends EventEmitter {
    * @param {number} turn turn number
    */
   getStateOfTurn(turn: number) {
-    return reduceGameStateFromGameData(this.initialState, this.backend.currentState(), turn);
+    return reduceGameStateFromGameData(this.initialState!, this.backend.currentState(), turn);
   }
   /**
    * Given a player name and a turn number, get that players hand on that turn
    * @param {number} player player number
    * @param {number} turn   turn number
    */
-  getPlayerHand(player: number, turn: number = this.viewState.turn) { 
-    return this.getStateOfTurn(turn).hands[player];    
+  getPlayerHand(player: number, turn: number = this.viewState!.game.turn) { 
+    return this.getStateOfTurn(turn).game.hands[player];    
   }
   
   /**
@@ -206,8 +241,8 @@ export default class ReactUIInterface extends EventEmitter {
    */
   getCardHome(index: number): FloatAreaPath {
     //Search hands
-    for (let h = 0; h < this.viewState.hands.length; h++){
-      const hand = this.viewState.hands[h];
+    for (let h = 0; h < this.viewState!.game.hands.length; h++){
+      const hand = this.viewState!.game.hands[h];
       for (let c = 0; c < hand.length; c++){
         if (index === hand[c]) {
           return ["hands", h, c];
@@ -215,8 +250,8 @@ export default class ReactUIInterface extends EventEmitter {
       }
     }
     //Search Stacks
-    for (let s = 0; s < this.viewState.stacks.length; s++){
-      const stack = this.viewState.stacks[s];
+    for (let s = 0; s < this.viewState!.game.stacks.length; s++){
+      const stack = this.viewState!.game.stacks[s];
       for (let c = 0; c < stack.length; c++){
         if (index === stack[c]) {
           return ["stacks", s];
@@ -224,8 +259,8 @@ export default class ReactUIInterface extends EventEmitter {
       }
     }
     //Search discard
-    for (let c = 0; c < this.viewState.discardPile.length; c++){
-      if (index === this.viewState.discardPile[c]) {
+    for (let c = 0; c < this.viewState!.game.discardPile.length; c++){
+      if (index === this.viewState!.game.discardPile[c]) {
         return ["discard", index];
       }
     }
