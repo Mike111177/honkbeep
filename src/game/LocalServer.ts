@@ -155,17 +155,19 @@ export default class LocalServer {
     //Check to make sure its this players turn
     if (!this.isPlayersTurn(player)) return false;
     //Get the card the player is trying to play
-    const attemptedPlayIndex = this.cardFromHand(player, action.handSlot);
+    const { card } = action;
+    //Make sure card is actually in player hand
+    if (this.state.hands[player].find(i => i === card) === undefined) return false;
     //Try to play card on each stack, until we find one that works
     let cardWasPlayed = false;
     for (let i = 0; i < this.definition.variant.suits.length; i++) {
-      if (this.isCardPlayableOnStack(attemptedPlayIndex, i)) {
+      if (this.isCardPlayableOnStack(card, i)) {
         this.events.push({
           turn: this.state.turn,
           type: GameEventType.Play,
           result: GamePlayResultType.Success,
           stack: i,
-          handSlot: action.handSlot
+          card: card
         });
         cardWasPlayed = true;
         break;
@@ -177,11 +179,11 @@ export default class LocalServer {
         turn: this.state.turn,
         type: GameEventType.Play,
         result: GamePlayResultType.Misplay,
-        handSlot: action.handSlot
+        card: card
       });
     }
     //Reveal the played card to player
-    this.revealCardToPlayer(attemptedPlayIndex, player);
+    this.revealCardToPlayer(card, player);
     //Reveal the card replacing it in his hand to the rest of the players
     this.revealCardToAllButOnePlayer(this.state.topDeck, player);
     return true;
@@ -190,15 +192,17 @@ export default class LocalServer {
   private attemptDiscard(player: number, action: GameDiscardEvent) {
     //Check to make sure its this players turn
     if (!this.isPlayersTurn(player)) return false;
-    //Get the card the player is trying to play
-    const attemptedPlayIndex = this.cardFromHand(player, action.handSlot);
+        //Get the card the player is trying to play
+    const { card } = action;
+    //Make sure card is actually in player hand
+    if (this.state.hands[player].find(i => i === card) === undefined) return false;
     this.events.push({
       type: GameEventType.Discard,
       turn: this.state.turn,
-      handSlot: action.handSlot,
+      card,
     });
     //Reveal the played card to player
-    this.revealCardToPlayer(attemptedPlayIndex, player);
+    this.revealCardToPlayer(card, player);
     //Reveal the card replacing it in his hand to the rest of the players
     this.revealCardToAllButOnePlayer(this.state.topDeck, player);
     return true;

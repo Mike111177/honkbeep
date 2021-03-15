@@ -1,13 +1,6 @@
 import { ComponentPropsWithoutRef, useContext, useEffect, useRef } from "react";
 import React from "react";
 
-export type Rectangle = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
-
 type FloatAreaConfig = {
   dropZone?: boolean;
 }

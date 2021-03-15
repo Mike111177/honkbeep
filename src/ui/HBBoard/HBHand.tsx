@@ -1,41 +1,16 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 import { CardTarget } from "./CardFloat";
-import { GameEventType } from "../../game/GameTypes";
 import { GameUIContext } from '../ReactFrontendInterface';
 
 import "./HBHand.scss";
 
 type CardInHandProps = {
-  index: number;
-  myTurn: boolean;
   slot: number;
   player: number;
 }
 
-function CardInHand({ myTurn, player, index, slot }: CardInHandProps) {
-  const context = useContext(GameUIContext);
-
-  //Make it draggable
-  const onDrop = useCallback(async (loc: string) => {
-    switch (loc) {
-      case "stacks":
-        return await context.attemptPlayerAction({
-          type: GameEventType.Play,
-          handSlot: index
-        });
-      case "discard":
-        return await context.attemptPlayerAction({
-          type: GameEventType.Discard,
-          handSlot: index
-        });
-      default:
-        return false;
-    }
-  }, [context, index]);
-
-  const floatOptions = useMemo(() => ({ onDrop, draggable: myTurn && (player === 0) }), [myTurn, onDrop, player]);
-
+function CardInHand({ player, slot }: CardInHandProps) {
   return (
     <CardTarget areaPath={["hands", player, slot]}/>
   );
@@ -62,7 +37,7 @@ export function HBHand({ player }: HBHandProps) {
   return (
     <div className={`HBHand${myTurn? " OnPlayerTurn" : ""}`}>
       <div className="handCardArea">
-        {cards.map((n, i) => <CardInHand myTurn={myTurn} player={player} slot={i} index={i} key={i} />)}
+        {cards.map((n, i) => <CardInHand player={player} slot={i} key={i} />)}
       </div>
       <span className="handname">
         {playerNames[player]}

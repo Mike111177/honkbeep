@@ -48,7 +48,7 @@ export type GameDealEvent = {
 //GamePlay
 export type GamePlayAttempt = {
   type: GameEventType.Play;
-  handSlot: number;
+  card: number;
 };
 export enum GamePlayResultType { Success = 1, Misplay }
 export type GamePlayResultSuccess = { result: GamePlayResultType.Success; stack: number } 
@@ -59,7 +59,7 @@ export type GamePlayEvent = GamePlayAttempt & GamePlayResult;
 //GameDiscard
 export type GameDiscardAttempt = {
   type: GameEventType.Discard;
-  handSlot: number;
+  card: number;
 };
 export type GameDiscardEvent = GameDiscardAttempt;
 

@@ -54,13 +54,13 @@ function DiscardPlayDescriber({ turn, event }: DiscardPlayDescriberProps) {
   const numPlayers = context.getNumberOfPlayers();
   const player = (turn - 1) % numPlayers;
   const playerName = context.getPlayerNames()[player];
-  const card = context.getCardInHand(player, event.handSlot, turn - 1);
+  const { card } = event;
   const cardProps = context.getCardDisplayableProps(card);
   return (
     <span>
       {`${playerName} discarded `}
       <HBCardIcon height="40px" {...cardProps}/>
-      {` from slot ${event.handSlot + 1}`}
+      {/* {` from slot ${event.handSlot + 1}`} */}
     </span>
   );
 }
@@ -71,14 +71,14 @@ function PlayPlayDescriber({ turn, event }: PlayPlayDescriberProps) {
   const numPlayers = context.getNumberOfPlayers();
   const player = (turn - 1) % numPlayers;
   const playerName = context.getPlayerNames()[player];
-  const card = context.getCardInHand(player, event.handSlot, turn - 1);
+  const { card } = event;
   const cardProps = context.getCardDisplayableProps(card);
   if (event.result === GamePlayResultType.Success) {
     return (
       <span>
         {`${playerName} played `}
         <HBCardIcon height="40px" {...cardProps}/>
-        {` from slot ${event.handSlot + 1}`}
+        {/* {` from slot ${event.handSlot + 1}`} */}
       </span>
     );
   } else {
@@ -86,7 +86,7 @@ function PlayPlayDescriber({ turn, event }: PlayPlayDescriberProps) {
       <span>
         {`${playerName} misplayed `}
         <HBCardIcon height="40px" {...cardProps}/>
-        {` from slot ${event.handSlot + 1}`}
+        {/* {` from slot ${event.handSlot + 1}`} */}
       </span>
     );
   }

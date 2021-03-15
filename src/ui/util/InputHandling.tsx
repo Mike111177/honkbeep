@@ -1,4 +1,4 @@
-import { RefObject, useState } from "react";
+import { RefObject, useEffect, useState } from "react";
 import { vecSub, Vec2D } from "./Vector";
 
 //Configurable Master hook for dealing with user interaction ona component
@@ -31,6 +31,10 @@ export class DragRecognizer<EL extends HTMLElement = HTMLElement> {
     this.handler = eventHandler;
   }
 
+  setListener(eventHandler: DragEventHandler) {
+    this.handler = eventHandler;
+  }
+
   onPointerDown(event: React.PointerEvent) {
     if (event.button === 0) { //Left Click
       this.status.down = true;
@@ -58,6 +62,9 @@ export class DragRecognizer<EL extends HTMLElement = HTMLElement> {
 }
 
 export function useDrag<EL extends HTMLElement = HTMLElement>(ref: RefObject<EL>, eventHandler: DragEventHandler) {
-  const [{ listeners }] = useState(() => new DragRecognizer(ref, eventHandler));
-  return listeners;
+  const [dragManager] = useState(() => new DragRecognizer(ref, eventHandler));
+  useEffect(() => {
+    dragManager.setListener(eventHandler);
+  }, [dragManager, eventHandler]);
+  return dragManager.listeners;
 }

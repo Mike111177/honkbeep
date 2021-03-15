@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 
 import { GameUIContext } from "../ReactFrontendInterface";
-import { FloatArea } from "../util/Floating";
+import { FloatArea, useFloatArea } from "../util/Floating";
 
 export default function HBDiscardPile() {
   const context = useContext(GameUIContext);
@@ -17,6 +17,8 @@ export default function HBDiscardPile() {
     context.on("game-update", callback);
     return removeFunc;
   });
+
+  const ref = useFloatArea(["discardPile"], { dropZone: true });
   
   //TODO: Fix this..........
   const cardOrder = cards
@@ -24,7 +26,7 @@ export default function HBDiscardPile() {
     .sort((a,b)=>(a.suit < b.suit ? -1 : a.suit > b.suit ? 1 : a.rank - b.rank))
     .map(i=>i.index);
   return (
-    <div id="discard" style={{
+    <div ref={ref} id="discard" style={{
       width: "100%",
       height: "100%",
       display: "grid",

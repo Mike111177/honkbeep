@@ -39,10 +39,14 @@ export const reduceGameEvent = produce((state: Draft<GameState>, event: GameEven
       break;
     }
     case GameEventType.Play: {
+      //Note index of card
+      const { card } = event;
       //Create copy of current hand to make new hand
       let newHand = Array.from(state.hands[player]);
+      //Find card in hand
+      const handSlot = newHand.findIndex((i) => i === card);
       //Remove played card from hand
-      let card = newHand.splice(event.handSlot, 1)[0];
+      newHand.splice(handSlot, 1);
       if (event.result === GamePlayResultType.Success) {
         //If it was a successful play, add card to proper stack
         state.stacks[event.stack].push(card);
@@ -61,10 +65,14 @@ export const reduceGameEvent = produce((state: Draft<GameState>, event: GameEven
       break;
     }
     case GameEventType.Discard: {
+      //Note index of card
+      const { card } = event;
       //Create copy of current hand to make new hand
       let newHand = Array.from(state.hands[player]);
-      //Remove  discarded card from hand
-      let card = newHand.splice(event.handSlot, 1)[0];
+      //Find card in hand
+      const handSlot = newHand.findIndex((i) => i === card);
+      //Remove played card from hand
+      newHand.splice(handSlot, 1);
       //Put it in the discard pile
       state.discardPile.push(card);
       //Put card on top of deck in leftmost slot

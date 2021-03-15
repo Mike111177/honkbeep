@@ -36,11 +36,11 @@ test('Does not allow player to take turn twice in a row', async () => {
   //Create virtual local Server 
   const server = new LocalServer(gamedef, deckDef);
   //Test having player 1 make a play 2 times
-  expect(await server.attemptPlayerAction(0, { type: GameEventType.Play, handSlot: 0 })).toBe(true);
-  expect(await server.attemptPlayerAction(0, { type: GameEventType.Play, handSlot: 0 })).toBe(false);
+  expect(await server.attemptPlayerAction(0, { type: GameEventType.Play, card: 0 })).toBe(true);
+  expect(await server.attemptPlayerAction(0, { type: GameEventType.Play, card: 1 })).toBe(false);
   //Test having player 2 make a discard 2 times
-  expect(await server.attemptPlayerAction(1, { type: GameEventType.Discard, handSlot: 0 })).toBe(true);
-  expect(await server.attemptPlayerAction(1, { type: GameEventType.Discard, handSlot: 0 })).toBe(false);
+  expect(await server.attemptPlayerAction(1, { type: GameEventType.Discard, card: 6 })).toBe(true);
+  expect(await server.attemptPlayerAction(1, { type: GameEventType.Discard, card: 7 })).toBe(false);
   //Test having player 3 make a clue 2 times
   expect(await server.attemptPlayerAction(2, { type: GameEventType.Clue, target: 0, clue: { type: ClueType.Color, value: "Red" } })).toBe(true);
   expect(await server.attemptPlayerAction(2, { type: GameEventType.Clue, target: 0, clue: { type: ClueType.Number, value: 1 } })).toBe(false);
