@@ -18,6 +18,8 @@ export type GameState = {
   stacks: Stack[];
   discardPile: number[];
   topDeck: number;
+  clues: number;
+  strikes: number;
 }
 
 export const reduceGameEvent = produce((state: Draft<GameState>, event: GameEvent) => {
@@ -53,6 +55,8 @@ export const reduceGameEvent = produce((state: Draft<GameState>, event: GameEven
       } else if (event.result === GamePlayResultType.Misplay) {
         //if it was a missplay put it in the discard pile 
         state.discardPile.push(card);
+        //Also bomb
+        state.strikes++;
       }
       //Put card on top of deck in leftmost slot
       newHand.unshift(state.topDeck);
@@ -86,6 +90,8 @@ export const reduceGameEvent = produce((state: Draft<GameState>, event: GameEven
       break;
     }
     case GameEventType.Clue: {
+      //Subtract a clue
+      state.clues--;
       //Advance to next players turn
       state.turn++;
       break;
@@ -102,6 +108,8 @@ export function initGameStateFromDefinition(definition: GameDefinition): GameSta
     stacks: definition.variant.suits.map<number[]>(_ => ([])),
     discardPile: [],
     topDeck: 0,
+    clues: 8,
+    strikes: 0
   };
 }
 

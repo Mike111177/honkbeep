@@ -7,8 +7,10 @@ import { CardFloatLayer, CardTarget } from "./CardFloat";
 import { HBHandsArea } from "./HBHand";
 import HBPlayHistory from "./HBPlayHistory";
 import ReactUIInterface, { GameUIContext } from '../ReactFrontendInterface';
+import { HBDeck } from "./HBDeck";
 
 import './HBBoard.scss';
+
 
 
 
@@ -44,7 +46,7 @@ export default function HBBoard({ game }: HBBoardProps) {
             <HBClueArea />
           </div>
           <div className="controlsPlaceHolder" style={{ display: "flex", flexDirection: "row-reverse" }}>
-            <CardTarget areaPath={["deck"]}/>
+            <HBDeck />
           </div>
         </div>
         <CardFloatLayer />
