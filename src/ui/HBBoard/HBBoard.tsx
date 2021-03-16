@@ -11,6 +11,7 @@ import { HBDeck } from "./HBDeck";
 
 import './HBBoard.scss';
 import { HBScoreBoard } from "./HBScoreBoard";
+import { HBReplayControls } from "./HBReplayControls";
 
 
 
@@ -48,7 +49,14 @@ export default function HBBoard({ game }: HBBoardProps) {
           </div>
           <div className="controlsPlaceHolder" style={{ display: "flex", flexDirection: "row-reverse" }}>
             <HBDeck />
-            <HBScoreBoard/>
+            <HBScoreBoard />
+            <div>
+              Debug Controls:
+              <HBReplayControls />
+               <div>
+                  <button onClick={()=>{(window as any).HONKPlayRandom()}}>Try Play Random Card</button>
+               </div>
+            </div>
           </div>
         </div>
         <CardFloatLayer />

@@ -34,7 +34,7 @@ const reduceClientMessage = produce((state: Draft<ClientState>, { event, reveals
 
 function reduceGameStateFromGameData(state: ClientState, data: GameData, max_turn: number = data.events.length) {
   let messages = data.events;
-  for (let i = state.game.turn; i < Math.min(messages.length, max_turn + 1); i++) {
+  for (let i = state.game.turn; i < Math.min(messages.length, max_turn); i++) {
     state = reduceClientMessage(state, messages[i]);
   }
   return state;
@@ -49,6 +49,8 @@ export default class ReactUIInterface extends EventEmitter {
   private viewState?: ClientState;
   //Adapter to use to communicate with server
   private backend: BackendInterface;
+
+  paused: boolean = false;
 
   constructor(backend: BackendInterface) {
     super();
@@ -66,7 +68,10 @@ export default class ReactUIInterface extends EventEmitter {
       this.viewState = this.latestState = reduceGameStateFromGameData(this.initialState, this.backend.currentState());
       //Listen for further game events
       this.backend.on("gameStateChanged", () => {
-        this.viewState = this.latestState = reduceGameStateFromGameData(this.latestState!, this.backend.currentState());
+        this.latestState = reduceGameStateFromGameData(this.latestState!, this.backend.currentState());
+        if (!this.paused) {
+          this.viewState = this.latestState;
+        }
         this.emit("game-update");
       });
     });
@@ -289,8 +294,24 @@ export default class ReactUIInterface extends EventEmitter {
   /**
    * @returns The current view state
    */
-  geViewState(): Readonly<ClientState> {
+  getViewState(): Readonly<ClientState> {
     return this.viewState!;
+  }
+
+  /**
+   * Synchronize viewstate with latest state
+   */
+  unpause() {
+    this.paused = false;
+    this.viewState = this.latestState;
+    this.emit("game-update");
+  }
+  /**
+   * Desynchronize viewstate with latest state
+   */
+  pause() {
+    this.paused = true;
+    this.emit("game-update");
   }
 
 }

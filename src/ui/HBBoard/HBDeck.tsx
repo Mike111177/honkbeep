@@ -4,8 +4,8 @@ import { CardTarget } from "./CardFloat";
 
 export function HBDeck() {
   const context = useContext(GameUIContext);
-  const [gameState, setGameState] = useState(() => context.geViewState());
-  useEffect(() => context.subscribeToStateChange(() => setGameState(context.geViewState())), [context]);
+  const [gameState, setGameState] = useState(() => context.getViewState());
+  useEffect(() => context.subscribeToStateChange(() => setGameState(context.getViewState())), [context]);
 
   return (
     <CardTarget areaPath={["deck"]}>
