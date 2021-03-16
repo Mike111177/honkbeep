@@ -10,6 +10,7 @@ import ReactUIInterface, { GameUIContext } from '../ReactFrontendInterface';
 import { HBDeck } from "./HBDeck";
 
 import './HBBoard.scss';
+import { HBScoreBoard } from "./HBScoreBoard";
 
 
 
@@ -47,6 +48,7 @@ export default function HBBoard({ game }: HBBoardProps) {
           </div>
           <div className="controlsPlaceHolder" style={{ display: "flex", flexDirection: "row-reverse" }}>
             <HBDeck />
+            <HBScoreBoard/>
           </div>
         </div>
         <CardFloatLayer />

@@ -22,11 +22,14 @@ const gamedef = {
 const server = new LocalServer(gamedef);
 
 //For debugging:
-(window as any).HONKLocalServer = server;
-/*
-let turn = 0;
-HONKLocalServer.attemptPlayerAction(turn++%4, {type: 2, handSlot: Math.floor(Math.random() * 4)});
-*/
+(window as any).HONKPlayRandom = () => {
+  const HONKER = server as any;
+  const turn = HONKER.state.turn;
+  const player = (turn - 1) % 4;
+  const card = HONKER.cardFromHand(player, Math.floor(Math.random() * 4));
+  return HONKER.attemptPlayerAction(player, { type: 2, card});
+};
+
 
 //Connect to local server as player 0
 const backend = new LocalBackend(0, server);
