@@ -42,14 +42,15 @@ const mid: Vec2D = vecMul(view, 0.5);
 type CardSVGProps = {
   children?: React.ReactNode;
 } & React.ComponentProps<"svg">;
-export const CardSVG = React.forwardRef<SVGSVGElement, CardSVGProps>(({ children, ...props }, ref) => {
-  return (
-    <svg ref={ref} viewBox={viewBox} preserveAspectRatio="xMidYMid meet" {...props}>
-      {children}
-    </svg>
-  );
-});
-CardSVG.displayName = "CardSVG";
+export const CardSVG = React.forwardRef<SVGSVGElement, CardSVGProps>(
+  function CardSVG({ children, ...props }, ref) {
+    return (
+      <svg ref={ref} viewBox={viewBox} preserveAspectRatio="xMidYMid meet" {...props}>
+        {children}
+      </svg>
+    );
+  }
+);
 
 export const CardDim = { view, viewBox, mid };
 
