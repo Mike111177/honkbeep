@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 
 import { GameUIContext } from "../ReactFrontendInterface";
 import { FloatArea, useFloatArea } from "../util/Floating";
+import { CardTarget } from "./CardFloat";
 
 export default function HBDiscardPile() {
   const context = useContext(GameUIContext);
@@ -34,7 +35,7 @@ export default function HBDiscardPile() {
       justifyContent: "space-evenly",
       alignContent: "center"
     }}>
-      {cardOrder.map(i => <FloatArea style={{ minWidth: "80px", height: "162px" }} key={i} areaPath={["discard", i]} />)}
+      {cardOrder.map(i => <CardTarget key={i} areaPath={["discard", i]} />)}
     </div>
   );
 }

@@ -7,7 +7,7 @@ import { GameUIContext } from "../ReactFrontendInterface";
 import ArrayUtil from "../../util/ArrayUtil";
 import { animated, useSpring } from "react-spring/web.cjs";
 import { useDrag } from "../util/InputHandling";
-import { Rectangle, vecAdd, vecInRectangle } from "../util/Vector";
+import { vecAdd, vecInRectangle } from "../util/Vector";
 
 import "./CardFloat.scss";
 import { GameEventType } from "../../game/GameTypes";
@@ -42,7 +42,7 @@ export function FloatCard({ index }: FloatCardProps) {
   const [home, setHome] = useState(() => gameContext.getCardHome(index));
   const [dragging, setDragging] = useState(false);
   const [dropPath, setDropPath] = useState<FloatAreaPath | null>(null);
-  const [spring, setSpring] = useSpring<Rectangle>(() => (floatContext.getRect(home) ?? { x: 0, y: 0, width: 0, height: 0 }));
+  const [spring, setSpring] = useSpring(() => floatContext.getRect(home) ?? { x: 0, y: 0, width: 0, height: 0 });
   const ref = useRef(null);
 
   useEffect(() => {
@@ -117,9 +117,27 @@ export function FloatCard({ index }: FloatCardProps) {
   //Detach listeners if not in hands
   const attachedListeners = useMemo(() => home[0] === "hands" ? dragListeners : undefined, [dragListeners, home]);
 
-  if (home[0] === "deck") return <>{undefined}</>;
+  //Set correct zIndex
+  let zIndex = 0;
+  if (dragging) {
+    zIndex = 100 ;
+  } else if (home[0] === "discard") {
+    zIndex = home[1] as number;
+  }
+
+  const style = useMemo(() => {
+    //Workaround for typebug in react-spring https://github.com/pmndrs/react-spring/issues/1215
+    //The project does seem like its been abandoned might have to switch it out for framer-motion
+    //But i really dont want to because framer-motion would double the size of this bundle lol
+    const useZIndex = zIndex as unknown as "auto";
+    return { zIndex: useZIndex, ...spring};
+  }, [spring, zIndex]);
+
+  if (home[0] === "deck") {
+    return <>{undefined}</>;
+  }
   return (
-    <animated.div className={`FloatingCard${dragging? " dragging" : ""}`} ref={ref} {...attachedListeners} style={spring}>
+    <animated.div className={`FloatingCard`} ref={ref} {...attachedListeners} style={style}>
       <HBDeckCard index={index} />
     </animated.div>
   );
