@@ -3,7 +3,7 @@ import colors from "../BaseColors";
 import { useContext, useEffect, useState } from "react";
 import { ClueType } from "../../game/types/Clue";
 import { GameClueEvent, GameDiscardEvent, GameEventType, GamePlayEvent, GamePlayResultType } from "../../game/GameTypes";
-import { GameUIContext } from "../ReactFrontendInterface";
+import { GameUIContext } from "./ClientGameStateManager";
 import HBCardIcon from "./HBCardIcon";
 
 import "./HBPlayHistory.scss";

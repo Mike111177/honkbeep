@@ -1,7 +1,7 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 
 import HBCardFront from "./HBCardFront";
-import { GameUIContext } from "../ReactFrontendInterface";
+import { GameUIContext } from "./ClientGameStateManager";
 import HBCardBack from "./HBCardBack";
 
 //TODO: PLS REMOVE, REPLACE WITH BETTER THING

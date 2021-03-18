@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { GameUIContext } from "../ReactFrontendInterface";
+import { GameUIContext } from "./ClientGameStateManager";
 import { CardTarget } from "./CardFloat";
 
 export function HBDeck() {

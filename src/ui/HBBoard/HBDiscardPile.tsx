@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 
-import { GameUIContext } from "../ReactFrontendInterface";
-import { FloatArea, useFloatArea } from "../util/Floating";
+import { GameUIContext } from "./ClientGameStateManager";
+import { useFloatArea } from "../util/Floating";
 import { CardTarget } from "./CardFloat";
 
 export default function HBDiscardPile() {

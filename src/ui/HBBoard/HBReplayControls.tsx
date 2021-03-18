@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-import { GameUIContext } from "../ReactFrontendInterface";
+import { GameUIContext } from "./ClientGameStateManager";
 
 const iconSkipBack = "⏮️";
 const iconBack = "⏪️";

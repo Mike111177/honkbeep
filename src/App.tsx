@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 
 import LocalBackend from "./game/LocalBackend";
-import ReactUIInterface from "./ui/ReactFrontendInterface";
 import HBBoard from './ui/HBBoard/HBBoard';
 
 import background from "./background_black.jpg";
@@ -30,21 +28,11 @@ const server = new LocalServer(gamedef);
   return HONKER.attemptPlayerAction(player, { type: 2, card});
 };
 
-
 //Connect to local server as player 0
 const backend = new LocalBackend(0, server);
 
 //Attach UI interface to backend adapter
-const UIInterface = new ReactUIInterface(backend);
-
 function App() {
-  //State to wait for 
-  const [attach, setAttach] = useState<undefined | ReactUIInterface>(undefined);
-
-  useEffect(() => {
-    UIInterface.onReady(() => setAttach(UIInterface));
-  }, [UIInterface]);
-
   return (
     <Router>
       <div className="App" style={{ backgroundImage: `url(${background})` }}>
@@ -52,7 +40,7 @@ function App() {
           <Redirect to="/game" />
         </Route>
         <Route path="/game">
-          {attach !== undefined ? <HBBoard game={attach} /> : <></>}
+          <HBBoard backend={backend} />
         </Route>
       </div>
     </Router>

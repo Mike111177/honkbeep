@@ -2,14 +2,14 @@ import React from "react";
 import produce, { Draft } from "immer";
 import EventEmitter from "events";
 
-import { GameState, initGameStateFromDefinition, reduceGameEvent } from "../game/GameState";
-import BackendInterface from "../game/BackendInterface";
-import NullBackend from "../game/NullBackend";
-import { GameAttempt, GameData, GameDefinition, GameEventMessage, GameEventType } from "../game/GameTypes";
-import { FloatAreaPath } from "./util/Floating";
-import ArrayUtil from "../util/ArrayUtil";
-import { CardEmpathy, DeckEmpathy, EmpathyStatus, Pips } from "../game/types/Empathy";
-import { doesClueMatchCard } from "../game/Rules";
+import { GameState, initGameStateFromDefinition, reduceGameEvent } from "../../game/GameState";
+import BackendInterface from "../../game/BackendInterface";
+import NullBackend from "../../game/NullBackend";
+import { GameAttempt, GameData, GameDefinition, GameEventMessage, GameEventType } from "../../game/GameTypes";
+import { FloatAreaPath } from "../util/Floating";
+import ArrayUtil from "../../util/ArrayUtil";
+import { CardEmpathy, DeckEmpathy, EmpathyStatus, Pips } from "../../game/types/Empathy";
+import { doesClueMatchCard } from "../../game/Rules";
 
 
 type ClientState = {

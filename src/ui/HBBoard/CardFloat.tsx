@@ -3,7 +3,7 @@ import { ComponentPropsWithoutRef, useCallback, useContext, useEffect, useMemo, 
 import HBDeckCard from "./HBDeckCard";
 import { FloatAreaEventType, FloatAreaPath, FloatContext, useFloatArea } from "../util/Floating";
 import { CardSVG } from "./CardUtil";
-import { GameUIContext } from "../ReactFrontendInterface";
+import { GameUIContext } from "./ClientGameStateManager";
 import ArrayUtil from "../../util/ArrayUtil";
 import { animated, useSpring } from "react-spring/web.cjs";
 import { useDrag } from "../util/InputHandling";

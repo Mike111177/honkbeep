@@ -2,7 +2,7 @@ import { useContext } from "react";
 import chroma from "chroma-js";
 
 import { CardTarget } from "./CardFloat";
-import { GameUIContext } from "../ReactFrontendInterface";
+import { GameUIContext } from "./ClientGameStateManager";
 import { useFloatArea } from "../util/Floating";
 import { CardDim, OutlineFilter } from "./CardUtil";
 import { vecAdd } from "../util/Vector";

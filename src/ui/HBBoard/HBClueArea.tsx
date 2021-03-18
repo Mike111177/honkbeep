@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 
-import { GameUIContext } from '../ReactFrontendInterface';
+import { GameUIContext } from './ClientGameStateManager';
 import { GameEventType } from "../../game/GameTypes";
 import { Clue, colorClue, numberClue } from "../../game/types/Clue";
 import colors from "../BaseColors";

@@ -1,7 +1,7 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { CardTarget } from "./CardFloat";
-import { GameUIContext } from '../ReactFrontendInterface';
+import { GameUIContext } from './ClientGameStateManager';
 
 import "./HBHand.scss";
 

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import ArrayUtil from "../../util/ArrayUtil";
-import { GameUIContext } from "../ReactFrontendInterface";
+import { GameUIContext } from "./ClientGameStateManager";
 
 import "./HBScoreBoard.scss";
 
