@@ -26,7 +26,7 @@ const server = new LocalServer(gamedef);
   const HONKER = server as any;
   const turn = HONKER.state.turn;
   const player = (turn - 1) % 4;
-  const card = HONKER.cardFromHand(player, Math.floor(Math.random() * 4));
+  const card = HONKER.state.hands[player][Math.floor(Math.random() * 4)];
   return HONKER.attemptPlayerAction(player, { type: 2, card});
 };
 
