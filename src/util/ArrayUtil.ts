@@ -15,10 +15,10 @@ function iota(length: number, start:number = 0): number[] {
  * You can also provide a factory function for the value parameter.
  * @template T
  * @param {number} length Requested length
- * @param {(T | ()=>T)} value Item to fill array with or a factory function
+ * @param {(T | (i:number)=>T)} value Item to fill array with or a factory function
  * @returns {T[]} Array filled with requested values
  */
-function fill<T>(length: number, value: ()=>T): T[];
+function fill<T>(length: number, value: (i:number)=>T): T[];
 function fill<T>(length: number, value: T): T[];
 function fill(length: number, value: any): any[] {
   if (typeof value === "function") {
