@@ -2,7 +2,7 @@ import "./HBCard.scss";
 import colors from "../BaseColors";
 import pips from "./pips";
 import { ComponentProps } from "react";
-import { vecAdd, vecMul, vecSub } from "../util/Vector";
+import { vecAdd, vecSub } from "../util/Vector";
 import { OutlineFilter, CardDim } from "./CardUtil";
 import chroma from "chroma-js";
 

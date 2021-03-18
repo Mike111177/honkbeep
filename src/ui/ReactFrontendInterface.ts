@@ -5,25 +5,48 @@ import EventEmitter from "events";
 import { GameState, initGameStateFromDefinition, reduceGameEvent } from "../game/GameState";
 import BackendInterface from "../game/BackendInterface";
 import NullBackend from "../game/NullBackend";
-import { GameAttempt, GameData, GameDefinition, GameEventMessage } from "../game/GameTypes";
+import { GameAttempt, GameData, GameDefinition, GameEventMessage, GameEventType } from "../game/GameTypes";
 import { FloatAreaPath } from "./util/Floating";
+import ArrayUtil from "../util/ArrayUtil";
+import { CardEmpathy, DeckEmpathy, EmpathyStatus, Pips } from "../game/types/Empathy";
+import { doesClueMatchCard } from "../game/Rules";
 
 
 type ClientState = {
   game: GameState;
   shuffleOrder: number[];
+  empathy: DeckEmpathy;
 }
 
 function initClientState(definition: GameDefinition) {
-  return {
-    game: initGameStateFromDefinition(definition),
-    shuffleOrder: []
-  };
+  const game = initGameStateFromDefinition(definition);
+  const shuffleOrder: number[] = [];
+  const empathy = ArrayUtil.fill(game.deck.length, () => ArrayUtil.fill(game.deck.cards.length, EmpathyStatus.Possible));
+  return { game, shuffleOrder, empathy };
 }
 
 const reduceClientMessage = produce((state: Draft<ClientState>, { event, reveals }: GameEventMessage) => {
   //Notify gamestate of new event
   state.game = reduceGameEvent(state.game, event);
+  //If it was a clue, update empathy
+  if (event.type === GameEventType.Clue) {
+    //For each card in the hand of the clue target player
+    for (let card of state.game.hands[event.target]) {
+      //Get the current empathy of this card
+      let empathy = state.empathy[card];
+      //Make sure this isn't already a revealed card
+      if (typeof empathy !== "number") {
+        const cardWasTouched = event.touched.findIndex(i => i === card) !== -1;
+        //For every possibility of this card
+        for (let i = 0; i < empathy.length; i++) {
+          const possibilityMatchesClue = doesClueMatchCard(event.clue, state.game.deck.cards[i].data);
+          if (cardWasTouched !== possibilityMatchesClue) {
+            empathy[i] = EmpathyStatus.KnownNotPossible;
+          }
+        }
+      }
+    }
+  }
   //Process Reveals
   if (reveals) {
     for (let revealedCard of reveals) {
@@ -49,7 +72,7 @@ export default class ReactUIInterface extends EventEmitter {
   private viewState?: ClientState;
   //Adapter to use to communicate with server
   private backend: BackendInterface;
-
+  
   paused: boolean = false;
 
   constructor(backend: BackendInterface) {
@@ -313,6 +336,33 @@ export default class ReactUIInterface extends EventEmitter {
     this.paused = true;
     this.emit("game-update");
   }
+
+  getPips(empathy: CardEmpathy): Pips {
+    const deck = this.latestState!.game.deck;
+    const suits = this.latestState!.game.definition.variant.suits;
+    
+    if (typeof empathy !== "number") {
+      return {
+        ranks: [1,2,3,4,5].filter((rank) => {
+          return empathy.filter((v, i) => {
+            return deck.cards[i].data.rank === rank && v !== EmpathyStatus.KnownNotPossible;
+          }).length > 0;
+        }),
+        suits: suits.filter((suit) => {
+          return empathy.filter((v, i) => {
+            return deck.cards[i].data.suit === suit && v !== EmpathyStatus.KnownNotPossible;
+          }).length > 0;
+        })
+      };
+    } else {
+      const card = deck.getCard(empathy);
+      return {
+        ranks: [card.rank],
+        suits: [card.suit]
+      };
+    }
+  }
+
 
 }
 

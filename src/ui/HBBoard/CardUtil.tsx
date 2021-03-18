@@ -1,5 +1,5 @@
 import React from "react";
-import { Vec2D, vecAdd, vecMul, vecSub } from "../util/Vector";
+import { Vec2D, vecMul } from "../util/Vector";
 
 export const OutlineFilter = (
   <defs>
