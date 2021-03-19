@@ -1,8 +1,8 @@
-.HBClueArea{
-    display: grid;
-    justify-content: center;
-    align-content: center;
-    user-select: none;
+.HBClueArea {
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  user-select: none;
 }
 
 .ClueSelector {
@@ -14,21 +14,21 @@
 }
 
 .HBClueButtonAreaSuit {
-    display: grid;
-    justify-content: center;
-    align-content: center;
-    justify-items: center;
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  justify-items: center;
 }
 
 .HBClueButtonAreaNumber {
-    display: grid;
-    justify-content: center;
-    justify-items: center;
-    align-content: center;
-    grid-template-columns: repeat(5, auto);
+  display: grid;
+  justify-content: center;
+  justify-items: center;
+  align-content: center;
+  grid-template-columns: repeat(5, auto);
 }
 
-.HBClueButtonAreaPlayer{
+.HBClueButtonAreaPlayer {
   display: grid;
   justify-content: center;
   text-align: center;
@@ -36,7 +36,7 @@
   height: min-content;
 }
 
-.PlayerClueButton{
+.PlayerClueButton {
   margin: 3px;
   padding: 3px;
   background-color: black;
@@ -48,13 +48,11 @@
   background-color: white;
 }
 
-
-
-.ClueButton{
+.ClueButton {
   height: 60px;
 }
 
-.submitButton{
+.submitButton {
   display: flex;
   align-items: center;
   justify-content: center;

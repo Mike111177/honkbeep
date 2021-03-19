@@ -9,7 +9,7 @@ import chroma from "chroma-js";
 export type HBCardProps = {
   rank: number;
   suit: string;
-} & ComponentProps<"svg">
+} & ComponentProps<"svg">;
 
 //Tweakables
 const rPipHeight = 17.5;
@@ -23,8 +23,8 @@ const { mid, viewBox } = CardDim;
 
 const pipCorner = vecSub(mid, pipDist);
 
-const rPipOff = { x: - rPipHeight / 2, y: - rPipHeight / 2 };
-const cPipOff = { x: - cPipHeight / 2, y: - cPipHeight / 2 };
+const rPipOff = { x: -rPipHeight / 2, y: -rPipHeight / 2 };
+const cPipOff = { x: -cPipHeight / 2, y: -cPipHeight / 2 };
 
 const pipFlip = `rotate(180 ${mid.x} ${mid.y})`;
 
@@ -38,27 +38,103 @@ export default function HBCardFront({ suit, rank, ...props }: HBCardProps) {
   let color = colors(suit);
   let pip = pips[suit];
   const num = rank;
-  const backgroundColor = chroma.mix(color,"#FFFFFF", 0.5, "lrgb").hex();
+  const backgroundColor = chroma.mix(color, "#FFFFFF", 0.5, "lrgb").hex();
   return (
     <svg className="HBCardFront" {...props} viewBox={viewBox}>
       {OutlineFilter}
-      <rect x="5%" y="5%" width="90%" height="90%" fill={backgroundColor} rx="5%" />
-      <rect x="5%" y="5%" width="90%" height="90%" fill="#00000000" strokeWidth="4%" stroke="#000000" rx="5%" />
-      <rect x="5%" y="5%" width="90%" height="90%" fill="#00000000" strokeWidth="2.5%" stroke={color} rx="5%" />
-      <text fill={color} {...numOffset} fontSize={numSize} textAnchor='middle' dominantBaseline='central' filter="url(#outline)">{num}</text>
-      <text fill={color} {...numOffset} fontSize={numSize} textAnchor='middle' dominantBaseline='central' filter="url(#outline)" transform={pipFlip}>{num}</text>
-      { num % 2 === 1 ? /*Center Pip*/ <>
-        <image href={pip} height={cPipHeight} {...pipC} filter="url(#outline)" />
-      </> : undefined}
-      { num > 1 ? /*Top And Bottom Pip*/ <>
-        <image href={pip} height={rPipHeight} {...pipT} filter="url(#outline)" />
-        <image href={pip} height={rPipHeight} {...pipT} filter="url(#outline)" transform={pipFlip} />
-      </> : undefined}
-      { num > 3 ? /*Left And Right Pip*/ <>
-        <image href={pip} height={rPipHeight} {...pipR} filter="url(#outline)" />
-        <image href={pip} height={rPipHeight} {...pipR} filter="url(#outline)" transform={pipFlip} />
-      </> : undefined}
-
+      <rect
+        x="5%"
+        y="5%"
+        width="90%"
+        height="90%"
+        fill={backgroundColor}
+        rx="5%"
+      />
+      <rect
+        x="5%"
+        y="5%"
+        width="90%"
+        height="90%"
+        fill="#00000000"
+        strokeWidth="4%"
+        stroke="#000000"
+        rx="5%"
+      />
+      <rect
+        x="5%"
+        y="5%"
+        width="90%"
+        height="90%"
+        fill="#00000000"
+        strokeWidth="2.5%"
+        stroke={color}
+        rx="5%"
+      />
+      <text
+        fill={color}
+        {...numOffset}
+        fontSize={numSize}
+        textAnchor="middle"
+        dominantBaseline="central"
+        filter="url(#outline)"
+      >
+        {num}
+      </text>
+      <text
+        fill={color}
+        {...numOffset}
+        fontSize={numSize}
+        textAnchor="middle"
+        dominantBaseline="central"
+        filter="url(#outline)"
+        transform={pipFlip}
+      >
+        {num}
+      </text>
+      {num % 2 === 1 ? (
+        /*Center Pip*/ <>
+          <image
+            href={pip}
+            height={cPipHeight}
+            {...pipC}
+            filter="url(#outline)"
+          />
+        </>
+      ) : undefined}
+      {num > 1 ? (
+        /*Top And Bottom Pip*/ <>
+          <image
+            href={pip}
+            height={rPipHeight}
+            {...pipT}
+            filter="url(#outline)"
+          />
+          <image
+            href={pip}
+            height={rPipHeight}
+            {...pipT}
+            filter="url(#outline)"
+            transform={pipFlip}
+          />
+        </>
+      ) : undefined}
+      {num > 3 ? (
+        /*Left And Right Pip*/ <>
+          <image
+            href={pip}
+            height={rPipHeight}
+            {...pipR}
+            filter="url(#outline)"
+          />
+          <image
+            href={pip}
+            height={rPipHeight}
+            {...pipR}
+            filter="url(#outline)"
+            transform={pipFlip}
+          />
+        </>
+      ) : undefined}
     </svg>
   );
 }

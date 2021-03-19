@@ -1,16 +1,12 @@
 import EventEmitter from "events";
 import BackendInterface from "./BackendInterface";
-import {
-  GameData,
-  GameAttempt,
-  GameEventMessage
-} from "./GameTypes";
+import { GameData, GameAttempt, GameEventMessage } from "./GameTypes";
 import LocalServer from "./LocalServer";
 
-
-
 //Meant for dictating logic of local games or template games
-export default class LocalBackend extends EventEmitter implements BackendInterface {
+export default class LocalBackend
+  extends EventEmitter
+  implements BackendInterface {
   private player: number;
   private server: LocalServer;
   private state?: GameData;
@@ -19,16 +15,16 @@ export default class LocalBackend extends EventEmitter implements BackendInterfa
     super();
     this.player = player;
     this.server = server;
-    this.initConnection(); 
+    this.initConnection();
   }
 
   private async initConnection() {
     //Connect to "Server"
     await this.server.connect(this.player, this.onEvent.bind(this));
-    
+
     //"Download" game events up to this point
     this.state = await this.server.requestInitialState(this.player);
-  
+
     this.emit("ready");
   }
 
@@ -54,7 +50,10 @@ export default class LocalBackend extends EventEmitter implements BackendInterfa
   }
 
   async attemptPlayerAction(action: GameAttempt) {
-    const actionSuccess = await this.server.attemptPlayerAction(this.player, action);
+    const actionSuccess = await this.server.attemptPlayerAction(
+      this.player,
+      action
+    );
     return actionSuccess;
   }
 }

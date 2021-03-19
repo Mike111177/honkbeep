@@ -2,17 +2,29 @@ import chroma from "chroma-js";
 import colors from "../BaseColors";
 import { useContext } from "react";
 import { ClueType } from "../../game/types/Clue";
-import { GameClueEvent, GameDiscardEvent, GameEventType, GamePlayEvent, GamePlayResultType } from "../../game/GameTypes";
-import { GameUIContext, useClientLatestState, useClientViewState } from "./ClientGameStateManager";
+import {
+  GameClueEvent,
+  GameDiscardEvent,
+  GameEventType,
+  GamePlayEvent,
+  GamePlayResultType,
+} from "../../game/GameTypes";
+import {
+  GameUIContext,
+  useClientLatestState,
+  useClientViewState,
+} from "./ClientGameStateManager";
 import HBCardIcon from "./HBCardIcon";
 
 import "./HBPlayHistory.scss";
 
-
 const NaturalNums = ["zero", "one", "two", "three", "four", "five"];
 
 type CluePlayDescriberProps = { turn: number; event: GameClueEvent };
-function CluePlayDescriber({ turn, event: { touched, clue, target } }: CluePlayDescriberProps) {
+function CluePlayDescriber({
+  turn,
+  event: { touched, clue, target },
+}: CluePlayDescriberProps) {
   const viewState = useClientViewState();
   const numPlayers = viewState.game.definition.variant.numPlayers;
   const player = (turn - 1) % numPlayers;
@@ -20,11 +32,11 @@ function CluePlayDescriber({ turn, event: { touched, clue, target } }: CluePlayD
   const giverName = playernames[player];
   const targetName = playernames[target];
   const numTouched = touched.length;
-  const subject = clue.type === ClueType.Number ? `#${clue.value}`: clue.value;
-  let subjectstyle:any = {};
+  const subject = clue.type === ClueType.Number ? `#${clue.value}` : clue.value;
+  let subjectstyle: any = {};
   if (clue.type === ClueType.Color) {
     const color = colors(clue.value);
-    const backgroundColor = chroma.mix(color,"#FFFFFF", 0.5, "lrgb").hex();
+    const backgroundColor = chroma.mix(color, "#FFFFFF", 0.5, "lrgb").hex();
     subjectstyle = {
       color,
       height: "40px",
@@ -33,7 +45,7 @@ function CluePlayDescriber({ turn, event: { touched, clue, target } }: CluePlayD
       borderRadius: "5px",
       borderStyle: "solid",
       display: "inline-block",
-      mask: "url(#outline)"
+      mask: "url(#outline)",
     };
   } else if (clue.type === ClueType.Number) {
     subjectstyle = {
@@ -44,9 +56,14 @@ function CluePlayDescriber({ turn, event: { touched, clue, target } }: CluePlayD
       display: "inline-block",
     };
   }
-  return <span>{`${giverName} tells ${targetName} about ${NaturalNums[numTouched]} `} <div style={subjectstyle}>{subject}</div>{`${numTouched!==1 ? "s" : ""}`}</span>;
+  return (
+    <span>
+      {`${giverName} tells ${targetName} about ${NaturalNums[numTouched]} `}{" "}
+      <div style={subjectstyle}>{subject}</div>
+      {`${numTouched !== 1 ? "s" : ""}`}
+    </span>
+  );
 }
-
 
 type DiscardPlayDescriberProps = { turn: number; event: GameDiscardEvent };
 function DiscardPlayDescriber({ turn, event }: DiscardPlayDescriberProps) {
@@ -61,7 +78,7 @@ function DiscardPlayDescriber({ turn, event }: DiscardPlayDescriberProps) {
   return (
     <span>
       {`${playerName} discarded `}
-      <HBCardIcon height="40px" {...cardProps}/>
+      <HBCardIcon height="40px" {...cardProps} />
       {/* {` from slot ${event.handSlot + 1}`} */}
     </span>
   );
@@ -81,7 +98,7 @@ function PlayPlayDescriber({ turn, event }: PlayPlayDescriberProps) {
     return (
       <span>
         {`${playerName} played `}
-        <HBCardIcon height="40px" {...cardProps}/>
+        <HBCardIcon height="40px" {...cardProps} />
         {/* {` from slot ${event.handSlot + 1}`} */}
       </span>
     );
@@ -89,7 +106,7 @@ function PlayPlayDescriber({ turn, event }: PlayPlayDescriberProps) {
     return (
       <span>
         {`${playerName} misplayed `}
-        <HBCardIcon height="40px" {...cardProps}/>
+        <HBCardIcon height="40px" {...cardProps} />
         {/* {` from slot ${event.handSlot + 1}`} */}
       </span>
     );
@@ -121,8 +138,11 @@ export default function HBPlayHistory() {
   const displayAmount = Math.min(numPlayers, turnNumber);
   return (
     <div className="HBPlayHistory">
-      {[...Array(displayAmount).keys()].map((_, i) => turnNumber - displayAmount + i).map(
-        i => < PlayDescriber key={i} message={i} />)}
+      {[...Array(displayAmount).keys()]
+        .map((_, i) => turnNumber - displayAmount + i)
+        .map((i) => (
+          <PlayDescriber key={i} message={i} />
+        ))}
     </div>
   );
 }

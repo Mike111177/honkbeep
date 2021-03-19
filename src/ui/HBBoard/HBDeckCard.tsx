@@ -6,17 +6,17 @@ import HBCardBack from "./HBCardBack";
 
 //TODO: PLS REMOVE, REPLACE WITH BETTER THING
 let spaceIsDown = false;
-const listeners: ((sd:boolean)=>void)[] = [];
+const listeners: ((sd: boolean) => void)[] = [];
 window.addEventListener("keydown", (event) => {
   if (event.code === "Space" && spaceIsDown === false) {
     spaceIsDown = true;
-    listeners.forEach(i => i(spaceIsDown));
+    listeners.forEach((i) => i(spaceIsDown));
   }
 });
 window.addEventListener("keyup", (event) => {
   if (event.code === "Space" && spaceIsDown === true) {
     spaceIsDown = false;
-    listeners.forEach(i => i(spaceIsDown));
+    listeners.forEach((i) => i(spaceIsDown));
   }
 });
 
@@ -40,12 +40,17 @@ export default function HBDeckCard({ index, ...props }: any) {
   const [spaceDown, setSpaceDown] = useState(spaceIsDown);
   useEffect(() => {
     listeners.push(setSpaceDown);
-    return () => { listeners.splice(listeners.findIndex(i => i === setSpaceDown), 1) };
+    return () => {
+      listeners.splice(
+        listeners.findIndex((i) => i === setSpaceDown),
+        1
+      );
+    };
   }, []);
 
   if (cardInfo !== undefined && !spaceDown) {
     return <HBCardFront {...cardInfo} {...props} />;
   } else {
-    return <HBCardBack suits={suits} pips={pips} {...props}  />;
+    return <HBCardBack suits={suits} pips={pips} {...props} />;
   }
 }

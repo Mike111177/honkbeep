@@ -9,9 +9,14 @@ test("Fill", () => {
   const primitive = 14;
   const getter = () => ({ primitive });
   const reference = getter();
-  
+
   const primResult = ArrayUtil.fill(4, primitive);
-  expect(primResult).toStrictEqual([primitive, primitive, primitive, primitive]);
+  expect(primResult).toStrictEqual([
+    primitive,
+    primitive,
+    primitive,
+    primitive,
+  ]);
 
   const refResult = ArrayUtil.fill(4, reference);
   expect(refResult).not.toBeSet();

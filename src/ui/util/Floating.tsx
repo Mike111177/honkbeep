@@ -3,7 +3,7 @@ import React from "react";
 
 type FloatAreaConfig = {
   dropZone?: boolean;
-}
+};
 
 type AreaListener = (event: FloatAreaEvent) => any;
 export type FloatAreaPath = [string, ...(number | string)[]];
@@ -11,7 +11,7 @@ export enum FloatAreaEventType {
   Register = 1,
   Resize,
   DragEnter,
-  DragLeave
+  DragLeave,
 }
 export type FloatAreaEvent = {
   area: FloatAreaData;
@@ -37,7 +37,9 @@ class FloatAreaData {
   }
 
   update(reason: FloatAreaEventType) {
-    this.listeners.forEach((callback: AreaListener) => callback({ type: reason, area: this }));
+    this.listeners.forEach((callback: AreaListener) =>
+      callback({ type: reason, area: this })
+    );
   }
 }
 
@@ -123,14 +125,23 @@ export class FloatContextData {
   subscribeToArea(path: FloatAreaPath, callback: AreaListener) {
     const area = this.getOrCreateArea(path);
     area.listeners.push(callback);
-    return () => { area.listeners.splice(area.listeners.findIndex((e: AreaListener) => e === callback), 1) };
+    return () => {
+      area.listeners.splice(
+        area.listeners.findIndex((e: AreaListener) => e === callback),
+        1
+      );
+    };
   }
 
-  registerArea(path: FloatAreaPath, ref: React.MutableRefObject<null>, config?: FloatAreaConfig) {
+  registerArea(
+    path: FloatAreaPath,
+    ref: React.MutableRefObject<null>,
+    config?: FloatAreaConfig
+  ) {
     const area = this.getOrCreateArea(path);
     //Cleanup old config for area
     if (area.config?.dropZone) {
-      this.dropZones = this.dropZones.filter(a => area !== a);
+      this.dropZones = this.dropZones.filter((a) => area !== a);
     }
     area.ref = ref;
     area.config = config;
@@ -142,8 +153,9 @@ export class FloatContextData {
   }
 }
 
-export const FloatContext = React.createContext<FloatContextData>(new FloatContextData());
-
+export const FloatContext = React.createContext<FloatContextData>(
+  new FloatContextData()
+);
 
 export function useFloatArea(path: FloatAreaPath, config?: FloatAreaConfig) {
   const floatContext = useContext(FloatContext);
@@ -158,7 +170,15 @@ type FloatAreaProps = {
   areaPath: FloatAreaPath;
   config?: FloatAreaConfig;
 } & ComponentPropsWithoutRef<"div">;
-export function FloatArea({ areaPath, config, children, ...props }: FloatAreaProps) {
-  return <div ref={useFloatArea(areaPath, config)} {...props}>{children}</div>;
+export function FloatArea({
+  areaPath,
+  config,
+  children,
+  ...props
+}: FloatAreaProps) {
+  return (
+    <div ref={useFloatArea(areaPath, config)} {...props}>
+      {children}
+    </div>
+  );
 }
-

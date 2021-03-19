@@ -1,22 +1,22 @@
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 
 import LocalBackend from "./game/LocalBackend";
-import HBBoard from './ui/HBBoard/HBBoard';
+import HBBoard from "./ui/HBBoard/HBBoard";
 
 import background from "./background_black.jpg";
-import './App.scss';
-import LocalServer from './game/LocalServer';
+import "./App.scss";
+import LocalServer from "./game/LocalServer";
 
 const gamedef = {
   variant: {
     suits: ["Red", "Yellow", "Green", "Blue", "Purple"],
     numPlayers: 4,
-    handSize: 4
+    handSize: 4,
   },
-  playerNames: ["Alice", "Bob", "Cathy", "Donald"]
+  playerNames: ["Alice", "Bob", "Cathy", "Donald"],
 };
 
-//Create virtual local Server 
+//Create virtual local Server
 const server = new LocalServer(gamedef);
 
 //For debugging:
@@ -25,7 +25,7 @@ const server = new LocalServer(gamedef);
   const turn = HONKER.state.turn;
   const player = (turn - 1) % 4;
   const card = HONKER.state.hands[player][Math.floor(Math.random() * 4)];
-  return HONKER.attemptPlayerAction(player, { type: 2, card});
+  return HONKER.attemptPlayerAction(player, { type: 2, card });
 };
 
 //Connect to local server as player 0

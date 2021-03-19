@@ -6,25 +6,24 @@ import { FloatContext, FloatContextData } from "../util/Floating";
 import { CardFloatLayer } from "./CardFloat";
 import { HBHandsArea } from "./HBHand";
 import HBPlayHistory from "./HBPlayHistory";
-import ClientStateManager, { GameUIContext } from './ClientGameStateManager';
+import ClientStateManager, { GameUIContext } from "./ClientGameStateManager";
 import { HBDeck } from "./HBDeck";
 
-import './HBBoard.scss';
+import "./HBBoard.scss";
 import { HBScoreBoard } from "./HBScoreBoard";
 import { HBReplayControls } from "./HBReplayControls";
 import BackendInterface from "../../game/BackendInterface";
 
-
-
-
 type HBBoardProps = {
   backend: BackendInterface;
-}
+};
 
 export default function HBBoard({ backend }: HBBoardProps) {
-  //State to wait for 
-  const [manager, setManager] = useState<undefined | ClientStateManager>(undefined);
-  
+  //State to wait for
+  const [manager, setManager] = useState<undefined | ClientStateManager>(
+    undefined
+  );
+
   useEffect(() => {
     backend.onReady(() => setManager(new ClientStateManager(backend)));
   }, [backend]);
@@ -45,9 +44,7 @@ export default function HBBoard({ backend }: HBBoardProps) {
             <div className="handsWrapper">
               <HBHandsArea perspective={0} />
             </div>
-            <div className="clueHistoryWrapper">
-
-            </div>
+            <div className="clueHistoryWrapper"></div>
             <div className="discardWrapper">
               <HBDiscardPile />
             </div>
@@ -57,21 +54,30 @@ export default function HBBoard({ backend }: HBBoardProps) {
             <div className="stackClueAreaWrapper">
               <HBClueArea />
             </div>
-            <div className="controlsPlaceHolder" style={{ display: "flex", flexDirection: "row-reverse" }}>
+            <div
+              className="controlsPlaceHolder"
+              style={{ display: "flex", flexDirection: "row-reverse" }}
+            >
               <HBDeck />
               <HBScoreBoard />
               <div>
                 Debug Controls:
-              <HBReplayControls />
+                <HBReplayControls />
                 <div>
-                  <button onClick={() => { (window as any).HONKPlayRandom() }}>Try Play Random Card</button>
+                  <button
+                    onClick={() => {
+                      (window as any).HONKPlayRandom();
+                    }}
+                  >
+                    Try Play Random Card
+                  </button>
                 </div>
               </div>
             </div>
           </div>
           <CardFloatLayer />
         </FloatContext.Provider>
-      </GameUIContext.Provider >
+      </GameUIContext.Provider>
     );
   } else {
     return <span>Waiting for initialization.</span>;

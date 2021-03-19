@@ -18,15 +18,18 @@ export class Deck {
       this.lookup = [];
     } else {
       const suits = varient.suits;
-      this.cards = suits.map(suit => (
-        DEFAULT_SUIT_RANKS.map((rank, i) => (
-          {
+      this.cards = suits
+        .map((suit) =>
+          DEFAULT_SUIT_RANKS.map((rank, i) => ({
             data: { suit, rank },
-            count: DEFAULT_SUIT_RANK_DIVISION[i]
-          }
-        ))
-      )).flat();
-      this.lookup = this.cards.reduce<number[]>((acc, val, i) => acc.concat(ArrayUtil.fill(val.count, i)), []);
+            count: DEFAULT_SUIT_RANK_DIVISION[i],
+          }))
+        )
+        .flat();
+      this.lookup = this.cards.reduce<number[]>(
+        (acc, val, i) => acc.concat(ArrayUtil.fill(val.count, i)),
+        []
+      );
     }
   }
 
@@ -39,12 +42,15 @@ export class Deck {
   }
 }
 
-
 function areCardsSame(a: CardData, b: CardData) {
   return a.rank === b.rank && a.suit === b.suit;
 }
 
-export function createProcuredOrder(deck: Deck, inputOrder: (number | CardData)[], seed?: ShufflerInput) {
+export function createProcuredOrder(
+  deck: Deck,
+  inputOrder: (number | CardData)[],
+  seed?: ShufflerInput
+) {
   let order = ArrayUtil.iota(deck.length);
   let countProcured = 0;
   for (countProcured; countProcured < inputOrder.length; countProcured++) {
@@ -82,7 +88,10 @@ export function createProcuredOrder(deck: Deck, inputOrder: (number | CardData)[
   return { order, seed: rSeed };
 }
 
-export function getShuffledOrder(length: number, seed: ShufflerInput = undefined): { order: number[]; seed: number } {
+export function getShuffledOrder(
+  length: number,
+  seed: ShufflerInput = undefined
+): { order: number[]; seed: number } {
   let rng = new xorshift32(seed);
   let order = ArrayUtil.iota(length);
   for (let i = 0; i < length; i++) {

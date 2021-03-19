@@ -1,8 +1,18 @@
 import { GameState } from "./GameState";
-import { GameAttempt, GameEvent, GameEventType, GamePlayResultType } from "./GameTypes";
+import {
+  GameAttempt,
+  GameEvent,
+  GameEventType,
+  GamePlayResultType,
+} from "./GameTypes";
 import { doesClueMatchCard } from "./Rules";
 
-function isCardPlayableOnStack(card: number, stackNumber: number, state: Readonly<GameState>, shuffleOrder: readonly number[]) {
+function isCardPlayableOnStack(
+  card: number,
+  stackNumber: number,
+  state: Readonly<GameState>,
+  shuffleOrder: readonly number[]
+) {
   const cardInfo = state.deck.getCard(shuffleOrder[card]);
   const suit = state.definition.variant.suits[stackNumber];
   const stack = state.stacks[stackNumber];
@@ -12,7 +22,9 @@ function isCardPlayableOnStack(card: number, stackNumber: number, state: Readonl
         return true;
       }
     } else {
-      const { rank } = state.deck.getCard(shuffleOrder[stack[stack.length - 1]]);
+      const { rank } = state.deck.getCard(
+        shuffleOrder[stack[stack.length - 1]]
+      );
       if (rank === cardInfo.rank - 1) {
         return true;
       }
@@ -28,14 +40,19 @@ function isCardPlayableOnStack(card: number, stackNumber: number, state: Readonl
  * @param shuffleOrder Known deck order
  * @returns Resulting event if attempt was valid, undefined if not
  */
-export function resolveGameAction(action: Readonly<GameAttempt>, state: Readonly<GameState>, shuffleOrder: readonly number[]): GameEvent | undefined {
+export function resolveGameAction(
+  action: Readonly<GameAttempt>,
+  state: Readonly<GameState>,
+  shuffleOrder: readonly number[]
+): GameEvent | undefined {
   const player = (state.turn - 1) % state.definition.variant.numPlayers;
   switch (action.type) {
     case GameEventType.Play: {
       //Get the card the player is trying to play
       const { card } = action;
       //Make sure card is actually in player hand
-      if (state.hands[player].find(i => i === card) === undefined) return undefined;
+      if (state.hands[player].find((i) => i === card) === undefined)
+        return undefined;
       //Try to play card on each stack, until we find one that works
       for (let i = 0; i < state.definition.variant.suits.length; i++) {
         if (isCardPlayableOnStack(card, i, state, shuffleOrder)) {
@@ -44,7 +61,7 @@ export function resolveGameAction(action: Readonly<GameAttempt>, state: Readonly
             type: GameEventType.Play,
             result: GamePlayResultType.Success,
             stack: i,
-            card: card
+            card: card,
           };
         }
       }
@@ -53,14 +70,15 @@ export function resolveGameAction(action: Readonly<GameAttempt>, state: Readonly
         turn: state.turn,
         type: GameEventType.Play,
         result: GamePlayResultType.Misplay,
-        card: card
+        card: card,
       };
     }
     case GameEventType.Discard: {
       //Get the card the player is trying to play
       const { card } = action;
       //Make sure card is actually in player hand
-      if (state.hands[player].find(i => i === card) === undefined) return undefined;
+      if (state.hands[player].find((i) => i === card) === undefined)
+        return undefined;
       return {
         type: GameEventType.Discard,
         turn: state.turn,
@@ -76,7 +94,9 @@ export function resolveGameAction(action: Readonly<GameAttempt>, state: Readonly
 
       //See which cards in target hand get touched
       const targetHand = state.hands[target];
-      let touched = targetHand.filter(card => doesClueMatchCard(clue, state.deck.getCard(shuffleOrder[card])));
+      let touched = targetHand.filter((card) =>
+        doesClueMatchCard(clue, state.deck.getCard(shuffleOrder[card]))
+      );
 
       //If no cards were touched, this clue is illegal
       if (touched.length === 0) return undefined;
@@ -87,7 +107,7 @@ export function resolveGameAction(action: Readonly<GameAttempt>, state: Readonly
         type: GameEventType.Clue,
         clue,
         target,
-        touched
+        touched,
       };
     }
     default:

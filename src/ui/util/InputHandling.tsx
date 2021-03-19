@@ -6,7 +6,7 @@ export type DragStatus = {
   down: boolean;
   origin: Vec2D;
   offset: Vec2D;
-}
+};
 
 type DragEventHandler = (s: DragStatus) => any;
 
@@ -14,13 +14,19 @@ export class DragRecognizer<EL extends HTMLElement = HTMLElement> {
   status: DragStatus = {
     down: false,
     origin: { x: 0, y: 0 },
-    offset: { x: 0, y: 0 }
-  }
+    offset: { x: 0, y: 0 },
+  };
   listeners = ((rec: DragRecognizer<EL>) => {
     return {
-      onPointerDown: (event: React.PointerEvent) => { rec.onPointerDown(event) },
-      onPointerUp: (event: React.PointerEvent) => { rec.onPointerUp(event) },
-      onPointerMove: (event: React.PointerEvent) => { rec.onPointerMove(event) }
+      onPointerDown: (event: React.PointerEvent) => {
+        rec.onPointerDown(event);
+      },
+      onPointerUp: (event: React.PointerEvent) => {
+        rec.onPointerUp(event);
+      },
+      onPointerMove: (event: React.PointerEvent) => {
+        rec.onPointerMove(event);
+      },
     };
   })(this);
   ref: RefObject<EL>;
@@ -36,7 +42,8 @@ export class DragRecognizer<EL extends HTMLElement = HTMLElement> {
   }
 
   onPointerDown(event: React.PointerEvent) {
-    if (event.button === 0) { //Left Click
+    if (event.button === 0) {
+      //Left Click
       this.status.down = true;
       this.status.origin = { x: event.pageX, y: event.pageY };
       this.status.offset = { x: 0, y: 0 };
@@ -45,7 +52,8 @@ export class DragRecognizer<EL extends HTMLElement = HTMLElement> {
     }
   }
   onPointerUp(event: React.PointerEvent) {
-    if (event.button === 0) { //Left Click
+    if (event.button === 0) {
+      //Left Click
       this.ref.current!.releasePointerCapture(event.pointerId);
       this.status.down = false;
       this.handler(this.status);
@@ -61,7 +69,10 @@ export class DragRecognizer<EL extends HTMLElement = HTMLElement> {
   }
 }
 
-export function useDrag<EL extends HTMLElement = HTMLElement>(ref: RefObject<EL>, eventHandler: DragEventHandler) {
+export function useDrag<EL extends HTMLElement = HTMLElement>(
+  ref: RefObject<EL>,
+  eventHandler: DragEventHandler
+) {
   const [dragManager] = useState(() => new DragRecognizer(ref, eventHandler));
   useEffect(() => {
     dragManager.setListener(eventHandler);

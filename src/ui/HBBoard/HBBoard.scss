@@ -1,4 +1,4 @@
-.HBBoard{
+.HBBoard {
   display: grid;
   grid-template-columns: 45% 30% 25%;
   grid-template-rows: 25% 25% 35% 15%;
@@ -8,25 +8,25 @@
   overflow: hidden;
 }
 
-.handsWrapper{
+.handsWrapper {
   grid-row-start: 1;
   grid-row-end: 6;
   grid-column: 2;
 }
 
-.clueHistoryWrapper{
+.clueHistoryWrapper {
   grid-row-start: 1;
   grid-row-end: 3;
   grid-column: 3;
 }
 
-.discardWrapper{
+.discardWrapper {
   grid-row-start: 3;
   grid-row-end: 5;
   grid-column: 3;
 }
 
-.playHistoryWrapper{
+.playHistoryWrapper {
   overflow: auto;
 }
 
@@ -35,5 +35,5 @@
 .discardWrapper {
   border-radius: 10px;
   margin: 10px;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
 }

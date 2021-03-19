@@ -45,7 +45,12 @@ type CardSVGProps = {
 export const CardSVG = React.forwardRef<SVGSVGElement, CardSVGProps>(
   function CardSVG({ children, ...props }, ref) {
     return (
-      <svg ref={ref} viewBox={viewBox} preserveAspectRatio="xMidYMid meet" {...props}>
+      <svg
+        ref={ref}
+        viewBox={viewBox}
+        preserveAspectRatio="xMidYMid meet"
+        {...props}
+      >
         {children}
       </svg>
     );
@@ -53,4 +58,3 @@ export const CardSVG = React.forwardRef<SVGSVGElement, CardSVGProps>(
 );
 
 export const CardDim = { view, viewBox, mid };
-

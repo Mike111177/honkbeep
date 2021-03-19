@@ -4,9 +4,9 @@
  * @param {number} [start=0] Initial value
  * @returns {number} Array with ascending numbers
  */
-function iota(length: number, start:number = 0): number[] {
+function iota(length: number, start: number = 0): number[] {
   const arr = [...Array(length).keys()];
-  if (start > 0) return arr.map(i => i + start);
+  if (start > 0) return arr.map((i) => i + start);
   else return arr;
 }
 
@@ -18,7 +18,7 @@ function iota(length: number, start:number = 0): number[] {
  * @param {(T | (i:number)=>T)} value Item to fill array with or a factory function
  * @returns {T[]} Array filled with requested values
  */
-function fill<T>(length: number, value: (i:number)=>T): T[];
+function fill<T>(length: number, value: (i: number) => T): T[];
 function fill<T>(length: number, value: T): T[];
 function fill(length: number, value: any): any[] {
   if (typeof value === "function") {

@@ -2,60 +2,86 @@ import React, { useContext, useEffect, useState } from "react";
 import produce, { Draft } from "immer";
 import EventEmitter from "events";
 
-import { GameState, initGameStateFromDefinition, reduceGameEvent } from "../../game/GameState";
+import {
+  GameState,
+  initGameStateFromDefinition,
+  reduceGameEvent,
+} from "../../game/GameState";
 import BackendInterface from "../../game/BackendInterface";
 import NullBackend from "../../game/NullBackend";
-import { GameAttempt, GameData, GameDefinition, GameEventMessage, GameEventType } from "../../game/GameTypes";
+import {
+  GameAttempt,
+  GameData,
+  GameDefinition,
+  GameEventMessage,
+  GameEventType,
+} from "../../game/GameTypes";
 import { FloatAreaPath } from "../util/Floating";
 import ArrayUtil from "../../util/ArrayUtil";
-import { CardEmpathy, DeckEmpathy, EmpathyStatus, Pips } from "../../game/types/Empathy";
+import {
+  CardEmpathy,
+  DeckEmpathy,
+  EmpathyStatus,
+  Pips,
+} from "../../game/types/Empathy";
 import { doesClueMatchCard } from "../../game/Rules";
-
 
 type ClientState = {
   game: GameState;
   shuffleOrder: number[];
   empathy: DeckEmpathy;
-}
+};
 
 function initClientState(definition: GameDefinition) {
   const game = initGameStateFromDefinition(definition);
   const shuffleOrder: number[] = [];
-  const empathy = ArrayUtil.fill(game.deck.length, () => ArrayUtil.fill(game.deck.cards.length, EmpathyStatus.Possible));
+  const empathy = ArrayUtil.fill(game.deck.length, () =>
+    ArrayUtil.fill(game.deck.cards.length, EmpathyStatus.Possible)
+  );
   return { game, shuffleOrder, empathy };
 }
 
-const reduceClientMessage = produce((state: Draft<ClientState>, { event, reveals }: GameEventMessage) => {
-  //Notify gamestate of new event
-  state.game = reduceGameEvent(state.game, event);
-  //If it was a clue, update empathy
-  if (event.type === GameEventType.Clue) {
-    //For each card in the hand of the clue target player
-    for (let card of state.game.hands[event.target]) {
-      //Get the current empathy of this card
-      let empathy = state.empathy[card];
-      //Make sure this isn't already a revealed card
-      if (typeof empathy !== "number") {
-        const cardWasTouched = event.touched.findIndex(i => i === card) !== -1;
-        //For every possibility of this card
-        for (let i = 0; i < empathy.length; i++) {
-          const possibilityMatchesClue = doesClueMatchCard(event.clue, state.game.deck.cards[i].data);
-          if (cardWasTouched !== possibilityMatchesClue) {
-            empathy[i] = EmpathyStatus.KnownNotPossible;
+const reduceClientMessage = produce(
+  (state: Draft<ClientState>, { event, reveals }: GameEventMessage) => {
+    //Notify gamestate of new event
+    state.game = reduceGameEvent(state.game, event);
+    //If it was a clue, update empathy
+    if (event.type === GameEventType.Clue) {
+      //For each card in the hand of the clue target player
+      for (let card of state.game.hands[event.target]) {
+        //Get the current empathy of this card
+        let empathy = state.empathy[card];
+        //Make sure this isn't already a revealed card
+        if (typeof empathy !== "number") {
+          const cardWasTouched =
+            event.touched.findIndex((i) => i === card) !== -1;
+          //For every possibility of this card
+          for (let i = 0; i < empathy.length; i++) {
+            const possibilityMatchesClue = doesClueMatchCard(
+              event.clue,
+              state.game.deck.cards[i].data
+            );
+            if (cardWasTouched !== possibilityMatchesClue) {
+              empathy[i] = EmpathyStatus.KnownNotPossible;
+            }
           }
         }
       }
     }
-  }
-  //Process Reveals
-  if (reveals) {
-    for (let revealedCard of reveals) {
-      state.shuffleOrder[revealedCard.deck] = revealedCard.card;
+    //Process Reveals
+    if (reveals) {
+      for (let revealedCard of reveals) {
+        state.shuffleOrder[revealedCard.deck] = revealedCard.card;
+      }
     }
   }
-});
+);
 
-function reduceGameStateFromGameData(state: ClientState, data: GameData, max_turn: number = data.events.length) {
+function reduceGameStateFromGameData(
+  state: ClientState,
+  data: GameData,
+  max_turn: number = data.events.length
+) {
   let messages = data.events;
   for (let i = state.game.turn; i < Math.min(messages.length, max_turn); i++) {
     state = reduceClientMessage(state, messages[i]);
@@ -72,7 +98,7 @@ export default class ClientStateManager extends EventEmitter {
   private viewState?: ClientState;
   //Adapter to use to communicate with server
   private backend: BackendInterface;
-  
+
   paused: boolean = false;
 
   constructor(backend: BackendInterface) {
@@ -85,12 +111,22 @@ export default class ClientStateManager extends EventEmitter {
       //Create new GameState
       const state0 = initClientState(this.backend.currentState().definition);
       //Set the initial state to the turn after the deal
-      this.initialState = reduceGameStateFromGameData(state0, this.backend.currentState(), 1);
+      this.initialState = reduceGameStateFromGameData(
+        state0,
+        this.backend.currentState(),
+        1
+      );
       //Set the view state and latest state to be the most recent calculable from the Game Event data we have
-      this.viewState = this.latestState = reduceGameStateFromGameData(this.initialState, this.backend.currentState());
+      this.viewState = this.latestState = reduceGameStateFromGameData(
+        this.initialState,
+        this.backend.currentState()
+      );
       //Listen for further game events
       this.backend.on("gameStateChanged", () => {
-        this.latestState = reduceGameStateFromGameData(this.latestState!, this.backend.currentState());
+        this.latestState = reduceGameStateFromGameData(
+          this.latestState!,
+          this.backend.currentState()
+        );
         if (!this.paused) {
           this.viewState = this.latestState;
         }
@@ -102,7 +138,7 @@ export default class ClientStateManager extends EventEmitter {
   /**
    * `attemptPlayerAction` Triggers a user request to cause a game event
    * @param action action to attempt.
-   * @returns {Promise<boolean>} promise that resolves to boolean indicating if action succeeds 
+   * @returns {Promise<boolean>} promise that resolves to boolean indicating if action succeeds
    */
   async attemptPlayerAction(action: GameAttempt): Promise<boolean> {
     return this.backend.attemptPlayerAction(action);
@@ -137,7 +173,7 @@ export default class ClientStateManager extends EventEmitter {
   /**
    * `onReady` runs a given callback one time once the frontend is ready
    *  If the frontend is already ready, the function is run immediately.
-   * @param callback 
+   * @param callback
    */
   onReady(callback: () => void) {
     this.backend.onReady(callback);
@@ -152,14 +188,18 @@ export default class ClientStateManager extends EventEmitter {
 
   /**
    * `getStateOfTurn` returns the game state from any given turn number
-   * 
+   *
    * Try to avoid excessive calling of this, it has to recalculate the entire game state
    * making this a very expensive operation.
-   * 
+   *
    * @param {number} turn turn number
    */
   getStateOfTurn(turn: number) {
-    return reduceGameStateFromGameData(this.initialState!, this.backend.currentState(), turn);
+    return reduceGameStateFromGameData(
+      this.initialState!,
+      this.backend.currentState(),
+      turn
+    );
   }
 
   /**
@@ -231,7 +271,9 @@ export default class ClientStateManager extends EventEmitter {
    * @returns function to unsubscribe
    */
   subscribeToStateChange(callback: () => void) {
-    const removeFunc = () => { this.off("game-update", callback) };
+    const removeFunc = () => {
+      this.off("game-update", callback);
+    };
     this.on("game-update", callback);
     return removeFunc;
   }
@@ -269,42 +311,68 @@ export default class ClientStateManager extends EventEmitter {
   getPips(empathy: CardEmpathy): Pips {
     const deck = this.latestState!.game.deck;
     const suits = this.latestState!.game.definition.variant.suits;
-    
+
     if (typeof empathy !== "number") {
       return {
-        ranks: [1,2,3,4,5].filter((rank) => {
-          return empathy.filter((v, i) => {
-            return deck.cards[i].data.rank === rank && v !== EmpathyStatus.KnownNotPossible;
-          }).length > 0;
+        ranks: [1, 2, 3, 4, 5].filter((rank) => {
+          return (
+            empathy.filter((v, i) => {
+              return (
+                deck.cards[i].data.rank === rank &&
+                v !== EmpathyStatus.KnownNotPossible
+              );
+            }).length > 0
+          );
         }),
         suits: suits.filter((suit) => {
-          return empathy.filter((v, i) => {
-            return deck.cards[i].data.suit === suit && v !== EmpathyStatus.KnownNotPossible;
-          }).length > 0;
-        })
+          return (
+            empathy.filter((v, i) => {
+              return (
+                deck.cards[i].data.suit === suit &&
+                v !== EmpathyStatus.KnownNotPossible
+              );
+            }).length > 0
+          );
+        }),
       };
     } else {
       const card = deck.getCard(empathy);
       return {
         ranks: [card.rank],
-        suits: [card.suit]
+        suits: [card.suit],
       };
     }
   }
 }
 
-export const GameUIContext = React.createContext<ClientStateManager>(new ClientStateManager(new NullBackend()));
+export const GameUIContext = React.createContext<ClientStateManager>(
+  new ClientStateManager(new NullBackend())
+);
 
 export function useClientLatestState(): Readonly<ClientState> {
   const context = useContext(GameUIContext);
-  const [latestState, setLatestState] = useState(() => context.getLatestState());
-  useEffect(() => context.subscribeToStateChange(() => {setLatestState(context.getLatestState())}), [context]);
+  const [latestState, setLatestState] = useState(() =>
+    context.getLatestState()
+  );
+  useEffect(
+    () =>
+      context.subscribeToStateChange(() => {
+        setLatestState(context.getLatestState());
+      }),
+    [context]
+  );
   return latestState;
 }
 
 export function useClientViewState(): Readonly<ClientState> {
   const context = useContext(GameUIContext);
   const [viewState, setViewState] = useState(() => context.getViewState());
-  useEffect(() => context.subscribeToStateChange(() => {setViewState(context.getViewState())}), [context]);
+  useEffect(
+    () =>
+      context.subscribeToStateChange(() => {
+        setViewState(context.getViewState());
+      }),
+    [context]
+  );
   return viewState;
 }

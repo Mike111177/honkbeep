@@ -1,8 +1,11 @@
 import BackendInterface from "./BackendInterface";
 import { GameData, GameAttempt } from "./GameTypes";
 
-export default class NullBackend implements BackendInterface{
-  addListener(event: string | symbol, listener: (...args: any[]) => void): this {
+export default class NullBackend implements BackendInterface {
+  addListener(
+    event: string | symbol,
+    listener: (...args: any[]) => void
+  ): this {
     throw new Error("Attempted to use NullBackend");
   }
   on(event: string | symbol, listener: (...args: any[]) => void): this {
@@ -11,7 +14,10 @@ export default class NullBackend implements BackendInterface{
   once(event: string | symbol, listener: (...args: any[]) => void): this {
     throw new Error("Attempted to use NullBackend");
   }
-  removeListener(event: string | symbol, listener: (...args: any[]) => void): this {
+  removeListener(
+    event: string | symbol,
+    listener: (...args: any[]) => void
+  ): this {
     throw new Error("Attempted to use NullBackend");
   }
   off(event: string | symbol, listener: (...args: any[]) => void): this {
@@ -38,10 +44,16 @@ export default class NullBackend implements BackendInterface{
   listenerCount(type: string | symbol): number {
     throw new Error("Attempted to use NullBackend");
   }
-  prependListener(event: string | symbol, listener: (...args: any[]) => void): this {
+  prependListener(
+    event: string | symbol,
+    listener: (...args: any[]) => void
+  ): this {
     throw new Error("Attempted to use NullBackend");
   }
-  prependOnceListener(event: string | symbol, listener: (...args: any[]) => void): this {
+  prependOnceListener(
+    event: string | symbol,
+    listener: (...args: any[]) => void
+  ): this {
     throw new Error("Attempted to use NullBackend");
   }
   eventNames(): (string | symbol)[] {
@@ -56,6 +68,5 @@ export default class NullBackend implements BackendInterface{
   isReady(): boolean {
     return false;
   }
-  onReady(callback: () => void): void{}
-  
+  onReady(callback: () => void): void {}
 }

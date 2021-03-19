@@ -28,8 +28,7 @@ const pips: Record<string, string> = {
   Red,
   Teal,
   White,
-  Yellow
+  Yellow,
 };
 
 export default pips;
-

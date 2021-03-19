@@ -1,26 +1,25 @@
-.HBHand{
+.HBHand {
   display: grid;
   border-width: 2px;
-  border-color: #00000000; 
-  border-style: solid; 
-  border-radius: 5px; 
+  border-color: #00000000;
+  border-style: solid;
+  border-radius: 5px;
 }
 
 .HBHand.OnPlayerTurn {
-  border-color: yellow; 
+  border-color: yellow;
   background-color: #11111199;
 }
 
-.HBHandsArea{
-
+.HBHandsArea {
 }
 
-.handname{
+.handname {
   font-size: 20px;
   text-align: center;
 }
 
-.handCardArea{
+.handCardArea {
   display: grid;
   grid-auto-flow: column;
 }

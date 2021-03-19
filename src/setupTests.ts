@@ -1,5 +1,5 @@
 //DOM Matchers
-import '@testing-library/jest-dom';
+import "@testing-library/jest-dom";
 
 //Custom Matchers
 declare global {
@@ -22,8 +22,7 @@ expect.extend({
       };
     } else {
       return {
-        message: () =>
-          `expected ${received} to contain only unique elements`,
+        message: () => `expected ${received} to contain only unique elements`,
         pass: false,
       };
     }
@@ -48,7 +47,7 @@ expect.extend({
     } else {
       return {
         message: () =>
-        `Error: expect(received).toHaveUniqueSize(expected)
+          `Error: expect(received).toHaveUniqueSize(expected)
 
 
         Expected unique size: ${expected}

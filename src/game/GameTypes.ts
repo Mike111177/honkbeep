@@ -14,13 +14,13 @@ export type VariantDefinition = {
   suits: SuitData[];
   numPlayers: number;
   handSize: number;
-}
+};
 
 //Minimum Data to start game
 export type GameDefinition = {
   variant: VariantDefinition;
   playerNames: string[];
-}
+};
 
 //May either be a seed or undefined
 export type ShufflerInput = number | undefined;
@@ -31,28 +31,34 @@ export type ShufflerInput = number | undefined;
 export type CardReveal = {
   deck: number;
   card: number;
-}
+};
 
 export enum GameEventType {
   Deal = 1,
   Play,
   Discard,
-  Clue
+  Clue,
 }
 
 //GameDeal
 export type GameDealEvent = {
   type: GameEventType.Deal;
-}
+};
 
 //GamePlay
 export type GamePlayAttempt = {
   type: GameEventType.Play;
   card: number;
 };
-export enum GamePlayResultType { Success = 1, Misplay }
-export type GamePlayResultSuccess = { result: GamePlayResultType.Success; stack: number } 
-export type GamePlayResultMisplay = { result: GamePlayResultType.Misplay }
+export enum GamePlayResultType {
+  Success = 1,
+  Misplay,
+}
+export type GamePlayResultSuccess = {
+  result: GamePlayResultType.Success;
+  stack: number;
+};
+export type GamePlayResultMisplay = { result: GamePlayResultType.Misplay };
 export type GamePlayResult = GamePlayResultSuccess | GamePlayResultMisplay;
 export type GamePlayEvent = GamePlayAttempt & GamePlayResult;
 
@@ -67,21 +73,20 @@ export type GameClueAttempt = {
   type: GameEventType.Clue;
   target: number;
   clue: Clue;
-}
-export type GameClueResult = {touched: number[];}
+};
+export type GameClueResult = { touched: number[] };
 export type GameClueEvent = GameClueAttempt & GameClueResult;
 
 //Represents any action taken by a player that could advance to the next turn (or deal)
 export type GameEvent = {
   turn: number;
-} &
-  (GameDealEvent |
-    GamePlayEvent |
-    GameDiscardEvent |
-    GameClueEvent);
+} & (GameDealEvent | GamePlayEvent | GameDiscardEvent | GameClueEvent);
 
 //Data representing players attempt cause an event
-export type GameAttempt = GamePlayAttempt | GameDiscardAttempt | GameClueAttempt;
+export type GameAttempt =
+  | GamePlayAttempt
+  | GameDiscardAttempt
+  | GameClueAttempt;
 
 export type GameEventSeries = GameEvent[];
 
@@ -89,12 +94,10 @@ export type GameEventSeries = GameEvent[];
 export type GameData = {
   events: GameEventMessage[];
   definition: GameDefinition;
-}
+};
 
 //Game event data tailored for client consumption
 export type GameEventMessage = {
   event: GameEvent;
   reveals?: CardReveal[];
-}
-
-
+};
