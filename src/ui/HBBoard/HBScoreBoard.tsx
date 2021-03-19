@@ -1,13 +1,11 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import ArrayUtil from "../../util/ArrayUtil";
-import { GameUIContext } from "./ClientGameStateManager";
+import { useClientViewState } from "./ClientGameStateManager";
 
 import "./HBScoreBoard.scss";
 
 export function HBScoreBoard() {
-  const context = useContext(GameUIContext);
-  const [viewState, setViewState] = useState(() => context.getViewState());
-  useEffect(() => context.subscribeToStateChange(() => setViewState(context.getViewState())), [context]);
+  const viewState = useClientViewState();
 
   const { turn, clues, strikes, stacks } = viewState.game;
   const score = useMemo(() => stacks.reduce((acc, v) => acc + v.length, 0), [stacks]);

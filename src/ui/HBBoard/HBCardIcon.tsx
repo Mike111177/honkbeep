@@ -1,9 +1,9 @@
 import chroma from "chroma-js";
 import colors from "../BaseColors";
-import { CardDim, OutlineFilter, ThickOutlineFilter } from "./CardUtil";
+import { CardDim, ThickOutlineFilter } from "./CardUtil";
 import { HBCardProps } from "./HBCardFront";
 
-const { mid, viewBox } = CardDim;
+const { viewBox } = CardDim;
 
 export default function HBCardIcon({ suit, rank, ...props }: HBCardProps) {
   let color = colors(suit);

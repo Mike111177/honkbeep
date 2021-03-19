@@ -1,9 +1,9 @@
 import chroma from "chroma-js";
 import colors from "../BaseColors";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { ClueType } from "../../game/types/Clue";
 import { GameClueEvent, GameDiscardEvent, GameEventType, GamePlayEvent, GamePlayResultType } from "../../game/GameTypes";
-import { GameUIContext } from "./ClientGameStateManager";
+import { GameUIContext, useClientLatestState, useClientViewState } from "./ClientGameStateManager";
 import HBCardIcon from "./HBCardIcon";
 
 import "./HBPlayHistory.scss";
@@ -13,10 +13,10 @@ const NaturalNums = ["zero", "one", "two", "three", "four", "five"];
 
 type CluePlayDescriberProps = { turn: number; event: GameClueEvent };
 function CluePlayDescriber({ turn, event: { touched, clue, target } }: CluePlayDescriberProps) {
-  const context = useContext(GameUIContext);
-  const numPlayers = context.getNumberOfPlayers();
+  const viewState = useClientViewState();
+  const numPlayers = viewState.game.definition.variant.numPlayers;
   const player = (turn - 1) % numPlayers;
-  const playernames = context.getPlayerNames();
+  const playernames = viewState.game.definition.playerNames;
   const giverName = playernames[player];
   const targetName = playernames[target];
   const numTouched = touched.length;
@@ -50,12 +50,14 @@ function CluePlayDescriber({ turn, event: { touched, clue, target } }: CluePlayD
 
 type DiscardPlayDescriberProps = { turn: number; event: GameDiscardEvent };
 function DiscardPlayDescriber({ turn, event }: DiscardPlayDescriberProps) {
-  const context = useContext(GameUIContext);
-  const numPlayers = context.getNumberOfPlayers();
+  const viewState = useClientViewState();
+  const latestState = useClientLatestState();
+  const shuffleOrder = latestState.shuffleOrder;
+  const numPlayers = viewState.game.definition.variant.numPlayers;
   const player = (turn - 1) % numPlayers;
-  const playerName = context.getPlayerNames()[player];
+  const playerName = viewState.game.definition.playerNames[player];
   const { card } = event;
-  const cardProps = context.getCardDisplayableProps(card);
+  const cardProps = latestState.game.deck.getCard(shuffleOrder[card]);
   return (
     <span>
       {`${playerName} discarded `}
@@ -67,12 +69,14 @@ function DiscardPlayDescriber({ turn, event }: DiscardPlayDescriberProps) {
 
 type PlayPlayDescriberProps = { turn: number; event: GamePlayEvent };
 function PlayPlayDescriber({ turn, event }: PlayPlayDescriberProps) {
-  const context = useContext(GameUIContext);
-  const numPlayers = context.getNumberOfPlayers();
+  const viewState = useClientViewState();
+  const latestState = useClientLatestState();
+  const shuffleOrder = latestState.shuffleOrder;
+  const numPlayers = viewState.game.definition.variant.numPlayers;
   const player = (turn - 1) % numPlayers;
-  const playerName = context.getPlayerNames()[player];
+  const playerName = viewState.game.definition.playerNames[player];
   const { card } = event;
-  const cardProps = context.getCardDisplayableProps(card);
+  const cardProps = latestState.game.deck.getCard(shuffleOrder[card]);
   if (event.result === GamePlayResultType.Success) {
     return (
       <span>
@@ -111,18 +115,10 @@ function PlayDescriber({ message }: PlayDescriberProps) {
 }
 
 export default function HBPlayHistory() {
-  const context = useContext(GameUIContext);
-  const numPlayers = context.getNumberOfPlayers();
-  const [turnNumber, setTurnNumber] = useState(context.getCurrentTurn());
+  const viewState = useClientViewState();
+  const numPlayers = viewState.game.definition.variant.numPlayers;
+  const turnNumber = viewState.game.turn;
   const displayAmount = Math.min(numPlayers, turnNumber);
-  useEffect(() => {
-    const callback = () => {
-      setTurnNumber(context.getCurrentTurn());
-    };
-    const removeFunc = () => { context.off("game-update", callback) };
-    context.on("game-update", callback);
-    return removeFunc;
-  }, [context]);
   return (
     <div className="HBPlayHistory">
       {[...Array(displayAmount).keys()].map((_, i) => turnNumber - displayAmount + i).map(

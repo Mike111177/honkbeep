@@ -149,7 +149,7 @@ export function CardFloatLayer() {
   const context = useContext(GameUIContext);
   return (
     <div className="CardFloatLayer">
-      {ArrayUtil.iota(context.getDeckSize()).map(i => <FloatCard key={i} index={i} />)}
+      {ArrayUtil.iota(context.getLatestState().game.deck.length).map(i => <FloatCard key={i} index={i} />)}
     </div >
   );
 }

@@ -1,29 +1,18 @@
-import { useContext, useEffect, useState } from "react";
-
-import { GameUIContext } from "./ClientGameStateManager";
+import { useClientLatestState, useClientViewState } from "./ClientGameStateManager";
 import { useFloatArea } from "../util/Floating";
 import { CardTarget } from "./CardFloat";
 
 export default function HBDiscardPile() {
-  const context = useContext(GameUIContext);
-  const [cards, setCards] = useState(context.getDiscardPile());
-  useEffect(() => {
-    const callback = () => {
-      const newCards = context.getDiscardPile();
-      if (newCards.length !== cards.length) {
-        setCards(newCards);
-      }
-    };
-    const removeFunc = () => {context.off("game-update", callback)};
-    context.on("game-update", callback);
-    return removeFunc;
-  });
+  const viewState = useClientViewState();
+  const latestState = useClientLatestState();
+  const cards = viewState.game.discardPile;
+  const shuffleOrder = latestState.shuffleOrder;
 
   const ref = useFloatArea(["discardPile"], { dropZone: true });
   
   //TODO: Fix this..........
   const cardOrder = cards
-    .map(index=>({index, ...context.getCardDisplayableProps(index)}))
+    .map(index=>({index, ...latestState.game.deck.getCard(shuffleOrder[index])}))
     .sort((a,b)=>(a.suit < b.suit ? -1 : a.suit > b.suit ? 1 : a.rank - b.rank))
     .map(i=>i.index);
   return (

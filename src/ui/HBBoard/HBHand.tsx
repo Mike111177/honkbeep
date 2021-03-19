@@ -1,7 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-
 import { CardTarget } from "./CardFloat";
-import { GameUIContext } from './ClientGameStateManager';
+import { useClientLatestState, useClientViewState } from './ClientGameStateManager';
 
 import "./HBHand.scss";
 
@@ -21,18 +19,10 @@ type HBHandProps = {
 }
 
 export function HBHand({ player }: HBHandProps) {
-  const context = useContext(GameUIContext);
-  const playerNames = context.getPlayerNames();
-  const cards = context.getPlayerHand(player);
-  const [myTurn, setMyTurn] = useState(context.isPlayerTurn(player));
-  useEffect(() => {
-    const callback = () => {
-      setMyTurn(context.isPlayerTurn(player));
-    };
-    const removeFunc = () => { context.off("game-update", callback) };
-    context.on("game-update", callback);
-    return removeFunc;
-  });
+  const viewState = useClientViewState();
+  const playerNames = viewState.game.definition.playerNames;
+  const cards = viewState.game.hands[player];
+  const myTurn = player === (viewState.game.turn - 1) % viewState.game.definition.variant.numPlayers;
 
   return (
     <div className={`HBHand${myTurn? " OnPlayerTurn" : ""}`}>
@@ -51,9 +41,9 @@ type HBHandsAreaProps = {
   perspective: number;
 }
 export function HBHandsArea({ perspective }: HBHandsAreaProps) {
-  const context = useContext(GameUIContext);
-  const playerNames = context.getPlayerNames();
-  const numPlayers = context.getNumberOfPlayers();
+  const latestState = useClientLatestState();
+  const playerNames = latestState.game.definition.playerNames;
+  const numPlayers = latestState.game.definition.variant.numPlayers;
   return (
     <div className="HBHandsArea">
       {playerNames.map((n, i) => <HBHand player={(i + perspective) % (numPlayers)} key={i} />)}

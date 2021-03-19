@@ -1,7 +1,7 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 
 import HBCardFront from "./HBCardFront";
-import { GameUIContext } from "./ClientGameStateManager";
+import { GameUIContext, useClientLatestState } from "./ClientGameStateManager";
 import HBCardBack from "./HBCardBack";
 
 //TODO: PLS REMOVE, REPLACE WITH BETTER THING
@@ -22,28 +22,30 @@ window.addEventListener("keyup", (event) => {
 
 export default function HBDeckCard({ index, ...props }: any) {
   const context = useContext(GameUIContext);
-  const [latestState, setLatestState] = useState(() => context.getLatestState());
-  const [spaceDown, setSpaceDown] = useState(spaceIsDown);
- 
-  useEffect(() => context.subscribeToStateChange(() => {
-    setLatestState(context.getLatestState());
-  }), [context, index]);
+  const latestState = useClientLatestState();
+  const empathy = latestState.empathy[index];
+  const suits = latestState.game.definition.variant.suits;
+  const shuffleOrder = latestState.shuffleOrder;
+  const pips = useMemo(() => context.getPips(empathy), [context, empathy]);
+  const deck = latestState.game.deck;
+  const cardInfo = useMemo(() => {
+    const card = shuffleOrder[index];
+    if (card !== undefined) {
+      return deck.getCard(card);
+    } else {
+      return undefined;
+    }
+  }, [deck, index, shuffleOrder]);
 
+  const [spaceDown, setSpaceDown] = useState(spaceIsDown);
   useEffect(() => {
     listeners.push(setSpaceDown);
     return () => { listeners.splice(listeners.findIndex(i => i === setSpaceDown), 1) };
   }, []);
 
-  const empathy = latestState.empathy[index];
-  
-  const pips = useMemo(() => {
-    return context.getPips(empathy);
-  }, [context, empathy]);
-
-  if (context.isCardRevealed(index) && !spaceDown) {
-    let cardInfo = context.getCardDisplayableProps(index);
+  if (cardInfo !== undefined && !spaceDown) {
     return <HBCardFront {...cardInfo} {...props} />;
   } else {
-    return <HBCardBack suits={context.getSuits()} pips={pips} {...props}  />;
+    return <HBCardBack suits={suits} pips={pips} {...props}  />;
   }
 }

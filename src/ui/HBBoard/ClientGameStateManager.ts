@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import produce, { Draft } from "immer";
 import EventEmitter from "events";
 
@@ -63,7 +63,7 @@ function reduceGameStateFromGameData(state: ClientState, data: GameData, max_tur
   return state;
 }
 
-export default class ReactUIInterface extends EventEmitter {
+export default class ClientStateManager extends EventEmitter {
   //Game State after Deal Event, blank until Deal event processed
   private initialState?: ClientState;
   //Most recent canonical game state
@@ -81,8 +81,7 @@ export default class ReactUIInterface extends EventEmitter {
     this.setMaxListeners(100);
     this.backend = backend;
 
-    //Wait for the backend to be ready
-    this.backend.onReady(() => {
+    if (!(backend instanceof NullBackend)) {
       //Create new GameState
       const state0 = initClientState(this.backend.currentState().definition);
       //Set the initial state to the turn after the deal
@@ -97,7 +96,7 @@ export default class ReactUIInterface extends EventEmitter {
         }
         this.emit("game-update");
       });
-    });
+    }
   }
 
   /**
@@ -125,77 +124,6 @@ export default class ReactUIInterface extends EventEmitter {
    */
   getPlayerNames() {
     return this.backend.currentState().definition.playerNames;
-  }
-
-  /**
-   * @returns {number} the number of players in this game
-   */
-  getNumberOfPlayers(): number {
-    return this.backend.currentState().definition.variant.numPlayers;
-  }
-
-  /**
-   * `getHandSize` returns the number of cards in each players hand
-   */
-  getHandSize() {
-    return this.backend.currentState().definition.variant.handSize;
-  }
-
-  /**
-   * `getSuits` returns the suit data for this game
-   */
-  getSuits() {
-    return this.backend.currentState().definition.variant.suits;
-  }
-
-  /**
-   * `getStack` returns an array containing the cards currently placed in a given stack
-   * @param {number} index The stack number to get the cards from
-   */
-  getStack(index: number) {
-    return this.latestState!.game.stacks[index];
-  }
-
-  /**
-   *  `getDeckSize` returns the amount of cards in the deck
-   */
-  getDeckSize() {
-    return this.latestState!.game.deck.length;
-  }
-
-  /**
-   * `getCardDisplayableProps` returns the CardData for a card if it has been revealed or deduced.
-   * Else it returns "Black 6" AS A PLACEHOLDER
-   * @param {number} index the index of the card in the deck
-   */
-  getCardDisplayableProps(index: number) {
-    if (this.isCardRevealed(index)) {
-      return this.latestState!.game.deck.getCard(this.latestState!.shuffleOrder[index]);
-    } else {
-      return { rank: 6, suit: "Black" };
-    }
-  }
-
-  /**
-   * `isPlayerTurn` returns boolean whether or not it is the provided players turn in the current view
-   * @param {number} player player index to check turn of
-   */
-  isPlayerTurn(player: number) {
-    return player === (this.viewState!.game.turn - 1) % this.getNumberOfPlayers();
-  }
-
-  /**
-   * `getDiscardPile` returns an array of all the cards that have been discard
-   */
-  getDiscardPile() {
-    return this.viewState!.game.discardPile;
-  }
-
-  /**
-   * `getCurrentTurn` returns the turn number of the current view
-   */
-  getCurrentTurn() {
-    return this.viewState!.game.turn;
   }
 
   /**
@@ -233,6 +161,7 @@ export default class ReactUIInterface extends EventEmitter {
   getStateOfTurn(turn: number) {
     return reduceGameStateFromGameData(this.initialState!, this.backend.currentState(), turn);
   }
+
   /**
    * Given a player name and a turn number, get that players hand on that turn
    * @param {number} player player number
@@ -362,8 +291,20 @@ export default class ReactUIInterface extends EventEmitter {
       };
     }
   }
-
-
 }
 
-export const GameUIContext = React.createContext<ReactUIInterface>(new ReactUIInterface(new NullBackend()));
+export const GameUIContext = React.createContext<ClientStateManager>(new ClientStateManager(new NullBackend()));
+
+export function useClientLatestState(): Readonly<ClientState> {
+  const context = useContext(GameUIContext);
+  const [latestState, setLatestState] = useState(() => context.getLatestState());
+  useEffect(() => context.subscribeToStateChange(() => {setLatestState(context.getLatestState())}), [context]);
+  return latestState;
+}
+
+export function useClientViewState(): Readonly<ClientState> {
+  const context = useContext(GameUIContext);
+  const [viewState, setViewState] = useState(() => context.getViewState());
+  useEffect(() => context.subscribeToStateChange(() => {setViewState(context.getViewState())}), [context]);
+  return viewState;
+}

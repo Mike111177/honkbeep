@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 
-import { GameUIContext } from './ClientGameStateManager';
+import { GameUIContext, useClientLatestState } from './ClientGameStateManager';
 import { GameEventType } from "../../game/GameTypes";
 import { Clue, colorClue, numberClue } from "../../game/types/Clue";
 import colors from "../BaseColors";
@@ -9,14 +9,17 @@ import "./HBClueArea.scss";
 import ArrayUtil from "../../util/ArrayUtil";
 
 export default function HBClueArea() {
+  //Get state
   const context = useContext(GameUIContext);
-  const turn = context.getCurrentTurn();
+  const viewState = useClientLatestState();
+  const players = viewState.game.definition.playerNames;
+  const turn = viewState.game.turn;
+  const suits = viewState.game.definition.variant.suits;
 
   const [selectedPlayer, setSelectedPlayer] = useState<number | null>(null);
   const [selectedClue, setSelectedClue] = useState<Clue | null>(null);
 
   //Make playerButtons
-  const players = context.getPlayerNames();
   const playerButtons = players.map((p, i) =>
     <div key={i} className={`PlayerClueButton${selectedPlayer === i ? " SelectedPlayerButton" : ""}`} onClick={() => setSelectedPlayer(i)}>
       {p}
@@ -24,7 +27,6 @@ export default function HBClueArea() {
   ).filter((i, n) => n !== (turn - 1) % players.length);
 
   //Make Color Clue Buttons
-  const suits = context.getSuits();
   const [colorClues] = useState(() => suits.map(colorClue));
   const colorClueButtons = colorClues.map((clue, n) => (
     <svg key={n} className="ClueButton" viewBox="0 0 100 100" onClick={() => setSelectedClue(clue)}>
