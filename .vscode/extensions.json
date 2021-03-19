@@ -3,6 +3,7 @@
     "msjsdiag.debugger-for-chrome",
     "editorconfig.editorconfig",
     "dbaeumer.vscode-eslint",
-    "orta.vscode-jest"
+    "orta.vscode-jest",
+    "esbenp.prettier-vscode"
   ]
 }
