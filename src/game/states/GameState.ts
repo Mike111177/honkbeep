@@ -108,6 +108,8 @@ export const reduceGameEvent = produce(
         state.topDeck++;
         //Advance to next players turn
         state.turn++;
+        //If clue bank not full add clue
+        if (state.clues !== 8) state.clues++;
         break;
       }
       case GameEventType.Clue: {

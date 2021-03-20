@@ -13,20 +13,26 @@ export function HBScoreBoard() {
   const score = useMemo(() => stacks.reduce((acc, v) => acc + v.length, 0), [
     stacks,
   ]);
+
+  //Pick the color for the clue count indicator
+  const clueStyle = {
+    color:
+      clues === 8
+        ? "lightgreen"
+        : clues === 0
+        ? "red"
+        : clues === 1
+        ? "yellow"
+        : "white",
+  };
+
   return (
     <div className="HBScoreBoard">
       Turn: {turn}
       <br />
       Score: {score} / 25
       <br />
-      Clues:{" "}
-      <span
-        style={{
-          color: clues === 8 ? "lightgreen" : clues === 1 ? "red" : "white",
-        }}
-      >
-        {clues}
-      </span>
+      Clues: <span style={clueStyle}>{clues}</span>
       <br />
       Strikes:{" "}
       {ArrayUtil.fill(3, (i) =>

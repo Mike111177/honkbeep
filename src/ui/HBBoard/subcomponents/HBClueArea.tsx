@@ -11,11 +11,12 @@ import "./HBClueArea.scss";
 export default function HBClueArea() {
   //Get state
   const context = useContext(BoardContext);
-  const [players, turn, suits] = useBoardState((boardState) => {
+  const [players, turn, suits, clues] = useBoardState((boardState) => {
     return [
       boardState.viewTurn.game.definition.playerNames,
       boardState.viewTurn.game.turn,
       boardState.viewTurn.game.definition.variant.suits,
+      boardState.viewTurn.game.clues,
     ];
   });
 
@@ -119,29 +120,33 @@ export default function HBClueArea() {
     }
   };
 
-  return (
-    <div
-      className="HBClueArea"
-      style={{ gridTemplateColumns: `auto auto auto` }}
-    >
+  if (clues !== 0) {
+    return (
       <div
-        className="HBClueButtonAreaPlayer"
-        style={{ gridTemplateRows: `repeat(${players.length - 1}, 1fr)` }}
+        className="HBClueArea"
+        style={{ gridTemplateColumns: `auto auto auto` }}
       >
-        {playerButtons}
-      </div>
-      <div className="ClueSelector">
         <div
-          className="HBClueButtonAreaSuit"
-          style={{ gridTemplateColumns: `repeat(${suits.length}, auto)` }}
+          className="HBClueButtonAreaPlayer"
+          style={{ gridTemplateRows: `repeat(${players.length - 1}, 1fr)` }}
         >
-          {colorClueButtons}
+          {playerButtons}
         </div>
-        <div className="HBClueButtonAreaNumber">{numberClueButtons}</div>
+        <div className="ClueSelector">
+          <div
+            className="HBClueButtonAreaSuit"
+            style={{ gridTemplateColumns: `repeat(${suits.length}, auto)` }}
+          >
+            {colorClueButtons}
+          </div>
+          <div className="HBClueButtonAreaNumber">{numberClueButtons}</div>
+        </div>
+        <div className="submitButton" onClick={submit}>
+          ✓
+        </div>
       </div>
-      <div className="submitButton" onClick={submit}>
-        ✓
-      </div>
-    </div>
-  );
+    );
+  } else {
+    return <></>;
+  }
 }

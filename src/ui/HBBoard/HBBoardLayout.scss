@@ -26,6 +26,15 @@
   grid-column: 3;
 }
 
+.clueAreaWrapper {
+  display: grid;
+  grid-auto-flow: row;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+  height: min-content;
+}
+
 .playHistoryWrapper {
   overflow: auto;
 }

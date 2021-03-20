@@ -35,9 +35,9 @@ export default function HBBoardLayout({ board }: { board: Board }) {
           <div className="stackAreaWrapper">
             <HBStackArea />
           </div>
-          <div className="stackClueAreaWrapper">
-            <HBClueArea />
+          <div className="clueAreaWrapper">
             <HBReplayControls />
+            <HBClueArea />
           </div>
           <div className="controlsPlaceHolder">
             <HBDeck />

@@ -74,6 +74,8 @@ export function resolveGameAction(
       };
     }
     case GameEventType.Discard: {
+      //Make sure the clue bank isn't full
+      if (state.clues === 8) return undefined;
       //Get the card the player is trying to play
       const { card } = action;
       //Make sure card is actually in player hand
@@ -86,6 +88,8 @@ export function resolveGameAction(
       };
     }
     case GameEventType.Clue: {
+      //Make sure there are clues available
+      if (state.clues === 0) return undefined;
       const { clue, target } = action;
       //Make sure the player they are cluing exist
       if (target >= state.definition.variant.numPlayers) return undefined;

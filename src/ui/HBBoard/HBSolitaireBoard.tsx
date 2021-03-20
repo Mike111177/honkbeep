@@ -29,7 +29,6 @@ class SolitaireBoard extends Board {
   }
 
   async attemptPlayerAction(action: GameAttempt): Promise<boolean> {
-    console.log("ACTION");
     const event = resolveGameAction(
       action,
       this.boardState.latestTurn.game,
