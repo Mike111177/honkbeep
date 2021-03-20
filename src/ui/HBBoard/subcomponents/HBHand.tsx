@@ -19,11 +19,11 @@ type HBHandProps = {
 export function HBHand({ player }: HBHandProps) {
   const [playerNames, cards, myTurn] = useBoardState((boardState) => {
     return [
-      boardState.initialTurn.game.definition.playerNames,
-      boardState.viewTurn.game.hands[player],
+      boardState.definition.playerNames,
+      boardState.viewTurn.hands[player],
       player ===
-        (boardState.viewTurn.game.turn - 1) %
-          boardState.viewTurn.game.definition.variant.numPlayers,
+        (boardState.viewTurn.turn - 1) %
+          boardState.definition.variant.numPlayers,
     ];
   });
   return (
@@ -40,19 +40,14 @@ export function HBHand({ player }: HBHandProps) {
 
 export function HBHandsArea() {
   const [playerNames, numPlayers, perspective] = useBoardState((boardState) => {
-    const numPlayers =
-      boardState.initialTurn.game.definition.variant.numPlayers;
+    const numPlayers = boardState.definition.variant.numPlayers;
     let perspective = boardState.perspective;
     if (perspective === undefined) {
       perspective = 0;
     } else if (perspective === -1) {
-      perspective = (boardState.viewTurn.game.turn - 1) % numPlayers;
+      perspective = (boardState.viewTurn.turn - 1) % numPlayers;
     }
-    return [
-      boardState.initialTurn.game.definition.playerNames,
-      numPlayers,
-      perspective,
-    ];
+    return [boardState.definition.playerNames, numPlayers, perspective];
   });
   return (
     <div className="HBHandsArea">

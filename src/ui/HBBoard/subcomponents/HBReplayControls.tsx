@@ -20,20 +20,20 @@ export function HBReplayControls() {
   }, [context]);
 
   const back = useCallback(() => {
-    if (viewState.game.turn > 1) {
-      context.setViewTurn(viewState.game.turn - 1);
+    if (viewState.turn > 1) {
+      context.setViewTurn(viewState.turn - 1);
     }
-  }, [context, viewState.game.turn]);
+  }, [context, viewState.turn]);
 
   const forward = useCallback(() => {
-    if (viewState.game.turn < latestState.game.turn) {
-      context.setViewTurn(viewState.game.turn + 1);
+    if (viewState.turn < latestState.turn) {
+      context.setViewTurn(viewState.turn + 1);
     }
-  }, [context, latestState.game.turn, viewState.game.turn]);
+  }, [context, latestState.turn, viewState.turn]);
 
   const skipForward = useCallback(() => {
-    context.setViewTurn(latestState.game.turn);
-  }, [context, latestState.game.turn]);
+    context.setViewTurn(latestState.turn);
+  }, [context, latestState.turn]);
 
   return (
     <div style={{ userSelect: "none" }}>

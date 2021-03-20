@@ -59,7 +59,7 @@ export abstract class Board extends EventEmitter {
   pause() {
     this.boardState = reduceBoardTurnJump(
       this.boardState,
-      this.boardState.viewTurn.game.turn
+      this.boardState.viewTurn.turn
     );
     this.emit("game-update");
   }

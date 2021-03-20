@@ -22,36 +22,39 @@ window.addEventListener("keyup", (event) => {
 });
 
 export default function HBDeckCard({ index, ...props }: any) {
-  const [empathy, latestGame, card] = useBoardState((boardState) => {
-    let card = undefined;
-    const cardValue = boardState.shuffleOrder[index];
-    if (cardValue !== undefined) {
-      let view = boardState.perspective;
-      if (view === undefined) {
-        card = cardValue;
-      } else {
-        if (view === -1) {
-          view =
-            (boardState.viewTurn.game.turn - 1) %
-            boardState.initialTurn.game.definition.variant.numPlayers;
-        }
-        if (boardState.latestTurn.game.cardReveals[view].has(index)) {
+  const [empathy, latestGame, card, definition, deck] = useBoardState(
+    (boardState) => {
+      let card = undefined;
+      const cardValue = boardState.shuffleOrder[index];
+      if (cardValue !== undefined) {
+        let view = boardState.perspective;
+        if (view === undefined) {
           card = cardValue;
+        } else {
+          if (view === -1) {
+            view =
+              (boardState.viewTurn.turn - 1) %
+              boardState.definition.variant.numPlayers;
+          }
+          if (boardState.latestTurn.cardReveals[view].has(index)) {
+            card = cardValue;
+          }
         }
       }
+      return [
+        boardState.latestTurn.empathy[index],
+        boardState.latestTurn,
+        card,
+        boardState.definition,
+        boardState.deck,
+      ];
     }
-    return [
-      boardState.latestTurn.empathy[index],
-      boardState.latestTurn.game,
-      card,
-    ];
-  });
-  const suits = latestGame.definition.variant.suits;
-  const deck = latestGame.deck;
-  const pips = useMemo(() => getPipsFromEmpathy(empathy, latestGame), [
-    empathy,
-    latestGame,
-  ]);
+  );
+  const suits = definition.variant.suits;
+  const pips = useMemo(
+    () => getPipsFromEmpathy(empathy, latestGame, deck, definition),
+    [deck, definition, empathy, latestGame]
+  );
   const cardInfo = useMemo(() => {
     if (card !== undefined) {
       return deck.getCard(card);

@@ -1,3 +1,5 @@
+import { Deck } from "../DeckBuilding";
+import { GameDefinition } from "../GameTypes";
 import { GameState } from "../states/GameState";
 
 export enum EmpathyStatus {
@@ -17,10 +19,11 @@ export type Pips = {
 
 export function getPipsFromEmpathy(
   empathy: CardEmpathy,
-  game: GameState
+  game: GameState,
+  deck: Deck,
+  definition: GameDefinition
 ): Pips {
-  const deck = game.deck;
-  const suits = game.definition.variant.suits;
+  const suits = definition.variant.suits;
 
   if (typeof empathy !== "number") {
     return {

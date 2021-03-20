@@ -6,7 +6,7 @@ import "./HBScoreBoard.scss";
 
 export function HBScoreBoard() {
   const [turn, clues, strikes, stacks] = useBoardState((boardState) => {
-    const { turn, clues, strikes, stacks } = boardState.viewTurn.game;
+    const { turn, clues, strikes, stacks } = boardState.viewTurn;
     return [turn, clues, strikes, stacks];
   });
 

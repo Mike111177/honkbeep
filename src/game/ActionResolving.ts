@@ -1,20 +1,24 @@
 import { GameState } from "./states/GameState";
 import {
   GameAttempt,
+  GameDefinition,
   GameEvent,
   GameEventType,
   GamePlayResultType,
 } from "./GameTypes";
 import { doesClueMatchCard } from "./Rules";
+import { Deck } from "./DeckBuilding";
 
 function isCardPlayableOnStack(
   card: number,
   stackNumber: number,
   state: Readonly<GameState>,
+  deck: Deck,
+  definition: GameDefinition,
   shuffleOrder: readonly number[]
 ) {
-  const cardInfo = state.deck.getCard(shuffleOrder[card]);
-  const suit = state.definition.variant.suits[stackNumber];
+  const cardInfo = deck.getCard(shuffleOrder[card]);
+  const suit = definition.variant.suits[stackNumber];
   const stack = state.stacks[stackNumber];
   if (suit === cardInfo.suit) {
     if (stack.length === 0) {
@@ -22,9 +26,7 @@ function isCardPlayableOnStack(
         return true;
       }
     } else {
-      const { rank } = state.deck.getCard(
-        shuffleOrder[stack[stack.length - 1]]
-      );
+      const { rank } = deck.getCard(shuffleOrder[stack[stack.length - 1]]);
       if (rank === cardInfo.rank - 1) {
         return true;
       }
@@ -43,9 +45,11 @@ function isCardPlayableOnStack(
 export function resolveGameAction(
   action: Readonly<GameAttempt>,
   state: Readonly<GameState>,
+  deck: Deck,
+  definition: GameDefinition,
   shuffleOrder: readonly number[]
 ): GameEvent | undefined {
-  const player = (state.turn - 1) % state.definition.variant.numPlayers;
+  const player = (state.turn - 1) % definition.variant.numPlayers;
   switch (action.type) {
     case GameEventType.Play: {
       //Get the card the player is trying to play
@@ -54,8 +58,10 @@ export function resolveGameAction(
       if (state.hands[player].find((i) => i === card) === undefined)
         return undefined;
       //Try to play card on each stack, until we find one that works
-      for (let i = 0; i < state.definition.variant.suits.length; i++) {
-        if (isCardPlayableOnStack(card, i, state, shuffleOrder)) {
+      for (let i = 0; i < definition.variant.suits.length; i++) {
+        if (
+          isCardPlayableOnStack(card, i, state, deck, definition, shuffleOrder)
+        ) {
           return {
             turn: state.turn,
             type: GameEventType.Play,
@@ -92,14 +98,14 @@ export function resolveGameAction(
       if (state.clues === 0) return undefined;
       const { clue, target } = action;
       //Make sure the player they are cluing exist
-      if (target >= state.definition.variant.numPlayers) return undefined;
+      if (target >= definition.variant.numPlayers) return undefined;
       //Make sure the player they are cluing is not themself
       if (target === player) return undefined;
 
       //See which cards in target hand get touched
       const targetHand = state.hands[target];
       let touched = targetHand.filter((card) =>
-        doesClueMatchCard(clue, state.deck.getCard(shuffleOrder[card]))
+        doesClueMatchCard(clue, deck.getCard(shuffleOrder[card]))
       );
 
       //If no cards were touched, this clue is illegal

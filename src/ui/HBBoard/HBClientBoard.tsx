@@ -19,7 +19,7 @@ function reduceGameStateFromGameData(
   max_turn: number = data.events.length
 ) {
   let messages = data.events;
-  const firstTurn = state.latestTurn.game.turn;
+  const firstTurn = state.latestTurn.turn;
   for (let i = firstTurn; i < Math.min(messages.length, max_turn); i++) {
     state = reduceBoardMessage(state, messages[i]);
   }

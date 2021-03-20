@@ -13,10 +13,10 @@ export default function HBClueArea() {
   const context = useContext(BoardContext);
   const [players, turn, suits, clues] = useBoardState((boardState) => {
     return [
-      boardState.viewTurn.game.definition.playerNames,
-      boardState.viewTurn.game.turn,
-      boardState.viewTurn.game.definition.variant.suits,
-      boardState.viewTurn.game.clues,
+      boardState.definition.playerNames,
+      boardState.viewTurn.turn,
+      boardState.definition.variant.suits,
+      boardState.viewTurn.clues,
     ];
   });
 

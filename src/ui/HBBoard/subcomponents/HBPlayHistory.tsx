@@ -21,10 +21,10 @@ function CluePlayDescriber({
   turn,
   event: { touched, clue, target },
 }: CluePlayDescriberProps) {
-  const viewState = useBoardState().viewTurn;
-  const numPlayers = viewState.game.definition.variant.numPlayers;
+  const definition = useBoardState().definition;
+  const numPlayers = definition.variant.numPlayers;
   const player = (turn - 1) % numPlayers;
-  const playernames = viewState.game.definition.playerNames;
+  const playernames = definition.playerNames;
   const giverName = playernames[player];
   const targetName = playernames[target];
   const numTouched = touched.length;
@@ -67,9 +67,9 @@ function DiscardPlayDescriber({ turn, event }: DiscardPlayDescriberProps) {
     (boardState) => {
       return [
         boardState.shuffleOrder,
-        boardState.initialTurn.game.definition.variant.numPlayers,
-        boardState.viewTurn.game.definition.playerNames,
-        boardState.initialTurn.game.deck,
+        boardState.definition.variant.numPlayers,
+        boardState.definition.playerNames,
+        boardState.deck,
       ];
     }
   );
@@ -92,9 +92,9 @@ function PlayPlayDescriber({ turn, event }: PlayPlayDescriberProps) {
     (boardState) => {
       return [
         boardState.shuffleOrder,
-        boardState.initialTurn.game.definition.variant.numPlayers,
-        boardState.viewTurn.game.definition.playerNames,
-        boardState.initialTurn.game.deck,
+        boardState.definition.variant.numPlayers,
+        boardState.definition.playerNames,
+        boardState.deck,
       ];
     }
   );
@@ -142,10 +142,7 @@ function PlayDescriber({ turn }: PlayDescriberProps) {
 
 export default function HBPlayHistory() {
   const [turnNumber, numPlayers] = useBoardState((boardState) => {
-    return [
-      boardState.viewTurn.game.turn,
-      boardState.initialTurn.game.definition.variant.numPlayers,
-    ];
+    return [boardState.viewTurn.turn, boardState.definition.variant.numPlayers];
   });
   const displayAmount = Math.min(numPlayers, turnNumber);
   return (

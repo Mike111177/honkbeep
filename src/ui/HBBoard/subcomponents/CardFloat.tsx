@@ -77,12 +77,12 @@ export function FloatCard({ index }: FloatCardProps) {
   const floatContext = useContext(FloatContext);
 
   const [cardInCurrentPlayerHand, ...home] = useBoardState((boardState) => {
-    const home = getCardHome(index, boardState.viewTurn.game);
+    const home = getCardHome(index, boardState.viewTurn);
     const cardInCurrentPlayerHand =
       home[0] === "hands" &&
       home[1] ===
-        (boardState.viewTurn.game.turn - 1) %
-          boardState.viewTurn.game.definition.variant.numPlayers;
+        (boardState.viewTurn.turn - 1) %
+          boardState.definition.variant.numPlayers;
     return [cardInCurrentPlayerHand, ...home];
   });
 
@@ -215,11 +215,9 @@ export function CardFloatLayer() {
   const context = useContext(BoardContext);
   return (
     <div className="CardFloatLayer">
-      {ArrayUtil.iota(context.boardState.latestTurn.game.deck.length).map(
-        (i) => (
-          <FloatCard key={i} index={i} />
-        )
-      )}
+      {ArrayUtil.iota(context.boardState.deck.length).map((i) => (
+        <FloatCard key={i} index={i} />
+      ))}
     </div>
   );
 }

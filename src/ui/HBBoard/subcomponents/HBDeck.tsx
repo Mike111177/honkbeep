@@ -3,7 +3,7 @@ import { useBoardState } from "../types/BoardContext";
 
 export function HBDeck() {
   const [deck, topDeck] = useBoardState((boardState) => {
-    return [boardState.initialTurn.game.deck, boardState.viewTurn.game.topDeck];
+    return [boardState.deck, boardState.viewTurn.topDeck];
   });
 
   return (

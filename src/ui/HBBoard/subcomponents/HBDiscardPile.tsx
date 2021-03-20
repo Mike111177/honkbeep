@@ -7,9 +7,9 @@ import { useBoardState } from "../types/BoardContext";
 export default function HBDiscardPile() {
   const [cards, shuffleOrder, deck] = useBoardState((boardState) => {
     return [
-      boardState.viewTurn.game.discardPile,
+      boardState.viewTurn.discardPile,
       boardState.shuffleOrder,
-      boardState.initialTurn.game.deck,
+      boardState.deck,
     ];
   });
   const ref = useFloatArea(["discardPile"], { dropZone: true });

@@ -20,7 +20,7 @@ class SolitaireBoard extends Board {
   constructor(definition: GameDefinition) {
     const state0 = initBoardState(definition);
     const dealEvent: GameEvent = { turn: 0, type: GameEventType.Deal };
-    const { order } = getShuffledOrder(state0.initialTurn.game.deck.length);
+    const { order } = getShuffledOrder(state0.deck.length);
     const state1 = reduceBoardSetPerspective(
       reduceBoardSetShuffle(reduceBoardEvent(state0, dealEvent), order),
       -1
@@ -31,7 +31,9 @@ class SolitaireBoard extends Board {
   async attemptPlayerAction(action: GameAttempt): Promise<boolean> {
     const event = resolveGameAction(
       action,
-      this.boardState.latestTurn.game,
+      this.boardState.latestTurn,
+      this.boardState.deck,
+      this.boardState.definition,
       this.boardState.shuffleOrder
     );
     if (event !== undefined) {

@@ -1,4 +1,5 @@
 import produce, { Draft } from "immer";
+import { Deck } from "../../../game/DeckBuilding";
 import {
   GameDefinition,
   GameEvent,
@@ -8,24 +9,28 @@ import { doesClueMatchCard } from "../../../game/Rules";
 import {
   GameState,
   initGameStateFromDefinition,
-  reduceGameEvent,
+  reduceGameEventFn,
 } from "../../../game/states/GameState";
 import { DeckEmpathy, EmpathyStatus } from "../../../game/types/Empathy";
 import ArrayUtil from "../../../util/ArrayUtil";
 
 export type TurnState = {
-  readonly game: GameState;
   readonly empathy: DeckEmpathy;
-};
+} & GameState;
 
 export const reduceTurnEvent = produce(
-  (state: Draft<TurnState>, event: GameEvent) => {
+  (
+    state: Draft<TurnState>,
+    event: GameEvent,
+    deck: Deck,
+    definition: GameDefinition
+  ) => {
     //Notify gamestate of new event
-    state.game = reduceGameEvent(state.game, event);
+    reduceGameEventFn(state, event, definition);
     //If it was a clue, update empathy
     if (event.type === GameEventType.Clue) {
       //For each card in the hand of the clue target player
-      for (let card of state.game.hands[event.target]) {
+      for (let card of state.hands[event.target]) {
         //Get the current empathy of this card
         let empathy = state.empathy[card];
         //Make sure this isn't already a revealed card
@@ -36,7 +41,7 @@ export const reduceTurnEvent = produce(
           for (let i = 0; i < empathy.length; i++) {
             const possibilityMatchesClue = doesClueMatchCard(
               event.clue,
-              state.game.deck.cards[i].data
+              deck.cards[i].data
             );
             if (cardWasTouched !== possibilityMatchesClue) {
               empathy[i] = EmpathyStatus.KnownNotPossible;
@@ -48,12 +53,15 @@ export const reduceTurnEvent = produce(
   }
 );
 
-export function initTurnState(definition: GameDefinition): TurnState {
+export function initTurnState(
+  definition: GameDefinition,
+  deck: Deck
+): TurnState {
   const game = initGameStateFromDefinition(definition);
   return {
-    game,
-    empathy: ArrayUtil.fill(game.deck.length, () =>
-      ArrayUtil.fill(game.deck.cards.length, EmpathyStatus.Possible)
+    ...game,
+    empathy: ArrayUtil.fill(deck.length, () =>
+      ArrayUtil.fill(deck.cards.length, EmpathyStatus.Possible)
     ),
   };
 }

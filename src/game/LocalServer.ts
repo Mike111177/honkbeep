@@ -5,9 +5,8 @@ import {
   GameEvent,
   GameAttempt,
   GameEventMessage,
-  GameDealEvent,
 } from "./GameTypes";
-import { getShuffledOrder } from "./DeckBuilding";
+import { Deck, getShuffledOrder } from "./DeckBuilding";
 import {
   GameState,
   initGameStateFromDefinition,
@@ -26,6 +25,7 @@ type PlayerRevealHistory = PlayerRevealTurn[];
 //Will be the substitute for a server in these local games
 export default class LocalServer {
   private definition: GameDefinition;
+  private deck: Deck;
 
   private shuffleOrder: number[];
   private seed: number;
@@ -47,18 +47,20 @@ export default class LocalServer {
   ) {
     //Variant Info
     this.definition = definition;
+    this.deck = new Deck(definition.variant);
 
     //Build Server side game state
     const dealEvent: GameEvent = { turn: 0, type: GameEventType.Deal };
     this.state = reduceGameEvent(
       initGameStateFromDefinition(definition),
-      dealEvent
+      dealEvent,
+      definition
     );
     this.events = [dealEvent];
 
     //Order Deck
     if (deckDef === undefined || typeof deckDef === "number") {
-      const shuffle = getShuffledOrder(this.state.deck.length, deckDef);
+      const shuffle = getShuffledOrder(this.deck.length, deckDef);
       this.shuffleOrder = shuffle.order;
       this.seed = shuffle.seed;
     } else {
@@ -148,7 +150,13 @@ export default class LocalServer {
     //Check to make sure its this players turn
     if (!this.isPlayersTurn(player)) return false;
     //If build event from attempt
-    const event = resolveGameAction(action, this.state, this.shuffleOrder);
+    const event = resolveGameAction(
+      action,
+      this.state,
+      this.deck,
+      this.definition,
+      this.shuffleOrder
+    );
     //If event is valid...
     if (event !== undefined) {
       switch (event.type) {
@@ -161,7 +169,7 @@ export default class LocalServer {
         }
         // falls through so any event gets propagated onto the state and announced to clients
         case GameEventType.Clue:
-          this.state = reduceGameEvent(this.state, event);
+          this.state = reduceGameEvent(this.state, event, this.definition);
           this.events.push(event);
           this.broadcastLatestEvent();
           return true;
