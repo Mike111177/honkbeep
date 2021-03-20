@@ -23,23 +23,26 @@ window.addEventListener("keyup", (event) => {
 
 export default function HBDeckCard({ index, ...props }: any) {
   const context = useContext(GameUIContext);
-  const latestState = context.useLatestTurn();
-  const empathy = latestState.empathy[index];
-  const suits = latestState.game.definition.variant.suits;
-  const shuffleOrder = context.boardState.shuffleOrder;
-  const pips = useMemo(() => getPipsFromEmpathy(empathy, latestState.game), [
+  const [empathy, latestGame, card] = context.useBoardState((boardState) => {
+    return [
+      boardState.latestTurn.empathy[index],
+      boardState.latestTurn.game,
+      boardState.shuffleOrder[index],
+    ];
+  });
+  const suits = latestGame.definition.variant.suits;
+  const deck = latestGame.deck;
+  const pips = useMemo(() => getPipsFromEmpathy(empathy, latestGame), [
     empathy,
-    latestState.game,
+    latestGame,
   ]);
-  const deck = latestState.game.deck;
   const cardInfo = useMemo(() => {
-    const card = shuffleOrder[index];
     if (card !== undefined) {
       return deck.getCard(card);
     } else {
       return undefined;
     }
-  }, [deck, index, shuffleOrder]);
+  }, [deck, card]);
 
   const [spaceDown, setSpaceDown] = useState(spaceIsDown);
   useEffect(() => {

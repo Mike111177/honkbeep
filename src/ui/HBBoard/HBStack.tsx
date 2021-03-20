@@ -71,7 +71,7 @@ export function HBStack({ suit, number }: HBStackProps) {
 
 export function HBStackArea() {
   const context = useContext(GameUIContext);
-  const suits = context.useViewTurn().game.definition.variant.suits;
+  const suits = context.boardState.initialTurn.game.definition.variant.suits;
   const ref = useFloatArea(["stackArea"], { dropZone: true });
   return (
     <div ref={ref} id="stacks" className="HBStackArea">

@@ -22,7 +22,7 @@ function CluePlayDescriber({
   event: { touched, clue, target },
 }: CluePlayDescriberProps) {
   const context = useContext(GameUIContext);
-  const viewState = context.useViewTurn();
+  const viewState = context.useBoardState().viewTurn;
   const numPlayers = viewState.game.definition.variant.numPlayers;
   const player = (turn - 1) % numPlayers;
   const playernames = viewState.game.definition.playerNames;
@@ -65,14 +65,20 @@ function CluePlayDescriber({
 type DiscardPlayDescriberProps = { turn: number; event: GameDiscardEvent };
 function DiscardPlayDescriber({ turn, event }: DiscardPlayDescriberProps) {
   const context = useContext(GameUIContext);
-  const viewState = context.useViewTurn();
-  const latestState = context.useLatestTurn();
-  const shuffleOrder = context.boardState.shuffleOrder;
-  const numPlayers = viewState.game.definition.variant.numPlayers;
+  const [shuffleOrder, numPlayers, playerNames, deck] = context.useBoardState(
+    (boardState) => {
+      return [
+        boardState.shuffleOrder,
+        boardState.initialTurn.game.definition.variant.numPlayers,
+        boardState.viewTurn.game.definition.playerNames,
+        boardState.initialTurn.game.deck,
+      ];
+    }
+  );
   const player = (turn - 1) % numPlayers;
-  const playerName = viewState.game.definition.playerNames[player];
+  const playerName = playerNames[player];
   const { card } = event;
-  const cardProps = latestState.game.deck.getCard(shuffleOrder[card]);
+  const cardProps = deck.getCard(shuffleOrder[card]);
   return (
     <span>
       {`${playerName} discarded `}
@@ -85,14 +91,20 @@ function DiscardPlayDescriber({ turn, event }: DiscardPlayDescriberProps) {
 type PlayPlayDescriberProps = { turn: number; event: GamePlayEvent };
 function PlayPlayDescriber({ turn, event }: PlayPlayDescriberProps) {
   const context = useContext(GameUIContext);
-  const viewState = context.useViewTurn();
-  const latestState = context.useLatestTurn();
-  const shuffleOrder = context.boardState.shuffleOrder;
-  const numPlayers = viewState.game.definition.variant.numPlayers;
+  const [shuffleOrder, numPlayers, playerNames, deck] = context.useBoardState(
+    (boardState) => {
+      return [
+        boardState.shuffleOrder,
+        boardState.initialTurn.game.definition.variant.numPlayers,
+        boardState.viewTurn.game.definition.playerNames,
+        boardState.initialTurn.game.deck,
+      ];
+    }
+  );
   const player = (turn - 1) % numPlayers;
-  const playerName = viewState.game.definition.playerNames[player];
+  const playerName = playerNames[player];
   const { card } = event;
-  const cardProps = latestState.game.deck.getCard(shuffleOrder[card]);
+  const cardProps = deck.getCard(shuffleOrder[card]);
   if (event.result === GamePlayResultType.Success) {
     return (
       <span>
@@ -132,9 +144,12 @@ function PlayDescriber({ message }: PlayDescriberProps) {
 
 export default function HBPlayHistory() {
   const context = useContext(GameUIContext);
-  const viewState = context.useViewTurn();
-  const numPlayers = viewState.game.definition.variant.numPlayers;
-  const turnNumber = viewState.game.turn;
+  const [turnNumber, numPlayers] = context.useBoardState((boardState) => {
+    return [
+      boardState.viewTurn.game.turn,
+      boardState.initialTurn.game.definition.variant.numPlayers,
+    ];
+  });
   const displayAmount = Math.min(numPlayers, turnNumber);
   return (
     <div className="HBPlayHistory">

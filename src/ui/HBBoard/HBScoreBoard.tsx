@@ -6,9 +6,11 @@ import "./HBScoreBoard.scss";
 
 export function HBScoreBoard() {
   const context = useContext(GameUIContext);
-  const viewState = context.useViewTurn();
+  const [turn, clues, strikes, stacks] = context.useBoardState((boardState) => {
+    const { turn, clues, strikes, stacks } = boardState.viewTurn.game;
+    return [turn, clues, strikes, stacks];
+  });
 
-  const { turn, clues, strikes, stacks } = viewState.game;
   const score = useMemo(() => stacks.reduce((acc, v) => acc + v.length, 0), [
     stacks,
   ]);

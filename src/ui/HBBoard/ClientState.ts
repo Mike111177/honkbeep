@@ -116,24 +116,46 @@ export default class ClientState extends EventEmitter {
     this.emit("game-update");
   }
 
-  //eslint thinks this is a class component so its angry about these hook,
+  //eslint thinks this is a class component so its angry about these hooks,
   //but it is fine, because this is only usable from a context anyway
   /* eslint-disable react-hooks/rules-of-hooks */
-  useLatestTurn(): TurnState {
-    const [tState, setTState] = useState(this.boardState.latestTurn);
-    const updateCB = useCallback(
-      () => setTState(this.boardState.latestTurn),
-      []
+  useBoardState(): Readonly<BoardState>;
+  useBoardState<T extends any[]>(itemFn: (e: Readonly<BoardState>) => T): T;
+  useBoardState<T extends any[]>(itemFn?: (e: Readonly<BoardState>) => T) {
+    const [state, setState] = useState(this.boardState);
+    const getRequestedItems = useCallback(
+      (s: Readonly<BoardState>) => {
+        if (itemFn === undefined) {
+          return s;
+        } else {
+          return itemFn(s);
+        }
+      },
+      [itemFn]
     );
-    useEffect(() => this.subscribeToStateChange(updateCB), [updateCB]);
-    return tState;
-  }
-
-  useViewTurn(): TurnState {
-    const [tState, setTState] = useState(this.boardState.viewTurn!);
-    const updateCB = useCallback(() => setTState(this.boardState.viewTurn), []);
-    useEffect(() => this.subscribeToStateChange(updateCB), [updateCB]);
-    return tState;
+    useEffect(
+      () =>
+        this.subscribeToStateChange(() => {
+          if (itemFn === undefined) {
+            setState(this.boardState);
+          } else {
+            const prevItems = getRequestedItems(state) as any[];
+            const nextItems = getRequestedItems(this.boardState) as any[];
+            if (prevItems.length === nextItems.length) {
+              for (let i = 0; i < prevItems.length; i++) {
+                if (prevItems[i] !== nextItems[i]) {
+                  setState(this.boardState);
+                  return;
+                }
+              }
+            } else {
+              setState(this.boardState);
+            }
+          }
+        }),
+      [getRequestedItems, itemFn, state]
+    );
+    return getRequestedItems(state);
   }
 }
 

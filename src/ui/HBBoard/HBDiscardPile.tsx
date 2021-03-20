@@ -1,27 +1,33 @@
 import { GameUIContext } from "./ClientState";
 import { useFloatArea } from "../util/Floating";
 import { CardTarget } from "./CardFloat";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 
 export default function HBDiscardPile() {
   const context = useContext(GameUIContext);
-  const viewState = context.useViewTurn();
-  const latestState = context.useLatestTurn();
-  const cards = viewState.game.discardPile;
-  const shuffleOrder = context.boardState.shuffleOrder;
-
+  const [cards, shuffleOrder, deck] = context.useBoardState((boardState) => {
+    return [
+      boardState.viewTurn.game.discardPile,
+      boardState.shuffleOrder,
+      boardState.initialTurn.game.deck,
+    ];
+  });
   const ref = useFloatArea(["discardPile"], { dropZone: true });
 
   //TODO: Fix this..........
-  const cardOrder = cards
-    .map((index) => ({
-      index,
-      ...latestState.game.deck.getCard(shuffleOrder[index]),
-    }))
-    .sort((a, b) =>
-      a.suit < b.suit ? -1 : a.suit > b.suit ? 1 : a.rank - b.rank
-    )
-    .map((i) => i.index);
+  const cardOrder = useMemo(
+    () =>
+      cards
+        .map((index) => ({
+          index,
+          ...deck.getCard(shuffleOrder[index]),
+        }))
+        .sort((a, b) =>
+          a.suit < b.suit ? -1 : a.suit > b.suit ? 1 : a.rank - b.rank
+        )
+        .map((i) => i.index),
+    [cards, deck, shuffleOrder]
+  );
   return (
     <div
       ref={ref}

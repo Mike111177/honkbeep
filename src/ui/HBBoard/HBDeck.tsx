@@ -4,7 +4,9 @@ import { GameUIContext } from "./ClientState";
 
 export function HBDeck() {
   const context = useContext(GameUIContext);
-  const viewState = context.useViewTurn();
+  const [deck, topDeck] = context.useBoardState((boardState) => {
+    return [boardState.initialTurn.game.deck, boardState.viewTurn.game.topDeck];
+  });
 
   return (
     <CardTarget areaPath={["deck"]}>
@@ -38,7 +40,7 @@ export function HBDeck() {
         fill="#FFFFFF"
         filter="url(#outline)"
       >
-        {viewState.game.deck.length - viewState.game.topDeck + 1}
+        {deck.length - topDeck + 1}
       </text>
     </CardTarget>
   );

@@ -11,10 +11,13 @@ import ArrayUtil from "../../util/ArrayUtil";
 export default function HBClueArea() {
   //Get state
   const context = useContext(GameUIContext);
-  const viewState = context.useViewTurn();
-  const players = viewState.game.definition.playerNames;
-  const turn = viewState.game.turn;
-  const suits = viewState.game.definition.variant.suits;
+  const [players, turn, suits] = context.useBoardState((boardState) => {
+    return [
+      boardState.viewTurn.game.definition.playerNames,
+      boardState.viewTurn.game.turn,
+      boardState.viewTurn.game.definition.variant.suits,
+    ];
+  });
 
   const [selectedPlayer, setSelectedPlayer] = useState<number | null>(null);
   const [selectedClue, setSelectedClue] = useState<Clue | null>(null);

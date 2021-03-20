@@ -19,13 +19,15 @@ type HBHandProps = {
 
 export function HBHand({ player }: HBHandProps) {
   const context = useContext(GameUIContext);
-  const viewState = context.useViewTurn();
-  const playerNames = viewState.game.definition.playerNames;
-  const cards = viewState.game.hands[player];
-  const myTurn =
-    player ===
-    (viewState.game.turn - 1) % viewState.game.definition.variant.numPlayers;
-
+  const [playerNames, cards, myTurn] = context.useBoardState((boardState) => {
+    return [
+      boardState.initialTurn.game.definition.playerNames,
+      boardState.viewTurn.game.hands[player],
+      player ===
+        (boardState.viewTurn.game.turn - 1) %
+          boardState.viewTurn.game.definition.variant.numPlayers,
+    ];
+  });
   return (
     <div className={`HBHand${myTurn ? " OnPlayerTurn" : ""}`}>
       <div className="handCardArea">
@@ -42,9 +44,11 @@ type HBHandsAreaProps = {
   perspective: number;
 };
 export function HBHandsArea({ perspective }: HBHandsAreaProps) {
-  const latestState = useContext(GameUIContext).useLatestTurn();
-  const playerNames = latestState.game.definition.playerNames;
-  const numPlayers = latestState.game.definition.variant.numPlayers;
+  const context = useContext(GameUIContext);
+  const playerNames =
+    context.boardState.initialTurn.game.definition.playerNames;
+  const numPlayers =
+    context.boardState.initialTurn.game.definition.variant.numPlayers;
   return (
     <div className="HBHandsArea">
       {playerNames.map((n, i) => (
