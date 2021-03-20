@@ -16,7 +16,7 @@ import {
   useFloatArea,
 } from "../util/Floating";
 import { CardSVG } from "./CardUtil";
-import { GameUIContext } from "./ClientGameStateManager";
+import { GameUIContext } from "./ClientState";
 import ArrayUtil from "../../util/ArrayUtil";
 import { animated, useSpring } from "react-spring/web.cjs";
 import { useDrag } from "../util/InputHandling";
@@ -24,6 +24,7 @@ import { vecAdd, vecInRectangle } from "../util/Vector";
 
 import "./CardFloat.scss";
 import { GameEventType } from "../../game/GameTypes";
+import { GameState } from "../../game/states/GameState";
 
 //Helper to make card targets
 type CardTargetProps = {
@@ -43,6 +44,35 @@ function comparePaths(a: FloatAreaPath, b: FloatAreaPath) {
   return true;
 }
 
+function getCardHome(index: number, game: GameState): FloatAreaPath {
+  //Search hands
+  for (let h = 0; h < game.hands.length; h++) {
+    const hand = game.hands[h];
+    for (let c = 0; c < hand.length; c++) {
+      if (index === hand[c]) {
+        return ["hands", h, c];
+      }
+    }
+  }
+  //Search Stacks
+  for (let s = 0; s < game.stacks.length; s++) {
+    const stack = game.stacks[s];
+    for (let c = 0; c < stack.length; c++) {
+      if (index === stack[c]) {
+        return ["stacks", s];
+      }
+    }
+  }
+  //Search discard
+  for (let c = 0; c < game.discardPile.length; c++) {
+    if (index === game.discardPile[c]) {
+      return ["discard", index];
+    }
+  }
+
+  return ["deck"];
+}
+
 type FloatCardProps = {
   index: number;
 };
@@ -52,7 +82,12 @@ export function FloatCard({ index }: FloatCardProps) {
   const gameContext = useContext(GameUIContext);
   const floatContext = useContext(FloatContext);
 
-  const [home, setHome] = useState(() => gameContext.getCardHome(index));
+  const viewTurn = gameContext.useViewTurn();
+  const home = useMemo(() => getCardHome(index, viewTurn.game), [
+    viewTurn.game,
+    index,
+  ]);
+
   const [dragging, setDragging] = useState(false);
   const [dropPath, setDropPath] = useState<FloatAreaPath | null>(null);
   const [spring, setSpring] = useSpring(
@@ -62,14 +97,7 @@ export function FloatCard({ index }: FloatCardProps) {
 
   useEffect(() => {
     setSpring(floatContext.getRect(home));
-    return gameContext.subscribeToStateChange(() => {
-      const newPath = gameContext.getCardHome(index);
-      if (!comparePaths(home, newPath)) {
-        setHome(newPath);
-      }
-    });
-  }, [floatContext, gameContext, home, index, setSpring]);
-
+  }, [floatContext, home, setSpring]);
   useEffect(
     () =>
       floatContext.subscribeToArea(home, ({ type, area }) => {
@@ -186,7 +214,7 @@ export function CardFloatLayer() {
   const context = useContext(GameUIContext);
   return (
     <div className="CardFloatLayer">
-      {ArrayUtil.iota(context.getLatestState().game.deck.length).map((i) => (
+      {ArrayUtil.iota(context.latestTurn!.game.deck.length).map((i) => (
         <FloatCard key={i} index={i} />
       ))}
     </div>

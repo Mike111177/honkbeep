@@ -1,13 +1,12 @@
-import {
-  useClientLatestState,
-  useClientViewState,
-} from "./ClientGameStateManager";
+import { GameUIContext } from "./ClientState";
 import { useFloatArea } from "../util/Floating";
 import { CardTarget } from "./CardFloat";
+import { useContext } from "react";
 
 export default function HBDiscardPile() {
-  const viewState = useClientViewState();
-  const latestState = useClientLatestState();
+  const context = useContext(GameUIContext);
+  const viewState = context.useViewTurn();
+  const latestState = context.useLatestTurn();
   const cards = viewState.game.discardPile;
   const shuffleOrder = latestState.shuffleOrder;
 

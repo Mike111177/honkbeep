@@ -1,8 +1,9 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 
 import HBCardFront from "./HBCardFront";
-import { GameUIContext, useClientLatestState } from "./ClientGameStateManager";
+import { GameUIContext } from "./ClientState";
 import HBCardBack from "./HBCardBack";
+import { getPipsFromEmpathy } from "../../game/types/Empathy";
 
 //TODO: PLS REMOVE, REPLACE WITH BETTER THING
 let spaceIsDown = false;
@@ -22,11 +23,14 @@ window.addEventListener("keyup", (event) => {
 
 export default function HBDeckCard({ index, ...props }: any) {
   const context = useContext(GameUIContext);
-  const latestState = useClientLatestState();
+  const latestState = context.useLatestTurn();
   const empathy = latestState.empathy[index];
   const suits = latestState.game.definition.variant.suits;
   const shuffleOrder = latestState.shuffleOrder;
-  const pips = useMemo(() => context.getPips(empathy), [context, empathy]);
+  const pips = useMemo(() => getPipsFromEmpathy(empathy, latestState.game), [
+    empathy,
+    latestState.game,
+  ]);
   const deck = latestState.game.deck;
   const cardInfo = useMemo(() => {
     const card = shuffleOrder[index];

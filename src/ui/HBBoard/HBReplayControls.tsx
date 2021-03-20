@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-import { GameUIContext } from "./ClientGameStateManager";
+import { GameUIContext } from "./ClientState";
 
 const iconSkipBack = "⏮️";
 const iconBack = "⏪️";
@@ -10,10 +10,8 @@ const iconSkipFor = "⏭️";
 
 export function HBReplayControls() {
   const context = useContext(GameUIContext);
-  const [latestState, setLatestState] = useState(() =>
-    context.getLatestState()
-  );
-  const [viewState, setViewState] = useState(() => context.getViewState());
+  const [latestState, setLatestState] = useState(() => context.latestTurn!);
+  const [viewState, setViewState] = useState(() => context.viewTurn!);
   const [paused, setPaused] = useState(() => context.paused);
 
   const skipBack = useCallback(() => {
@@ -56,13 +54,12 @@ export function HBReplayControls() {
   useEffect(
     () =>
       context.subscribeToStateChange(() => {
-        setLatestState(context.getLatestState());
-        const viewState = context.getViewState();
-        setViewState(viewState);
+        setLatestState(context.latestTurn!);
+        setViewState(context.viewTurn!);
         setPaused(context.paused);
-        setInputTurn(viewState.game.turn);
+        setInputTurn(context.viewTurn!.game.turn);
       }),
-    [context, context.paused]
+    [context]
   );
 
   return (

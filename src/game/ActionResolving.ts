@@ -1,4 +1,4 @@
-import { GameState } from "./GameState";
+import { GameState } from "./states/GameState";
 import {
   GameAttempt,
   GameEvent,

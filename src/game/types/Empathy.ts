@@ -1,3 +1,5 @@
+import { GameState } from "../states/GameState";
+
 export enum EmpathyStatus {
   NotedFor = 0, //Player gave it an elim note
   Possible, //No notion
@@ -12,3 +14,42 @@ export type Pips = {
   ranks: number[];
   suits: string[];
 };
+
+export function getPipsFromEmpathy(
+  empathy: CardEmpathy,
+  game: GameState
+): Pips {
+  const deck = game.deck;
+  const suits = game.definition.variant.suits;
+
+  if (typeof empathy !== "number") {
+    return {
+      ranks: [1, 2, 3, 4, 5].filter((rank) => {
+        return (
+          empathy.filter((v, i) => {
+            return (
+              deck.cards[i].data.rank === rank &&
+              v !== EmpathyStatus.KnownNotPossible
+            );
+          }).length > 0
+        );
+      }),
+      suits: suits.filter((suit) => {
+        return (
+          empathy.filter((v, i) => {
+            return (
+              deck.cards[i].data.suit === suit &&
+              v !== EmpathyStatus.KnownNotPossible
+            );
+          }).length > 0
+        );
+      }),
+    };
+  } else {
+    const card = deck.getCard(empathy);
+    return {
+      ranks: [card.rank],
+      suits: [card.suit],
+    };
+  }
+}

@@ -1,11 +1,12 @@
-import { useMemo } from "react";
+import { useMemo, useContext } from "react";
 import ArrayUtil from "../../util/ArrayUtil";
-import { useClientViewState } from "./ClientGameStateManager";
+import { GameUIContext } from "./ClientState";
 
 import "./HBScoreBoard.scss";
 
 export function HBScoreBoard() {
-  const viewState = useClientViewState();
+  const context = useContext(GameUIContext);
+  const viewState = context.useViewTurn();
 
   const { turn, clues, strikes, stacks } = viewState.game;
   const score = useMemo(() => stacks.reduce((acc, v) => acc + v.length, 0), [

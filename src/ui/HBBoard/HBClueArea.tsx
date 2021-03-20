@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 
-import { GameUIContext, useClientLatestState } from "./ClientGameStateManager";
+import { GameUIContext } from "./ClientState";
 import { GameEventType } from "../../game/GameTypes";
 import { Clue, colorClue, numberClue } from "../../game/types/Clue";
 import colors from "../BaseColors";
@@ -11,7 +11,7 @@ import ArrayUtil from "../../util/ArrayUtil";
 export default function HBClueArea() {
   //Get state
   const context = useContext(GameUIContext);
-  const viewState = useClientLatestState();
+  const viewState = context.useViewTurn();
   const players = viewState.game.definition.playerNames;
   const turn = viewState.game.turn;
   const suits = viewState.game.definition.variant.suits;

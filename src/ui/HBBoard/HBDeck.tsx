@@ -1,8 +1,10 @@
-import { useClientViewState } from "./ClientGameStateManager";
+import { useContext } from "react";
 import { CardTarget } from "./CardFloat";
+import { GameUIContext } from "./ClientState";
 
 export function HBDeck() {
-  const viewState = useClientViewState();
+  const context = useContext(GameUIContext);
+  const viewState = context.useViewTurn();
 
   return (
     <CardTarget areaPath={["deck"]}>

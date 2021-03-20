@@ -12,7 +12,7 @@ import {
   GameState,
   initGameStateFromDefinition,
   reduceGameEvent,
-} from "./GameState";
+} from "./states/GameState";
 import ArrayUtil from "../util/ArrayUtil";
 import { resolveGameAction } from "./ActionResolving";
 

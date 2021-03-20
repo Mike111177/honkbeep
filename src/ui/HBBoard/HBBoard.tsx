@@ -6,7 +6,7 @@ import { FloatContext, FloatContextData } from "../util/Floating";
 import { CardFloatLayer } from "./CardFloat";
 import { HBHandsArea } from "./HBHand";
 import HBPlayHistory from "./HBPlayHistory";
-import ClientStateManager, { GameUIContext } from "./ClientGameStateManager";
+import ClientState, { GameUIContext } from "./ClientState";
 import { HBDeck } from "./HBDeck";
 
 import "./HBBoard.scss";
@@ -20,12 +20,12 @@ type HBBoardProps = {
 
 export default function HBBoard({ backend }: HBBoardProps) {
   //State to wait for
-  const [manager, setManager] = useState<undefined | ClientStateManager>(
+  const [manager, setManager] = useState<undefined | ClientState>(
     undefined
   );
 
   useEffect(() => {
-    backend.onReady(() => setManager(new ClientStateManager(backend)));
+    backend.onReady(() => setManager(new ClientState(backend)));
   }, [backend]);
 
   const [floatData] = useState(() => new FloatContextData());

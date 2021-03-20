@@ -1,7 +1,7 @@
 import chroma from "chroma-js";
 
 import { CardTarget } from "./CardFloat";
-import { useClientViewState } from "./ClientGameStateManager";
+import { GameUIContext } from "./ClientState";
 import { useFloatArea } from "../util/Floating";
 import { CardDim, OutlineFilter } from "./CardUtil";
 import { vecAdd } from "../util/Vector";
@@ -9,6 +9,7 @@ import { vecAdd } from "../util/Vector";
 import colors from "../BaseColors";
 import pips from "./pips";
 import "./HBStack.scss";
+import { useContext } from "react";
 
 type HBStackProps = {
   number: number;
@@ -69,7 +70,8 @@ export function HBStack({ suit, number }: HBStackProps) {
 }
 
 export function HBStackArea() {
-  const suits = useClientViewState().game.definition.variant.suits;
+  const context = useContext(GameUIContext);
+  const suits = context.useViewTurn().game.definition.variant.suits;
   const ref = useFloatArea(["stackArea"], { dropZone: true });
   return (
     <div ref={ref} id="stacks" className="HBStackArea">

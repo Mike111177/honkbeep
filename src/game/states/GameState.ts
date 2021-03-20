@@ -5,8 +5,8 @@ import {
   GamePlayResultType,
   GameDefinition,
   GameEvent,
-} from "./GameTypes";
-import { Deck } from "./DeckBuilding";
+} from "../GameTypes";
+import { Deck } from "../DeckBuilding";
 
 export type CardPile = ReadonlyArray<number>;
 
@@ -110,6 +110,23 @@ export function initGameStateFromDefinition(
     turn: 0,
     hands: [],
     stacks: definition.variant.suits.map<number[]>((_) => []),
+    discardPile: [],
+    topDeck: 0,
+    clues: 8,
+    strikes: 0,
+  };
+}
+
+export function initNullGameState(): GameState {
+  return {
+    deck: new Deck(),
+    definition: {
+      playerNames: [],
+      variant: { handSize: 0, numPlayers: 0, suits: [] },
+    },
+    turn: 0,
+    hands: [],
+    stacks: [],
     discardPile: [],
     topDeck: 0,
     clues: 8,

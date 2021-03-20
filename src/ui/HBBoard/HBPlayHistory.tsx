@@ -9,11 +9,7 @@ import {
   GamePlayEvent,
   GamePlayResultType,
 } from "../../game/GameTypes";
-import {
-  GameUIContext,
-  useClientLatestState,
-  useClientViewState,
-} from "./ClientGameStateManager";
+import { GameUIContext } from "./ClientState";
 import HBCardIcon from "./HBCardIcon";
 
 import "./HBPlayHistory.scss";
@@ -25,7 +21,8 @@ function CluePlayDescriber({
   turn,
   event: { touched, clue, target },
 }: CluePlayDescriberProps) {
-  const viewState = useClientViewState();
+  const context = useContext(GameUIContext);
+  const viewState = context.useViewTurn();
   const numPlayers = viewState.game.definition.variant.numPlayers;
   const player = (turn - 1) % numPlayers;
   const playernames = viewState.game.definition.playerNames;
@@ -67,8 +64,9 @@ function CluePlayDescriber({
 
 type DiscardPlayDescriberProps = { turn: number; event: GameDiscardEvent };
 function DiscardPlayDescriber({ turn, event }: DiscardPlayDescriberProps) {
-  const viewState = useClientViewState();
-  const latestState = useClientLatestState();
+  const context = useContext(GameUIContext);
+  const viewState = context.useViewTurn();
+  const latestState = context.useLatestTurn();
   const shuffleOrder = latestState.shuffleOrder;
   const numPlayers = viewState.game.definition.variant.numPlayers;
   const player = (turn - 1) % numPlayers;
@@ -86,8 +84,9 @@ function DiscardPlayDescriber({ turn, event }: DiscardPlayDescriberProps) {
 
 type PlayPlayDescriberProps = { turn: number; event: GamePlayEvent };
 function PlayPlayDescriber({ turn, event }: PlayPlayDescriberProps) {
-  const viewState = useClientViewState();
-  const latestState = useClientLatestState();
+  const context = useContext(GameUIContext);
+  const viewState = context.useViewTurn();
+  const latestState = context.useLatestTurn();
   const shuffleOrder = latestState.shuffleOrder;
   const numPlayers = viewState.game.definition.variant.numPlayers;
   const player = (turn - 1) % numPlayers;
@@ -132,7 +131,8 @@ function PlayDescriber({ message }: PlayDescriberProps) {
 }
 
 export default function HBPlayHistory() {
-  const viewState = useClientViewState();
+  const context = useContext(GameUIContext);
+  const viewState = context.useViewTurn();
   const numPlayers = viewState.game.definition.variant.numPlayers;
   const turnNumber = viewState.game.turn;
   const displayAmount = Math.min(numPlayers, turnNumber);
