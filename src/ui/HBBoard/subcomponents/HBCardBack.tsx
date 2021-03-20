@@ -1,9 +1,9 @@
 import { ComponentProps } from "react";
 import { OutlineFilter, CardDim } from "./CardUtil";
-import { Vec2D, vecAdd, vecMul, vecSub } from "../util/Vector";
-import { Pips } from "../../game/types/Empathy";
-import colors from "../BaseColors";
-import pipsIcons from "./pips";
+import { vecAdd, vecMul } from "../../util/Vector";
+import { Pips } from "../../../game/types/Empathy";
+import colors from "../../BaseColors";
+import pipsIcons from "../pips";
 import chroma from "chroma-js";
 
 type HBCardBackProps = {

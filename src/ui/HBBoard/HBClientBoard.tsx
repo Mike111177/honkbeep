@@ -31,8 +31,6 @@ class ClientBoard extends Board {
 
   constructor(backend: BackendInterface) {
     //Many things will be listening to updates from this
-    //TODO: the event listeners are getting out of control, the dispatch needs to be smarter for perf
-
     if (!(backend instanceof NullBackend)) {
       //Create new ClientState
       super(

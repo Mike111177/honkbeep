@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 
-import { useFloatArea } from "../util/Floating";
+import { useFloatArea } from "../../util/Floating";
 import { CardTarget } from "./CardFloat";
-import { useBoardState } from "./types/BoardContext";
+import { useBoardState } from "../types/BoardContext";
 
 export default function HBDiscardPile() {
   const [cards, shuffleOrder, deck] = useBoardState((boardState) => {

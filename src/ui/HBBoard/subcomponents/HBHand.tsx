@@ -1,7 +1,7 @@
 import { useContext } from "react";
 
 import { CardTarget } from "./CardFloat";
-import { BoardContext, useBoardState } from "./types/BoardContext";
+import { BoardContext, useBoardState } from "../types/BoardContext";
 
 import "./HBHand.scss";
 

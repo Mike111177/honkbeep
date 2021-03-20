@@ -1,5 +1,5 @@
 import { CardTarget } from "./CardFloat";
-import { useBoardState } from "./types/BoardContext";
+import { useBoardState } from "../types/BoardContext";
 
 export function HBDeck() {
   const [deck, topDeck] = useBoardState((boardState) => {

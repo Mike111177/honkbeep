@@ -1,6 +1,6 @@
-import { useMemo, useContext } from "react";
-import ArrayUtil from "../../util/ArrayUtil";
-import { useBoardState } from "./types/BoardContext";
+import { useMemo } from "react";
+import ArrayUtil from "../../../util/ArrayUtil";
+import { useBoardState } from "../types/BoardContext";
 
 import "./HBScoreBoard.scss";
 

@@ -1,16 +1,16 @@
 import chroma from "chroma-js";
 
-import colors from "../BaseColors";
-import { ClueType } from "../../game/types/Clue";
+import colors from "../../BaseColors";
+import { ClueType } from "../../../game/types/Clue";
 import {
   GameClueEvent,
   GameDiscardEvent,
   GameEventType,
   GamePlayEvent,
   GamePlayResultType,
-} from "../../game/GameTypes";
+} from "../../../game/GameTypes";
 import HBCardIcon from "./HBCardIcon";
-import { useBoardState } from "./types/BoardContext";
+import { useBoardState } from "../types/BoardContext";
 
 import "./HBPlayHistory.scss";
 

@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { FloatContext, FloatContextData } from "../util/Floating";
-import { CardFloatLayer } from "./CardFloat";
-import HBClueArea from "./HBClueArea";
-import { HBDeck } from "./HBDeck";
-import HBDiscardPile from "./HBDiscardPile";
-import { HBHandsArea } from "./HBHand";
-import HBPlayHistory from "./HBPlayHistory";
-import { HBReplayControls } from "./HBReplayControls";
-import { HBScoreBoard } from "./HBScoreBoard";
-import { HBStackArea } from "./HBStack";
+import { CardFloatLayer } from "./subcomponents/CardFloat";
+import HBClueArea from "./subcomponents/HBClueArea";
+import { HBDeck } from "./subcomponents/HBDeck";
+import HBDiscardPile from "./subcomponents/HBDiscardPile";
+import { HBHandsArea } from "./subcomponents/HBHand";
+import HBPlayHistory from "./subcomponents/HBPlayHistory";
+import { HBReplayControls } from "./subcomponents/HBReplayControls";
+import { HBScoreBoard } from "./subcomponents/HBScoreBoard";
+import { HBStackArea } from "./subcomponents/HBStack";
 import { Board, BoardContext } from "./types/BoardContext";
 
 import "./HBBoardLayout.scss";

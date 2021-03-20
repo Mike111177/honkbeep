@@ -1,5 +1,5 @@
 import chroma from "chroma-js";
-import colors from "../BaseColors";
+import colors from "../../BaseColors";
 import { CardDim, ThickOutlineFilter } from "./CardUtil";
 import { HBCardProps } from "./HBCardFront";
 

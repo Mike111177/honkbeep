@@ -14,17 +14,17 @@ import {
   FloatAreaPath,
   FloatContext,
   useFloatArea,
-} from "../util/Floating";
+} from "../../util/Floating";
 import { CardSVG } from "./CardUtil";
-import ArrayUtil from "../../util/ArrayUtil";
+import ArrayUtil from "../../../util/ArrayUtil";
 import { animated, useSpring } from "react-spring/web.cjs";
-import { useDrag } from "../util/InputHandling";
-import { vecAdd, vecInRectangle } from "../util/Vector";
+import { useDrag } from "../../util/InputHandling";
+import { vecAdd, vecInRectangle } from "../../util/Vector";
 
 import "./CardFloat.scss";
-import { GameEventType } from "../../game/GameTypes";
-import { GameState } from "../../game/states/GameState";
-import { BoardContext, useBoardState } from "./types/BoardContext";
+import { GameEventType } from "../../../game/GameTypes";
+import { GameState } from "../../../game/states/GameState";
+import { BoardContext, useBoardState } from "../types/BoardContext";
 
 //Helper to make card targets
 type CardTargetProps = {
@@ -36,12 +36,6 @@ export function CardTarget({ areaPath, children, ...props }: CardTargetProps) {
       {children}
     </CardSVG>
   );
-}
-
-function comparePaths(a: FloatAreaPath, b: FloatAreaPath) {
-  if (a.length !== b.length) return false;
-  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
-  return true;
 }
 
 function getCardHome(index: number, game: GameState): FloatAreaPath {
