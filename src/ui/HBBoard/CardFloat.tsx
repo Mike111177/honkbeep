@@ -82,9 +82,17 @@ export function FloatCard({ index }: FloatCardProps) {
   const gameContext = useContext(GameUIContext);
   const floatContext = useContext(FloatContext);
 
-  const home = gameContext.useBoardState((boardState) => {
-    return getCardHome(index, boardState.viewTurn.game);
-  });
+  const [cardInCurrentPlayerHand, ...home] = gameContext.useBoardState(
+    (boardState) => {
+      const home = getCardHome(index, boardState.viewTurn.game);
+      const cardInCurrentPlayerHand =
+        home[0] === "hands" &&
+        home[1] ===
+          (boardState.viewTurn.game.turn - 1) %
+            boardState.viewTurn.game.definition.variant.numPlayers;
+      return [cardInCurrentPlayerHand, ...home];
+    }
+  );
 
   const [dragging, setDragging] = useState(false);
   const [dropPath, setDropPath] = useState<FloatAreaPath | null>(null);
@@ -170,11 +178,14 @@ export function FloatCard({ index }: FloatCardProps) {
 
   const dragListeners = useDrag(ref, onDrag);
 
-  //Detach listeners if not in hands
-  const attachedListeners = useMemo(
-    () => (home[0] === "hands" ? dragListeners : undefined),
-    [dragListeners, home]
-  );
+  //Detach listeners if not in current persons hand
+  const attachedListeners = useMemo(() => {
+    if (cardInCurrentPlayerHand) {
+      return dragListeners;
+    } else {
+      return undefined;
+    }
+  }, [cardInCurrentPlayerHand, dragListeners]);
 
   //Set correct zIndex
   let zIndex = 0;
