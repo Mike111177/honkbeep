@@ -5,20 +5,24 @@ import BackendInterface from "../../game/BackendInterface";
 import NullBackend from "../../game/NullBackend";
 import { GameAttempt, GameData } from "../../game/GameTypes";
 import {
-  initTurnState,
-  reduceTurnMessage,
-  TurnState,
-} from "./states/TurnState";
-import { initNullGameState } from "../../game/states/GameState";
+  BoardState,
+  initBoardState,
+  initNullBoardState,
+  reduceBoardMessage,
+  reduceBoardTurnJump,
+  reduceBoardUnpause,
+} from "./states/BoardState";
+import { TurnState } from "./states/TurnState";
 
 function reduceGameStateFromGameData(
-  state: TurnState,
+  state: BoardState,
   data: GameData,
   max_turn: number = data.events.length
 ) {
   let messages = data.events;
-  for (let i = state.game.turn; i < Math.min(messages.length, max_turn); i++) {
-    state = reduceTurnMessage(state, messages[i]);
+  const firstTurn = state.latestTurn.game.turn;
+  for (let i = firstTurn; i < Math.min(messages.length, max_turn); i++) {
+    state = reduceBoardMessage(state, messages[i]);
   }
   return state;
 }
@@ -26,53 +30,32 @@ function reduceGameStateFromGameData(
 export default class ClientState extends EventEmitter {
   //Adapter to use to communicate with server
   private backend: BackendInterface;
-  //Game State after Deal Event, blank until Deal event processed
-  private initialTurn: TurnState;
-  //Most recent canonical game state
-  latestTurn: TurnState;
-  //Game state currently being viewed, this could be the latest state, a replay state or a hypothetical state
-  viewTurn: TurnState;
-
-  paused: boolean = false;
+  boardState: BoardState;
 
   constructor(backend: BackendInterface) {
     super();
     //Many things will be listening to updates from this
-    this.setMaxListeners(100);
+    //TODO: the event listeners are getting out of control, the dispatch needs to be smarter for perf
+    this.setMaxListeners(200);
     this.backend = backend;
 
     if (!(backend instanceof NullBackend)) {
       //Create new ClientState
-      const state0 = initTurnState(this.backend.currentState().definition);
-
-      //Set the initial state to the turn after the deal
-      this.initialTurn = reduceGameStateFromGameData(
-        state0,
-        this.backend.currentState(),
-        1
-      );
-      //Set the view state and latest state to be the most recent calculable from the Game Event data we have
-      this.viewTurn = this.latestTurn = reduceGameStateFromGameData(
-        this.initialTurn,
+      this.boardState = reduceGameStateFromGameData(
+        initBoardState(this.backend.currentState().definition),
         this.backend.currentState()
       );
+
       //Listen for further game events
       this.backend.on("gameStateChanged", () => {
-        this.latestTurn = reduceGameStateFromGameData(
-          this.latestTurn!,
+        this.boardState = reduceGameStateFromGameData(
+          this.boardState,
           this.backend.currentState()
         );
-        if (!this.paused) {
-          this.viewTurn = this.latestTurn;
-        }
         this.emit("game-update");
       });
     } else {
-      this.latestTurn = this.viewTurn = this.initialTurn = {
-        shuffleOrder: [],
-        empathy: [],
-        game: initNullGameState(),
-      };
+      this.boardState = initNullBoardState();
     }
   }
 
@@ -94,27 +77,11 @@ export default class ClientState extends EventEmitter {
   }
 
   /**
-   * `getStateOfTurn` returns the game state from any given turn number
-   *
-   * Try to avoid excessive calling of this, it has to recalculate the entire game state
-   * making this a very expensive operation.
-   *
-   * @param {number} turn turn number
-   */
-  getStateOfTurn(turn: number) {
-    return reduceGameStateFromGameData(
-      this.initialTurn!,
-      this.backend.currentState(),
-      turn
-    );
-  }
-
-  /**
    * Changes the currently viewed turn
    * @param {number} turn turn number
    */
   setViewTurn(turn: number) {
-    this.viewTurn = this.getStateOfTurn(turn);
+    this.boardState = reduceBoardTurnJump(this.boardState, turn);
     this.emit("game-update");
   }
 
@@ -135,15 +102,17 @@ export default class ClientState extends EventEmitter {
    * Synchronize viewstate with latest state
    */
   unpause() {
-    this.paused = false;
-    this.viewTurn = this.latestTurn;
+    this.boardState = reduceBoardUnpause(this.boardState);
     this.emit("game-update");
   }
   /**
    * Desynchronize viewstate with latest state
    */
   pause() {
-    this.paused = true;
+    this.boardState = reduceBoardTurnJump(
+      this.boardState,
+      this.boardState.viewTurn.game.turn
+    );
     this.emit("game-update");
   }
 
@@ -151,15 +120,18 @@ export default class ClientState extends EventEmitter {
   //but it is fine, because this is only usable from a context anyway
   /* eslint-disable react-hooks/rules-of-hooks */
   useLatestTurn(): TurnState {
-    const [tState, setTState] = useState(this.latestTurn!);
-    const updateCB = useCallback(() => setTState(this.latestTurn!), []);
+    const [tState, setTState] = useState(this.boardState.latestTurn);
+    const updateCB = useCallback(
+      () => setTState(this.boardState.latestTurn),
+      []
+    );
     useEffect(() => this.subscribeToStateChange(updateCB), [updateCB]);
     return tState;
   }
 
   useViewTurn(): TurnState {
-    const [tState, setTState] = useState(this.viewTurn!);
-    const updateCB = useCallback(() => setTState(this.viewTurn!), []);
+    const [tState, setTState] = useState(this.boardState.viewTurn!);
+    const updateCB = useCallback(() => setTState(this.boardState.viewTurn), []);
     useEffect(() => this.subscribeToStateChange(updateCB), [updateCB]);
     return tState;
   }

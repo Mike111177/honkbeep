@@ -8,7 +8,7 @@ export default function HBDiscardPile() {
   const viewState = context.useViewTurn();
   const latestState = context.useLatestTurn();
   const cards = viewState.game.discardPile;
-  const shuffleOrder = latestState.shuffleOrder;
+  const shuffleOrder = context.boardState.shuffleOrder;
 
   const ref = useFloatArea(["discardPile"], { dropZone: true });
 

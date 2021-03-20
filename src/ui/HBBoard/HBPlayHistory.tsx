@@ -67,7 +67,7 @@ function DiscardPlayDescriber({ turn, event }: DiscardPlayDescriberProps) {
   const context = useContext(GameUIContext);
   const viewState = context.useViewTurn();
   const latestState = context.useLatestTurn();
-  const shuffleOrder = latestState.shuffleOrder;
+  const shuffleOrder = context.boardState.shuffleOrder;
   const numPlayers = viewState.game.definition.variant.numPlayers;
   const player = (turn - 1) % numPlayers;
   const playerName = viewState.game.definition.playerNames[player];
@@ -87,7 +87,7 @@ function PlayPlayDescriber({ turn, event }: PlayPlayDescriberProps) {
   const context = useContext(GameUIContext);
   const viewState = context.useViewTurn();
   const latestState = context.useLatestTurn();
-  const shuffleOrder = latestState.shuffleOrder;
+  const shuffleOrder = context.boardState.shuffleOrder;
   const numPlayers = viewState.game.definition.variant.numPlayers;
   const player = (turn - 1) % numPlayers;
   const playerName = viewState.game.definition.playerNames[player];

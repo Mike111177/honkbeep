@@ -1,7 +1,7 @@
 import produce, { Draft } from "immer";
 import {
   GameDefinition,
-  GameEventMessage,
+  GameEvent,
   GameEventType,
 } from "../../../game/GameTypes";
 import { doesClueMatchCard } from "../../../game/Rules";
@@ -15,12 +15,11 @@ import ArrayUtil from "../../../util/ArrayUtil";
 
 export type TurnState = {
   readonly game: GameState;
-  readonly shuffleOrder: number[];
   readonly empathy: DeckEmpathy;
 };
 
-export const reduceTurnMessage = produce(
-  (state: Draft<TurnState>, { event, reveals }: GameEventMessage) => {
+export const reduceTurnEvent = produce(
+  (state: Draft<TurnState>, event: GameEvent) => {
     //Notify gamestate of new event
     state.game = reduceGameEvent(state.game, event);
     //If it was a clue, update empathy
@@ -46,12 +45,6 @@ export const reduceTurnMessage = produce(
         }
       }
     }
-    //Process Reveals
-    if (reveals) {
-      for (let revealedCard of reveals) {
-        state.shuffleOrder[revealedCard.deck] = revealedCard.card;
-      }
-    }
   }
 );
 
@@ -59,7 +52,6 @@ export function initTurnState(definition: GameDefinition): TurnState {
   const game = initGameStateFromDefinition(definition);
   return {
     game,
-    shuffleOrder: [],
     empathy: ArrayUtil.fill(game.deck.length, () =>
       ArrayUtil.fill(game.deck.cards.length, EmpathyStatus.Possible)
     ),

@@ -26,7 +26,7 @@ export default function HBDeckCard({ index, ...props }: any) {
   const latestState = context.useLatestTurn();
   const empathy = latestState.empathy[index];
   const suits = latestState.game.definition.variant.suits;
-  const shuffleOrder = latestState.shuffleOrder;
+  const shuffleOrder = context.boardState.shuffleOrder;
   const pips = useMemo(() => getPipsFromEmpathy(empathy, latestState.game), [
     empathy,
     latestState.game,
