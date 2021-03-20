@@ -1,5 +1,5 @@
 import { useCallback, useContext } from "react";
-import { GameUIContext } from "./ClientState";
+import { BoardContext, useBoardState } from "./types/BoardContext";
 
 const iconSkipBack = "⏮️";
 const iconBack = "⏪️";
@@ -9,8 +9,8 @@ const iconFor = "⏩️";
 const iconSkipFor = "⏭️";
 
 export function HBReplayControls() {
-  const context = useContext(GameUIContext);
-  const state = context.useBoardState();
+  const context = useContext(BoardContext);
+  const state = useBoardState();
   const latestState = state.latestTurn;
   const viewState = state.viewTurn;
   const paused = context.boardState.paused;

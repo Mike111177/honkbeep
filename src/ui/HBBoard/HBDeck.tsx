@@ -1,10 +1,8 @@
-import { useContext } from "react";
 import { CardTarget } from "./CardFloat";
-import { GameUIContext } from "./ClientState";
+import { useBoardState } from "./types/BoardContext";
 
 export function HBDeck() {
-  const context = useContext(GameUIContext);
-  const [deck, topDeck] = context.useBoardState((boardState) => {
+  const [deck, topDeck] = useBoardState((boardState) => {
     return [boardState.initialTurn.game.deck, boardState.viewTurn.game.topDeck];
   });
 

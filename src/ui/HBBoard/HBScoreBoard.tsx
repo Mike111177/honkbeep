@@ -1,12 +1,11 @@
 import { useMemo, useContext } from "react";
 import ArrayUtil from "../../util/ArrayUtil";
-import { GameUIContext } from "./ClientState";
+import { useBoardState } from "./types/BoardContext";
 
 import "./HBScoreBoard.scss";
 
 export function HBScoreBoard() {
-  const context = useContext(GameUIContext);
-  const [turn, clues, strikes, stacks] = context.useBoardState((boardState) => {
+  const [turn, clues, strikes, stacks] = useBoardState((boardState) => {
     const { turn, clues, strikes, stacks } = boardState.viewTurn.game;
     return [turn, clues, strikes, stacks];
   });

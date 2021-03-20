@@ -16,7 +16,6 @@ import {
   useFloatArea,
 } from "../util/Floating";
 import { CardSVG } from "./CardUtil";
-import { GameUIContext } from "./ClientState";
 import ArrayUtil from "../../util/ArrayUtil";
 import { animated, useSpring } from "react-spring/web.cjs";
 import { useDrag } from "../util/InputHandling";
@@ -25,6 +24,7 @@ import { vecAdd, vecInRectangle } from "../util/Vector";
 import "./CardFloat.scss";
 import { GameEventType } from "../../game/GameTypes";
 import { GameState } from "../../game/states/GameState";
+import { BoardContext, useBoardState } from "./types/BoardContext";
 
 //Helper to make card targets
 type CardTargetProps = {
@@ -79,20 +79,18 @@ type FloatCardProps = {
 //TODO: Generalize this code, a lot of elements from it would be nice to be able to use in other places
 export function FloatCard({ index }: FloatCardProps) {
   //Get contexts
-  const gameContext = useContext(GameUIContext);
+  const gameContext = useContext(BoardContext);
   const floatContext = useContext(FloatContext);
 
-  const [cardInCurrentPlayerHand, ...home] = gameContext.useBoardState(
-    (boardState) => {
-      const home = getCardHome(index, boardState.viewTurn.game);
-      const cardInCurrentPlayerHand =
-        home[0] === "hands" &&
-        home[1] ===
-          (boardState.viewTurn.game.turn - 1) %
-            boardState.viewTurn.game.definition.variant.numPlayers;
-      return [cardInCurrentPlayerHand, ...home];
-    }
-  );
+  const [cardInCurrentPlayerHand, ...home] = useBoardState((boardState) => {
+    const home = getCardHome(index, boardState.viewTurn.game);
+    const cardInCurrentPlayerHand =
+      home[0] === "hands" &&
+      home[1] ===
+        (boardState.viewTurn.game.turn - 1) %
+          boardState.viewTurn.game.definition.variant.numPlayers;
+    return [cardInCurrentPlayerHand, ...home];
+  });
 
   const [dragging, setDragging] = useState(false);
   const [dropPath, setDropPath] = useState<FloatAreaPath | null>(null);
@@ -220,7 +218,7 @@ export function FloatCard({ index }: FloatCardProps) {
 
 //Create layer for all cards
 export function CardFloatLayer() {
-  const context = useContext(GameUIContext);
+  const context = useContext(BoardContext);
   return (
     <div className="CardFloatLayer">
       {ArrayUtil.iota(context.boardState.latestTurn.game.deck.length).map(

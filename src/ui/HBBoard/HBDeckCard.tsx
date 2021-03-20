@@ -1,9 +1,9 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import HBCardFront from "./HBCardFront";
-import { GameUIContext } from "./ClientState";
 import HBCardBack from "./HBCardBack";
 import { getPipsFromEmpathy } from "../../game/types/Empathy";
+import { useBoardState } from "./types/BoardContext";
 
 //TODO: PLS REMOVE, REPLACE WITH BETTER THING
 let spaceIsDown = false;
@@ -22,8 +22,7 @@ window.addEventListener("keyup", (event) => {
 });
 
 export default function HBDeckCard({ index, ...props }: any) {
-  const context = useContext(GameUIContext);
-  const [empathy, latestGame, card] = context.useBoardState((boardState) => {
+  const [empathy, latestGame, card] = useBoardState((boardState) => {
     return [
       boardState.latestTurn.empathy[index],
       boardState.latestTurn.game,

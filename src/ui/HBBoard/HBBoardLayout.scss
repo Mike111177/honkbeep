@@ -37,3 +37,8 @@
   margin: 10px;
   background-color: rgba(0, 0, 0, 0.5);
 }
+
+.controlsPlaceHolder {
+  display: flex;
+  flex-direction: row-reverse;
+}

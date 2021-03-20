@@ -1,6 +1,6 @@
 import chroma from "chroma-js";
+
 import colors from "../BaseColors";
-import { useContext } from "react";
 import { ClueType } from "../../game/types/Clue";
 import {
   GameClueEvent,
@@ -9,8 +9,8 @@ import {
   GamePlayEvent,
   GamePlayResultType,
 } from "../../game/GameTypes";
-import { GameUIContext } from "./ClientState";
 import HBCardIcon from "./HBCardIcon";
+import { useBoardState } from "./types/BoardContext";
 
 import "./HBPlayHistory.scss";
 
@@ -21,8 +21,7 @@ function CluePlayDescriber({
   turn,
   event: { touched, clue, target },
 }: CluePlayDescriberProps) {
-  const context = useContext(GameUIContext);
-  const viewState = context.useBoardState().viewTurn;
+  const viewState = useBoardState().viewTurn;
   const numPlayers = viewState.game.definition.variant.numPlayers;
   const player = (turn - 1) % numPlayers;
   const playernames = viewState.game.definition.playerNames;
@@ -64,8 +63,7 @@ function CluePlayDescriber({
 
 type DiscardPlayDescriberProps = { turn: number; event: GameDiscardEvent };
 function DiscardPlayDescriber({ turn, event }: DiscardPlayDescriberProps) {
-  const context = useContext(GameUIContext);
-  const [shuffleOrder, numPlayers, playerNames, deck] = context.useBoardState(
+  const [shuffleOrder, numPlayers, playerNames, deck] = useBoardState(
     (boardState) => {
       return [
         boardState.shuffleOrder,
@@ -90,8 +88,7 @@ function DiscardPlayDescriber({ turn, event }: DiscardPlayDescriberProps) {
 
 type PlayPlayDescriberProps = { turn: number; event: GamePlayEvent };
 function PlayPlayDescriber({ turn, event }: PlayPlayDescriberProps) {
-  const context = useContext(GameUIContext);
-  const [shuffleOrder, numPlayers, playerNames, deck] = context.useBoardState(
+  const [shuffleOrder, numPlayers, playerNames, deck] = useBoardState(
     (boardState) => {
       return [
         boardState.shuffleOrder,
@@ -124,27 +121,27 @@ function PlayPlayDescriber({ turn, event }: PlayPlayDescriberProps) {
   }
 }
 
-type PlayDescriberProps = { message: number };
-function PlayDescriber({ message }: PlayDescriberProps) {
-  const context = useContext(GameUIContext);
-  const { event } = context.getMessage(message);
+type PlayDescriberProps = { turn: number };
+function PlayDescriber({ turn }: PlayDescriberProps) {
+  const [event] = useBoardState((boardState) => {
+    return [boardState.events[turn]];
+  });
   switch (event.type) {
     case GameEventType.Deal:
       return <span>Game Started</span>;
     case GameEventType.Play:
-      return <PlayPlayDescriber turn={message} event={event} />;
+      return <PlayPlayDescriber turn={turn} event={event} />;
     case GameEventType.Discard:
-      return <DiscardPlayDescriber turn={message} event={event} />;
+      return <DiscardPlayDescriber turn={turn} event={event} />;
     case GameEventType.Clue:
-      return <CluePlayDescriber turn={message} event={event} />;
+      return <CluePlayDescriber turn={turn} event={event} />;
     default:
       return <span>Unknown Event</span>;
   }
 }
 
 export default function HBPlayHistory() {
-  const context = useContext(GameUIContext);
-  const [turnNumber, numPlayers] = context.useBoardState((boardState) => {
+  const [turnNumber, numPlayers] = useBoardState((boardState) => {
     return [
       boardState.viewTurn.game.turn,
       boardState.initialTurn.game.definition.variant.numPlayers,
@@ -156,7 +153,7 @@ export default function HBPlayHistory() {
       {[...Array(displayAmount).keys()]
         .map((_, i) => turnNumber - displayAmount + i)
         .map((i) => (
-          <PlayDescriber key={i} message={i} />
+          <PlayDescriber key={i} turn={i} />
         ))}
     </div>
   );

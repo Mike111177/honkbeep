@@ -1,6 +1,7 @@
 import { useContext } from "react";
+
 import { CardTarget } from "./CardFloat";
-import { GameUIContext } from "./ClientState";
+import { BoardContext, useBoardState } from "./types/BoardContext";
 
 import "./HBHand.scss";
 
@@ -18,8 +19,7 @@ type HBHandProps = {
 };
 
 export function HBHand({ player }: HBHandProps) {
-  const context = useContext(GameUIContext);
-  const [playerNames, cards, myTurn] = context.useBoardState((boardState) => {
+  const [playerNames, cards, myTurn] = useBoardState((boardState) => {
     return [
       boardState.initialTurn.game.definition.playerNames,
       boardState.viewTurn.game.hands[player],
@@ -44,7 +44,7 @@ type HBHandsAreaProps = {
   perspective: number;
 };
 export function HBHandsArea({ perspective }: HBHandsAreaProps) {
-  const context = useContext(GameUIContext);
+  const context = useContext(BoardContext);
   const playerNames =
     context.boardState.initialTurn.game.definition.playerNames;
   const numPlayers =

@@ -1,11 +1,11 @@
-import { GameUIContext } from "./ClientState";
+import { useMemo } from "react";
+
 import { useFloatArea } from "../util/Floating";
 import { CardTarget } from "./CardFloat";
-import { useContext, useMemo } from "react";
+import { useBoardState } from "./types/BoardContext";
 
 export default function HBDiscardPile() {
-  const context = useContext(GameUIContext);
-  const [cards, shuffleOrder, deck] = context.useBoardState((boardState) => {
+  const [cards, shuffleOrder, deck] = useBoardState((boardState) => {
     return [
       boardState.viewTurn.game.discardPile,
       boardState.shuffleOrder,
