@@ -7,17 +7,17 @@ const DEFAULT_SUIT_RANK_DIVISION: ReadonlyArray<number> = [3, 2, 2, 2, 1];
 
 export class Deck {
   readonly cards: {
-    data: CardData;
-    count: number;
+    readonly data: Readonly<CardData>;
+    readonly count: number;
   }[];
-  readonly lookup: number[];
+  readonly lookup: ReadonlyArray<number>;
 
-  constructor(varient?: VariantDefinition) {
-    if (varient === undefined) {
+  constructor(variant?: VariantDefinition) {
+    if (variant === undefined) {
       this.cards = [];
       this.lookup = [];
     } else {
-      const suits = varient.suits;
+      const suits = variant.suits;
       this.cards = suits
         .map((suit) =>
           DEFAULT_SUIT_RANKS.map((rank, i) => ({

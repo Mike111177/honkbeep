@@ -8,18 +8,18 @@ import {
 } from "./GameTypes";
 import { Deck } from "./DeckBuilding";
 
-export type Stack = number[];
+export type CardPile = ReadonlyArray<number>;
 
 export type GameState = {
   readonly deck: Deck;
   readonly definition: GameDefinition;
-  turn: number;
-  hands: number[][];
-  stacks: Stack[];
-  discardPile: number[];
-  topDeck: number;
-  clues: number;
-  strikes: number;
+  readonly turn: number;
+  readonly hands: ReadonlyArray<CardPile>;
+  readonly stacks: ReadonlyArray<CardPile>;
+  readonly discardPile: CardPile;
+  readonly topDeck: number;
+  readonly clues: number;
+  readonly strikes: number;
 };
 
 export const reduceGameEvent = produce(

@@ -27,19 +27,10 @@ import {
 import { doesClueMatchCard } from "../../game/Rules";
 
 type ClientState = {
-  game: GameState;
-  shuffleOrder: number[];
-  empathy: DeckEmpathy;
+  readonly game: GameState;
+  readonly shuffleOrder: number[];
+  readonly empathy: DeckEmpathy;
 };
-
-function initClientState(definition: GameDefinition) {
-  const game = initGameStateFromDefinition(definition);
-  const shuffleOrder: number[] = [];
-  const empathy = ArrayUtil.fill(game.deck.length, () =>
-    ArrayUtil.fill(game.deck.cards.length, EmpathyStatus.Possible)
-  );
-  return { game, shuffleOrder, empathy };
-}
 
 const reduceClientMessage = produce(
   (state: Draft<ClientState>, { event, reveals }: GameEventMessage) => {
@@ -108,8 +99,16 @@ export default class ClientStateManager extends EventEmitter {
     this.backend = backend;
 
     if (!(backend instanceof NullBackend)) {
-      //Create new GameState
-      const state0 = initClientState(this.backend.currentState().definition);
+      //Create new ClientState
+      const definition = this.backend.currentState().definition;
+      const game = initGameStateFromDefinition(definition);
+      const state0: ClientState = {
+        game,
+        shuffleOrder: [],
+        empathy: ArrayUtil.fill(game.deck.length, () =>
+          ArrayUtil.fill(game.deck.cards.length, EmpathyStatus.Possible)
+        ),
+      };
       //Set the initial state to the turn after the deal
       this.initialState = reduceGameStateFromGameData(
         state0,
