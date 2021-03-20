@@ -1,7 +1,5 @@
-import { useContext } from "react";
-
+import { useBoardState } from "../types/BoardContext";
 import { CardTarget } from "./CardFloat";
-import { BoardContext, useBoardState } from "../types/BoardContext";
 
 import "./HBHand.scss";
 
@@ -40,20 +38,28 @@ export function HBHand({ player }: HBHandProps) {
   );
 }
 
-type HBHandsAreaProps = {
-  perspective: number;
-};
-export function HBHandsArea({ perspective }: HBHandsAreaProps) {
-  const context = useContext(BoardContext);
-  const playerNames =
-    context.boardState.initialTurn.game.definition.playerNames;
-  const numPlayers =
-    context.boardState.initialTurn.game.definition.variant.numPlayers;
+export function HBHandsArea() {
+  const [playerNames, numPlayers, perspective] = useBoardState((boardState) => {
+    const numPlayers =
+      boardState.initialTurn.game.definition.variant.numPlayers;
+    let perspective = boardState.perspective;
+    if (perspective === undefined) {
+      perspective = 0;
+    } else if (perspective === -1) {
+      perspective = (boardState.viewTurn.game.turn - 1) % numPlayers;
+    }
+    return [
+      boardState.initialTurn.game.definition.playerNames,
+      numPlayers,
+      perspective,
+    ];
+  });
   return (
     <div className="HBHandsArea">
-      {playerNames.map((n, i) => (
-        <HBHand player={(i + perspective) % numPlayers} key={i} />
-      ))}
+      {playerNames.map((n, i) => {
+        const player = (i + perspective) % numPlayers;
+        return <HBHand player={player} key={player} />;
+      })}
     </div>
   );
 }

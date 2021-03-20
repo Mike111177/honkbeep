@@ -20,12 +20,11 @@ export type BoardState = {
   readonly shuffleOrder: ReadonlyArray<number>;
   //Event History
   readonly events: ReadonlyArray<GameEvent>;
+  //Player of current perspective, -1 to follow view, undefined for spectator
+  readonly perspective: number | undefined;
 };
 
-function reduceBoardMessageFn(
-  state: Draft<BoardState>,
-  { event, reveals }: GameEventMessage
-) {
+function reduceBoardEventFn(state: Draft<BoardState>, event: GameEvent) {
   //Push event into history
   state.events.push(event);
   //Advance latest turn
@@ -38,6 +37,16 @@ function reduceBoardMessageFn(
   if (!state.paused) {
     state.viewTurn = state.latestTurn;
   }
+}
+export const reduceBoardEvent = produce(reduceBoardEventFn);
+
+function reduceBoardMessageFn(
+  state: Draft<BoardState>,
+  { event, reveals }: GameEventMessage
+) {
+  //Reduce Event
+  reduceBoardEventFn(state, event);
+
   //Process Reveals
   if (reveals) {
     for (let revealedCard of reveals) {
@@ -65,6 +74,18 @@ export const reduceBoardUnpause = produce((state: Draft<BoardState>) => {
   state.viewTurn = state.latestTurn;
 });
 
+export const reduceBoardSetShuffle = produce(
+  (state: Draft<BoardState>, order: number[]) => {
+    state.shuffleOrder = order;
+  }
+);
+
+export const reduceBoardSetPerspective = produce(
+  (state: Draft<BoardState>, player: number | undefined) => {
+    state.perspective = player;
+  }
+);
+
 export function initBoardState(definition: GameDefinition): BoardState {
   const state0 = initTurnState(definition);
   return {
@@ -74,6 +95,7 @@ export function initBoardState(definition: GameDefinition): BoardState {
     paused: false,
     shuffleOrder: [],
     events: [],
+    perspective: undefined,
   };
 }
 
@@ -90,5 +112,6 @@ export function initNullBoardState(): BoardState {
     paused: false,
     shuffleOrder: [],
     events: [],
+    perspective: undefined,
   };
 }

@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
-
-import HBClientBoard from "./ui/HBBoard/HBClientBoard";
+import HBSolitaireBoard from "./ui/HBBoard/HBSolitaireBoard";
 
 import background from "./background_black.jpg";
 import "./App.scss";
@@ -14,7 +13,7 @@ function App() {
           <Redirect to="/game" />
         </Route>
         <Route path="/game">
-          <HBClientBoard />
+          <HBSolitaireBoard />
         </Route>
       </div>
     </Router>

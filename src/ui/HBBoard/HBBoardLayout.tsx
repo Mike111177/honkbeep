@@ -26,7 +26,7 @@ export default function HBBoardLayout({ board }: { board: Board }) {
             <HBPlayHistory />
           </div>
           <div className="handsWrapper">
-            <HBHandsArea perspective={0} />
+            <HBHandsArea />
           </div>
           <div className="clueHistoryWrapper"></div>
           <div className="discardWrapper">

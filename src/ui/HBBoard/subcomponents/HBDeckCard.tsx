@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import HBCardFront from "./HBCardFront";
 import HBCardBack from "./HBCardBack";
 import { getPipsFromEmpathy } from "../../../game/types/Empathy";
-import { useBoardState } from "../types/BoardContext";
+import { Board, useBoardState } from "../types/BoardContext";
 
 //TODO: PLS REMOVE, REPLACE WITH BETTER THING
 let spaceIsDown = false;
@@ -23,10 +23,27 @@ window.addEventListener("keyup", (event) => {
 
 export default function HBDeckCard({ index, ...props }: any) {
   const [empathy, latestGame, card] = useBoardState((boardState) => {
+    let card = undefined;
+    const cardValue = boardState.shuffleOrder[index];
+    if (cardValue !== undefined) {
+      let view = boardState.perspective;
+      if (view === undefined) {
+        card = cardValue;
+      } else {
+        if (view === -1) {
+          view =
+            (boardState.viewTurn.game.turn - 1) %
+            boardState.initialTurn.game.definition.variant.numPlayers;
+        }
+        if (boardState.latestTurn.game.cardReveals[view].has(index)) {
+          card = cardValue;
+        }
+      }
+    }
     return [
       boardState.latestTurn.empathy[index],
       boardState.latestTurn.game,
-      boardState.shuffleOrder[index],
+      card,
     ];
   });
   const suits = latestGame.definition.variant.suits;

@@ -30,7 +30,6 @@ class ClientBoard extends Board {
   private backend: BackendInterface;
 
   constructor(backend: BackendInterface) {
-    //Many things will be listening to updates from this
     if (!(backend instanceof NullBackend)) {
       //Create new ClientState
       super(
