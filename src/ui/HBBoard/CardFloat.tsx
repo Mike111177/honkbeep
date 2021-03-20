@@ -82,10 +82,9 @@ export function FloatCard({ index }: FloatCardProps) {
   const gameContext = useContext(GameUIContext);
   const floatContext = useContext(FloatContext);
 
-  const [game] = gameContext.useBoardState((boardState) => {
-    return [boardState.viewTurn.game];
+  const home = gameContext.useBoardState((boardState) => {
+    return getCardHome(index, boardState.viewTurn.game);
   });
-  const home = useMemo(() => getCardHome(index, game), [game, index]);
 
   const [dragging, setDragging] = useState(false);
   const [dropPath, setDropPath] = useState<FloatAreaPath | null>(null);
