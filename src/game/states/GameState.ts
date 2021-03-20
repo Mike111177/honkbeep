@@ -1,4 +1,4 @@
-import { Draft, produce } from "immer";
+import { Draft, enableMapSet, produce } from "immer";
 
 import {
   GameEventType,
@@ -7,6 +7,9 @@ import {
   GameEvent,
 } from "../GameTypes";
 import { Deck } from "../DeckBuilding";
+import ArrayUtil from "../../util/ArrayUtil";
+
+enableMapSet();
 
 export type CardPile = ReadonlyArray<number>;
 
@@ -20,6 +23,7 @@ export type GameState = {
   readonly topDeck: number;
   readonly clues: number;
   readonly strikes: number;
+  readonly cardReveals: ReadonlyArray<ReadonlySet<number>>;
 };
 
 export const reduceGameEvent = produce(
@@ -34,6 +38,10 @@ export const reduceGameEvent = produce(
           state.hands[p] = [];
           for (let s = 0; s < state.definition.variant.handSize; s++) {
             state.hands[p].push(state.topDeck);
+            //The dealt card gets revealed to everyone but the recipient
+            state.cardReveals
+              .filter((_, i) => i !== p)
+              .forEach((reveals) => reveals.add(state.topDeck));
             state.topDeck++;
           }
         }
@@ -63,6 +71,12 @@ export const reduceGameEvent = produce(
         newHand.unshift(state.topDeck);
         //Update the players hand
         state.hands[player] = newHand;
+        //the played card gets revealed to the player
+        state.cardReveals[player].add(card);
+        //The card at the top of the deck gets revealed to everyone else
+        state.cardReveals
+          .filter((_, i) => i !== player)
+          .forEach((reveals) => reveals.add(state.topDeck));
         //Mark off another from the deck
         state.topDeck++;
         //Advance to next players turn
@@ -84,6 +98,12 @@ export const reduceGameEvent = produce(
         newHand.unshift(state.topDeck);
         //Update the players hand
         state.hands[player] = newHand;
+        //the played card gets revealed to the player
+        state.cardReveals[player].add(card);
+        //The card at the top of the deck gets revealed to everyone else
+        state.cardReveals
+          .filter((_, i) => i !== player)
+          .forEach((reveals) => reveals.add(state.topDeck));
         //Mark off another from the deck
         state.topDeck++;
         //Advance to next players turn
@@ -109,11 +129,12 @@ export function initGameStateFromDefinition(
     definition,
     turn: 0,
     hands: [],
-    stacks: definition.variant.suits.map<number[]>((_) => []),
+    stacks: ArrayUtil.fill(definition.variant.suits.length, () => []),
     discardPile: [],
     topDeck: 0,
     clues: 8,
     strikes: 0,
+    cardReveals: ArrayUtil.fill(definition.variant.numPlayers, () => new Set()),
   };
 }
 
@@ -131,5 +152,6 @@ export function initNullGameState(): GameState {
     topDeck: 0,
     clues: 8,
     strikes: 0,
+    cardReveals: [],
   };
 }

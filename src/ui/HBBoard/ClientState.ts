@@ -24,14 +24,14 @@ function reduceGameStateFromGameData(
 }
 
 export default class ClientState extends EventEmitter {
+  //Adapter to use to communicate with server
+  private backend: BackendInterface;
   //Game State after Deal Event, blank until Deal event processed
   private initialTurn: TurnState;
   //Most recent canonical game state
   latestTurn: TurnState;
   //Game state currently being viewed, this could be the latest state, a replay state or a hypothetical state
   viewTurn: TurnState;
-  //Adapter to use to communicate with server
-  private backend: BackendInterface;
 
   paused: boolean = false;
 
@@ -156,7 +156,7 @@ export default class ClientState extends EventEmitter {
     useEffect(() => this.subscribeToStateChange(updateCB), [updateCB]);
     return tState;
   }
-  
+
   useViewTurn(): TurnState {
     const [tState, setTState] = useState(this.viewTurn!);
     const updateCB = useCallback(() => setTState(this.viewTurn!), []);
