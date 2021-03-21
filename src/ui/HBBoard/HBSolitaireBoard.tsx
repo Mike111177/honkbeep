@@ -37,8 +37,7 @@ class SolitaireBoard extends Board {
       this.boardState.shuffleOrder
     );
     if (event !== undefined) {
-      this.boardState = reduceBoardEvent(this.boardState, event);
-      this.emit("game-update");
+      this.updateBoardState(reduceBoardEvent(this.boardState, event));
       return true;
     }
     return false;

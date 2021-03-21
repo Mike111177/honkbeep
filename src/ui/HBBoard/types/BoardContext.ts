@@ -1,7 +1,8 @@
-import EventEmitter from "events";
 import React, { useCallback, useContext, useState } from "react";
 import { useEffect } from "react";
 import { GameAttempt } from "../../../game/GameTypes";
+import ArrayUtil from "../../../util/ArrayUtil";
+import { PickMutable } from "../../../util/HelperTypes";
 import {
   BoardState,
   initNullBoardState,
@@ -9,12 +10,13 @@ import {
   reduceBoardUnpause,
 } from "../states/BoardState";
 
-export abstract class Board extends EventEmitter {
-  boardState: BoardState;
+type BoardUpdateListener = () => void;
+export abstract class Board {
+  private listeners: BoardUpdateListener[];
+  readonly boardState: BoardState;
   constructor(initialBoardState: BoardState) {
-    super();
-    this.setMaxListeners(200);
     this.boardState = initialBoardState;
+    this.listeners = [];
   }
   /**
    * `attemptPlayerAction` Triggers a user request to cause a game event
@@ -28,12 +30,15 @@ export abstract class Board extends EventEmitter {
    * @param callback callback to run
    * @returns function to unsubscribe
    */
-  subscribeToStateChange(callback: () => void): () => void {
-    const removeFunc = () => {
-      this.off("game-update", callback);
-    };
-    this.on("game-update", callback);
+  subscribeToStateChange(callback: BoardUpdateListener): () => void {
+    const removeFunc = () => ArrayUtil.remove(this.listeners, callback);
+    this.listeners.push(callback);
     return removeFunc;
+  }
+
+  updateBoardState(newBoardState: BoardState) {
+    (this as PickMutable<Board, "boardState">).boardState = newBoardState;
+    for (let f of this.listeners) f();
   }
 
   /**
@@ -41,27 +46,23 @@ export abstract class Board extends EventEmitter {
    * @param {number} turn turn number
    */
   setViewTurn(turn: number): void {
-    this.boardState = reduceBoardTurnJump(this.boardState, turn);
-    this.emit("game-update");
+    this.updateBoardState(reduceBoardTurnJump(this.boardState, turn));
   }
 
   /**
    * Synchronize viewstate with latest state
    */
   unpause() {
-    this.boardState = reduceBoardUnpause(this.boardState);
-    this.emit("game-update");
+    this.updateBoardState(reduceBoardUnpause(this.boardState));
   }
 
   /**
    * Desynchronize viewstate with latest state
    */
   pause() {
-    this.boardState = reduceBoardTurnJump(
-      this.boardState,
-      this.boardState.viewTurn.turn
+    this.updateBoardState(
+      reduceBoardTurnJump(this.boardState, this.boardState.viewTurn.turn)
     );
-    this.emit("game-update");
   }
 }
 

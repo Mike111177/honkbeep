@@ -29,9 +29,17 @@ function fill(length: number, value: any): any[] {
   }
 }
 
+function remove(array: any[], o: any) {
+  const index = array.findIndex((i) => i === o);
+  if (index >= 0) {
+    array.splice(index, 1);
+  }
+}
+
 const ArrayUtil = {
   iota,
   fill,
+  remove,
 };
 
 export default ArrayUtil;

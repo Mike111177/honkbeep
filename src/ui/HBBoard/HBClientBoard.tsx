@@ -40,11 +40,12 @@ class ClientBoard extends Board {
       );
       //Listen for further game events
       backend.on("gameStateChanged", () => {
-        this.boardState = reduceGameStateFromGameData(
-          this.boardState,
-          this.backend.currentState()
+        this.updateBoardState(
+          reduceGameStateFromGameData(
+            this.boardState,
+            this.backend.currentState()
+          )
         );
-        this.emit("game-update");
       });
     } else {
       super(initNullBoardState());

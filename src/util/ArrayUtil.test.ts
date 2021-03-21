@@ -30,3 +30,13 @@ test("Fill", () => {
   expect(getResult).toHaveUniqueSize(4);
   expect(getResult).not.toContain(reference);
 });
+
+test("remove", () => {
+  const myArray = [6, 5, 4, 3, 2, 1, 0];
+  ArrayUtil.remove(myArray, 4);
+  expect(myArray).toStrictEqual([6, 5, 3, 2, 1, 0]);
+  ArrayUtil.remove(myArray, 4);
+  expect(myArray).toStrictEqual([6, 5, 3, 2, 1, 0]);
+  ArrayUtil.remove(myArray, 1);
+  expect(myArray).toStrictEqual([6, 5, 3, 2, 0]);
+});
