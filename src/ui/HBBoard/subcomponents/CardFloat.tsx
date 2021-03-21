@@ -20,11 +20,11 @@ import ArrayUtil from "../../../util/ArrayUtil";
 import { animated, useSpring } from "react-spring/web.cjs";
 import { useDrag } from "../../util/InputHandling";
 import { vecAdd, vecInRectangle } from "../../util/Vector";
-
-import "./CardFloat.scss";
 import { GameEventType } from "../../../game/GameTypes";
 import { GameState } from "../../../game/states/GameState";
 import { BoardContext, useBoardState } from "../types/BoardContext";
+
+import styles from "./CardFloat.module.css";
 
 //Helper to make card targets
 type CardTargetProps = {
@@ -200,7 +200,7 @@ export function FloatCard({ index }: FloatCardProps) {
   }
   return (
     <animated.div
-      className={`FloatingCard`}
+      className={styles.FloatingCard}
       ref={ref}
       {...attachedListeners}
       style={style}
@@ -214,7 +214,7 @@ export function FloatCard({ index }: FloatCardProps) {
 export function CardFloatLayer() {
   const context = useContext(BoardContext);
   return (
-    <div className="CardFloatLayer">
+    <div className={styles.CardFloatLayer}>
       {ArrayUtil.iota(context.boardState.deck.length).map((i) => (
         <FloatCard key={i} index={i} />
       ))}

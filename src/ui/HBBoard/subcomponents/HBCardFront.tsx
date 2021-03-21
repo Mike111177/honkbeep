@@ -1,16 +1,15 @@
-import "./HBCard.scss";
 import colors from "../../BaseColors";
 import pips from "../pips";
-import { ComponentProps } from "react";
+import { ComponentPropsWithoutRef } from "react";
 import { vecAdd, vecSub } from "../../util/Vector";
-import { OutlineFilter, CardDim, CardRectangle } from "./CardUtil";
+import { OutlineFilter, CardDim, CardRectangle, CardSVG } from "./CardUtil";
 import chroma from "chroma-js";
 
 export type HBCardProps = {
   rank: number;
   suit: string;
   borderOverride?: string;
-} & ComponentProps<"svg">;
+} & ComponentPropsWithoutRef<"svg">;
 
 //Tweakables
 const rPipHeight = 17.5;
@@ -20,7 +19,7 @@ const numOffset = { x: 25, y: 30 };
 const numSize = 50;
 
 //Calculated Constants
-const { mid, viewBox } = CardDim;
+const { mid } = CardDim;
 
 const pipCorner = vecSub(mid, pipDist);
 
@@ -33,7 +32,7 @@ const pipT = vecAdd({ x: mid.x, y: pipCorner.y }, rPipOff);
 const pipR = vecAdd({ x: pipCorner.x, y: mid.y }, rPipOff);
 const pipC = vecAdd(mid, cPipOff);
 
-//For rendering frontface of absolutley known card
+//For rendering front-face of absolutely known card
 export default function HBCardFront({
   suit,
   rank,
@@ -45,7 +44,7 @@ export default function HBCardFront({
   const num = rank;
   const backgroundColor = chroma.mix(color, "#FFFFFF", 0.5, "lrgb").hex();
   return (
-    <svg className="HBCardFront" {...props} viewBox={viewBox}>
+    <CardSVG className="HBCardFront" {...props}>
       {OutlineFilter}
       <CardRectangle
         border={borderOverride ?? color}
@@ -118,6 +117,6 @@ export default function HBCardFront({
           />
         </>
       ) : undefined}
-    </svg>
+    </CardSVG>
   );
 }

@@ -3,8 +3,12 @@
   "eslint.lintTask.enable": true,
   "npm.packageManager": "yarn",
   "files.exclude": {
-    "**/node_modules": true
+    "**/node_modules": true,
+    "**/storybook-static": true,
+    "**/build": true,
+    "**/coverage": true
   },
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "cSpell.words": ["omni"]
 }

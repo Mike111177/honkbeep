@@ -1,6 +1,8 @@
 import React from "react";
 import { Vec2D, vecMul } from "../../util/Vector";
 
+import styles from "./Card.module.css";
+
 export const OutlineFilter = (
   <defs>
     <filter id="outline">
@@ -43,9 +45,11 @@ type CardSVGProps = {
   children?: React.ReactNode;
 } & React.ComponentProps<"svg">;
 export const CardSVG = React.forwardRef<SVGSVGElement, CardSVGProps>(
-  function CardSVG({ children, ...props }, ref) {
+  function CardSVG({ children, className, ...props }, ref) {
+    console.log(styles.Card);
     return (
       <svg
+        className={[styles.Card, className].join(" ")}
         ref={ref}
         viewBox={viewBox}
         preserveAspectRatio="xMidYMid meet"

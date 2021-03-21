@@ -1,5 +1,5 @@
-import { ComponentProps } from "react";
-import { OutlineFilter, CardDim, CardRectangle } from "./CardUtil";
+import { ComponentPropsWithoutRef } from "react";
+import { OutlineFilter, CardDim, CardRectangle, CardSVG } from "./CardUtil";
 import { vecAdd, vecMul } from "../../util/Vector";
 import { Pips } from "../../../game/types/Empathy";
 import colors from "../../BaseColors";
@@ -10,9 +10,9 @@ type HBCardBackProps = {
   suits: string[];
   pips: Pips;
   borderOverride?: string;
-} & ComponentProps<"svg">;
+} & ComponentPropsWithoutRef<"svg">;
 
-const { mid, viewBox } = CardDim;
+const { mid } = CardDim;
 const pipHeight = 17.5;
 const pipOff = { x: -pipHeight / 2, y: -pipHeight / 2 };
 const pipCenter = vecAdd(mid, pipOff);
@@ -81,7 +81,7 @@ export default function HBCardBack({
   });
 
   return (
-    <svg className="HBCardBack" {...props} viewBox={viewBox}>
+    <CardSVG className="HBCardBack" {...props}>
       {OutlineFilter}
       <CardRectangle
         border={borderOverride ?? color}
@@ -89,6 +89,6 @@ export default function HBCardBack({
       />
       {suitPips}
       {numberPips}
-    </svg>
+    </CardSVG>
   );
 }

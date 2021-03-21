@@ -4,6 +4,8 @@
     "editorconfig.editorconfig",
     "dbaeumer.vscode-eslint",
     "orta.vscode-jest",
-    "esbenp.prettier-vscode"
+    "esbenp.prettier-vscode",
+    "silvenon.mdx",
+    "streetsidesoftware.code-spell-checker"
   ]
 }
