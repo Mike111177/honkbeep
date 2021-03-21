@@ -1,45 +1,18 @@
 import chroma from "chroma-js";
 import colors from "../../BaseColors";
-import { CardDim, ThickOutlineFilter } from "./CardUtil";
+import { CardRectangle, CardSVG, ThickOutlineFilter } from "./CardUtil";
 import { HBCardProps } from "./HBCardFront";
 
-const { viewBox } = CardDim;
+import styles from "./Card.module.css";
 
 export default function HBCardIcon({ suit, rank, ...props }: HBCardProps) {
   let color = colors(suit);
   const num = rank;
-  const backgroundColor = chroma.mix(color, "#FFFFFF", 0.5, "lrgb").hex();
+  const backgroundColor = chroma.mix(color, "#FFFFFF", 0.6, "lrgb").hex();
   return (
-    <svg {...props} viewBox={viewBox}>
+    <CardSVG className={styles.CardIcon} height="1em" {...props}>
       {ThickOutlineFilter}
-      <rect
-        x="5%"
-        y="5%"
-        width="90%"
-        height="90%"
-        fill={backgroundColor}
-        rx="5%"
-      />
-      <rect
-        x="5%"
-        y="5%"
-        width="90%"
-        height="90%"
-        fill="#00000000"
-        strokeWidth="11%"
-        stroke="#000000"
-        rx="5%"
-      />
-      <rect
-        x="5%"
-        y="5%"
-        width="90%"
-        height="90%"
-        fill="#00000000"
-        strokeWidth="8%"
-        stroke={color}
-        rx="5%"
-      />
+      <CardRectangle background={backgroundColor} border={color} />
       <text
         fill={color}
         fontSize="120px"
@@ -47,10 +20,11 @@ export default function HBCardIcon({ suit, rank, ...props }: HBCardProps) {
         y="50%"
         textAnchor="middle"
         dominantBaseline="central"
-        filter="url(#thickoutline)"
+        stroke="black"
+        strokeWidth="2.5%"
       >
         {num}
       </text>
-    </svg>
+    </CardSVG>
   );
 }

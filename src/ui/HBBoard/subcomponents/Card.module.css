@@ -2,3 +2,7 @@
   font-family: Consolas, monospace;
   user-select: none;
 }
+
+.CardIcon {
+  transform: translate(0, 15%);
+}

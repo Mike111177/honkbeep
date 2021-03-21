@@ -70,8 +70,8 @@ export function CardRectangle({ background, border }: CardRectangleProps) {
   return (
     <>
       <rect {...shape} fill={background} />
-      <rect {...shape} fill="none" strokeWidth="4%" stroke="black" />
-      <rect {...shape} fill="none" strokeWidth="2.5%" stroke={border} />
+      <rect {...shape} fill="none" strokeWidth="6%" stroke="black" />
+      <rect {...shape} fill="none" strokeWidth="3.5%" stroke={border} />
     </>
   );
 }
