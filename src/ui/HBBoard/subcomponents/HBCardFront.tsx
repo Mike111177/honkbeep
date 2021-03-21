@@ -57,7 +57,8 @@ export default function HBCardFront({
         fontSize={numSize}
         textAnchor="middle"
         dominantBaseline="central"
-        filter="url(#outline)"
+        stroke="black"
+        strokeWidth="1%"
       >
         {num}
       </text>
@@ -67,8 +68,9 @@ export default function HBCardFront({
         fontSize={numSize}
         textAnchor="middle"
         dominantBaseline="central"
-        filter="url(#outline)"
         transform={pipFlip}
+        stroke="black"
+        strokeWidth="1%"
       >
         {num}
       </text>
