@@ -1,5 +1,5 @@
 import { ComponentProps } from "react";
-import { OutlineFilter, CardDim } from "./CardUtil";
+import { OutlineFilter, CardDim, CardRectangle } from "./CardUtil";
 import { vecAdd, vecMul } from "../../util/Vector";
 import { Pips } from "../../../game/types/Empathy";
 import colors from "../../BaseColors";
@@ -9,6 +9,7 @@ import chroma from "chroma-js";
 type HBCardBackProps = {
   suits: string[];
   pips: Pips;
+  borderOverride?: string;
 } & ComponentProps<"svg">;
 
 const { mid, viewBox } = CardDim;
@@ -16,7 +17,12 @@ const pipHeight = 17.5;
 const pipOff = { x: -pipHeight / 2, y: -pipHeight / 2 };
 const pipCenter = vecAdd(mid, pipOff);
 
-export default function HBCardBack({ suits, pips, ...props }: HBCardBackProps) {
+export default function HBCardBack({
+  suits,
+  pips,
+  borderOverride,
+  ...props
+}: HBCardBackProps) {
   let color = "#777777";
   let suitPips;
   //let numberPips;
@@ -77,33 +83,9 @@ export default function HBCardBack({ suits, pips, ...props }: HBCardBackProps) {
   return (
     <svg className="HBCardBack" {...props} viewBox={viewBox}>
       {OutlineFilter}
-      <rect
-        x="5%"
-        y="5%"
-        width="90%"
-        height="90%"
-        fill={backgroundColor}
-        rx="5%"
-      />
-      <rect
-        x="5%"
-        y="5%"
-        width="90%"
-        height="90%"
-        fill="#00000000"
-        strokeWidth="4%"
-        stroke="#000000"
-        rx="5%"
-      />
-      <rect
-        x="5%"
-        y="5%"
-        width="90%"
-        height="90%"
-        fill="#00000000"
-        strokeWidth="2.5%"
-        stroke={color}
-        rx="5%"
+      <CardRectangle
+        border={borderOverride ?? color}
+        background={backgroundColor}
       />
       {suitPips}
       {numberPips}

@@ -22,7 +22,7 @@ window.addEventListener("keyup", (event) => {
 });
 
 export default function HBDeckCard({ index, ...props }: any) {
-  const [empathy, latestGame, card, definition, deck] = useBoardState(
+  const [empathy, latestGame, card, definition, deck, touched] = useBoardState(
     (boardState) => {
       let card = undefined;
       const cardValue = boardState.shuffleOrder[index];
@@ -47,6 +47,7 @@ export default function HBDeckCard({ index, ...props }: any) {
         card,
         boardState.definition,
         boardState.deck,
+        boardState.viewTurn.cardMeta[index].touched,
       ];
     }
   );
@@ -75,8 +76,21 @@ export default function HBDeckCard({ index, ...props }: any) {
   }, []);
 
   if (cardInfo !== undefined && !spaceDown) {
-    return <HBCardFront {...cardInfo} {...props} />;
+    return (
+      <HBCardFront
+        {...cardInfo}
+        {...props}
+        borderOverride={touched ? "orange" : undefined}
+      />
+    );
   } else {
-    return <HBCardBack suits={suits} pips={pips} {...props} />;
+    return (
+      <HBCardBack
+        suits={suits}
+        pips={pips}
+        borderOverride={touched ? "orange" : undefined}
+        {...props}
+      />
+    );
   }
 }

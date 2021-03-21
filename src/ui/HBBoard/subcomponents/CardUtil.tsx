@@ -57,4 +57,19 @@ export const CardSVG = React.forwardRef<SVGSVGElement, CardSVGProps>(
   }
 );
 
+type CardRectangleProps = {
+  background: string;
+  border: string;
+};
+export function CardRectangle({ background, border }: CardRectangleProps) {
+  const shape = { x: "5%", y: "5%", width: "90%", height: "90%", rx: "5%" };
+  return (
+    <>
+      <rect {...shape} fill={background} />
+      <rect {...shape} fill="none" strokeWidth="4%" stroke="black" />
+      <rect {...shape} fill="none" strokeWidth="2.5%" stroke={border} />
+    </>
+  );
+}
+
 export const CardDim = { view, viewBox, mid };

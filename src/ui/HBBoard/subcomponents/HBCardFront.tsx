@@ -3,12 +3,13 @@ import colors from "../../BaseColors";
 import pips from "../pips";
 import { ComponentProps } from "react";
 import { vecAdd, vecSub } from "../../util/Vector";
-import { OutlineFilter, CardDim } from "./CardUtil";
+import { OutlineFilter, CardDim, CardRectangle } from "./CardUtil";
 import chroma from "chroma-js";
 
 export type HBCardProps = {
   rank: number;
   suit: string;
+  borderOverride?: string;
 } & ComponentProps<"svg">;
 
 //Tweakables
@@ -33,8 +34,12 @@ const pipR = vecAdd({ x: pipCorner.x, y: mid.y }, rPipOff);
 const pipC = vecAdd(mid, cPipOff);
 
 //For rendering frontface of absolutley known card
-//TODO: It might be a good idea to add a pre-render step for all of the possible card faces
-export default function HBCardFront({ suit, rank, ...props }: HBCardProps) {
+export default function HBCardFront({
+  suit,
+  rank,
+  borderOverride,
+  ...props
+}: HBCardProps) {
   let color = colors(suit);
   let pip = pips[suit];
   const num = rank;
@@ -42,33 +47,9 @@ export default function HBCardFront({ suit, rank, ...props }: HBCardProps) {
   return (
     <svg className="HBCardFront" {...props} viewBox={viewBox}>
       {OutlineFilter}
-      <rect
-        x="5%"
-        y="5%"
-        width="90%"
-        height="90%"
-        fill={backgroundColor}
-        rx="5%"
-      />
-      <rect
-        x="5%"
-        y="5%"
-        width="90%"
-        height="90%"
-        fill="#00000000"
-        strokeWidth="4%"
-        stroke="#000000"
-        rx="5%"
-      />
-      <rect
-        x="5%"
-        y="5%"
-        width="90%"
-        height="90%"
-        fill="#00000000"
-        strokeWidth="2.5%"
-        stroke={color}
-        rx="5%"
+      <CardRectangle
+        border={borderOverride ?? color}
+        background={backgroundColor}
       />
       <text
         fill={color}

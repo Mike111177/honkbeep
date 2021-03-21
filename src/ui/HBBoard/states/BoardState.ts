@@ -103,7 +103,7 @@ export const reduceBoardSetPerspective = produce(
 
 export function initBoardState(definition: GameDefinition): BoardState {
   const deck = new Deck(definition.variant);
-  const state0 = initTurnState(definition, deck);
+  const state0: TurnState = initTurnState(definition, deck);
   return {
     deck,
     definition,
@@ -118,9 +118,9 @@ export function initBoardState(definition: GameDefinition): BoardState {
 }
 
 export function initNullBoardState(): BoardState {
-  const state0 = {
-    shuffleOrder: [],
+  const state0: TurnState = {
     empathy: [],
+    cardMeta: [],
     ...initNullGameState(),
   };
   return {
