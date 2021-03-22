@@ -1,5 +1,5 @@
 import React from "react";
-import { Vec2D, vecMul } from "../../../util/Vector";
+import { Vec2D, vecMul } from "../util/Vector";
 
 import styles from "./Card.module.css";
 

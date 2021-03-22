@@ -1,10 +1,10 @@
-import colors from "../../../BaseColors";
-import pips from "../../pips";
+import colors from "../BaseColors";
+import pips from "../pips";
 import { ComponentPropsWithoutRef } from "react";
-import { vecAdd, vecSub } from "../../../util/Vector";
+import { vecAdd, vecSub } from "../util/Vector";
 import { OutlineFilter, CardDim, CardRectangle, CardSVG } from "./CardUtil";
 import chroma from "chroma-js";
-import { CardData } from "../../../../game/GameTypes";
+import { CardData } from "../../game/GameTypes";
 
 export type CardFrontProps = {
   card: Readonly<CardData>;

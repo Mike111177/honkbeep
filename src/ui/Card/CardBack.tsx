@@ -1,9 +1,9 @@
 import { ComponentPropsWithoutRef } from "react";
 import { OutlineFilter, CardDim, CardRectangle, CardSVG } from "./CardUtil";
-import { vecAdd, vecMul } from "../../../util/Vector";
-import { Pips } from "../../../../game/types/Empathy";
-import colors from "../../../BaseColors";
-import pipsIcons from "../../pips";
+import { vecAdd, vecMul } from "../util/Vector";
+import { Pips } from "../../game/types/Empathy";
+import colors from "../BaseColors";
+import pipsIcons from "../pips";
 import chroma from "chroma-js";
 
 export type CardBackProps = {

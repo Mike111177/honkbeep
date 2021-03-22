@@ -9,7 +9,7 @@ import {
   GamePlayEvent,
   GamePlayResultType,
 } from "../../../game/GameTypes";
-import Card from "./Card";
+import Card from "../../Card";
 import { useBoardState } from "../../BoardContext";
 
 import "./HBPlayHistory.scss";

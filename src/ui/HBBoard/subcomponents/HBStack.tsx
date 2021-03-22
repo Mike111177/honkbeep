@@ -3,12 +3,12 @@ import chroma from "chroma-js";
 
 import { CardTarget } from "./CardFloat";
 import { useFloatArea } from "../../util/Floating";
-import { CardDim, OutlineFilter } from "./Card/CardUtil";
+import { CardDim, OutlineFilter } from "../../Card/CardUtil";
 import { vecAdd } from "../../util/Vector";
 import { BoardContext } from "../../BoardContext";
 
 import colors from "../../BaseColors";
-import pips from "./../pips";
+import pips from "../../pips";
 import "./HBStack.scss";
 
 type HBStackProps = {
