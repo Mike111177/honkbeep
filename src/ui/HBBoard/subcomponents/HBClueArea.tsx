@@ -1,12 +1,103 @@
-import React, { useContext, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 
 import { GameEventType } from "../../../game/GameTypes";
-import { Clue, colorClue, numberClue } from "../../../game/types/Clue";
+import {
+  Clue,
+  ColorClue,
+  colorClue,
+  NumberClue,
+  numberClue,
+} from "../../../game/types/Clue";
 import colors from "../../BaseColors";
 import ArrayUtil from "../../../util/ArrayUtil";
 import { BoardContext, useBoardState } from "../../BoardContext";
 
-import "./HBClueArea.scss";
+import styles from "./HBClueArea.module.css";
+
+type Player = { p: string; i: number };
+type ClueButtonProps<T extends Clue | Player, S = T> = {
+  val: T;
+  selected: boolean;
+  set: (s: S) => any;
+};
+
+type ColorButtonProps = ClueButtonProps<ColorClue>;
+function ColorClueButton({ val: clue, selected, set }: ColorButtonProps) {
+  return (
+    <svg
+      className={styles.ClueButton}
+      viewBox="0 0 100 100"
+      onClick={() => set(clue)}
+    >
+      <rect
+        x="10%"
+        y="10%"
+        width="80%"
+        height="80%"
+        rx="10%"
+        fill={selected ? "white" : colors(clue.value)}
+        stroke="black"
+        strokeWidth={selected ? 0 : "10%"}
+      />
+      {selected ? (
+        <rect
+          x="17.5%"
+          y="17.5%"
+          width="65%"
+          height="65%"
+          rx="10%"
+          fill={colors(clue.value)}
+          stroke="#000000"
+          strokeWidth="2.5%"
+        />
+      ) : undefined}
+    </svg>
+  );
+}
+
+type NumberButtonProps = ClueButtonProps<NumberClue>;
+function NumberClueButton({ val: clue, selected, set }: NumberButtonProps) {
+  return (
+    <svg
+      className={styles.ClueButton}
+      viewBox="0 0 100 100"
+      onClick={() => set(clue)}
+    >
+      <rect
+        x="10%"
+        y="10%"
+        width="80%"
+        height="80%"
+        rx="10%"
+        fill={selected ? "white" : "black"}
+        stroke="black"
+        strokeWidth={selected ? 0 : "10%"}
+      />
+      <text
+        fill={selected ? "black" : "white"}
+        fontSize="80"
+        x="50%"
+        y="45%"
+        textAnchor="middle"
+        dominantBaseline="central"
+      >
+        {clue.value}
+      </text>
+    </svg>
+  );
+}
+
+type PlayerButtonProps = ClueButtonProps<Player, number>;
+function PlayerButton({ val: { p, i }, selected, set }: PlayerButtonProps) {
+  return (
+    <div
+      className={selected ? styles.SelectedPlayerButton : styles.PlayerButton}
+      onClick={() => set(i)}
+    >
+      {p}
+    </div>
+  );
+}
 
 export default function HBClueArea() {
   //Get state
@@ -26,86 +117,39 @@ export default function HBClueArea() {
   //Make playerButtons
   const playerButtons = players
     .map((p, i) => (
-      <div
+      <PlayerButton
         key={i}
-        className={`PlayerClueButton${
-          selectedPlayer === i ? " SelectedPlayerButton" : ""
-        }`}
-        onClick={() => setSelectedPlayer(i)}
-      >
-        {p}
-      </div>
+        val={{ p, i }}
+        selected={selectedPlayer === i}
+        set={setSelectedPlayer}
+      />
     ))
     .filter((i, n) => n !== (turn - 1) % players.length);
 
   //Make Color Clue Buttons
   const [colorClues] = useState(() => suits.map(colorClue));
   const colorClueButtons = colorClues.map((clue, n) => (
-    <svg
+    <ColorClueButton
+      val={clue}
+      selected={selectedClue === clue}
       key={n}
-      className="ClueButton"
-      viewBox="0 0 100 100"
-      onClick={() => setSelectedClue(clue)}
-    >
-      <rect
-        x="10%"
-        y="10%"
-        width="80%"
-        height="80%"
-        rx="10%"
-        fill={clue === selectedClue ? "#FFFFFF" : colors(clue.value)}
-        stroke="#000000"
-        strokeWidth={clue === selectedClue ? 0 : "10%"}
-      />
-      {clue === selectedClue ? (
-        <rect
-          x="17.5%"
-          y="17.5%"
-          width="65%"
-          height="65%"
-          rx="10%"
-          fill={colors(clue.value)}
-          stroke="#000000"
-          strokeWidth="2.5%"
-        />
-      ) : undefined}
-    </svg>
+      set={setSelectedClue}
+    />
   ));
 
   //Make Number Clue Buttons
   const [numberClues] = useState(() => ArrayUtil.iota(5, 1).map(numberClue));
   const numberClueButtons = numberClues.map((clue, n) => (
-    <svg
+    <NumberClueButton
+      val={clue}
+      selected={selectedClue === clue}
       key={n}
-      className="ClueButton"
-      viewBox="0 0 100 100"
-      onClick={() => setSelectedClue(clue)}
-    >
-      <rect
-        x="10%"
-        y="10%"
-        width="80%"
-        height="80%"
-        rx="10%"
-        fill={clue === selectedClue ? "#FFFFFF" : "#000000"}
-        stroke="#000000"
-        strokeWidth={clue === selectedClue ? 0 : "10%"}
-      />
-      <text
-        fill={clue === selectedClue ? "#000000" : "#FFFFFF"}
-        fontSize="80"
-        x="50%"
-        y="45%"
-        textAnchor="middle"
-        dominantBaseline="central"
-      >
-        {clue.value}
-      </text>
-    </svg>
+      set={setSelectedClue}
+    />
   ));
 
   //Submit Button listener
-  const submit = async () => {
+  const submit = useCallback(async () => {
     if (selectedClue !== null && selectedPlayer !== null) {
       if (
         await context.attemptPlayerAction({
@@ -118,30 +162,17 @@ export default function HBClueArea() {
         setSelectedPlayer(null);
       }
     }
-  };
+  }, [context, selectedClue, selectedPlayer]);
 
   if (clues !== 0) {
     return (
-      <div
-        className="HBClueArea"
-        style={{ gridTemplateColumns: `auto auto auto` }}
-      >
-        <div
-          className="HBClueButtonAreaPlayer"
-          style={{ gridTemplateRows: `repeat(${players.length - 1}, 1fr)` }}
-        >
-          {playerButtons}
+      <div className={styles.ClueArea}>
+        <div className={styles.PlayerArea}>{playerButtons}</div>
+        <div className={styles.ClueSelector}>
+          <div className={styles.ClueButtonArea}>{colorClueButtons}</div>
+          <div className={styles.ClueButtonArea}>{numberClueButtons}</div>
         </div>
-        <div className="ClueSelector">
-          <div
-            className="HBClueButtonAreaSuit"
-            style={{ gridTemplateColumns: `repeat(${suits.length}, auto)` }}
-          >
-            {colorClueButtons}
-          </div>
-          <div className="HBClueButtonAreaNumber">{numberClueButtons}</div>
-        </div>
-        <div className="submitButton" onClick={submit}>
+        <div className={styles.SubmitButton} onClick={submit}>
           ✓
         </div>
       </div>

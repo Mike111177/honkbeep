@@ -1,0 +1,25 @@
+import { Meta, Story } from "@storybook/addon-docs/blocks";
+import { useState } from "react";
+import HBClueArea from "./HBClueArea";
+import DummyBoard from "../../../client/DummyBoard";
+import { BoardContext } from "../../BoardContext";
+
+<Meta
+  title="HBClueArea"
+  component={HBClueArea}
+  parameters={{
+    layout: "centered",
+    controls: { hideNoControlsWarning: true },
+  }}
+/>
+
+<Story name="HBClueArea">
+  {() => {
+    const [board] = useState(() => new DummyBoard(() => {}));
+    return (
+      <BoardContext.Provider value={board}>
+        <HBClueArea />
+      </BoardContext.Provider>
+    );
+  }}
+</Story>

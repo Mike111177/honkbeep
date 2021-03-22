@@ -1,0 +1,38 @@
+import { getShuffledOrder } from "../game/DeckBuilding";
+import { GameAttempt, GameEvent, GameEventType } from "../game/GameTypes";
+import Board from "./Board";
+import {
+  initBoardState,
+  reduceBoardEvent,
+  reduceBoardSetPerspective,
+  reduceBoardSetShuffle,
+} from "./states/BoardState";
+
+type AttemptCallback = (action: GameAttempt) => void;
+export default class DummyBoard extends Board {
+  private callback: AttemptCallback;
+  constructor(callback: AttemptCallback) {
+    const definition = {
+      variant: {
+        suits: ["Red", "Yellow", "Green", "Blue", "Purple"],
+        numPlayers: 4,
+        handSize: 4,
+      },
+      playerNames: ["Alice", "Bob", "Cathy", "Donald"],
+    };
+    const state0 = initBoardState(definition);
+    const dealEvent: GameEvent = { turn: 0, type: GameEventType.Deal };
+    const { order } = getShuffledOrder(state0.deck.length);
+    const state1 = reduceBoardSetPerspective(
+      reduceBoardSetShuffle(reduceBoardEvent(state0, dealEvent), order),
+      -1
+    );
+    super(state1);
+    this.callback = callback;
+  }
+
+  async attemptPlayerAction(action: GameAttempt): Promise<boolean> {
+    this.callback(action);
+    return true;
+  }
+}
