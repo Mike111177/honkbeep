@@ -1,13 +1,17 @@
+import { ComponentPropsWithoutRef } from "react";
 import chroma from "chroma-js";
 import colors from "../../BaseColors";
 import { CardRectangle, CardSVG } from "./CardUtil";
-import { HBCardProps } from "./HBCardFront";
 
 import styles from "./Card.module.css";
 
-export default function HBCardIcon({ suit, rank, ...props }: HBCardProps) {
+export type HBCardIconProps = {
+  rank: number;
+  suit: string;
+} & ComponentPropsWithoutRef<"svg">;
+
+export default function HBCardIcon({ suit, rank, ...props }: HBCardIconProps) {
   let color = colors(suit);
-  const num = rank;
   const backgroundColor = chroma.mix(color, "#FFFFFF", 0.6, "lrgb").hex();
   return (
     <CardSVG className={styles.CardIcon} height="1em" {...props}>
@@ -22,7 +26,7 @@ export default function HBCardIcon({ suit, rank, ...props }: HBCardProps) {
         stroke="black"
         strokeWidth="2.5%"
       >
-        {num}
+        {rank}
       </text>
     </CardSVG>
   );
