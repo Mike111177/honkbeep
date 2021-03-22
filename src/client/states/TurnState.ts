@@ -1,18 +1,14 @@
 import produce, { Draft } from "immer";
-import { Deck } from "../../../game/DeckBuilding";
-import {
-  GameDefinition,
-  GameEvent,
-  GameEventType,
-} from "../../../game/GameTypes";
-import { doesClueMatchCard } from "../../../game/Rules";
+import { Deck } from "../../game/DeckBuilding";
+import { GameDefinition, GameEvent, GameEventType } from "../../game/GameTypes";
+import { doesClueMatchCard } from "../../game/Rules";
 import {
   GameState,
   initGameStateFromDefinition,
   reduceGameEventFn,
-} from "../../../game/states/GameState";
-import { DeckEmpathy, EmpathyStatus } from "../../../game/types/Empathy";
-import ArrayUtil from "../../../util/ArrayUtil";
+} from "../../game/states/GameState";
+import { DeckEmpathy, EmpathyStatus } from "../../game/types/Empathy";
+import ArrayUtil from "../../util/ArrayUtil";
 
 //Per turn metadata for cards
 type CardTurnMetaData = {

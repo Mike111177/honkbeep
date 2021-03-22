@@ -9,9 +9,10 @@ import HBPlayHistory from "./subcomponents/HBPlayHistory";
 import { HBReplayControls } from "./subcomponents/HBReplayControls";
 import { HBScoreBoard } from "./subcomponents/HBScoreBoard";
 import { HBStackArea } from "./subcomponents/HBStack";
-import { Board, BoardContext } from "./types/BoardContext";
+import { BoardContext } from "../BoardContext";
 
 import "./HBBoardLayout.scss";
+import Board from "../../client/Board";
 
 export default function HBBoardLayout({ board }: { board: Board }) {
   const [floatData] = useState(() => new FloatContextData());

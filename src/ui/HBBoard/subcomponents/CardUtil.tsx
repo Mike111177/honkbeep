@@ -20,23 +20,6 @@ export const OutlineFilter = (
   </defs>
 );
 
-export const ThickOutlineFilter = (
-  <defs>
-    <filter id="thickoutline">
-      <feComponentTransfer>
-        <feFuncR type="linear" slope="0" />
-        <feFuncG type="linear" slope="0" />
-        <feFuncB type="linear" slope="0" />
-      </feComponentTransfer>
-      <feMorphology operator="dilate" radius="6" />
-      <feMerge>
-        <feMergeNode />
-        <feMergeNode in="SourceGraphic" />
-      </feMerge>
-    </filter>
-  </defs>
-);
-
 const view: Vec2D = { x: 110, y: 150 };
 const viewBox: string = `0 0 ${view.x} ${view.y}`;
 const mid: Vec2D = vecMul(view, 0.5);
@@ -46,7 +29,6 @@ type CardSVGProps = {
 } & React.ComponentProps<"svg">;
 export const CardSVG = React.forwardRef<SVGSVGElement, CardSVGProps>(
   function CardSVG({ children, className, ...props }, ref) {
-    console.log(styles.Card);
     return (
       <svg
         className={[styles.Card, className].join(" ")}

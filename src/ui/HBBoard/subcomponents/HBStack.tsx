@@ -5,7 +5,7 @@ import { CardTarget } from "./CardFloat";
 import { useFloatArea } from "../../util/Floating";
 import { CardDim, OutlineFilter } from "./CardUtil";
 import { vecAdd } from "../../util/Vector";
-import { BoardContext } from "../types/BoardContext";
+import { BoardContext } from "../../BoardContext";
 
 import colors from "../../BaseColors";
 import pips from "./../pips";

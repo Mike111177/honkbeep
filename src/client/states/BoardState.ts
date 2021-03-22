@@ -1,11 +1,11 @@
 import produce, { Draft } from "immer";
-import { Deck } from "../../../game/DeckBuilding";
+import { Deck } from "../../game/DeckBuilding";
 import {
   GameDefinition,
   GameEvent,
   GameEventMessage,
-} from "../../../game/GameTypes";
-import { initNullGameState } from "../../../game/states/GameState";
+} from "../../game/GameTypes";
+import { initNullGameState } from "../../game/states/GameState";
 import { initTurnState, reduceTurnEvent, TurnState } from "./TurnState";
 
 export type BoardState = {

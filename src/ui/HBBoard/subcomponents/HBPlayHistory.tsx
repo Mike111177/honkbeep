@@ -10,7 +10,7 @@ import {
   GamePlayResultType,
 } from "../../../game/GameTypes";
 import HBCardIcon from "./HBCardIcon";
-import { useBoardState } from "../types/BoardContext";
+import { useBoardState } from "../../BoardContext";
 
 import "./HBPlayHistory.scss";
 

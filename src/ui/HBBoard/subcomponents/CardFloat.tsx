@@ -22,7 +22,7 @@ import { useDrag } from "../../util/InputHandling";
 import { vecAdd, vecInRectangle } from "../../util/Vector";
 import { GameEventType } from "../../../game/GameTypes";
 import { GameState } from "../../../game/states/GameState";
-import { BoardContext, useBoardState } from "../types/BoardContext";
+import { BoardContext, useBoardState } from "../../BoardContext";
 
 import styles from "./CardFloat.module.css";
 

@@ -4,7 +4,7 @@ import { GameEventType } from "../../../game/GameTypes";
 import { Clue, colorClue, numberClue } from "../../../game/types/Clue";
 import colors from "../../BaseColors";
 import ArrayUtil from "../../../util/ArrayUtil";
-import { BoardContext, useBoardState } from "../types/BoardContext";
+import { BoardContext, useBoardState } from "../../BoardContext";
 
 import "./HBClueArea.scss";
 

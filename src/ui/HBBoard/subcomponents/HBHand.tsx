@@ -1,4 +1,4 @@
-import { useBoardState } from "../types/BoardContext";
+import { useBoardState } from "../../BoardContext";
 import { CardTarget } from "./CardFloat";
 
 import "./HBHand.scss";

@@ -1,5 +1,5 @@
 import { useCallback, useContext } from "react";
-import { BoardContext, useBoardState } from "../types/BoardContext";
+import { BoardContext, useBoardState } from "../../BoardContext";
 
 const iconSkipBack = "⏮️";
 const iconBack = "⏪️";

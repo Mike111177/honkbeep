@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import HBCardFront from "./HBCardFront";
 import HBCardBack from "./HBCardBack";
 import { getPipsFromEmpathy } from "../../../game/types/Empathy";
-import { useBoardState } from "../types/BoardContext";
+import { useBoardState } from "../../BoardContext";
 
 //TODO: PLS REMOVE, REPLACE WITH BETTER THING
 let spaceIsDown = false;
