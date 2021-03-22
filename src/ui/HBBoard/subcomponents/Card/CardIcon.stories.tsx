@@ -1,10 +1,10 @@
 import { Meta, Story } from "@storybook/react";
-import colors from "../../colors.json";
-import HBCardIcon, { HBCardIconProps } from "./HBCardIcon";
+import colors from "../../../colors.json";
+import CardIcon, { CardIconProps } from "./CardIcon";
 
 export default {
-  title: "HBCardIcon",
-  component: HBCardIcon,
+  title: "Card/Icon",
+  component: CardIcon,
   argTypes: {
     suit: {
       control: {
@@ -27,7 +27,7 @@ export default {
   },
 } as Meta;
 
-const Template: Story<HBCardIconProps> = (props) => (
+const Template: Story<CardIconProps> = (props) => (
   <span
     style={{
       color: "white",
@@ -35,10 +35,10 @@ const Template: Story<HBCardIconProps> = (props) => (
       fontSize: "40px",
     }}
   >
-    Alice played <HBCardIcon {...props} /> from Slot 1
+    Alice played <CardIcon {...props} /> from Slot 1
   </span>
 );
 
-export const HBCardIconStory = Template.bind({});
-HBCardIconStory.args = { rank: 1, suit: "Red" };
-HBCardIconStory.storyName = "HBCardIcon";
+export const CardIconStory = Template.bind({});
+CardIconStory.args = { card: { rank: 1, suit: "Red" } };
+CardIconStory.storyName = "Icon";

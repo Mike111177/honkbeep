@@ -3,7 +3,7 @@ import chroma from "chroma-js";
 
 import { CardTarget } from "./CardFloat";
 import { useFloatArea } from "../../util/Floating";
-import { CardDim, OutlineFilter } from "./CardUtil";
+import { CardDim, OutlineFilter } from "./Card/CardUtil";
 import { vecAdd } from "../../util/Vector";
 import { BoardContext } from "../../BoardContext";
 

@@ -9,7 +9,7 @@ import {
   GamePlayEvent,
   GamePlayResultType,
 } from "../../../game/GameTypes";
-import HBCardIcon from "./HBCardIcon";
+import Card from "./Card";
 import { useBoardState } from "../../BoardContext";
 
 import "./HBPlayHistory.scss";
@@ -76,11 +76,11 @@ function DiscardPlayDescriber({ turn, event }: DiscardPlayDescriberProps) {
   const player = (turn - 1) % numPlayers;
   const playerName = playerNames[player];
   const { card } = event;
-  const cardProps = deck.getCard(shuffleOrder[card]);
+  const cardData = deck.getCard(shuffleOrder[card]);
   return (
     <span>
       {`${playerName} discarded `}
-      <HBCardIcon height="40px" {...cardProps} />
+      <Card card={cardData} icon />
       {/* {` from slot ${event.handSlot + 1}`} */}
     </span>
   );
@@ -101,12 +101,12 @@ function PlayPlayDescriber({ turn, event }: PlayPlayDescriberProps) {
   const player = (turn - 1) % numPlayers;
   const playerName = playerNames[player];
   const { card } = event;
-  const cardProps = deck.getCard(shuffleOrder[card]);
+  const cardData = deck.getCard(shuffleOrder[card]);
   if (event.result === GamePlayResultType.Success) {
     return (
       <span>
         {`${playerName} played `}
-        <HBCardIcon height="40px" {...cardProps} />
+        <Card card={cardData} icon />
         {/* {` from slot ${event.handSlot + 1}`} */}
       </span>
     );
@@ -114,7 +114,7 @@ function PlayPlayDescriber({ turn, event }: PlayPlayDescriberProps) {
     return (
       <span>
         {`${playerName} misplayed `}
-        <HBCardIcon height="40px" {...cardProps} />
+        <Card card={cardData} icon />
         {/* {` from slot ${event.handSlot + 1}`} */}
       </span>
     );

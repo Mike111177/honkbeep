@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { ComponentPropsWithoutRef, useEffect, useMemo, useState } from "react";
 
-import HBCardFront from "./HBCardFront";
-import HBCardBack from "./HBCardBack";
+import Card, { CardProps } from "./Card";
 import { getPipsFromEmpathy } from "../../../game/types/Empathy";
 import { useBoardState } from "../../BoardContext";
 
@@ -21,7 +20,10 @@ window.addEventListener("keyup", (event) => {
   }
 });
 
-export default function HBDeckCard({ index, ...props }: any) {
+export type HBDeckCardProps = {
+  index: number;
+} & ComponentPropsWithoutRef<"svg">;
+export default function HBDeckCard({ index, ...props }: HBDeckCardProps) {
   const [empathy, latestGame, card, definition, deck, touched] = useBoardState(
     (boardState) => {
       let card = undefined;
@@ -75,22 +77,22 @@ export default function HBDeckCard({ index, ...props }: any) {
     };
   }, []);
 
-  if (cardInfo !== undefined && !spaceDown) {
-    return (
-      <HBCardFront
-        {...cardInfo}
-        {...props}
-        borderOverride={touched ? "orange" : undefined}
-      />
-    );
-  } else {
-    return (
-      <HBCardBack
-        suits={suits}
-        pips={pips}
-        borderOverride={touched ? "orange" : undefined}
-        {...props}
-      />
-    );
-  }
+  const cardProps = useMemo((): CardProps => {
+    const borderOverride = touched ? "orange" : undefined;
+    if (cardInfo !== undefined && !spaceDown) {
+      return {
+        borderOverride,
+        card: cardInfo,
+        ...props,
+      };
+    } else {
+      return {
+        borderOverride,
+        suits,
+        pips,
+        ...props,
+      };
+    }
+  }, [cardInfo, pips, props, spaceDown, suits, touched]);
+  return <Card {...cardProps} />;
 }

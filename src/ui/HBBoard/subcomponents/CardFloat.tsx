@@ -15,7 +15,7 @@ import {
   FloatContext,
   useFloatArea,
 } from "../../util/Floating";
-import { CardSVG } from "./CardUtil";
+import { CardSVG } from "./Card/CardUtil";
 import ArrayUtil from "../../../util/ArrayUtil";
 import { animated, useSpring } from "react-spring/web.cjs";
 import { useDrag } from "../../util/InputHandling";

@@ -5,7 +5,7 @@ import DummyBoard from "../../../client/DummyBoard";
 import { BoardContext } from "../../BoardContext";
 
 export default {
-  title: "HBClueArea",
+  title: "Board Components/Clue Area",
   component: HBClueArea,
   parameters: {
     layout: "centered",
@@ -16,7 +16,7 @@ export default {
   },
 } as Meta;
 
-export const HBClueAreaStory = ({ onAttempt }: any) => {
+export const ClueAreaStory = ({ onAttempt }: any) => {
   const [board] = useState(() => new DummyBoard(onAttempt));
   return (
     <BoardContext.Provider value={board}>
@@ -25,4 +25,4 @@ export const HBClueAreaStory = ({ onAttempt }: any) => {
   );
 };
 
-HBClueAreaStory.storyName = "HBClueArea";
+ClueAreaStory.storyName = "Clue Area";

@@ -1,16 +1,19 @@
 import { ComponentPropsWithoutRef } from "react";
 import chroma from "chroma-js";
-import colors from "../../BaseColors";
+import colors from "../../../BaseColors";
 import { CardRectangle, CardSVG } from "./CardUtil";
 
 import styles from "./Card.module.css";
+import { CardData } from "../../../../game/GameTypes";
 
-export type HBCardIconProps = {
-  rank: number;
-  suit: string;
+export type CardIconProps = {
+  card: Readonly<CardData>;
 } & ComponentPropsWithoutRef<"svg">;
 
-export default function HBCardIcon({ suit, rank, ...props }: HBCardIconProps) {
+export default function CardIcon({
+  card: { suit, rank },
+  ...props
+}: CardIconProps) {
   let color = colors(suit);
   const backgroundColor = chroma.mix(color, "#FFFFFF", 0.6, "lrgb").hex();
   return (

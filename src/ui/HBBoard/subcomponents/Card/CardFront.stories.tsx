@@ -1,10 +1,10 @@
 import { Meta, Story } from "@storybook/react";
-import colors from "../../colors.json";
-import HBCardFront, { HBCardFrontProps } from "./HBCardFront";
+import colors from "../../../colors.json";
+import CardFront, { CardFrontProps } from "./CardFront";
 
 export default {
-  title: "HBCardFront",
-  component: HBCardFront,
+  title: "Card/Front",
+  component: CardFront,
   argTypes: {
     suit: {
       control: {
@@ -28,8 +28,8 @@ export default {
   },
 } as Meta;
 
-export const HBCardFrontStory: Story<HBCardFrontProps> = (props) => (
-  <HBCardFront height="200px" {...props} />
+export const HBCardFrontStory: Story<CardFrontProps> = (props) => (
+  <CardFront height="200px" {...props} />
 );
-HBCardFrontStory.args = { rank: 1, suit: "Red" };
-HBCardFrontStory.storyName = "HBCardFront";
+HBCardFrontStory.args = { card: { rank: 1, suit: "Red" } };
+HBCardFrontStory.storyName = "Front";

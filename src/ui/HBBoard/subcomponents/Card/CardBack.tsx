@@ -1,12 +1,12 @@
 import { ComponentPropsWithoutRef } from "react";
 import { OutlineFilter, CardDim, CardRectangle, CardSVG } from "./CardUtil";
-import { vecAdd, vecMul } from "../../util/Vector";
-import { Pips } from "../../../game/types/Empathy";
-import colors from "../../BaseColors";
-import pipsIcons from "../pips";
+import { vecAdd, vecMul } from "../../../util/Vector";
+import { Pips } from "../../../../game/types/Empathy";
+import colors from "../../../BaseColors";
+import pipsIcons from "../../pips";
 import chroma from "chroma-js";
 
-type HBCardBackProps = {
+export type CardBackProps = {
   suits: string[];
   pips: Pips;
   borderOverride?: string;
@@ -17,12 +17,12 @@ const pipHeight = 17.5;
 const pipOff = { x: -pipHeight / 2, y: -pipHeight / 2 };
 const pipCenter = vecAdd(mid, pipOff);
 
-export default function HBCardBack({
+export default function CardBack({
   suits,
   pips,
   borderOverride,
   ...props
-}: HBCardBackProps) {
+}: CardBackProps) {
   let color = "#777777";
   let suitPips;
   //let numberPips;

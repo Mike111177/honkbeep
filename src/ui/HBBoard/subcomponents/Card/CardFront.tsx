@@ -1,13 +1,13 @@
-import colors from "../../BaseColors";
-import pips from "../pips";
+import colors from "../../../BaseColors";
+import pips from "../../pips";
 import { ComponentPropsWithoutRef } from "react";
-import { vecAdd, vecSub } from "../../util/Vector";
+import { vecAdd, vecSub } from "../../../util/Vector";
 import { OutlineFilter, CardDim, CardRectangle, CardSVG } from "./CardUtil";
 import chroma from "chroma-js";
+import { CardData } from "../../../../game/GameTypes";
 
-export type HBCardFrontProps = {
-  rank: number;
-  suit: string;
+export type CardFrontProps = {
+  card: Readonly<CardData>;
   borderOverride?: string;
 } & ComponentPropsWithoutRef<"svg">;
 
@@ -33,12 +33,11 @@ const pipR = vecAdd({ x: pipCorner.x, y: mid.y }, rPipOff);
 const pipC = vecAdd(mid, cPipOff);
 
 //For rendering front-face of absolutely known card
-export default function HBCardFront({
-  suit,
-  rank,
+export default function CardFront({
+  card: { rank, suit },
   borderOverride,
   ...props
-}: HBCardFrontProps) {
+}: CardFrontProps) {
   let color = colors(suit);
   let pip = pips[suit];
   const num = rank;
