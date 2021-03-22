@@ -76,14 +76,34 @@ export function FloatCard({ index }: FloatCardProps) {
   const gameContext = useContext(BoardContext);
   const floatContext = useContext(FloatContext);
 
-  const [cardInCurrentPlayerHand, ...home] = useBoardState((boardState) => {
+  const [
+    cardInCurrentPlayerHand,
+    cardOnTopOfStack,
+    cardOnBottomOfStack,
+    ...home
+  ] = useBoardState((boardState) => {
     const home = getCardHome(index, boardState.viewTurn);
     const cardInCurrentPlayerHand =
       home[0] === "hands" &&
       home[1] ===
         (boardState.viewTurn.turn - 1) %
           boardState.definition.variant.numPlayers;
-    return [cardInCurrentPlayerHand, ...home];
+    let cardOnTopOfStack = false;
+    let cardOnBottomOfStack = false;
+    if (home[0] === "stacks") {
+      const stack = boardState.viewTurn.stacks[home[1] as number];
+      if (stack[stack.length - 1] === index) {
+        cardOnTopOfStack = true;
+      } else if (stack[stack.length - 2] !== index) {
+        cardOnBottomOfStack = true;
+      }
+    }
+    return [
+      cardInCurrentPlayerHand,
+      cardOnTopOfStack,
+      cardOnBottomOfStack,
+      ...home,
+    ];
   });
 
   const [dragging, setDragging] = useState(false);
@@ -148,9 +168,9 @@ export function FloatCard({ index }: FloatCardProps) {
           }
         } else {
           //Relaxed parameters to make bounce back pretty
+          setDragging(false);
           if (dropPath === null) {
             setSpring({ ...homeRect, config: { friction: 25, tension: 750 } });
-            setDragging(false);
           } else {
             onDrop(dropPath[0]).then((success) => {
               if (!success) {
@@ -185,6 +205,8 @@ export function FloatCard({ index }: FloatCardProps) {
     zIndex = 100;
   } else if (home[0] === "discard") {
     zIndex = home[1] as number;
+  } else if (cardOnTopOfStack) {
+    zIndex = 1;
   }
 
   const style = useMemo(() => {
@@ -195,7 +217,7 @@ export function FloatCard({ index }: FloatCardProps) {
     return { zIndex: useZIndex, ...spring };
   }, [spring, zIndex]);
 
-  if (home[0] === "deck") {
+  if (home[0] === "deck" || cardOnBottomOfStack) {
     return <>{undefined}</>;
   }
   return (
