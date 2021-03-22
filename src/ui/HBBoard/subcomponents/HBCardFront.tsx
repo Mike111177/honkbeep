@@ -5,7 +5,7 @@ import { vecAdd, vecSub } from "../../util/Vector";
 import { OutlineFilter, CardDim, CardRectangle, CardSVG } from "./CardUtil";
 import chroma from "chroma-js";
 
-export type HBCardProps = {
+export type HBCardFrontProps = {
   rank: number;
   suit: string;
   borderOverride?: string;
@@ -38,7 +38,7 @@ export default function HBCardFront({
   rank,
   borderOverride,
   ...props
-}: HBCardProps) {
+}: HBCardFrontProps) {
   let color = colors(suit);
   let pip = pips[suit];
   const num = rank;

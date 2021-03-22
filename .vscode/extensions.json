@@ -5,7 +5,6 @@
     "dbaeumer.vscode-eslint",
     "orta.vscode-jest",
     "esbenp.prettier-vscode",
-    "silvenon.mdx",
     "streetsidesoftware.code-spell-checker"
   ]
 }

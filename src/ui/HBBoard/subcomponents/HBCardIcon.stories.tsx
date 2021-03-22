@@ -1,11 +1,11 @@
-import { Meta, Story } from "@storybook/addon-docs/blocks";
+import { Meta, Story } from "@storybook/react";
 import colors from "../../colors.json";
-import HBCardIcon from "./HBCardIcon";
+import HBCardIcon, { HBCardIconProps } from "./HBCardIcon";
 
-<Meta
-  title="HBCardIcon"
-  component={HBCardIcon}
-  argTypes={{
+export default {
+  title: "HBCardIcon",
+  component: HBCardIcon,
+  argTypes: {
     suit: {
       control: {
         type: "select",
@@ -20,13 +20,14 @@ import HBCardIcon from "./HBCardIcon";
         step: 1,
       },
     },
-  }}
-  parameters={{
+  },
+  parameters: {
     layout: "centered",
-  }}
-/>
+    actions: { disabled: true },
+  },
+} as Meta;
 
-export const Template = (props) => (
+const Template: Story<HBCardIconProps> = (props) => (
   <span
     style={{
       color: "white",
@@ -38,6 +39,6 @@ export const Template = (props) => (
   </span>
 );
 
-<Story name="HBCardIcon" args={{ rank: 1, suit: "Red" }}>
-  {Template.bind({})}
-</Story>
+export const HBCardIconStory = Template.bind({});
+HBCardIconStory.args = { rank: 1, suit: "Red" };
+HBCardIconStory.storyName = "HBCardIcon";
