@@ -1,12 +1,12 @@
 import { Meta } from "@storybook/react";
 import { useState } from "react";
-import HBClueArea from "./ClueArea";
+import ReplayControls from "./ReplayControls";
 import DummyBoard from "../../../client/DummyBoard";
 import { BoardContext } from "../../BoardContext";
 
 export default {
-  title: "Board Components/Clue Area",
-  component: HBClueArea,
+  title: "Board Components/Replay Controls",
+  component: ReplayControls,
   parameters: {
     layout: "centered",
     controls: { disabled: true, hideNoControlsWarning: true },
@@ -16,13 +16,13 @@ export default {
   },
 } as Meta;
 
-export const ClueAreaStory = ({ onAttempt }: any) => {
+export const ReplayControlsStory = ({ onAttempt }: any) => {
   const [board] = useState(() => new DummyBoard(onAttempt));
   return (
     <BoardContext.Provider value={board}>
-      <HBClueArea />
+      <ReplayControls />
     </BoardContext.Provider>
   );
 };
 
-ClueAreaStory.storyName = "Clue Area";
+ReplayControlsStory.storyName = "Replay Controls";
