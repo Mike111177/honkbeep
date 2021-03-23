@@ -1,9 +1,10 @@
-.HBPlayHistory {
+.PlayHistory {
   display: grid;
+  grid-area: playhistory;
   justify-content: center;
   font-size: 40px;
 }
 
-.HBPlayHistory span {
+.PlayHistory span {
   text-align: center;
 }

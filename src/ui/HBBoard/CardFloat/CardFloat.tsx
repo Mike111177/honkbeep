@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 
-import HBDeckCard from "./HBDeckCard";
+import HBDeckCard from "./DeckCard";
 import {
   FloatAreaEventType,
   FloatAreaPath,

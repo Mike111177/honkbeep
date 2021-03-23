@@ -1,7 +1,7 @@
 import { useBoardState } from "../../BoardContext";
-import { CardTarget } from "./CardFloat";
+import { CardTarget } from "../CardFloat/CardFloat";
 
-import "./HBHand.scss";
+import styles from "./Hand.module.css";
 
 type CardInHandProps = {
   slot: number;
@@ -27,13 +27,13 @@ export function HBHand({ player }: HBHandProps) {
     ];
   });
   return (
-    <div className={`HBHand${myTurn ? " OnPlayerTurn" : ""}`}>
-      <div className="handCardArea">
+    <div className={`${styles.Hand}${myTurn ? ` ${styles.OnPlayerTurn}` : ""}`}>
+      <div className={styles.handCardArea}>
         {cards.map((n, i) => (
           <CardInHand player={player} slot={i} key={i} />
         ))}
       </div>
-      <span className="handname">{playerNames[player]}</span>
+      <span className={styles.handname}>{playerNames[player]}</span>
     </div>
   );
 }
@@ -50,7 +50,7 @@ export function HBHandsArea() {
     return [boardState.definition.playerNames, numPlayers, perspective];
   });
   return (
-    <div className="HBHandsArea">
+    <div className={styles.HandsArea}>
       {playerNames.map((n, i) => {
         const player = (i + perspective) % numPlayers;
         return <HBHand player={player} key={player} />;

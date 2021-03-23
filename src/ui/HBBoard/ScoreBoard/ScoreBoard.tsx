@@ -2,7 +2,8 @@ import { useMemo } from "react";
 import ArrayUtil from "../../../util/ArrayUtil";
 import { useBoardState } from "../../BoardContext";
 
-import "./HBScoreBoard.scss";
+import styles from "./ScoreBoard.module.css";
+import darkregion from "../DarkRegion.module.css";
 
 export function HBScoreBoard() {
   const [turn, clues, strikes, stacks] = useBoardState((boardState) => {
@@ -27,7 +28,7 @@ export function HBScoreBoard() {
   };
 
   return (
-    <div className="HBScoreBoard">
+    <div className={[styles.ScoreBoard, darkregion.DarkRegion].join(" ")}>
       Turn: {turn}
       <br />
       Score: {score} / 25

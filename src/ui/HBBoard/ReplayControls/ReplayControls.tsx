@@ -1,5 +1,6 @@
 import { useCallback, useContext } from "react";
 import { BoardContext, useBoardState } from "../../BoardContext";
+import styles from "./ReplayControls.module.css";
 
 const iconSkipBack = "⏮️";
 const iconBack = "⏪️";
@@ -36,7 +37,7 @@ export function HBReplayControls() {
   }, [context, latestState.turn]);
 
   return (
-    <div style={{ userSelect: "none" }}>
+    <div className={styles.ReplayControls}>
       <span onClick={skipBack}>{iconSkipBack}</span>
       <span onClick={back}>{iconBack}</span>
       <span onClick={paused ? () => context.unpause() : () => context.pause()}>

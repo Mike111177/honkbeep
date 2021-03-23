@@ -1,4 +1,4 @@
-.HBHand {
+.Hand {
   display: grid;
   border-width: 2px;
   border-color: #00000000;
@@ -6,12 +6,13 @@
   border-radius: 5px;
 }
 
-.HBHand.OnPlayerTurn {
+.Hand.OnPlayerTurn {
   border-color: yellow;
   background-color: #11111199;
 }
 
-.HBHandsArea {
+.HandsArea {
+  grid-area: handarea;
 }
 
 .handname {

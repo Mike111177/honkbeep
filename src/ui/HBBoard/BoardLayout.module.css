@@ -1,0 +1,14 @@
+.Board {
+  display: grid;
+  grid-template-areas:
+    "   playhistory    playhistory handarea cluehistory"
+    "     stackarea      stackarea handarea cluehistory"
+    "      cluearea       cluearea handarea discardpile"
+    "replaycontrols replaycontrols handarea discardpile"
+    "    scoreboard           deck handarea discardpile";
+  grid-template-columns: 25% 15% 30% 30%;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  height: 100%;
+  overflow: hidden;
+}

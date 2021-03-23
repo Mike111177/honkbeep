@@ -1,5 +1,7 @@
-import { CardTarget } from "./CardFloat";
+import { CardTarget } from "../CardFloat/CardFloat";
 import { useBoardState } from "../../BoardContext";
+
+import styles from "./Deck.module.css";
 
 export function HBDeck() {
   const [deck, topDeck] = useBoardState((boardState) => {
@@ -7,7 +9,7 @@ export function HBDeck() {
   });
 
   return (
-    <CardTarget areaPath={["deck"]}>
+    <CardTarget className={styles.Deck} areaPath={["deck"]}>
       <rect x="5%" y="5%" width="90%" height="90%" fill="#cccccc80" rx="5%" />
       <rect
         x="5%"

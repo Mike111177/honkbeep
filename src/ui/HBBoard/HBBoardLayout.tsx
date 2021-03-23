@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { FloatContext, FloatContextData } from "../util/Floating";
-import { CardFloatLayer } from "./subcomponents/CardFloat";
-import HBClueArea from "./subcomponents/HBClueArea";
-import { HBDeck } from "./subcomponents/HBDeck";
-import HBDiscardPile from "./subcomponents/HBDiscardPile";
-import { HBHandsArea } from "./subcomponents/HBHand";
-import HBPlayHistory from "./subcomponents/HBPlayHistory";
-import { HBReplayControls } from "./subcomponents/HBReplayControls";
-import { HBScoreBoard } from "./subcomponents/HBScoreBoard";
-import { HBStackArea } from "./subcomponents/HBStack";
+import { CardFloatLayer } from "./CardFloat/CardFloat";
+import HBClueArea from "./ClueArea/ClueArea";
+import { HBDeck } from "./Deck/Deck";
+import HBDiscardPile from "./DiscardPile/DiscardPile";
+import { HBHandsArea } from "./HandArea/Hand";
+import HBPlayHistory from "./PlayHistory/PlayHistory";
+import { HBReplayControls } from "./ReplayControls/ReplayControls";
+import { HBScoreBoard } from "./ScoreBoard/ScoreBoard";
+import { HBStackArea } from "./StackArea/Stack";
 import { BoardContext } from "../BoardContext";
-
-import "./HBBoardLayout.scss";
 import Board from "../../client/Board";
+
+import styles from "./BoardLayout.module.css";
 
 export default function HBBoardLayout({ board }: { board: Board }) {
   const [floatData] = useState(() => new FloatContextData());
@@ -22,28 +22,15 @@ export default function HBBoardLayout({ board }: { board: Board }) {
   return (
     <BoardContext.Provider value={board}>
       <FloatContext.Provider value={floatData}>
-        <div className="HBBoard">
-          <div className="playHistoryWrapper">
-            <HBPlayHistory />
-          </div>
-          <div className="handsWrapper">
-            <HBHandsArea />
-          </div>
-          <div className="clueHistoryWrapper"></div>
-          <div className="discardWrapper">
-            <HBDiscardPile />
-          </div>
-          <div className="stackAreaWrapper">
-            <HBStackArea />
-          </div>
-          <div className="clueAreaWrapper">
-            <HBReplayControls />
-            <HBClueArea />
-          </div>
-          <div className="controlsPlaceHolder">
-            <HBDeck />
-            <HBScoreBoard />
-          </div>
+        <div className={styles.Board}>
+          <HBPlayHistory />
+          <HBHandsArea />
+          <HBDiscardPile />
+          <HBStackArea />
+          <HBReplayControls />
+          <HBClueArea />
+          <HBDeck />
+          <HBScoreBoard />
         </div>
         <CardFloatLayer />
       </FloatContext.Provider>

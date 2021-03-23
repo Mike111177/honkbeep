@@ -1,5 +1,6 @@
 .ClueArea {
   display: grid;
+  grid-area: cluearea;
   grid-auto-flow: column;
   justify-content: center;
   align-content: center;

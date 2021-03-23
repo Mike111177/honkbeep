@@ -1,8 +1,11 @@
 import { useMemo } from "react";
 
 import { useFloatArea } from "../../util/Floating";
-import { CardTarget } from "./CardFloat";
+import { CardTarget } from "../CardFloat/CardFloat";
 import { useBoardState } from "../../BoardContext";
+
+import styles from "./DiscardPile.module.css";
+import darkregion from "../DarkRegion.module.css";
 
 export default function HBDiscardPile() {
   const [cards, shuffleOrder, deck] = useBoardState((boardState) => {
@@ -30,16 +33,8 @@ export default function HBDiscardPile() {
   );
   return (
     <div
+      className={[styles.DiscardPile, darkregion.DarkRegion].join(" ")}
       ref={ref}
-      id="discard"
-      style={{
-        width: "100%",
-        height: "100%",
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
-        justifyContent: "space-evenly",
-        alignContent: "center",
-      }}
     >
       {cardOrder.map((i) => (
         <CardTarget key={i} areaPath={["discard", i]} />

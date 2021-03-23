@@ -12,7 +12,8 @@ import {
 import Card from "../../Card";
 import { useBoardState } from "../../BoardContext";
 
-import "./HBPlayHistory.scss";
+import styles from "./PlayHistory.module.css";
+import darkregion from "../DarkRegion.module.css";
 
 const NaturalNums = ["zero", "one", "two", "three", "four", "five"];
 
@@ -146,7 +147,7 @@ export default function HBPlayHistory() {
   });
   const displayAmount = Math.min(numPlayers, turnNumber);
   return (
-    <div className="HBPlayHistory">
+    <div className={[styles.PlayHistory, darkregion.DarkRegion].join(" ")}>
       {[...Array(displayAmount).keys()]
         .map((_, i) => turnNumber - displayAmount + i)
         .map((i) => (

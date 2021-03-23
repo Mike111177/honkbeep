@@ -1,6 +1,6 @@
 import { Meta } from "@storybook/react";
 import { useState } from "react";
-import HBClueArea from "./HBClueArea";
+import HBClueArea from "./ClueArea";
 import DummyBoard from "../../../client/DummyBoard";
 import { BoardContext } from "../../BoardContext";
 

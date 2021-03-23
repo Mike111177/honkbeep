@@ -1,0 +1,5 @@
+.ReplayControls {
+  user-select: none;
+  grid-area: replaycontrols;
+  justify-self: center;
+}

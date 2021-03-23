@@ -12,7 +12,7 @@ import colors from "../../BaseColors";
 import ArrayUtil from "../../../util/ArrayUtil";
 import { BoardContext, useBoardState } from "../../BoardContext";
 
-import styles from "./HBClueArea.module.css";
+import styles from "./ClueArea.module.css";
 
 type Player = { p: string; i: number };
 type ClueButtonProps<T extends Clue | Player, S = T> = {

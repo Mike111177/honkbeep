@@ -1,5 +1,7 @@
-.HBStackArea {
+.StackArea {
   display: grid;
+  grid-area: stackarea;
+  width: 100%;
   grid-auto-flow: column;
   justify-content: center;
   align-content: center;
