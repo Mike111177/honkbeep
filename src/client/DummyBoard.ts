@@ -7,11 +7,12 @@ import {
   reduceBoardSetPerspective,
   reduceBoardSetShuffle,
 } from "./states/BoardState";
+import { UserAction } from "./types/UserAction";
 
-type AttemptCallback = (action: GameAttempt) => void;
+type UserActionCallback = (action: UserAction) => void;
 export default class DummyBoard extends Board {
-  private callback: AttemptCallback;
-  constructor(callback: AttemptCallback) {
+  private callback: UserActionCallback;
+  constructor(callback: UserActionCallback) {
     const definition = {
       variant: {
         suits: ["Red", "Yellow", "Green", "Blue", "Purple"],
@@ -32,7 +33,10 @@ export default class DummyBoard extends Board {
   }
 
   async attemptPlayerAction(action: GameAttempt): Promise<boolean> {
-    this.callback(action);
     return true;
+  }
+
+  reduceUserAction(action: UserAction) {
+    this.callback(action);
   }
 }

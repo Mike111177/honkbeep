@@ -1,5 +1,5 @@
-import { useCallback, useContext } from "react";
-import { BoardContext, useBoardState } from "../../BoardContext";
+import { UserActionType } from "../../../client/types/UserAction";
+import { useBoardReducer, useBoardState } from "../../BoardContext";
 import styles from "./ReplayControls.module.css";
 
 const iconSkipBack = "⏮️";
@@ -10,41 +10,27 @@ const iconFor = "⏩️";
 const iconSkipFor = "⏭️";
 
 export function HBReplayControls() {
-  const context = useContext(BoardContext);
-  const state = useBoardState();
-  const latestState = state.latestTurn;
-  const viewState = state.viewTurn;
-  const paused = context.boardState.paused;
+  const dispatch = useBoardReducer();
+  const [viewTurn, latestTurn, paused] = useBoardState((state) => {
+    return [state.viewTurn.turn, state.latestTurn.turn, state.paused];
+  });
 
-  const skipBack = useCallback(() => {
-    context.setViewTurn(1);
-  }, [context]);
+  const setTurn = (turn: number) =>
+    dispatch({ type: UserActionType.SetViewTurn, turn });
 
-  const back = useCallback(() => {
-    if (viewState.turn > 1) {
-      context.setViewTurn(viewState.turn - 1);
-    }
-  }, [context, viewState.turn]);
+  const pausePlay = paused
+    ? () => dispatch({ type: UserActionType.Resume })
+    : () => setTurn(latestTurn);
 
-  const forward = useCallback(() => {
-    if (viewState.turn < latestState.turn) {
-      context.setViewTurn(viewState.turn + 1);
-    }
-  }, [context, latestState.turn, viewState.turn]);
-
-  const skipForward = useCallback(() => {
-    context.setViewTurn(latestState.turn);
-  }, [context, latestState.turn]);
+  const pausePlayIcon = paused ? iconPlay : iconPause;
 
   return (
     <div className={styles.ReplayControls}>
-      <span onClick={skipBack}>{iconSkipBack}</span>
-      <span onClick={back}>{iconBack}</span>
-      <span onClick={paused ? () => context.unpause() : () => context.pause()}>
-        {context.boardState.paused ? iconPlay : iconPause}
-      </span>
-      <span onClick={forward}>{iconFor}</span>
-      <span onClick={skipForward}>{iconSkipFor}</span>
+      <span onClick={() => setTurn(1)}>{iconSkipBack}</span>
+      <span onClick={() => setTurn(viewTurn - 1)}>{iconBack}</span>
+      <span onClick={pausePlay}>{pausePlayIcon}</span>
+      <span onClick={() => setTurn(viewTurn + 1)}>{iconFor}</span>
+      <span onClick={() => setTurn(latestTurn)}>{iconSkipFor}</span>
     </div>
   );
 }

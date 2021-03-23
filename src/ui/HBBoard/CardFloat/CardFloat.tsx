@@ -22,9 +22,14 @@ import { useDrag } from "../../util/InputHandling";
 import { vecAdd, vecInRectangle } from "../../../util/Vector";
 import { GameEventType } from "../../../game/GameTypes";
 import { GameState } from "../../../game/states/GameState";
-import { BoardContext, useBoardState } from "../../BoardContext";
+import {
+  BoardContext,
+  useBoardReducer,
+  useBoardState,
+} from "../../BoardContext";
 
 import styles from "./CardFloat.module.css";
+import { UserActionType } from "../../../client/types/UserAction";
 
 //Helper to make card targets
 type CardTargetProps = {
@@ -73,7 +78,7 @@ type FloatCardProps = {
 //TODO: Generalize this code, a lot of elements from it would be nice to be able to use in other places
 export function FloatCard({ index }: FloatCardProps) {
   //Get contexts
-  const gameContext = useContext(BoardContext);
+  const boardDispatch = useBoardReducer();
   const floatContext = useContext(FloatContext);
 
   const [
@@ -129,20 +134,26 @@ export function FloatCard({ index }: FloatCardProps) {
     async (loc: string) => {
       switch (loc) {
         case "stackArea":
-          return await gameContext.attemptPlayerAction({
-            type: GameEventType.Play,
-            card: index,
+          return await boardDispatch({
+            type: UserActionType.GameAttempt,
+            attempt: {
+              type: GameEventType.Play,
+              card: index,
+            },
           });
         case "discardPile":
-          return await gameContext.attemptPlayerAction({
-            type: GameEventType.Discard,
-            card: index,
+          return await boardDispatch({
+            type: UserActionType.GameAttempt,
+            attempt: {
+              type: GameEventType.Discard,
+              card: index,
+            },
           });
         default:
           return false;
       }
     },
-    [gameContext, index]
+    [boardDispatch, index]
   );
 
   const onDrag = useCallback(

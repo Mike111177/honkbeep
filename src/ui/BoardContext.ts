@@ -2,10 +2,19 @@ import React, { useCallback, useContext, useState } from "react";
 import { useEffect } from "react";
 import Board, { NullBoard } from "../client/Board";
 import { BoardState } from "../client/states/BoardState";
+import { UserAction } from "../client/types/UserAction";
 
 export const BoardContext = React.createContext<Readonly<Board>>(
   new NullBoard()
 );
+
+/**
+ * Shorthand for useContext(BoardContext);
+ * @returns Current board context
+ */
+export function useBoard() {
+  return useContext(BoardContext);
+}
 
 export function useBoardState(): Readonly<BoardState>;
 export function useBoardState<T extends any[]>(
@@ -49,4 +58,11 @@ export function useBoardState<T extends any[]>(
     [context, getRequestedItems, itemFn, state]
   );
   return getRequestedItems(state);
+}
+
+export function useBoardReducer() {
+  const context = useBoard();
+  return useCallback((action: UserAction) => context.reduceUserAction(action), [
+    context,
+  ]);
 }

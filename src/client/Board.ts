@@ -7,6 +7,7 @@ import {
   reduceBoardUnpause,
   initNullBoardState,
 } from "./states/BoardState";
+import { UserAction, UserActionType } from "./types/UserAction";
 
 export type BoardUpdateListener = () => void;
 export default abstract class Board {
@@ -21,7 +22,7 @@ export default abstract class Board {
    * @param action action to attempt.
    * @returns promise that resolves to boolean indicating if action succeeds
    */
-  abstract attemptPlayerAction(action: GameAttempt): Promise<boolean>;
+  protected abstract attemptPlayerAction(action: GameAttempt): Promise<boolean>;
 
   /**
    * Runs a given callback whenever the game state changes
@@ -39,36 +40,25 @@ export default abstract class Board {
     for (let f of this.listeners) f();
   }
 
-  /**
-   * Changes the currently viewed turn
-   * @param {number} turn turn number
-   */
-  setViewTurn(turn: number): void {
-    this.updateBoardState(reduceBoardTurnJump(this.boardState, turn));
-  }
-
-  /**
-   * Synchronize viewstate with latest state
-   */
-  unpause() {
-    this.updateBoardState(reduceBoardUnpause(this.boardState));
-  }
-
-  /**
-   * Desynchronize viewstate with latest state
-   */
-  pause() {
-    this.updateBoardState(
-      reduceBoardTurnJump(this.boardState, this.boardState.viewTurn.turn)
-    );
+  reduceUserAction(action: UserAction) {
+    switch (action.type) {
+      case UserActionType.GameAttempt:
+        return this.attemptPlayerAction(action.attempt);
+      case UserActionType.SetViewTurn:
+        return this.updateBoardState(
+          reduceBoardTurnJump(this.boardState, action.turn)
+        );
+      case UserActionType.Resume:
+        return this.updateBoardState(reduceBoardUnpause(this.boardState));
+    }
   }
 }
 
 export class NullBoard extends Board {
-  attemptPlayerAction(action: GameAttempt): Promise<boolean> {
-    throw new Error("Tried to use null board!");
-  }
   constructor() {
     super(initNullBoardState());
+  }
+  attemptPlayerAction(action: GameAttempt): Promise<boolean> {
+    throw new Error("Tried to use null board!");
   }
 }

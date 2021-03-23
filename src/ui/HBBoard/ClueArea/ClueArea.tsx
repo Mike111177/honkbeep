@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from "react";
+import React, { useCallback, useState } from "react";
 
 import { GameEventType } from "../../../game/GameTypes";
 import {
@@ -10,9 +10,10 @@ import {
 } from "../../../game/types/Clue";
 import colors from "../../BaseColors";
 import ArrayUtil from "../../../util/ArrayUtil";
-import { BoardContext, useBoardState } from "../../BoardContext";
+import { useBoardReducer, useBoardState } from "../../BoardContext";
 
 import styles from "./ClueArea.module.css";
+import { UserActionType } from "../../../client/types/UserAction";
 
 type Player = { p: string; i: number };
 type ClueButtonProps<T extends Clue | Player, S = T> = {
@@ -101,7 +102,7 @@ function PlayerButton({ val: { p, i }, selected, set }: PlayerButtonProps) {
 
 export default function HBClueArea() {
   //Get state
-  const context = useContext(BoardContext);
+  const boardDispatch = useBoardReducer();
   const [players, turn, suits, clues] = useBoardState((boardState) => {
     return [
       boardState.definition.playerNames,
@@ -152,17 +153,20 @@ export default function HBClueArea() {
   const submit = useCallback(async () => {
     if (selectedClue !== null && selectedPlayer !== null) {
       if (
-        await context.attemptPlayerAction({
-          type: GameEventType.Clue,
-          target: selectedPlayer,
-          clue: selectedClue,
+        await boardDispatch({
+          type: UserActionType.GameAttempt,
+          attempt: {
+            type: GameEventType.Clue,
+            target: selectedPlayer,
+            clue: selectedClue,
+          },
         })
       ) {
         setSelectedClue(null);
         setSelectedPlayer(null);
       }
     }
-  }, [context, selectedClue, selectedPlayer]);
+  }, [boardDispatch, selectedClue, selectedPlayer]);
 
   if (clues !== 0) {
     return (
