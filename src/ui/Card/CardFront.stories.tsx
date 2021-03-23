@@ -1,6 +1,7 @@
 import { Meta, Story } from "@storybook/react";
 import colors from "../colors.json";
-import CardFront, { CardFrontProps } from "./CardFront";
+
+import { CardFront, CardFrontProps } from ".";
 
 export default {
   title: "Card/Front",

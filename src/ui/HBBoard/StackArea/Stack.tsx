@@ -3,7 +3,7 @@ import chroma from "chroma-js";
 
 import { CardTarget } from "../CardFloat/CardFloat";
 import { useFloatArea } from "../../util/Floating";
-import { CardDim, OutlineFilter } from "../../Card/CardUtil";
+import { CARD_VIEW_MIDPOINT as mid, OutlineFilter } from "../../Card";
 import { vecAdd } from "../../util/Vector";
 import { BoardContext } from "../../BoardContext";
 
@@ -17,7 +17,6 @@ type HBStackProps = {
   suit: string;
 };
 
-const { mid } = CardDim;
 const pipHeight = 35;
 const pipOff = { x: -pipHeight / 2, y: -pipHeight / 2 };
 const pipCenter = vecAdd(mid, pipOff);

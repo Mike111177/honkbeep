@@ -1,10 +1,13 @@
+import { ComponentPropsWithoutRef } from "react";
+import chroma from "chroma-js";
+
 import colors from "../BaseColors";
 import pips from "../pips";
-import { ComponentPropsWithoutRef } from "react";
 import { vecAdd, vecSub } from "../util/Vector";
-import { OutlineFilter, CardDim, CardRectangle, CardSVG } from "./CardUtil";
-import chroma from "chroma-js";
 import { CardData } from "../../game/GameTypes";
+
+import { OutlineFilter, CardRectangle, CardSVG } from ".";
+import { CARD_VIEW_MIDPOINT as mid } from "./Constants";
 
 export type CardFrontProps = {
   card: Readonly<CardData>;
@@ -17,9 +20,6 @@ const cPipHeight = 27.5;
 const pipDist = { x: 30, y: 35 };
 const numOffset = { x: 25, y: 30 };
 const numSize = 50;
-
-//Calculated Constants
-const { mid } = CardDim;
 
 const pipCorner = vecSub(mid, pipDist);
 
@@ -43,7 +43,7 @@ export default function CardFront({
   const num = rank;
   const backgroundColor = chroma.mix(color, "#FFFFFF", 0.5, "lrgb").hex();
   return (
-    <CardSVG className="HBCardFront" {...props}>
+    <CardSVG {...props}>
       {OutlineFilter}
       <CardRectangle
         border={borderOverride ?? color}

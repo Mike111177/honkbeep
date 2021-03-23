@@ -1,6 +1,7 @@
 import { Meta, Story } from "@storybook/react";
 import colors from "../colors.json";
-import CardIcon, { CardIconProps } from "./CardIcon";
+
+import { CardIcon, CardIconProps } from ".";
 
 export default {
   title: "Card/Icon",
