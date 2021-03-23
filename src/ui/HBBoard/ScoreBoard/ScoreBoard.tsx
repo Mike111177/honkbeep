@@ -5,7 +5,7 @@ import { useBoardState } from "../../BoardContext";
 import styles from "./ScoreBoard.module.css";
 import darkregion from "../DarkRegion.module.css";
 
-export function HBScoreBoard() {
+export default function ScoreBoard() {
   const [turn, clues, strikes, stacks] = useBoardState((boardState) => {
     const { turn, clues, strikes, stacks } = boardState.viewTurn;
     return [turn, clues, strikes, stacks];

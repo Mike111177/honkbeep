@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { FloatContext, FloatContextData } from "../util/Floating";
 import { CardFloatLayer } from "./CardFloat/CardFloat";
-import HBClueArea from "./ClueArea/ClueArea";
-import { HBDeck } from "./Deck/Deck";
-import HBDiscardPile from "./DiscardPile/DiscardPile";
-import { HBHandsArea } from "./HandArea/Hand";
-import HBPlayHistory from "./PlayHistory/PlayHistory";
-import { HBReplayControls } from "./ReplayControls/ReplayControls";
-import { HBScoreBoard } from "./ScoreBoard/ScoreBoard";
-import { HBStackArea } from "./StackArea/Stack";
-import { BoardContext } from "../BoardContext";
+import ClueArea from "./ClueArea/ClueArea";
+import Deck from "./Deck/Deck";
+import DiscardPile from "./DiscardPile/DiscardPile";
+import HandsArea from "./HandArea/Hand";
+import PlayHistory from "./PlayHistory/PlayHistory";
+import ReplayControls from "./ReplayControls/ReplayControls";
+import ScoreBoard from "./ScoreBoard/ScoreBoard";
+import StackArea from "./StackArea/Stack";
+import BoardContext from "../BoardContext";
 import Board from "../../client/Board";
 
 import styles from "./BoardLayout.module.css";
@@ -23,14 +23,14 @@ export default function HBBoardLayout({ board }: { board: Board }) {
     <BoardContext.Provider value={board}>
       <FloatContext.Provider value={floatData}>
         <div className={styles.Board}>
-          <HBPlayHistory />
-          <HBHandsArea />
-          <HBDiscardPile />
-          <HBStackArea />
-          <HBReplayControls />
-          <HBClueArea />
-          <HBDeck />
-          <HBScoreBoard />
+          <PlayHistory />
+          <HandsArea />
+          <DiscardPile />
+          <StackArea />
+          <ReplayControls />
+          <ClueArea />
+          <Deck />
+          <ScoreBoard />
         </div>
         <CardFloatLayer />
       </FloatContext.Provider>

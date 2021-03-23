@@ -9,7 +9,7 @@ const iconPlay = "▶️";
 const iconFor = "⏩️";
 const iconSkipFor = "⏭️";
 
-export function HBReplayControls() {
+export default function ReplayControls() {
   const dispatch = useBoardReducer();
   const [viewTurn, latestTurn, paused] = useBoardState((state) => {
     return [state.viewTurn.turn, state.latestTurn.turn, state.paused];

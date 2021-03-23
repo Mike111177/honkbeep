@@ -7,7 +7,7 @@ import { useBoardState } from "../../BoardContext";
 import styles from "./DiscardPile.module.css";
 import darkregion from "../DarkRegion.module.css";
 
-export default function HBDiscardPile() {
+export default function DiscardPile() {
   const [cards, shuffleOrder, deck] = useBoardState((boardState) => {
     return [
       boardState.viewTurn.discardPile,

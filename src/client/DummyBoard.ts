@@ -7,7 +7,7 @@ import {
   reduceBoardSetPerspective,
   reduceBoardSetShuffle,
 } from "./states/BoardState";
-import { UserAction } from "./types/UserAction";
+import UserAction from "./types/UserAction";
 
 type UserActionCallback = (action: UserAction) => void;
 export default class DummyBoard extends Board {

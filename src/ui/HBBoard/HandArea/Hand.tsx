@@ -16,7 +16,7 @@ type HBHandProps = {
   player: number;
 };
 
-export function HBHand({ player }: HBHandProps) {
+export function Hand({ player }: HBHandProps) {
   const [playerNames, cards, myTurn] = useBoardState((boardState) => {
     return [
       boardState.definition.playerNames,
@@ -38,7 +38,7 @@ export function HBHand({ player }: HBHandProps) {
   );
 }
 
-export function HBHandsArea() {
+export default function HandsArea() {
   const [playerNames, numPlayers, perspective] = useBoardState((boardState) => {
     const numPlayers = boardState.definition.variant.numPlayers;
     let perspective = boardState.perspective;
@@ -53,7 +53,7 @@ export function HBHandsArea() {
     <div className={styles.HandsArea}>
       {playerNames.map((n, i) => {
         const player = (i + perspective) % numPlayers;
-        return <HBHand player={player} key={player} />;
+        return <Hand player={player} key={player} />;
       })}
     </div>
   );

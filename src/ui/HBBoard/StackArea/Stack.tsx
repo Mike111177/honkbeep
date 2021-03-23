@@ -21,7 +21,7 @@ const pipHeight = 35;
 const pipOff = { x: -pipHeight / 2, y: -pipHeight / 2 };
 const pipCenter = vecAdd(mid, pipOff);
 
-export function HBStack({ suit, number }: HBStackProps) {
+export function Stack({ suit, number }: HBStackProps) {
   const color = colors(suit);
   const backgroundColor = chroma
     .mix(color, "#FFFFFF", 0.3, "lrgb")
@@ -69,14 +69,14 @@ export function HBStack({ suit, number }: HBStackProps) {
   );
 }
 
-export function HBStackArea() {
+export default function StackArea() {
   const context = useContext(BoardContext);
   const suits = context.boardState.definition.variant.suits;
   const ref = useFloatArea(["stackArea"], { dropZone: true });
   return (
     <div ref={ref} className={styles.StackArea}>
       {suits.map((c, i) => (
-        <HBStack suit={c} key={i} number={i} />
+        <Stack suit={c} key={i} number={i} />
       ))}
     </div>
   );

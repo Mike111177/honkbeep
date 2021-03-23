@@ -3,7 +3,7 @@ import { useBoardState } from "../../BoardContext";
 
 import styles from "./Deck.module.css";
 
-export function HBDeck() {
+export default function Deck() {
   const [deck, topDeck] = useBoardState((boardState) => {
     return [boardState.deck, boardState.viewTurn.topDeck];
   });

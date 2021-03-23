@@ -141,7 +141,7 @@ function PlayDescriber({ turn }: PlayDescriberProps) {
   }
 }
 
-export default function HBPlayHistory() {
+export default function PlayHistory() {
   const [turnNumber, numPlayers] = useBoardState((boardState) => {
     return [boardState.viewTurn.turn, boardState.definition.variant.numPlayers];
   });

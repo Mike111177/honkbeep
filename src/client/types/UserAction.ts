@@ -24,3 +24,5 @@ export type UserAction =
   | UserActionGameAttempt
   | UserActionSetViewTurn
   | UserActionResume;
+
+export default UserAction;

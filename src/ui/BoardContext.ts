@@ -2,11 +2,12 @@ import React, { useCallback, useContext, useState } from "react";
 import { useEffect } from "react";
 import Board, { NullBoard } from "../client/Board";
 import { BoardState } from "../client/states/BoardState";
-import { UserAction } from "../client/types/UserAction";
+import UserAction from "../client/types/UserAction";
 
 export const BoardContext = React.createContext<Readonly<Board>>(
   new NullBoard()
 );
+export default BoardContext;
 
 /**
  * Shorthand for useContext(BoardContext);
