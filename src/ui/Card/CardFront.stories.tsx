@@ -1,7 +1,8 @@
 import { Meta, Story } from "@storybook/react";
 import colors from "../colors.json";
 
-import { CardFront, CardFrontProps } from ".";
+import { CardFront } from ".";
+import { CardData } from "../../game/GameTypes";
 
 export default {
   title: "Card/Front",
@@ -22,6 +23,7 @@ export default {
       },
     },
     borderOverride: { control: "color" },
+    card: { table: { disable: true } },
   },
   parameters: {
     layout: "centered",
@@ -29,8 +31,8 @@ export default {
   },
 } as Meta;
 
-export const HBCardFrontStory: Story<CardFrontProps> = (props) => (
-  <CardFront height="200px" {...props} />
+export const HBCardFrontStory: Story<CardData> = ({ rank, suit, ...props }) => (
+  <CardFront height="200px" card={{ rank, suit }} {...props} />
 );
-HBCardFrontStory.args = { card: { rank: 1, suit: "Red" } };
+HBCardFrontStory.args = { rank: 1, suit: "Red" };
 HBCardFrontStory.storyName = "Front";
