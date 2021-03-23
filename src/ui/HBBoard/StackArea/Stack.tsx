@@ -4,7 +4,7 @@ import chroma from "chroma-js";
 import { CardTarget } from "../CardFloat/CardFloat";
 import { useFloatArea } from "../../util/Floating";
 import { CARD_VIEW_MIDPOINT as mid, OutlineFilter } from "../../Card";
-import { vecAdd } from "../../util/Vector";
+import { vecAdd } from "../../../util/Vector";
 import { BoardContext } from "../../BoardContext";
 
 import colors from "../../BaseColors";

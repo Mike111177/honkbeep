@@ -3,7 +3,7 @@ import chroma from "chroma-js";
 
 import colors from "../BaseColors";
 import pips from "../pips";
-import { vecAdd, vecSub } from "../util/Vector";
+import { vecAdd, vecSub } from "../../util/Vector";
 import { CardData } from "../../game/GameTypes";
 
 import { OutlineFilter, CardRectangle, CardSVG } from ".";

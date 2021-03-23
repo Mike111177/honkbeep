@@ -19,7 +19,7 @@ import { CardSVG } from "../../Card";
 import ArrayUtil from "../../../util/ArrayUtil";
 import { animated, useSpring } from "react-spring/web.cjs";
 import { useDrag } from "../../util/InputHandling";
-import { vecAdd, vecInRectangle } from "../../util/Vector";
+import { vecAdd, vecInRectangle } from "../../../util/Vector";
 import { GameEventType } from "../../../game/GameTypes";
 import { GameState } from "../../../game/states/GameState";
 import { BoardContext, useBoardState } from "../../BoardContext";

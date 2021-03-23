@@ -1,7 +1,7 @@
 import { ComponentPropsWithoutRef } from "react";
 import chroma from "chroma-js";
 
-import { vecAdd, vecMul } from "../util/Vector";
+import { vecAdd, vecMul } from "../../util/Vector";
 import { Pips } from "../../game/types/Empathy";
 import colors from "../BaseColors";
 import pipsIcons from "../pips";

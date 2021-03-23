@@ -1,5 +1,5 @@
 import { RefObject, useEffect, useState } from "react";
-import { vecSub, Vec2D } from "./Vector";
+import { vecSub, Vec2D } from "../../util/Vector";
 
 //Configurable Master hook for dealing with user interaction ona component
 export type DragStatus = {
