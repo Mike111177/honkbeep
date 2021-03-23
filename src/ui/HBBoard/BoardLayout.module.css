@@ -1,12 +1,13 @@
 .Board {
   display: grid;
   grid-template-areas:
-    "   playhistory    playhistory handarea cluehistory"
-    "     stackarea      stackarea handarea cluehistory"
-    "      cluearea       cluearea handarea discardpile"
-    "replaycontrols replaycontrols handarea discardpile"
-    "    scoreboard           deck handarea discardpile";
-  grid-template-columns: 25% 15% 30% 30%;
+    "playhistory    playhistory    playhistory    handarea cluehistory"
+    "stackarea      stackarea      stackarea      handarea cluehistory"
+    "cluearea       cluearea       cluearea       handarea discardpile"
+    "replaycontrols replaycontrols replaycontrols handarea discardpile"
+    "blank          scoreboard     deck           handarea discardpile";
+  grid-template-columns: 24% 10% 6% 30% 30%;
+  grid-template-rows: 25% 25% 25% 10% 15%;
   font-size: calc(10px + 2vmin);
   color: white;
   height: 100%;
