@@ -62,7 +62,7 @@ export default function FloatingCard({ index }: FloatCardProps) {
   const floatContext = useContext(FloatContext);
 
   const [
-    cardInCurrentPlayerHand,
+    draggable,
     cardOnTopOfStack,
     cardOnBottomOfStack,
     ...home
@@ -84,7 +84,7 @@ export default function FloatingCard({ index }: FloatCardProps) {
       }
     }
     return [
-      cardInCurrentPlayerHand,
+      cardInCurrentPlayerHand && !boardState.paused,
       cardOnTopOfStack,
       cardOnBottomOfStack,
       ...home,
@@ -185,21 +185,14 @@ export default function FloatingCard({ index }: FloatCardProps) {
     } else if (cardOnTopOfStack) {
       zIndex = 1;
     }
-    let listeners = cardInCurrentPlayerHand ? dragListeners : undefined;
+    let listeners = draggable ? dragListeners : undefined;
     return {
       className: styles.FloatingCard,
       ref,
       ...listeners,
       style: { zIndex, ...spring },
     };
-  }, [
-    cardInCurrentPlayerHand,
-    cardOnTopOfStack,
-    dragListeners,
-    dragging,
-    home,
-    spring,
-  ]);
+  }, [cardOnTopOfStack, dragListeners, draggable, dragging, home, spring]);
 
   if (visible) {
     return (
