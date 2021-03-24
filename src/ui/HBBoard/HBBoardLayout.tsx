@@ -4,7 +4,7 @@ import CardFloatLayer from "./CardFloat/CardFloatLayer";
 import ClueArea from "./ClueArea/ClueArea";
 import Deck from "./Deck/Deck";
 import DiscardPile from "./DiscardPile/DiscardPile";
-import HandsArea from "./HandArea/Hand";
+import HandsArea from "./HandArea/HandArea";
 import PlayHistory from "./PlayHistory/PlayHistory";
 import ReplayControls from "./ReplayControls/ReplayControls";
 import ScoreBoard from "./ScoreBoard/ScoreBoard";
