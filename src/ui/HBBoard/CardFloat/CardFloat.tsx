@@ -1,5 +1,4 @@
 import {
-  ComponentPropsWithoutRef,
   useCallback,
   useContext,
   useEffect,
@@ -14,34 +13,15 @@ import {
   FloatAreaEventType,
   FloatAreaPath,
   FloatContext,
-  useFloatArea,
 } from "../../util/Floating";
-import { CardSVG } from "../../Card";
-import ArrayUtil from "../../../util/ArrayUtil";
 import { useDrag } from "../../util/InputHandling";
 import { vecAdd, vecInRectangle } from "../../../util/Vector";
 import { GameEventType } from "../../../game/GameTypes";
 import { GameState } from "../../../game/states/GameState";
-import {
-  BoardContext,
-  useBoardReducer,
-  useBoardState,
-} from "../../BoardContext";
+import { useBoardReducer, useBoardState } from "../../BoardContext";
 import { UserActionType } from "../../../client/types/UserAction";
 
 import styles from "./CardFloat.module.css";
-
-//Helper to make card targets
-type CardTargetProps = {
-  areaPath: FloatAreaPath;
-} & ComponentPropsWithoutRef<"svg">;
-export function CardTarget({ areaPath, children, ...props }: CardTargetProps) {
-  return (
-    <CardSVG ref={useFloatArea(areaPath)} {...props}>
-      {children}
-    </CardSVG>
-  );
-}
 
 function getCardHome(index: number, game: GameState): FloatAreaPath {
   //Search hands
@@ -76,7 +56,7 @@ type FloatCardProps = {
   index: number;
 };
 //TODO: Generalize this code, a lot of elements from it would be nice to be able to use in other places
-export function FloatCard({ index }: FloatCardProps) {
+export default function FloatingCard({ index }: FloatCardProps) {
   //Get contexts
   const boardDispatch = useBoardReducer();
   const floatContext = useContext(FloatContext);
@@ -110,51 +90,43 @@ export function FloatCard({ index }: FloatCardProps) {
       ...home,
     ];
   });
+  const visible = !(home[0] === "deck" || cardOnBottomOfStack);
 
   const [dragging, setDragging] = useState(false);
   const [dropPath, setDropPath] = useState<FloatAreaPath | null>(null);
-  const [spring, springRef] = useSpring(
-    { x: 0, y: 0, width: 0, height: 0 },
-    []
-  );
+  const [spring, sprRef] = useSpring({ x: 0, y: 0, width: 0, height: 0 }, []);
+  const setSpring = useCallback((p) => sprRef.current[0].start(p), [sprRef]);
   const ref = useRef(null);
-  const setSpring = useCallback((props) => springRef.current[0].start(props), [
-    springRef,
-  ]);
 
   useEffect(() => {
     setSpring(floatContext.getRect(home));
-  }, [floatContext, home, setSpring]);
-  useEffect(
-    () =>
-      floatContext.subscribeToArea(home, ({ type, area }) => {
+    return floatContext.subscribeToArea(home, ({ type, area }) => {
+      if (visible) {
+        //No need to animate if we aren't visible
         const immediate = type === FloatAreaEventType.Resize;
         setSpring({ immediate, ...area.getRect() });
-      }),
-    [home, floatContext, setSpring]
-  );
+      }
+    });
+  }, [home, floatContext, setSpring, visible]);
 
   const onDrop = useCallback(
     async (loc: string) => {
-      switch (loc) {
-        case "stackArea":
-          return await boardDispatch({
-            type: UserActionType.GameAttempt,
-            attempt: {
-              type: GameEventType.Play,
-              card: index,
-            },
-          });
-        case "discardPile":
-          return await boardDispatch({
-            type: UserActionType.GameAttempt,
-            attempt: {
-              type: GameEventType.Discard,
-              card: index,
-            },
-          });
-        default:
-          return false;
+      const type =
+        loc === "stackArea"
+          ? GameEventType.Play
+          : loc === "discardPile"
+          ? GameEventType.Discard
+          : undefined;
+      if (type !== undefined) {
+        return await boardDispatch({
+          type: UserActionType.GameAttempt,
+          attempt: {
+            type,
+            card: index,
+          },
+        });
+      } else {
+        return false;
       }
     },
     [boardDispatch, index]
@@ -185,14 +157,11 @@ export function FloatCard({ index }: FloatCardProps) {
           //Relaxed parameters to make bounce back pretty
           setDragging(false);
           if (dropPath === null) {
-            setSpring({ ...homeRect, config: { friction: 25, tension: 750 } });
+            setSpring(homeRect);
           } else {
             onDrop(dropPath[0]).then((success) => {
               if (!success) {
-                setSpring({
-                  ...homeRect,
-                  config: { friction: 25, tension: 750 },
-                });
+                setSpring(homeRect);
               }
             });
             setDropPath(null);
@@ -206,49 +175,39 @@ export function FloatCard({ index }: FloatCardProps) {
   const dragListeners = useDrag(ref, onDrag);
 
   //Detach listeners if not in current persons hand
-  const attachedListeners = useMemo(() => {
-    if (cardInCurrentPlayerHand) {
-      return dragListeners;
-    } else {
-      return undefined;
+  const props = useMemo(() => {
+    //Set correct zIndex
+    let zIndex = 0;
+    if (dragging) {
+      zIndex = 100;
+    } else if (home[0] === "discard") {
+      zIndex = home[1] as number;
+    } else if (cardOnTopOfStack) {
+      zIndex = 1;
     }
-  }, [cardInCurrentPlayerHand, dragListeners]);
+    let listeners = cardInCurrentPlayerHand ? dragListeners : undefined;
+    return {
+      className: styles.FloatingCard,
+      ref,
+      ...listeners,
+      style: { zIndex, ...spring },
+    };
+  }, [
+    cardInCurrentPlayerHand,
+    cardOnTopOfStack,
+    dragListeners,
+    dragging,
+    home,
+    spring,
+  ]);
 
-  //Set correct zIndex
-  let zIndex = 0;
-  if (dragging) {
-    zIndex = 100;
-  } else if (home[0] === "discard") {
-    zIndex = home[1] as number;
-  } else if (cardOnTopOfStack) {
-    zIndex = 1;
+  if (visible) {
+    return (
+      <animated.div {...props}>
+        <HBDeckCard index={index} />
+      </animated.div>
+    );
+  } else {
+    return <></>;
   }
-
-  const style = useMemo(() => ({ zIndex, ...spring }), [spring, zIndex]);
-
-  if (home[0] === "deck" || cardOnBottomOfStack) {
-    return <>{undefined}</>;
-  }
-  return (
-    <animated.div
-      className={styles.FloatingCard}
-      ref={ref}
-      {...attachedListeners}
-      style={style}
-    >
-      <HBDeckCard index={index} />
-    </animated.div>
-  );
-}
-
-//Create layer for all cards
-export function CardFloatLayer() {
-  const context = useContext(BoardContext);
-  return (
-    <div className={styles.CardFloatLayer}>
-      {ArrayUtil.iota(context.boardState.deck.length).map((i) => (
-        <FloatCard key={i} index={i} />
-      ))}
-    </div>
-  );
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FloatContext, FloatContextData } from "../util/Floating";
-import { CardFloatLayer } from "./CardFloat/CardFloat";
+import CardFloatLayer from "./CardFloat/CardFloatLayer";
 import ClueArea from "./ClueArea/ClueArea";
 import Deck from "./Deck/Deck";
 import DiscardPile from "./DiscardPile/DiscardPile";

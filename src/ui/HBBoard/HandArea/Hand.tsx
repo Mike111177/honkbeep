@@ -1,5 +1,5 @@
 import { useBoardState } from "../../BoardContext";
-import { CardTarget } from "../CardFloat/CardFloat";
+import CardTarget from "../CardFloat/CardTarget";
 
 import styles from "./Hand.module.css";
 
