@@ -1,6 +1,11 @@
 .DiscardPile {
   grid-area: discardpile;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(20%, 1fr));
-  justify-content: space-evenly;
+  grid-auto-columns: 1fr;
+  grid-auto-rows: 1fr;
+  grid-auto-flow: column;
+}
+
+.DiscardPile svg {
+  height: auto;
 }
