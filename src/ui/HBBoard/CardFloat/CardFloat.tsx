@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { animated, useSpring } from "@react-spring/web";
 
 import HBDeckCard from "./DeckCard";
 import {
@@ -17,7 +18,6 @@ import {
 } from "../../util/Floating";
 import { CardSVG } from "../../Card";
 import ArrayUtil from "../../../util/ArrayUtil";
-import { animated, useSpring } from "react-spring/web.cjs";
 import { useDrag } from "../../util/InputHandling";
 import { vecAdd, vecInRectangle } from "../../../util/Vector";
 import { GameEventType } from "../../../game/GameTypes";
@@ -27,9 +27,9 @@ import {
   useBoardReducer,
   useBoardState,
 } from "../../BoardContext";
+import { UserActionType } from "../../../client/types/UserAction";
 
 import styles from "./CardFloat.module.css";
-import { UserActionType } from "../../../client/types/UserAction";
 
 //Helper to make card targets
 type CardTargetProps = {
@@ -113,10 +113,14 @@ export function FloatCard({ index }: FloatCardProps) {
 
   const [dragging, setDragging] = useState(false);
   const [dropPath, setDropPath] = useState<FloatAreaPath | null>(null);
-  const [spring, setSpring] = useSpring(
-    () => floatContext.getRect(home) ?? { x: 0, y: 0, width: 0, height: 0 }
+  const [spring, springRef] = useSpring(
+    { x: 0, y: 0, width: 0, height: 0 },
+    []
   );
   const ref = useRef(null);
+  const setSpring = useCallback((props) => springRef.current[0].start(props), [
+    springRef,
+  ]);
 
   useEffect(() => {
     setSpring(floatContext.getRect(home));
@@ -220,13 +224,7 @@ export function FloatCard({ index }: FloatCardProps) {
     zIndex = 1;
   }
 
-  const style = useMemo(() => {
-    //Workaround for typebug in react-spring https://github.com/pmndrs/react-spring/issues/1215
-    //The project does seem like its been abandoned might have to switch it out for framer-motion
-    //But i really dont want to because framer-motion would double the size of this bundle lol
-    const useZIndex = (zIndex as unknown) as "auto";
-    return { zIndex: useZIndex, ...spring };
-  }, [spring, zIndex]);
+  const style = useMemo(() => ({ zIndex, ...spring }), [spring, zIndex]);
 
   if (home[0] === "deck" || cardOnBottomOfStack) {
     return <>{undefined}</>;
