@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import ArrayUtil from "../../../util/ArrayUtil";
 import { useBoardState } from "../../BoardContext";
+import classNames from "../../util/classNames";
 
 import styles from "./ScoreBoard.module.css";
 import darkregion from "../DarkRegion.module.css";
@@ -28,7 +29,7 @@ export default function ScoreBoard() {
   };
 
   return (
-    <div className={[styles.ScoreBoard, darkregion.DarkRegion].join(" ")}>
+    <div className={classNames(styles.ScoreBoard, darkregion.DarkRegion)}>
       Turn: {turn}
       <br />
       Score: {score} / 25

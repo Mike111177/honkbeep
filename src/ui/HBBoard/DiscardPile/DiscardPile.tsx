@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { useFloatArea } from "../../util/Floating";
 import CardTarget from "../CardFloat/CardTarget";
 import { useBoardState } from "../../BoardContext";
+import classNames from "../../util/classNames";
 
 import styles from "./DiscardPile.module.css";
 import darkregion from "../DarkRegion.module.css";
@@ -33,7 +34,7 @@ export default function DiscardPile() {
   );
   return (
     <div
-      className={[styles.DiscardPile, darkregion.DarkRegion].join(" ")}
+      className={classNames(styles.DiscardPile, darkregion.DarkRegion)}
       ref={ref}
     >
       {cardOrder.map((i) => (

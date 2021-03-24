@@ -1,5 +1,6 @@
 import React from "react";
 
+import classNames from "../util/classNames";
 import { CARD_VIEWBOX } from ".";
 
 import styles from "./Card.module.css";
@@ -11,7 +12,7 @@ export const CardSVG = React.forwardRef<SVGSVGElement, CardSVGProps>(
   function CardSVG({ children, className, ...props }, ref) {
     return (
       <svg
-        className={[styles.Card, className].join(" ")}
+        className={classNames(styles.Card, className)}
         ref={ref}
         viewBox={CARD_VIEWBOX}
         preserveAspectRatio="xMidYMid meet"

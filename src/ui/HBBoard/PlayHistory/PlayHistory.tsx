@@ -11,6 +11,7 @@ import {
 } from "../../../game/GameTypes";
 import Card from "../../Card";
 import { useBoardState } from "../../BoardContext";
+import classNames from "../../util/classNames";
 
 import styles from "./PlayHistory.module.css";
 import darkregion from "../DarkRegion.module.css";
@@ -147,7 +148,7 @@ export default function PlayHistory() {
   });
   const displayAmount = Math.min(numPlayers, turnNumber);
   return (
-    <div className={[styles.PlayHistory, darkregion.DarkRegion].join(" ")}>
+    <div className={classNames(styles.PlayHistory, darkregion.DarkRegion)}>
       {[...Array(displayAmount).keys()]
         .map((_, i) => turnNumber - displayAmount + i)
         .map((i) => (

@@ -1,5 +1,5 @@
-type NameOrCondition = string | boolean;
-type ClassNamesParameters = [string, ...NameOrCondition[]];
+type NameOrCondition = string | boolean | undefined;
+type ClassNamesParameters = [string | undefined, ...NameOrCondition[]];
 export default function classNames(...nC: ClassNamesParameters): string {
   const names = [];
   for (let i = 0; i < nC.length; i++) {
