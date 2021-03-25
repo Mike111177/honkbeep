@@ -25,8 +25,12 @@ export type BoardState = {
   readonly shuffleOrder: ReadonlyArray<number>;
   //Event History
   readonly events: ReadonlyArray<GameEvent>;
-  //Player of current perspective, -1 to follow view, undefined for spectator
+  //Player of current perspective, -1 to follow viewTurn, undefined for spectator
+  //This only effects card visibility
   readonly perspective: number | undefined;
+  //Which players hand should be displayed on top, -1 to follow viewTurn
+  //This only effects the order of hands
+  readonly playerView: number;
 };
 
 function reduceBoardEventFn(state: Draft<BoardState>, event: GameEvent) {
@@ -114,6 +118,7 @@ export function initBoardState(definition: GameDefinition): BoardState {
     shuffleOrder: [],
     events: [],
     perspective: undefined,
+    playerView: 0,
   };
 }
 
@@ -136,5 +141,6 @@ export function initNullBoardState(): BoardState {
     shuffleOrder: [],
     events: [],
     perspective: undefined,
+    playerView: 0,
   };
 }
