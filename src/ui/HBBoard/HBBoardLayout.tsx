@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FloatContext, FloatContextData } from "../util/Floating";
-import CardFloatLayer from "./CardFloat/CardFloatLayer";
+import AnimatedDeck from "./AnimatedDeck/AnimatedDeck";
 import ClueArea from "./ClueArea/ClueArea";
 import Deck from "./Deck/Deck";
 import DiscardPile from "./DiscardPile/DiscardPile";
@@ -31,8 +31,8 @@ export default function HBBoardLayout({ board }: { board: Board }) {
           <ClueArea />
           <Deck />
           <ScoreBoard />
+          <AnimatedDeck />
         </div>
-        <CardFloatLayer />
       </FloatContext.Provider>
     </BoardContext.Provider>
   );

@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import { useFloatArea } from "../../util/Floating";
-import CardTarget from "../CardFloat/CardTarget";
+import CardTarget from "../AnimatedDeck/CardTarget";
 import { useBoardState } from "../../BoardContext";
 import classNames from "../../util/classNames";
 
@@ -19,21 +19,24 @@ export default function DiscardPile() {
   });
   const ref = useFloatArea(["discardPile"], { dropZone: true });
 
-  const targets = useMemo(
-    () =>
-      cards.map((card, i) => {
-        const cardValue = deck.getCard(shuffleOrder[card]);
-        const suitNumber = suits.findIndex((s) => s === cardValue.suit) + 1;
-        return (
-          <CardTarget
-            key={i}
-            areaPath={["discard", card]}
-            style={{ gridColumn: suitNumber }}
-          />
-        );
-      }),
-    [cards, deck, shuffleOrder, suits]
-  );
+  const targets = useMemo(() => {
+    const cardValues = cards.map((c) => deck.getCard(shuffleOrder[c]));
+    const suitsPresent = suits.filter(
+      (s) => cardValues.find((c) => c.suit === s) !== undefined
+    );
+    return cards.map((card, i) => {
+      const cardValue = cardValues[i];
+      const suitNumber =
+        suitsPresent.findIndex((s) => s === cardValue.suit) + 1;
+      return (
+        <CardTarget
+          key={i}
+          areaPath={["discard", card]}
+          style={{ gridColumn: suitNumber }}
+        />
+      );
+    });
+  }, [cards, deck, shuffleOrder, suits]);
 
   return (
     <div

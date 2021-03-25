@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import chroma from "chroma-js";
 
-import CardTarget from "../CardFloat/CardTarget";
+import CardTarget from "../AnimatedDeck/CardTarget";
 import { useFloatArea } from "../../util/Floating";
 import { CARD_VIEW_MIDPOINT as mid, OutlineFilter } from "../../Card";
 import { vecAdd } from "../../../util/Vector";

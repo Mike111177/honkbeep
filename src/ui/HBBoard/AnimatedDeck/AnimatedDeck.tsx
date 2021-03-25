@@ -1,17 +1,17 @@
 import { useContext } from "react";
 import ArrayUtil from "../../../util/ArrayUtil";
 import BoardContext from "../../BoardContext";
-import FloatingCard from "./CardFloat";
+import AnimatedCard from "./AnimatedCard";
 
-import styles from "./CardFloat.module.css";
+import styles from "./AnimatedDeck.module.css";
 
 //Create layer for all cards
 export default function CardFloatLayer() {
   const context = useContext(BoardContext);
   return (
-    <div className={styles.CardFloatLayer}>
+    <div className={styles.AnimatedDeck}>
       {ArrayUtil.iota(context.boardState.deck.length).map((i) => (
-        <FloatingCard key={i} index={i} />
+        <AnimatedCard key={i} index={i} />
       ))}
     </div>
   );

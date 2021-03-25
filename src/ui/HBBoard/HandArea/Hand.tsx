@@ -1,7 +1,7 @@
 import ArrayUtil from "../../../util/ArrayUtil";
 import { useBoardState } from "../../BoardContext";
 import classNames from "../../util/classNames";
-import CardTarget from "../CardFloat/CardTarget";
+import CardTarget from "../AnimatedDeck/CardTarget";
 
 import styles from "./HandArea.module.css";
 

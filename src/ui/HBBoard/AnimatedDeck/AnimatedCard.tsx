@@ -15,13 +15,13 @@ import {
   FloatContext,
 } from "../../util/Floating";
 import { useDrag } from "../../util/InputHandling";
-import { vecAdd, vecInRectangle } from "../../../util/Vector";
+import { Rectangle, vecAdd, vecInRectangle } from "../../../util/Vector";
 import { GameEventType } from "../../../game/GameTypes";
 import { GameState } from "../../../game/states/GameState";
 import { useBoardReducer, useBoardState } from "../../BoardContext";
 import { UserActionType } from "../../../client/types/UserAction";
 
-import styles from "./CardFloat.module.css";
+import styles from "./AnimatedDeck.module.css";
 
 function getCardHome(index: number, game: GameState): FloatAreaPath {
   //Search hands
@@ -50,6 +50,12 @@ function getCardHome(index: number, game: GameState): FloatAreaPath {
   }
 
   return ["deck"];
+}
+
+function compareRects(a: Rectangle, b: Rectangle) {
+  return (
+    a.height === b.height && a.width === b.width && a.x === b.x && a.y === b.y
+  );
 }
 
 type FloatCardProps = {
@@ -95,19 +101,42 @@ export default function FloatingCard({ index }: FloatCardProps) {
   const [dragging, setDragging] = useState(false);
   const [dropPath, setDropPath] = useState<FloatAreaPath | null>(null);
   const [spring, sprRef] = useSpring({ x: 0, y: 0, width: 0, height: 0 }, []);
-  const setSpring = useCallback((p) => sprRef.current[0].start(p), [sprRef]);
+  const setHomeRect = useCallback(
+    function setHomeRect(p) {
+      if (
+        !compareRects(
+          {
+            height: spring.height.goal,
+            width: spring.width.goal,
+            x: spring.x.goal,
+            y: spring.y.goal,
+          },
+          p
+        )
+      ) {
+        return sprRef.current[0].start(p);
+      }
+    },
+    [
+      sprRef,
+      spring.height.goal,
+      spring.width.goal,
+      spring.x.goal,
+      spring.y.goal,
+    ]
+  );
   const ref = useRef(null);
 
   useEffect(() => {
-    setSpring(floatContext.getRect(home));
+    setHomeRect(floatContext.getRect(home));
     return floatContext.subscribeToArea(home, ({ type, area }) => {
       if (visible) {
         //No need to animate if we aren't visible
         const immediate = type === FloatAreaEventType.Resize;
-        setSpring({ immediate, ...area.getRect() });
+        setHomeRect({ immediate, ...area.getRect() });
       }
     });
-  }, [home, floatContext, setSpring, visible]);
+  }, [home, floatContext, setHomeRect, visible]);
 
   const onDrop = useCallback(
     async (loc: string) => {
@@ -139,7 +168,7 @@ export default function FloatingCard({ index }: FloatCardProps) {
         if (down) {
           const { x, y } = homeRect;
           const dragTarget = vecAdd({ x, y }, offset);
-          setSpring({ ...dragTarget, immediate: true });
+          setHomeRect({ ...dragTarget, immediate: true });
           setDragging(true);
           const dropZone = floatContext.dropZones.find((zone) =>
             vecInRectangle(vecAdd(origin, offset), zone.getRect()!)
@@ -157,11 +186,11 @@ export default function FloatingCard({ index }: FloatCardProps) {
           //Relaxed parameters to make bounce back pretty
           setDragging(false);
           if (dropPath === null) {
-            setSpring(homeRect);
+            setHomeRect(homeRect);
           } else {
             onDrop(dropPath[0]).then((success) => {
               if (!success) {
-                setSpring(homeRect);
+                setHomeRect(homeRect);
               }
             });
             setDropPath(null);
@@ -169,7 +198,7 @@ export default function FloatingCard({ index }: FloatCardProps) {
         }
       }
     },
-    [dropPath, floatContext, home, onDrop, setSpring]
+    [dropPath, floatContext, home, onDrop, setHomeRect]
   );
 
   const dragListeners = useDrag(ref, onDrag);
@@ -187,7 +216,7 @@ export default function FloatingCard({ index }: FloatCardProps) {
     }
     let listeners = draggable ? dragListeners : undefined;
     return {
-      className: styles.FloatingCard,
+      className: styles.AnimatedCard,
       ref,
       ...listeners,
       style: { zIndex, ...spring },

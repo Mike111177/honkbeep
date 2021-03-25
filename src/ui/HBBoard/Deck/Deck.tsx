@@ -1,4 +1,4 @@
-import CardTarget from "../CardFloat/CardTarget";
+import CardTarget from "../AnimatedDeck/CardTarget";
 import { useBoardState } from "../../BoardContext";
 
 import styles from "./Deck.module.css";
