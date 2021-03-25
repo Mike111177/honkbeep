@@ -6,12 +6,10 @@
     "**/node_modules": true,
     "**/storybook-static": true,
     "**/build": true,
-    "**/coverage": true
+    "**/coverage": true,
+    "**/chrome": true
   },
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "cSpell.words": [
-    "VIEWBOX",
-    "omni"
-  ]
+  "cSpell.words": ["VIEWBOX", "omni"]
 }
