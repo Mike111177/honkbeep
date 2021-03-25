@@ -1,8 +1,6 @@
 import { Meta } from "@storybook/react";
-import { useState } from "react";
 import ReplayControls from "./ReplayControls";
-import DummyBoard from "../../../client/DummyBoard";
-import { BoardContext } from "../../BoardContext";
+import { DummyContext } from "../../storybook/DummyContext";
 
 export default {
   title: "Board Components/Replay Controls",
@@ -16,13 +14,10 @@ export default {
   },
 } as Meta;
 
-export const ReplayControlsStory = ({ onAttempt }: any) => {
-  const [board] = useState(() => new DummyBoard(onAttempt));
-  return (
-    <BoardContext.Provider value={board}>
-      <ReplayControls />
-    </BoardContext.Provider>
-  );
-};
+export const ReplayControlsStory = ({ onAttempt }: any) => (
+  <DummyContext onAttempt={onAttempt}>
+    <ReplayControls />
+  </DummyContext>
+);
 
 ReplayControlsStory.storyName = "Replay Controls";

@@ -1,9 +1,8 @@
 import { Meta, Story } from "@storybook/react";
 import HBClueArea from "./ClueArea";
-import DummyBoard from "../../../client/DummyBoard";
-import { BoardContext } from "../../BoardContext";
 
 import colors from "../../colors.json";
+import { DummyContext } from "../../storybook/DummyContext";
 
 export default {
   title: "Board Components/Clue Area",
@@ -25,25 +24,11 @@ export default {
   },
 } as Meta;
 
-export const ClueAreaStory: Story<any> = ({
-  onAttempt,
-  suits,
-  players,
-}: any) => {
-  const gameDef = {
-    variant: {
-      suits,
-      numPlayers: players.length,
-      handSize: 4,
-    },
-    playerNames: players,
-  };
-  return (
-    <BoardContext.Provider value={new DummyBoard(onAttempt, gameDef)}>
-      <HBClueArea />
-    </BoardContext.Provider>
-  );
-};
+export const ClueAreaStory: Story<any> = (props) => (
+  <DummyContext {...props}>
+    <HBClueArea />
+  </DummyContext>
+);
 ClueAreaStory.storyName = "Clue Area";
 ClueAreaStory.args = {
   suits: ["Red", "Yellow", "Green", "Blue", "Purple"],
