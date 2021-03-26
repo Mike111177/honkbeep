@@ -40,3 +40,14 @@ test("remove", () => {
   ArrayUtil.remove(myArray, 1);
   expect(myArray).toStrictEqual([6, 5, 3, 2, 0]);
 });
+
+test("shallowCompare", () => {
+  const myArray = [6, 5, 4, 3, { a: 1 }, 1, 0];
+  expect(ArrayUtil.shallowCompare(myArray, Array.from(myArray))).toStrictEqual(
+    true
+  );
+  expect(
+    ArrayUtil.shallowCompare(myArray, [6, 5, 4, 3, { a: 1 }, 1, 0])
+  ).toStrictEqual(false);
+  expect(ArrayUtil.shallowCompare(myArray, [6])).toStrictEqual(false);
+});

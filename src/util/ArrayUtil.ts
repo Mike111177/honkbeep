@@ -36,10 +36,24 @@ function remove(array: any[], o: any) {
   }
 }
 
+function shallowCompare(a: any[], b: any[]): boolean {
+  if (a.length === b.length) {
+    for (let i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) {
+        return false;
+      }
+    }
+    return true;
+  } else {
+    return false;
+  }
+}
+
 const ArrayUtil = {
   iota,
   fill,
   remove,
+  shallowCompare,
 };
 
 export default ArrayUtil;
