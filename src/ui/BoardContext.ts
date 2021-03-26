@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import Board, { NullBoard } from "../client/Board";
 import { BoardState } from "../client/states/BoardState";
 import UserAction from "../client/types/UserAction";
+import ArrayUtil from "../util/ArrayUtil";
 
 export const BoardContext = React.createContext<Readonly<Board>>(
   new NullBoard()
@@ -39,21 +40,14 @@ export function useBoardState<T extends any[]>(
   useEffect(
     () =>
       context.subscribeToStateChange(() => {
-        if (itemFn === undefined) {
+        if (
+          itemFn === undefined ||
+          !ArrayUtil.shallowCompare(
+            getRequestedItems(state) as any[],
+            getRequestedItems(context.boardState) as any[]
+          )
+        ) {
           setState(context.boardState);
-        } else {
-          const prevItems = getRequestedItems(state) as any[];
-          const nextItems = getRequestedItems(context.boardState) as any[];
-          if (prevItems.length === nextItems.length) {
-            for (let i = 0; i < prevItems.length; i++) {
-              if (prevItems[i] !== nextItems[i]) {
-                setState(context.boardState);
-                return;
-              }
-            }
-          } else {
-            setState(context.boardState);
-          }
         }
       }),
     [context, getRequestedItems, itemFn, state]
