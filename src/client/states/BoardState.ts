@@ -13,8 +13,8 @@ export type BoardState = {
   readonly deck: Deck;
   //info to define game
   readonly definition: GameDefinition;
-  //Game State after Deal Event, blank until Deal event processed
-  readonly initialTurn: TurnState;
+  //Historic turns
+  readonly turnHistory: TurnState[];
   //Most recent canonical game state
   readonly latestTurn: TurnState;
   //Game state currently being viewed, this could be the latest state, a replay state or a hypothetical state
@@ -44,9 +44,7 @@ function reduceBoardEventFn(state: Draft<BoardState>, event: GameEvent) {
     state.definition
   );
   //If this was the first turn, lets bump the initial state by 1 so we dont have to recalc the deal
-  if (state.initialTurn.turn === 0) {
-    state.initialTurn = state.latestTurn;
-  }
+  state.turnHistory.push(state.latestTurn);
   //If the viewTurn is not paused (as in we are not in replay or hypothetical mode), have the viewTurn follow the latestTurn
   if (!state.paused) {
     state.viewTurn = state.latestTurn;
@@ -72,19 +70,10 @@ export const reduceBoardMessage = produce(reduceBoardMessageFn);
 
 function reduceBoardTurnJumpFn(state: Draft<BoardState>, turn: number) {
   state.paused = true;
-  //If we are already on this turn, lets not recalculate everything before it
-  if (turn !== state.viewTurn.turn) {
-    let temp = state.initialTurn;
-    for (let i = 1; i < turn && i < state.latestTurn.turn; i++) {
-      temp = reduceTurnEvent(
-        temp,
-        state.events[i],
-        state.deck,
-        state.definition
-      );
-    }
-    state.viewTurn = temp;
-  }
+  state.viewTurn =
+    state.turnHistory[
+      Math.min(Math.max(turn, 1), state.turnHistory.length - 1)
+    ];
 }
 export const reduceBoardTurnJump = produce(reduceBoardTurnJumpFn);
 
@@ -111,7 +100,7 @@ export function initBoardState(definition: GameDefinition): BoardState {
   return {
     deck,
     definition,
-    initialTurn: state0,
+    turnHistory: [state0],
     latestTurn: state0,
     viewTurn: state0,
     paused: false,
@@ -134,7 +123,7 @@ export function initNullBoardState(): BoardState {
       playerNames: [],
       variant: { handSize: 0, numPlayers: 0, suits: [] },
     },
-    initialTurn: state0,
+    turnHistory: [state0],
     latestTurn: state0,
     viewTurn: state0,
     paused: false,
