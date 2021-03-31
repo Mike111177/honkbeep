@@ -1,12 +1,6 @@
 import { GameAttempt } from "../game/GameTypes";
 import ArrayUtil from "../util/ArrayUtil";
-import { PickMutable } from "../util/HelperTypes";
-import {
-  BoardState,
-  reduceBoardTurnJump,
-  reduceBoardUnpause,
-  initNullBoardState,
-} from "./states/BoardState";
+import { BoardState } from "./states/BoardState";
 import { UserAction, UserActionType } from "./types/UserAction";
 
 export type BoardUpdateListener = () => void;
@@ -35,8 +29,7 @@ export default abstract class Board {
     return removeFunc;
   }
 
-  updateBoardState(newBoardState: BoardState) {
-    (this as PickMutable<Board, "boardState">).boardState = newBoardState;
+  updateBoardState(a?: any) {
     for (let f of this.listeners) f();
   }
 
@@ -45,18 +38,16 @@ export default abstract class Board {
       case UserActionType.GameAttempt:
         return this.attemptPlayerAction(action.attempt);
       case UserActionType.SetViewTurn:
-        return this.updateBoardState(
-          reduceBoardTurnJump(this.boardState, action.turn)
-        );
+        return this.updateBoardState(this.boardState.jumpToTurn(action.turn));
       case UserActionType.Resume:
-        return this.updateBoardState(reduceBoardUnpause(this.boardState));
+        return this.updateBoardState(this.boardState.resume());
     }
   }
 }
 
 export class NullBoard extends Board {
   constructor() {
-    super(initNullBoardState());
+    super(new BoardState());
   }
   attemptPlayerAction(action: GameAttempt): Promise<boolean> {
     throw new Error("Tried to use null board!");

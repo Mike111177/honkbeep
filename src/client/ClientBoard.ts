@@ -2,12 +2,7 @@ import BackendInterface from "../game/BackendInterface";
 import { GameAttempt, GameData } from "../game/GameTypes";
 import NullBackend from "../game/NullBackend";
 import Board from "./Board";
-import {
-  BoardState,
-  initBoardState,
-  initNullBoardState,
-  reduceBoardMessage,
-} from "./states/BoardState";
+import { BoardState } from "./states/BoardState";
 
 function reduceGameStateFromGameData(
   state: BoardState,
@@ -17,7 +12,7 @@ function reduceGameStateFromGameData(
   let messages = data.events;
   const firstTurn = state.latestTurn.turn;
   for (let i = firstTurn; i < Math.min(messages.length, max_turn); i++) {
-    state = reduceBoardMessage(state, messages[i]);
+    state.appendEventMessage(messages[i]);
   }
   return state;
 }
@@ -31,7 +26,7 @@ export default class ClientBoard extends Board {
       //Create new ClientState
       super(
         reduceGameStateFromGameData(
-          initBoardState(backend.currentState().definition),
+          new BoardState(backend.currentState().definition),
           backend.currentState()
         )
       );
@@ -45,7 +40,7 @@ export default class ClientBoard extends Board {
         );
       });
     } else {
-      super(initNullBoardState());
+      super(new BoardState());
     }
     this.backend = backend;
   }

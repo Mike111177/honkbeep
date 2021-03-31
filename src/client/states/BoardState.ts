@@ -1,26 +1,27 @@
-import produce, { Draft } from "immer";
 import { Deck } from "../../game/DeckBuilding";
 import {
   GameDefinition,
   GameEvent,
   GameEventMessage,
 } from "../../game/GameTypes";
-import { initNullGameState } from "../../game/states/GameState";
+import { Mutable } from "../../util/HelperTypes";
 import { initTurnState, reduceTurnEvent, TurnState } from "./TurnState";
 
-export type BoardState = {
+export class BoardState {
   //Deck info
   readonly deck: Deck;
   //info to define game
   readonly definition: GameDefinition;
   //Historic turns
-  readonly turnHistory: TurnState[];
-  //Most recent canonical game state
-  readonly latestTurn: TurnState;
-  //Game state currently being viewed, this could be the latest state, a replay state or a hypothetical state
-  readonly viewTurn: TurnState;
+  readonly turnHistory: ReadonlyArray<TurnState>;
+  //Most hypothetical turns
+  readonly hypotheticalTurns: ReadonlyArray<TurnState>;
+  //Turn state currently being viewed
+  readonly viewTurnNumber: number;
   //Whether or not the viewTurn is synchronized with the latestTurn
   readonly paused: boolean;
+  //Whether or not we are viewing a hypothetical
+  readonly hypothetical: boolean;
   //Known shuffle order
   readonly shuffleOrder: ReadonlyArray<number>;
   //Event History
@@ -31,105 +32,87 @@ export type BoardState = {
   //Which players hand should be displayed on top, -1 to follow viewTurn
   //This only effects the order of hands
   readonly playerView: number;
-};
 
-function reduceBoardEventFn(state: Draft<BoardState>, event: GameEvent) {
-  //Push event into history
-  state.events.push(event);
-  //Advance latest turn
-  state.latestTurn = reduceTurnEvent(
-    state.latestTurn,
-    event,
-    state.deck,
-    state.definition
-  );
-  //If this was the first turn, lets bump the initial state by 1 so we dont have to recalc the deal
-  state.turnHistory.push(state.latestTurn);
-  //If the viewTurn is not paused (as in we are not in replay or hypothetical mode), have the viewTurn follow the latestTurn
-  if (!state.paused) {
-    state.viewTurn = state.latestTurn;
-  }
-}
-export const reduceBoardEvent = produce(reduceBoardEventFn);
-
-function reduceBoardMessageFn(
-  state: Draft<BoardState>,
-  { event, reveals }: GameEventMessage
-) {
-  //Reduce Event
-  reduceBoardEventFn(state, event);
-
-  //Process Reveals
-  if (reveals) {
-    for (let revealedCard of reveals) {
-      state.shuffleOrder[revealedCard.deck] = revealedCard.card;
-    }
-  }
-}
-export const reduceBoardMessage = produce(reduceBoardMessageFn);
-
-function reduceBoardTurnJumpFn(state: Draft<BoardState>, turn: number) {
-  state.paused = true;
-  state.viewTurn =
-    state.turnHistory[
-      Math.min(Math.max(turn, 1), state.turnHistory.length - 1)
-    ];
-}
-export const reduceBoardTurnJump = produce(reduceBoardTurnJumpFn);
-
-export const reduceBoardUnpause = produce((state: Draft<BoardState>) => {
-  state.paused = false;
-  state.viewTurn = state.latestTurn;
-});
-
-export const reduceBoardSetShuffle = produce(
-  (state: Draft<BoardState>, order: number[]) => {
-    state.shuffleOrder = order;
-  }
-);
-
-export const reduceBoardSetPerspective = produce(
-  (state: Draft<BoardState>, player: number | undefined) => {
-    state.perspective = player;
-  }
-);
-
-export function initBoardState(definition: GameDefinition): BoardState {
-  const deck = new Deck(definition.variant);
-  const state0: TurnState = initTurnState(definition, deck);
-  return {
-    deck,
-    definition,
-    turnHistory: [state0],
-    latestTurn: state0,
-    viewTurn: state0,
-    paused: false,
-    shuffleOrder: [],
-    events: [],
-    perspective: undefined,
-    playerView: 0,
-  };
-}
-
-export function initNullBoardState(): BoardState {
-  const state0: TurnState = {
-    empathy: [],
-    cardMeta: [],
-    ...initNullGameState(),
-  };
-  return {
-    deck: new Deck(),
-    definition: {
+  constructor(definition?: GameDefinition) {
+    this.definition = definition ?? {
       playerNames: [],
       variant: { handSize: 0, numPlayers: 0, suits: [] },
-    },
-    turnHistory: [state0],
-    latestTurn: state0,
-    viewTurn: state0,
-    paused: false,
-    shuffleOrder: [],
-    events: [],
-    perspective: undefined,
-    playerView: 0,
-  };
+    };
+    this.deck = new Deck(definition?.variant);
+    this.turnHistory =
+      definition !== undefined ? [initTurnState(definition, this.deck)] : [];
+    this.viewTurnNumber = 1;
+    this.paused = false;
+    this.shuffleOrder = [];
+    this.events = [];
+    this.perspective = undefined;
+    this.playerView = 0;
+    this.hypotheticalTurns = [];
+    this.hypothetical = false;
+  }
+
+  get latestTurn() {
+    if (this.hypothetical) {
+      return this.hypotheticalTurns[this.hypotheticalTurns.length - 1];
+    } else {
+      return this.turnHistory[this.turnHistory.length - 1];
+    }
+  }
+
+  get viewTurn() {
+    if (this.hypothetical) {
+      return this.hypotheticalTurns[this.hypotheticalTurns.length - 1];
+    } else {
+      return this.turnHistory[this.viewTurnNumber];
+    }
+  }
+
+  appendEvent(event: GameEvent) {
+    //Push event into history
+    (this.events as Mutable<BoardState["events"]>).push(event);
+    (this.turnHistory as Mutable<BoardState["turnHistory"]>).push(
+      reduceTurnEvent(this.latestTurn, event, this.deck, this.definition)
+    );
+    //If the viewTurn is not paused (as in we are not in replay or hypothetical mode), have the viewTurn follow the latestTurn
+    if (!this.paused) {
+      (this as Mutable<BoardState>).viewTurnNumber = this.latestTurn.turn;
+    }
+  }
+
+  appendEventMessage({ event, reveals }: GameEventMessage) {
+    this.appendEvent(event);
+    if (reveals) {
+      for (let revealedCard of reveals) {
+        (this.shuffleOrder as Mutable<BoardState["shuffleOrder"]>)[
+          revealedCard.deck
+        ] = revealedCard.card;
+      }
+    }
+    return this;
+  }
+
+  jumpToTurn(turn: number) {
+    (this.paused as Mutable<BoardState["paused"]>) = true;
+    (this as Mutable<BoardState>).viewTurnNumber = Math.min(
+      Math.max(turn, 1),
+      this.turnHistory.length - 1
+    );
+    return this;
+  }
+
+  resume() {
+    (this as Mutable<BoardState>).paused = false;
+    (this as Mutable<BoardState>).viewTurnNumber = this.latestTurn.turn;
+    return this;
+  }
+
+  setShuffleOrder(order: number[]) {
+    (this as Mutable<BoardState>).shuffleOrder = order;
+    return this;
+  }
+
+  setPerspective(player?: number) {
+    (this as Mutable<BoardState>).perspective = player;
+    return this;
+  }
 }

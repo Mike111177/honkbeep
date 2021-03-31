@@ -1,29 +1,17 @@
 import { resolveGameAction } from "../game/ActionResolving";
 import { getShuffledOrder } from "../game/DeckBuilding";
-import {
-  GameAttempt,
-  GameDefinition,
-  GameEvent,
-  GameEventType,
-} from "../game/GameTypes";
-import {
-  initBoardState,
-  reduceBoardEvent,
-  reduceBoardSetPerspective,
-  reduceBoardSetShuffle,
-} from "./states/BoardState";
+import { GameAttempt, GameDefinition, GameEventType } from "../game/GameTypes";
+import { BoardState } from "./states/BoardState";
 import Board from "./Board";
 
 export default class SolitaireBoard extends Board {
   constructor(definition: GameDefinition) {
-    const state0 = initBoardState(definition);
-    const dealEvent: GameEvent = { turn: 0, type: GameEventType.Deal };
-    const { order } = getShuffledOrder(state0.deck.length);
-    const state1 = reduceBoardSetPerspective(
-      reduceBoardSetShuffle(reduceBoardEvent(state0, dealEvent), order),
-      -1
-    );
-    super(state1);
+    super(new BoardState(definition));
+    const { order } = getShuffledOrder(this.boardState.deck.length);
+    this.boardState
+      .setPerspective(-1)
+      .setShuffleOrder(order)
+      .appendEvent({ turn: 0, type: GameEventType.Deal });
   }
 
   async attemptPlayerAction(action: GameAttempt): Promise<boolean> {
@@ -35,7 +23,8 @@ export default class SolitaireBoard extends Board {
       this.boardState.shuffleOrder
     );
     if (event !== undefined) {
-      this.updateBoardState(reduceBoardEvent(this.boardState, event));
+      this.boardState.appendEvent(event);
+      this.updateBoardState();
       return true;
     }
     return false;
