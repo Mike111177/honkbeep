@@ -38,7 +38,9 @@ export default abstract class Board {
   get state(): Immutable<BoardState> {
     return this._boardState!;
   }
-
+  /**
+   * @deprecated Please use .state instead
+   */
   get boardState(): Immutable<BoardState> {
     return this._boardState!;
   }
