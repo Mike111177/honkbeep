@@ -3,6 +3,7 @@ import chroma from "chroma-js";
 
 import { vecAdd, vecMul } from "../../util/Vector";
 import { Pips } from "../../game/types/Empathy";
+import Variant from "../../game/types/Variant";
 import colors from "../BaseColors";
 import pipsIcons from "../pips";
 
@@ -10,7 +11,7 @@ import { OutlineFilter, CardRectangle, CardSVG } from ".";
 import { CARD_VIEW_MIDPOINT as mid } from "./Constants";
 
 export type CardBackProps = {
-  suits: string[];
+  variant: Variant;
   pips: Pips;
   borderOverride?: string;
 } & ComponentPropsWithoutRef<"svg">;
@@ -20,7 +21,7 @@ const pipOff = { x: -pipHeight / 2, y: -pipHeight / 2 };
 const pipCenter = vecAdd(mid, pipOff);
 
 export default function CardBack({
-  suits,
+  variant: { suits },
   pips,
   borderOverride,
   ...props

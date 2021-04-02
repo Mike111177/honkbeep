@@ -1,12 +1,11 @@
 import { Draft, enableMapSet, produce } from "immer";
-
 import {
   GameEventType,
   GamePlayResultType,
-  GameDefinition,
   GameEvent,
-} from "../GameTypes";
+} from "../types/GameEvent";
 import ArrayUtil from "../../util/ArrayUtil";
+import Variant from "../types/Variant";
 
 enableMapSet();
 
@@ -26,17 +25,17 @@ export interface GameState {
 export function reduceGameEventFn<T extends Draft<GameState>>(
   state: T,
   event: GameEvent,
-  definition: GameDefinition
+  variant: Variant
 ): void {
   //Process Actions
-  let player = (event.turn - 1) % definition.variant.numPlayers;
+  let player = (event.turn - 1) % variant.numPlayers;
   switch (event.type) {
     case GameEventType.Deal: {
       //Turn 0, Deal
       state.hands = [];
-      for (let p = 0; p < definition.variant.numPlayers; p++) {
+      for (let p = 0; p < variant.numPlayers; p++) {
         state.hands[p] = [];
-        for (let s = 0; s < definition.variant.handSize; s++) {
+        for (let s = 0; s < variant.handSize; s++) {
           state.hands[p].push(state.topDeck);
           //The dealt card gets revealed to everyone but the recipient
           state.cardReveals
@@ -123,18 +122,16 @@ export function reduceGameEventFn<T extends Draft<GameState>>(
 }
 export const reduceGameEvent = produce(reduceGameEventFn);
 
-export function initGameStateFromDefinition(
-  definition: GameDefinition
-): GameState {
+export function initGameStateFromDefinition(variant: Variant): GameState {
   return {
     turn: 0,
     hands: [],
-    stacks: ArrayUtil.fill(definition.variant.suits.length, () => []),
+    stacks: ArrayUtil.fill(variant.suits.length, () => []),
     discardPile: [],
     topDeck: 0,
     clues: 8,
     strikes: 0,
-    cardReveals: ArrayUtil.fill(definition.variant.numPlayers, () => new Set()),
+    cardReveals: ArrayUtil.fill(variant.numPlayers, () => new Set()),
   };
 }
 

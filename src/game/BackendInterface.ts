@@ -1,5 +1,6 @@
 import EventEmitter from "events";
-import { GameAttempt, GameEvent, GameData } from "./GameTypes";
+import { GameData } from "./GameTypes";
+import { GameAttempt } from "./types/GameEvent";
 
 //Responsible for tracking canonical server state from clients perspective
 //And notifying frontend of state changes

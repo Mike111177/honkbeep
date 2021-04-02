@@ -1,6 +1,5 @@
 import produce, { Draft } from "immer";
-import { Deck } from "../../game/DeckBuilding";
-import { GameDefinition, GameEvent, GameEventType } from "../../game/GameTypes";
+import { GameEvent, GameEventType } from "../../game/types/GameEvent";
 import { doesClueMatchCard } from "../../game/Rules";
 import {
   GameState,
@@ -8,6 +7,7 @@ import {
   reduceGameEventFn,
 } from "../../game/states/GameState";
 import { DeckEmpathy, EmpathyStatus } from "../../game/types/Empathy";
+import Variant from "../../game/types/Variant";
 import ArrayUtil from "../../util/ArrayUtil";
 
 //Per turn metadata for cards
@@ -34,7 +34,7 @@ function reduceMetaDataFn(state: Draft<TurnState>, event: GameEvent) {
 function reduceEmpathyFn(
   state: Draft<TurnState>,
   event: GameEvent,
-  deck: Deck
+  { deck }: Variant
 ) {
   //Currently we only understand clues
   if (event.type === GameEventType.Clue) {
@@ -62,31 +62,25 @@ function reduceEmpathyFn(
 }
 
 export const reduceTurnEvent = produce(
-  (
-    state: Draft<TurnState>,
-    event: GameEvent,
-    deck: Deck,
-    definition: GameDefinition
-  ) => {
+  (state: Draft<TurnState>, event: GameEvent, variant: Variant) => {
     //Update gamestate from new event
-    reduceGameEventFn(state, event, definition);
+    reduceGameEventFn(state, event, variant);
     //Update Metadata
     reduceMetaDataFn(state, event);
     //Update Empathy
-    reduceEmpathyFn(state, event, deck);
+    reduceEmpathyFn(state, event, variant);
   }
 );
 
-export function initTurnState(
-  definition: GameDefinition,
-  deck: Deck
-): TurnState {
-  const game = initGameStateFromDefinition(definition);
+export function initTurnState(variant: Variant): TurnState {
+  const game = initGameStateFromDefinition(variant);
   return {
     ...game,
-    empathy: ArrayUtil.fill(deck.length, () =>
-      ArrayUtil.fill(deck.cards.length, EmpathyStatus.Possible)
+    empathy: ArrayUtil.fill(variant.deck.length, () =>
+      ArrayUtil.fill(variant.deck.cards.length, EmpathyStatus.Possible)
     ),
-    cardMeta: ArrayUtil.fill(deck.length, () => ({ touched: false })),
+    cardMeta: ArrayUtil.fill(variant.deck.length, () => ({
+      touched: false,
+    })),
   };
 }

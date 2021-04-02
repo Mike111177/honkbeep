@@ -8,7 +8,7 @@ import {
   GameEventType,
   GamePlayEvent,
   GamePlayResultType,
-} from "../../../game/GameTypes";
+} from "../../../game/types/GameEvent";
 import Card from "../../Card";
 import { useBoardState } from "../../BoardContext";
 import classNames from "../../util/classNames";
@@ -65,59 +65,53 @@ function CluePlayDescriber({
 
 type DiscardPlayDescriberProps = { turn: number; event: GameDiscardEvent };
 function DiscardPlayDescriber({ turn, event }: DiscardPlayDescriberProps) {
-  const [shuffleOrder, numPlayers, playerNames, deck] = useBoardState(
-    (boardState) => {
-      return [
-        boardState.shuffleOrder,
-        boardState.definition.variant.numPlayers,
-        boardState.definition.playerNames,
-        boardState.deck,
-      ];
-    }
-  );
-  const player = (turn - 1) % numPlayers;
-  const playerName = playerNames[player];
-  const { card } = event;
-  const cardData = deck.getCard(shuffleOrder[card]);
+  const [card, playerName, slotNumber] = useBoardState((boardState) => {
+    const shuffleOrder = boardState.shuffleOrder;
+    const deck = boardState.definition.variant.deck;
+    const numPlayers = boardState.definition.variant.numPlayers;
+    const player = (turn - 1) % numPlayers;
+    return [
+      deck.getCard(shuffleOrder[event.card]),
+      boardState.definition.playerNames[player],
+      boardState.turnHistory[turn].hands[player].indexOf(event.card),
+    ];
+  });
   return (
     <span>
       {`${playerName} discarded `}
-      <Card card={cardData} icon />
-      {/* {` from slot ${event.handSlot + 1}`} */}
+      <Card card={card} icon />
+      {` from slot ${slotNumber + 1}`}
     </span>
   );
 }
 
 type PlayPlayDescriberProps = { turn: number; event: GamePlayEvent };
 function PlayPlayDescriber({ turn, event }: PlayPlayDescriberProps) {
-  const [shuffleOrder, numPlayers, playerNames, deck] = useBoardState(
-    (boardState) => {
-      return [
-        boardState.shuffleOrder,
-        boardState.definition.variant.numPlayers,
-        boardState.definition.playerNames,
-        boardState.deck,
-      ];
-    }
-  );
-  const player = (turn - 1) % numPlayers;
-  const playerName = playerNames[player];
-  const { card } = event;
-  const cardData = deck.getCard(shuffleOrder[card]);
+  const [card, playerName, slotNumber] = useBoardState((boardState) => {
+    const shuffleOrder = boardState.shuffleOrder;
+    const deck = boardState.definition.variant.deck;
+    const numPlayers = boardState.definition.variant.numPlayers;
+    const player = (turn - 1) % numPlayers;
+    return [
+      deck.getCard(shuffleOrder[event.card]),
+      boardState.definition.playerNames[player],
+      boardState.turnHistory[turn].hands[player].indexOf(event.card),
+    ];
+  });
   if (event.result === GamePlayResultType.Success) {
     return (
       <span>
         {`${playerName} played `}
-        <Card card={cardData} icon />
-        {/* {` from slot ${event.handSlot + 1}`} */}
+        <Card card={card} icon />
+        {` from slot ${slotNumber + 1}`}
       </span>
     );
   } else {
     return (
       <span>
         {`${playerName} misplayed `}
-        <Card card={cardData} icon />
-        {/* {` from slot ${event.handSlot + 1}`} */}
+        <Card card={card} icon />
+        {` from slot ${slotNumber + 1}`}
       </span>
     );
   }

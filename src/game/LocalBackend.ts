@@ -1,7 +1,8 @@
 import EventEmitter from "events";
 import BackendInterface from "./BackendInterface";
-import { GameData, GameAttempt, GameEventMessage } from "./GameTypes";
+import { GameAttempt } from "./types/GameEvent";
 import LocalServer from "./LocalServer";
+import { GameData, GameEventMessage } from "./GameTypes";
 
 //Meant for dictating logic of local games or template games
 export default class LocalBackend

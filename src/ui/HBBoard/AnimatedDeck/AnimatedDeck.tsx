@@ -10,9 +10,11 @@ export default function CardFloatLayer() {
   const context = useContext(BoardContext);
   return (
     <div className={styles.AnimatedDeck}>
-      {ArrayUtil.iota(context.boardState.deck.length).map((i) => (
-        <AnimatedCard key={i} index={i} />
-      ))}
+      {ArrayUtil.iota(context.boardState.definition.variant.deck.length).map(
+        (i) => (
+          <AnimatedCard key={i} index={i} />
+        )
+      )}
     </div>
   );
 }

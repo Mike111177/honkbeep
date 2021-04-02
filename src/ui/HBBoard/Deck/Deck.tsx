@@ -5,7 +5,7 @@ import styles from "./Deck.module.css";
 
 export default function Deck() {
   const [deck, topDeck] = useBoardState((boardState) => {
-    return [boardState.deck, boardState.viewTurn.topDeck];
+    return [boardState.definition.variant.deck, boardState.viewTurn.topDeck];
   });
 
   return (

@@ -1,4 +1,4 @@
-import { GameAttempt } from "../../game/GameTypes";
+import { GameAttempt } from "../../game/types/GameEvent";
 
 export enum UserActionType {
   GameAttempt = 1,

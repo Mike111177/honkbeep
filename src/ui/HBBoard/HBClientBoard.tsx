@@ -3,19 +3,11 @@ import HBBoardLayout from "./HBBoardLayout";
 import LocalServer from "../../game/LocalServer";
 import LocalBackend from "../../game/LocalBackend";
 import ClientBoard from "../../client/ClientBoard";
+import { genericDefinition } from "../../game/GenericData";
 
 export default function HBClientBoard() {
-  const gamedef = {
-    variant: {
-      suits: ["Red", "Yellow", "Green", "Blue", "Purple"],
-      numPlayers: 4,
-      handSize: 4,
-    },
-    playerNames: ["Alice", "Bob", "Cathy", "Donald"],
-  };
-
   //Create virtual local Server
-  const [server] = useState(() => new LocalServer(gamedef));
+  const [server] = useState(() => new LocalServer(genericDefinition()));
   //Connect to local server as player 0
   const [backend] = useState(() => new LocalBackend(0, server));
 

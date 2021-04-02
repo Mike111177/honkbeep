@@ -16,7 +16,7 @@ import {
 } from "../../util/Floating";
 import { useDrag } from "../../util/InputHandling";
 import { Rectangle, vecAdd, vecInRectangle } from "../../../util/Vector";
-import { GameEventType } from "../../../game/GameTypes";
+import { GameEventType } from "../../../game/types/GameEvent";
 import { GameState } from "../../../game/states/GameState";
 import { useBoardReducer, useBoardState } from "../../BoardContext";
 import { UserActionType } from "../../../client/types/UserAction";

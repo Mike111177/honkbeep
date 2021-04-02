@@ -1,21 +1,8 @@
 import BackendInterface from "../game/BackendInterface";
-import { GameAttempt, GameData } from "../game/GameTypes";
+import { GameAttempt } from "../game/types/GameEvent";
 import NullBackend from "../game/NullBackend";
 import Board from "./Board";
 import { BoardState } from "./states/BoardState";
-
-function reduceGameStateFromGameData(
-  state: BoardState,
-  data: GameData,
-  max_turn: number = data.events.length
-) {
-  let messages = data.events;
-  const firstTurn = state.latestTurn.turn;
-  for (let i = firstTurn; i < Math.min(messages.length, max_turn); i++) {
-    state.appendEventMessage(messages[i]);
-  }
-  return state;
-}
 
 export default class ClientBoard extends Board {
   //Adapter to use to communicate with server
@@ -25,22 +12,24 @@ export default class ClientBoard extends Board {
     if (!(backend instanceof NullBackend)) {
       //Create new ClientState
       super(
-        reduceGameStateFromGameData(
-          new BoardState(backend.currentState().definition),
-          backend.currentState()
-        )
+        backend
+          .currentState()
+          .events.reduce(
+            (s, event) => s.appendEventMessage(event),
+            new BoardState(backend.currentState().definition)
+          )
       );
       //Listen for further game events
       backend.on("gameStateChanged", () => {
+        const { events } = this.backend.currentState();
         this.updateBoardState(
-          reduceGameStateFromGameData(
-            this.boardState,
-            this.backend.currentState()
-          )
+          events
+            .slice(this.boardState.latestTurn.turn)
+            .reduce((s, event) => s.appendEventMessage(event), this.boardState)
         );
       });
     } else {
-      super(new BoardState());
+      super();
     }
     this.backend = backend;
   }

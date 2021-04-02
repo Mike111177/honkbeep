@@ -13,7 +13,7 @@ export default function DiscardPile() {
     return [
       boardState.viewTurn.discardPile,
       boardState.shuffleOrder,
-      boardState.deck,
+      boardState.definition.variant.deck,
       boardState.definition.variant.suits,
     ];
   });

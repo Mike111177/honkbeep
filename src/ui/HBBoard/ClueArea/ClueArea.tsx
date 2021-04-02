@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 
-import { GameEventType } from "../../../game/GameTypes";
+import { GameEventType } from "../../../game/types/GameEvent";
 import {
   Clue,
   ColorClue,

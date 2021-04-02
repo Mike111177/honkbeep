@@ -1,26 +1,21 @@
-import { Clue } from "./types/Clue";
+import { Immutable } from "../util/HelperTypes";
+import GameEvent from "./types/GameEvent";
+import Variant from "./types/Variant";
 
 //Data required to describe a card
-export type CardData = {
+export type CardData = Immutable<{
   rank: number;
   suit: string;
-};
+}>;
 
 //Data required to describe suit
 export type SuitData = string;
 
-//Minimum data to build decks and get initial state
-export type VariantDefinition = {
-  suits: SuitData[];
-  numPlayers: number;
-  handSize: number;
-};
-
 //Minimum Data to start game
-export type GameDefinition = {
-  variant: VariantDefinition;
+export type GameDefinition = Immutable<{
+  variant: Variant;
   playerNames: string[];
-};
+}>;
 
 //May either be a seed or undefined
 export type ShufflerInput = number | undefined;
@@ -32,61 +27,6 @@ export type CardReveal = {
   deck: number;
   card: number;
 };
-
-export enum GameEventType {
-  Deal = 1,
-  Play,
-  Discard,
-  Clue,
-}
-
-//GameDeal
-export type GameDealEvent = {
-  type: GameEventType.Deal;
-};
-
-//GamePlay
-export type GamePlayAttempt = {
-  type: GameEventType.Play;
-  card: number;
-};
-export enum GamePlayResultType {
-  Success = 1,
-  Misplay,
-}
-export type GamePlayResultSuccess = {
-  result: GamePlayResultType.Success;
-  stack: number;
-};
-export type GamePlayResultMisplay = { result: GamePlayResultType.Misplay };
-export type GamePlayResult = GamePlayResultSuccess | GamePlayResultMisplay;
-export type GamePlayEvent = GamePlayAttempt & GamePlayResult;
-
-//GameDiscard
-export type GameDiscardAttempt = {
-  type: GameEventType.Discard;
-  card: number;
-};
-export type GameDiscardEvent = GameDiscardAttempt;
-
-export type GameClueAttempt = {
-  type: GameEventType.Clue;
-  target: number;
-  clue: Clue;
-};
-export type GameClueResult = { touched: number[] };
-export type GameClueEvent = GameClueAttempt & GameClueResult;
-
-//Represents any action taken by a player that could advance to the next turn (or deal)
-export type GameEvent = {
-  turn: number;
-} & (GameDealEvent | GamePlayEvent | GameDiscardEvent | GameClueEvent);
-
-//Data representing players attempt cause an event
-export type GameAttempt =
-  | GamePlayAttempt
-  | GameDiscardAttempt
-  | GameClueAttempt;
 
 export type GameEventSeries = GameEvent[];
 

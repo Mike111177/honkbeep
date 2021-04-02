@@ -1,3 +1,4 @@
+import { Immutable } from "../../util/HelperTypes";
 import { Deck } from "../DeckBuilding";
 import { GameDefinition } from "../GameTypes";
 import { GameState } from "../states/GameState";
@@ -18,7 +19,7 @@ export type Pips = {
 };
 
 export function getPipsFromEmpathy(
-  empathy: CardEmpathy,
+  empathy: Immutable<CardEmpathy>,
   game: GameState,
   deck: Deck,
   definition: GameDefinition

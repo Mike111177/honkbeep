@@ -1,3 +1,4 @@
+import { Immutable } from "../util/HelperTypes";
 import React, { useCallback, useContext, useState } from "react";
 import { useEffect } from "react";
 import Board, { NullBoard } from "../client/Board";
@@ -18,41 +19,29 @@ export function useBoard() {
   return useContext(BoardContext);
 }
 
-export function useBoardState(): Readonly<BoardState>;
-export function useBoardState<T extends any[]>(
-  itemFn: (e: Readonly<BoardState>) => T
-): T;
-export function useBoardState<T extends any[]>(
-  itemFn?: (e: Readonly<BoardState>) => T
-) {
+type IMBoardState = Immutable<BoardState>;
+type StateExtractor<T> = (e: IMBoardState) => T;
+export function useBoardState(): IMBoardState;
+export function useBoardState<T extends any[]>(extractFn: StateExtractor<T>): T;
+export function useBoardState<T extends any[]>(extractFn?: StateExtractor<T>) {
   const context = useContext(BoardContext);
   const [state, setState] = useState(context.boardState);
-  const getRequestedItems = useCallback(
-    (s: Readonly<BoardState>) => {
-      if (itemFn === undefined) {
-        return s;
-      } else {
-        return itemFn(s);
-      }
-    },
-    [itemFn]
-  );
   useEffect(
     () =>
       context.subscribeToStateChange(() => {
         if (
-          itemFn === undefined ||
+          extractFn === undefined ||
           !ArrayUtil.shallowCompare(
-            getRequestedItems(state) as any[],
-            getRequestedItems(context.boardState) as any[]
+            extractFn(state),
+            extractFn(context.boardState)
           )
         ) {
           setState(context.boardState);
         }
       }),
-    [context, getRequestedItems, itemFn, state]
+    [context, extractFn, state]
   );
-  return getRequestedItems(state);
+  return extractFn ? extractFn(state) : state;
 }
 
 export function useBoardReducer() {

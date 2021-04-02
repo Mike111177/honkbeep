@@ -1,11 +1,4 @@
-import {
-  CardReveal,
-  GameDefinition,
-  GameEventType,
-  GameEvent,
-  GameAttempt,
-  GameEventMessage,
-} from "./GameTypes";
+import { CardReveal, GameDefinition, GameEventMessage } from "./GameTypes";
 import { Deck, getShuffledOrder } from "./DeckBuilding";
 import {
   GameState,
@@ -14,6 +7,7 @@ import {
 } from "./states/GameState";
 import ArrayUtil from "../util/ArrayUtil";
 import { resolveGameAction } from "./ActionResolving";
+import GameEvent, { GameAttempt, GameEventType } from "./types/GameEvent";
 
 type PlayerRevealTurn = {
   turn: number;
@@ -52,9 +46,9 @@ export default class LocalServer {
     //Build Server side game state
     const dealEvent: GameEvent = { turn: 0, type: GameEventType.Deal };
     this.state = reduceGameEvent(
-      initGameStateFromDefinition(definition),
+      initGameStateFromDefinition(definition.variant),
       dealEvent,
-      definition
+      definition.variant
     );
     this.events = [dealEvent];
 
@@ -153,8 +147,7 @@ export default class LocalServer {
     const event = resolveGameAction(
       action,
       this.state,
-      this.deck,
-      this.definition,
+      this.definition.variant,
       this.shuffleOrder
     );
     //If event is valid...
@@ -169,7 +162,11 @@ export default class LocalServer {
         }
         // falls through so any event gets propagated onto the state and announced to clients
         case GameEventType.Clue:
-          this.state = reduceGameEvent(this.state, event, this.definition);
+          this.state = reduceGameEvent(
+            this.state,
+            event,
+            this.definition.variant
+          );
           this.events.push(event);
           this.broadcastLatestEvent();
           return true;

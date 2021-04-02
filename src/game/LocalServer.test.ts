@@ -1,53 +1,16 @@
 import LocalServer from "./LocalServer";
-import { GameClueAttempt, GameEventType } from "./GameTypes";
-import { Deck, createProcuredOrder } from "./DeckBuilding";
+import { GameClueAttempt, GameEventType } from "./types/GameEvent";
 import { ClueType } from "./types/Clue";
+import { genericSampleGame } from "./GenericData";
 
 test("Initializes without error", () => {
-  const gamedef = {
-    variant: {
-      suits: ["Red", "Yellow", "Green", "Blue", "Purple"],
-      numPlayers: 4,
-      handSize: 5,
-    },
-    playerNames: ["Alice", "Bob", "Cathy", "Donald"],
-  };
+  const { definition: gamedef } = genericSampleGame();
   //Create virtual local Server
   new LocalServer(gamedef);
 });
 
 test("Does not allow player to take turn twice in a row", async () => {
-  const gamedef = {
-    variant: {
-      suits: ["Red", "Yellow", "Green", "Blue", "Purple"],
-      numPlayers: 4,
-      handSize: 5,
-    },
-    playerNames: ["Alice", "Bob", "Cathy", "Donald"],
-  };
-  const deck = new Deck(gamedef.variant);
-  const deckDef = createProcuredOrder(deck, [
-    { rank: 1, suit: "Red" },
-    { rank: 1, suit: "Red" },
-    { rank: 1, suit: "Red" },
-    { rank: 2, suit: "Red" },
-    { rank: 2, suit: "Red" }, //Player 1
-    { rank: 3, suit: "Green" },
-    { rank: 4, suit: "Purple" },
-    { rank: 5, suit: "Red" },
-    { rank: 1, suit: "Blue" },
-    { rank: 1, suit: "Yellow" }, //Player 2
-    { rank: 1, suit: "Green" },
-    { rank: 4, suit: "Blue" },
-    { rank: 1, suit: "Yellow" },
-    { rank: 2, suit: "Green" },
-    { rank: 5, suit: "Purple" }, //Player 3
-    { rank: 3, suit: "Purple" },
-    { rank: 2, suit: "Yellow" },
-    { rank: 2, suit: "Green" },
-    { rank: 4, suit: "Yellow" },
-    { rank: 3, suit: "Red" }, //Player 4
-  ]);
+  const { definition: gamedef, deckOrderDef: deckDef } = genericSampleGame();
   //Create virtual local Server
   const server = new LocalServer(gamedef, deckDef);
   //Test having player 1 make a play 2 times
@@ -88,37 +51,7 @@ test("Does not allow player to take turn twice in a row", async () => {
 });
 
 test("Does not allow clues sent to invalid players", async () => {
-  const gamedef = {
-    variant: {
-      suits: ["Red", "Yellow", "Green", "Blue", "Purple"],
-      numPlayers: 4,
-      handSize: 5,
-    },
-    playerNames: ["Alice", "Bob", "Cathy", "Donald"],
-  };
-  const deck = new Deck(gamedef.variant);
-  const deckDef = createProcuredOrder(deck, [
-    { rank: 1, suit: "Red" },
-    { rank: 1, suit: "Red" },
-    { rank: 1, suit: "Red" },
-    { rank: 2, suit: "Red" },
-    { rank: 2, suit: "Red" }, //Player 1
-    { rank: 3, suit: "Green" },
-    { rank: 4, suit: "Purple" },
-    { rank: 5, suit: "Red" },
-    { rank: 1, suit: "Blue" },
-    { rank: 1, suit: "Yellow" }, //Player 2
-    { rank: 1, suit: "Green" },
-    { rank: 4, suit: "Blue" },
-    { rank: 1, suit: "Yellow" },
-    { rank: 2, suit: "Green" },
-    { rank: 5, suit: "Purple" }, //Player 3
-    { rank: 3, suit: "Purple" },
-    { rank: 2, suit: "Yellow" },
-    { rank: 2, suit: "Green" },
-    { rank: 4, suit: "Yellow" },
-    { rank: 3, suit: "Red" }, //Player 4
-  ]);
+  const { definition: gamedef, deckOrderDef: deckDef } = genericSampleGame();
   //Create virtual local Server with 4 players
   const server = new LocalServer(gamedef, deckDef);
 

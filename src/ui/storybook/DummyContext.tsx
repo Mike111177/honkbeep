@@ -7,12 +7,9 @@ export function DummyContext({ onAttempt, suits, players, children }: any) {
   const dummy = useMemo(
     () =>
       new DummyBoard(onAttempt, {
-        variant: {
-          suits: suits ?? ["Red", "Yellow", "Green", "Blue", "Purple"],
-          numPlayers: players?.length || 4,
-          handSize: 4,
-        },
-        playerNames: players ?? ["Alice", "Bob", "Cathy", "Donald"],
+        suits: suits ?? ["Red", "Yellow", "Green", "Blue", "Purple"],
+        numPlayers: players ?? 4,
+        handSize: 4,
       }),
     [onAttempt, players, suits]
   );

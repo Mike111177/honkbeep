@@ -10,7 +10,7 @@ import { OutlineFilter, CardRectangle, CardSVG } from ".";
 import { CARD_VIEW_MIDPOINT as mid } from "./Constants";
 
 export type CardFrontProps = {
-  card: Readonly<CardData>;
+  card: CardData;
   borderOverride?: string;
 } & ComponentPropsWithoutRef<"svg">;
 

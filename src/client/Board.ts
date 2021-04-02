@@ -1,4 +1,5 @@
-import { GameAttempt } from "../game/GameTypes";
+import { Immutable } from "../util/HelperTypes";
+import { GameAttempt } from "../game/types/GameEvent";
 import ArrayUtil from "../util/ArrayUtil";
 import { BoardState } from "./states/BoardState";
 import { UserAction, UserActionType } from "./types/UserAction";
@@ -6,9 +7,9 @@ import { UserAction, UserActionType } from "./types/UserAction";
 export type BoardUpdateListener = () => void;
 export default abstract class Board {
   private listeners: BoardUpdateListener[];
-  readonly boardState: BoardState;
-  constructor(initialBoardState: BoardState) {
-    this.boardState = initialBoardState;
+  private _boardState?: Immutable<BoardState>;
+  constructor(initialBoardState?: BoardState) {
+    this._boardState = initialBoardState;
     this.listeners = [];
   }
   /**
@@ -29,8 +30,17 @@ export default abstract class Board {
     return removeFunc;
   }
 
-  updateBoardState(a?: any) {
+  protected updateBoardState(newState: Immutable<BoardState>) {
+    this._boardState = newState;
     for (let f of this.listeners) f();
+  }
+
+  get state(): Immutable<BoardState> {
+    return this._boardState!;
+  }
+
+  get boardState(): Immutable<BoardState> {
+    return this._boardState!;
   }
 
   reduceUserAction(action: UserAction) {
@@ -46,9 +56,6 @@ export default abstract class Board {
 }
 
 export class NullBoard extends Board {
-  constructor() {
-    super(new BoardState());
-  }
   attemptPlayerAction(action: GameAttempt): Promise<boolean> {
     throw new Error("Tried to use null board!");
   }

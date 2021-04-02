@@ -48,12 +48,11 @@ export default function HBDeckCard({ index, ...props }: HBDeckCardProps) {
         boardState.latestTurn,
         card,
         boardState.definition,
-        boardState.deck,
+        boardState.definition.variant.deck,
         boardState.viewTurn.cardMeta[index].touched,
       ];
     }
   );
-  const suits = definition.variant.suits;
   const pips = useMemo(
     () => getPipsFromEmpathy(empathy, latestGame, deck, definition),
     [deck, definition, empathy, latestGame]
@@ -88,11 +87,11 @@ export default function HBDeckCard({ index, ...props }: HBDeckCardProps) {
     } else {
       return {
         borderOverride,
-        suits,
+        variant: definition.variant,
         pips,
         ...props,
       };
     }
-  }, [cardInfo, pips, props, spaceDown, suits, touched]);
+  }, [cardInfo, definition.variant, pips, props, spaceDown, touched]);
   return <Card {...cardProps} />;
 }
