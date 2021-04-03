@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { animated, useSpring } from "@react-spring/web";
 
 import HBDeckCard from "./DeckCard";
@@ -14,7 +7,7 @@ import {
   FloatAreaPath,
   FloatContext,
 } from "../../util/Floating";
-import { useDrag } from "../../util/InputHandling";
+import { useDrag } from "../../guestures";
 import { Rectangle, vecAdd, vecInRectangle } from "../../../util/Vector";
 import { GameEventType } from "../../../game/types/GameEvent";
 import { GameState } from "../../../game/states/GameState";
@@ -124,7 +117,6 @@ export default function FloatingCard({ index }: FloatCardProps) {
       spring.y.goal,
     ]
   );
-  const ref = useRef(null);
 
   useEffect(() => {
     setHomeRect(floatContext.getRect(home));
@@ -200,7 +192,7 @@ export default function FloatingCard({ index }: FloatCardProps) {
     [dropPath, floatContext, home, onDrop, setHomeRect]
   );
 
-  const dragListeners = useDrag(ref, onDrag);
+  const dragBinder = useDrag<HTMLDivElement>(onDrag, draggable);
 
   //Detach listeners if not in current persons hand
   const props = useMemo(() => {
@@ -213,18 +205,15 @@ export default function FloatingCard({ index }: FloatCardProps) {
     } else if (cardOnTopOfStack) {
       zIndex = 1;
     }
-    let listeners = draggable ? dragListeners : undefined;
     return {
       className: styles.AnimatedCard,
-      ref,
-      ...listeners,
       style: { zIndex, ...spring },
     };
-  }, [cardOnTopOfStack, dragListeners, draggable, dragging, home, spring]);
+  }, [cardOnTopOfStack, dragging, home, spring]);
 
   if (visible) {
     return (
-      <animated.div {...props}>
+      <animated.div {...dragBinder} {...props}>
         <HBDeckCard index={index} />
       </animated.div>
     );
