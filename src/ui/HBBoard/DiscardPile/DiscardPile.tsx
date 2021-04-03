@@ -7,16 +7,17 @@ import classNames from "../../util/classNames";
 
 import styles from "./DiscardPile.module.css";
 import darkregion from "../DarkRegion.module.css";
+import ArrayUtil from "../../../util/ArrayUtil";
 
 export default function DiscardPile() {
-  const [cards, shuffleOrder, deck, suits] = useBoardState((boardState) => {
+  const [cards, shuffleOrder, deck, suits] = useBoardState((s) => {
     return [
-      boardState.viewTurn.discardPile,
-      boardState.shuffleOrder,
-      boardState.definition.variant.deck,
-      boardState.definition.variant.suits,
+      s.viewTurn.discardPile,
+      s.shuffleOrder,
+      s.definition.variant.deck,
+      s.definition.variant.suits,
     ];
-  });
+  }, ArrayUtil.shallowCompare);
   const ref = useFloatArea(["discardPile"], { dropZone: true });
 
   const targets = useMemo(() => {

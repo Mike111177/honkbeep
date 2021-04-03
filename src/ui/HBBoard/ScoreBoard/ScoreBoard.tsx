@@ -7,10 +7,15 @@ import styles from "./ScoreBoard.module.css";
 import darkregion from "../DarkRegion.module.css";
 
 export default function ScoreBoard() {
-  const [turn, clues, strikes, stacks] = useBoardState((boardState) => {
-    const { turn, clues, strikes, stacks } = boardState.viewTurn;
-    return [turn, clues, strikes, stacks];
-  });
+  const [turn, clues, strikes, stacks] = useBoardState(
+    ({ viewTurn: { turn, clues, strikes, stacks } }) => [
+      turn,
+      clues,
+      strikes,
+      stacks,
+    ],
+    ArrayUtil.shallowCompare
+  );
 
   const score = useMemo(() => stacks.reduce((acc, v) => acc + v.length, 0), [
     stacks,

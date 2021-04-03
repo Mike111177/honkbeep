@@ -1,3 +1,4 @@
+import ArrayUtil from "../../../util/ArrayUtil";
 import { useBoardState } from "../../BoardContext";
 import Hand from "./Hand";
 
@@ -13,7 +14,7 @@ export default function HandsArea() {
       playerView = (boardState.viewTurn.turn - 1) % numPlayers;
     }
     return [boardState.definition.playerNames, numPlayers, playerView];
-  });
+  }, ArrayUtil.shallowCompare);
   return (
     <div className={styles.HandsArea}>
       {playerNames.map((n, i) => {

@@ -15,6 +15,7 @@ import classNames from "../../util/classNames";
 
 import styles from "./PlayHistory.module.css";
 import darkregion from "../DarkRegion.module.css";
+import ArrayUtil from "../../../util/ArrayUtil";
 
 const NaturalNums = ["zero", "one", "two", "three", "four", "five"];
 
@@ -23,7 +24,7 @@ function CluePlayDescriber({
   turn,
   event: { touched, clue, target },
 }: CluePlayDescriberProps) {
-  const definition = useBoardState().definition;
+  const definition = useBoardState(({ definition }) => definition);
   const numPlayers = definition.variant.numPlayers;
   const player = (turn - 1) % numPlayers;
   const playernames = definition.playerNames;
@@ -65,17 +66,17 @@ function CluePlayDescriber({
 
 type DiscardPlayDescriberProps = { turn: number; event: GameDiscardEvent };
 function DiscardPlayDescriber({ turn, event }: DiscardPlayDescriberProps) {
-  const [card, playerName, slotNumber] = useBoardState((boardState) => {
-    const shuffleOrder = boardState.shuffleOrder;
-    const deck = boardState.definition.variant.deck;
-    const numPlayers = boardState.definition.variant.numPlayers;
+  const [card, playerName, slotNumber] = useBoardState((s) => {
+    const shuffleOrder = s.shuffleOrder;
+    const deck = s.definition.variant.deck;
+    const numPlayers = s.definition.variant.numPlayers;
     const player = (turn - 1) % numPlayers;
     return [
       deck.getCard(shuffleOrder[event.card]),
-      boardState.definition.playerNames[player],
-      boardState.turnHistory[turn].hands[player].indexOf(event.card),
+      s.definition.playerNames[player],
+      s.turnHistory[turn].hands[player].indexOf(event.card),
     ];
-  });
+  }, ArrayUtil.shallowCompare);
   return (
     <span>
       {`${playerName} discarded `}
@@ -87,17 +88,17 @@ function DiscardPlayDescriber({ turn, event }: DiscardPlayDescriberProps) {
 
 type PlayPlayDescriberProps = { turn: number; event: GamePlayEvent };
 function PlayPlayDescriber({ turn, event }: PlayPlayDescriberProps) {
-  const [card, playerName, slotNumber] = useBoardState((boardState) => {
-    const shuffleOrder = boardState.shuffleOrder;
-    const deck = boardState.definition.variant.deck;
-    const numPlayers = boardState.definition.variant.numPlayers;
+  const [card, playerName, slotNumber] = useBoardState((s) => {
+    const shuffleOrder = s.shuffleOrder;
+    const deck = s.definition.variant.deck;
+    const numPlayers = s.definition.variant.numPlayers;
     const player = (turn - 1) % numPlayers;
     return [
       deck.getCard(shuffleOrder[event.card]),
-      boardState.definition.playerNames[player],
-      boardState.turnHistory[turn].hands[player].indexOf(event.card),
+      s.definition.playerNames[player],
+      s.turnHistory[turn].hands[player].indexOf(event.card),
     ];
-  });
+  }, ArrayUtil.shallowCompare);
   if (event.result === GamePlayResultType.Success) {
     return (
       <span>
@@ -119,9 +120,7 @@ function PlayPlayDescriber({ turn, event }: PlayPlayDescriberProps) {
 
 type PlayDescriberProps = { turn: number };
 function PlayDescriber({ turn }: PlayDescriberProps) {
-  const [event] = useBoardState((boardState) => {
-    return [boardState.events[turn]];
-  });
+  const event = useBoardState(({ events }) => events[turn]);
   switch (event.type) {
     case GameEventType.Deal:
       return <span>Game Started</span>;
@@ -137,9 +136,10 @@ function PlayDescriber({ turn }: PlayDescriberProps) {
 }
 
 export default function PlayHistory() {
-  const [turnNumber, numPlayers] = useBoardState((boardState) => {
-    return [boardState.viewTurn.turn, boardState.definition.variant.numPlayers];
-  });
+  const [turnNumber, numPlayers] = useBoardState((s) => [
+    s.viewTurn.turn,
+    s.definition.variant.numPlayers,
+  ]);
   const displayAmount = Math.min(numPlayers, turnNumber);
   return (
     <div className={classNames(styles.PlayHistory, darkregion.DarkRegion)}>

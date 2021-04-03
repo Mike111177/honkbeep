@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import Board, { NullBoard } from "../client/Board";
 import { BoardState } from "../client/states/BoardState";
 import UserAction from "../client/types/UserAction";
-import ArrayUtil from "../util/ArrayUtil";
 
 export const BoardContext = React.createContext<Readonly<Board>>(
   new NullBoard()
@@ -19,29 +18,25 @@ export function useBoard() {
   return useContext(BoardContext);
 }
 
-type IMBoardState = Immutable<BoardState>;
-type StateExtractor<T> = (e: IMBoardState) => T;
-export function useBoardState(): IMBoardState;
-export function useBoardState<T extends any[]>(extractFn: StateExtractor<T>): T;
-export function useBoardState<T extends any[]>(extractFn?: StateExtractor<T>) {
+type BoardStateUser<T> = (newState: Immutable<BoardState>) => T;
+type BoardStateComparator<T> = (a: T, b: T) => boolean;
+export function useBoardState<T>(
+  fn: BoardStateUser<T>,
+  cmp: BoardStateComparator<T> = Object.is
+) {
   const context = useContext(BoardContext);
-  const [state, setState] = useState(context.boardState);
+  const [state, setState] = useState(() => fn(context.state));
   useEffect(
     () =>
       context.subscribeToStateChange(() => {
-        if (
-          extractFn === undefined ||
-          !ArrayUtil.shallowCompare(
-            extractFn(state),
-            extractFn(context.boardState)
-          )
-        ) {
-          setState(context.boardState);
+        const nextState = fn(context.state);
+        if (!cmp(state, nextState)) {
+          setState(nextState);
         }
       }),
-    [context, extractFn, state]
+    [context, state, cmp, fn]
   );
-  return extractFn ? extractFn(state) : state;
+  return state;
 }
 
 export function useBoardReducer() {

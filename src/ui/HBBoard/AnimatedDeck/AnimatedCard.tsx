@@ -22,6 +22,7 @@ import { useBoardReducer, useBoardState } from "../../BoardContext";
 import { UserActionType } from "../../../client/types/UserAction";
 
 import styles from "./AnimatedDeck.module.css";
+import ArrayUtil from "../../../util/ArrayUtil";
 
 function getCardHome(index: number, game: GameState): FloatAreaPath {
   //Search hands
@@ -72,17 +73,15 @@ export default function FloatingCard({ index }: FloatCardProps) {
     cardOnTopOfStack,
     cardOnBottomOfStack,
     ...home
-  ] = useBoardState((boardState) => {
-    const home = getCardHome(index, boardState.viewTurn);
+  ] = useBoardState((s) => {
+    const home = getCardHome(index, s.viewTurn);
     const cardInCurrentPlayerHand =
       home[0] === "hands" &&
-      home[1] ===
-        (boardState.viewTurn.turn - 1) %
-          boardState.definition.variant.numPlayers;
+      home[1] === (s.viewTurn.turn - 1) % s.definition.variant.numPlayers;
     let cardOnTopOfStack = false;
     let cardOnBottomOfStack = false;
     if (home[0] === "stacks") {
-      const stack = boardState.viewTurn.stacks[home[1] as number];
+      const stack = s.viewTurn.stacks[home[1] as number];
       if (stack[stack.length - 1] === index) {
         cardOnTopOfStack = true;
       } else if (stack[stack.length - 2] !== index) {
@@ -90,12 +89,12 @@ export default function FloatingCard({ index }: FloatCardProps) {
       }
     }
     return [
-      cardInCurrentPlayerHand && !boardState.paused,
+      cardInCurrentPlayerHand && !s.paused,
       cardOnTopOfStack,
       cardOnBottomOfStack,
       ...home,
     ];
-  });
+  }, ArrayUtil.shallowCompare);
   const visible = !(home[0] === "deck" || cardOnBottomOfStack);
 
   const [dragging, setDragging] = useState(false);

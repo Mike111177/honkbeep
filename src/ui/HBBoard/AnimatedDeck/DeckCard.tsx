@@ -3,6 +3,7 @@ import { ComponentPropsWithoutRef, useEffect, useMemo, useState } from "react";
 import Card, { CardProps } from "../../Card";
 import { getPipsFromEmpathy } from "../../../game/types/Empathy";
 import { useBoardState } from "../../BoardContext";
+import ArrayUtil from "../../../util/ArrayUtil";
 
 //TODO: PLS REMOVE, REPLACE WITH BETTER THING
 let spaceIsDown = false;
@@ -25,33 +26,32 @@ export type HBDeckCardProps = {
 } & ComponentPropsWithoutRef<"svg">;
 export default function HBDeckCard({ index, ...props }: HBDeckCardProps) {
   const [empathy, latestGame, card, definition, deck, touched] = useBoardState(
-    (boardState) => {
+    (s) => {
       let card = undefined;
-      const cardValue = boardState.shuffleOrder[index];
+      const cardValue = s.shuffleOrder[index];
       if (cardValue !== undefined) {
-        let view = boardState.perspective;
+        let view = s.perspective;
         if (view === undefined) {
           card = cardValue;
         } else {
           if (view === -1) {
-            view =
-              (boardState.viewTurn.turn - 1) %
-              boardState.definition.variant.numPlayers;
+            view = (s.viewTurn.turn - 1) % s.definition.variant.numPlayers;
           }
-          if (boardState.latestTurn.cardReveals[view].has(index)) {
+          if (s.latestTurn.cardReveals[view].has(index)) {
             card = cardValue;
           }
         }
       }
       return [
-        boardState.latestTurn.empathy[index],
-        boardState.latestTurn,
+        s.latestTurn.empathy[index],
+        s.latestTurn,
         card,
-        boardState.definition,
-        boardState.definition.variant.deck,
-        boardState.viewTurn.cardMeta[index].touched,
+        s.definition,
+        s.definition.variant.deck,
+        s.viewTurn.cardMeta[index].touched,
       ];
-    }
+    },
+    ArrayUtil.shallowCompare
   );
   const pips = useMemo(
     () => getPipsFromEmpathy(empathy, latestGame, deck, definition),

@@ -1,4 +1,5 @@
 import { UserActionType } from "../../../client/types/UserAction";
+import ArrayUtil from "../../../util/ArrayUtil";
 import { useBoardReducer, useBoardState } from "../../BoardContext";
 import styles from "./ReplayControls.module.css";
 
@@ -13,7 +14,7 @@ export default function ReplayControls() {
   const dispatch = useBoardReducer();
   const [viewTurn, latestTurn, paused] = useBoardState((state) => {
     return [state.viewTurn.turn, state.latestTurn.turn, state.paused];
-  });
+  }, ArrayUtil.shallowCompare);
 
   const setTurn = (turn: number) =>
     dispatch({ type: UserActionType.SetViewTurn, turn });

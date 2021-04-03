@@ -2,11 +2,12 @@ import CardTarget from "../AnimatedDeck/CardTarget";
 import { useBoardState } from "../../BoardContext";
 
 import styles from "./Deck.module.css";
+import ArrayUtil from "../../../util/ArrayUtil";
 
 export default function Deck() {
-  const [deck, topDeck] = useBoardState((boardState) => {
-    return [boardState.definition.variant.deck, boardState.viewTurn.topDeck];
-  });
+  const [deck, topDeck] = useBoardState((s) => {
+    return [s.definition.variant.deck, s.viewTurn.topDeck];
+  }, ArrayUtil.shallowCompare);
 
   return (
     <CardTarget className={styles.Deck} areaPath={["deck"]}>

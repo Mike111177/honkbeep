@@ -10,15 +10,16 @@ type HandProps = {
 };
 
 export default function Hand({ player }: HandProps) {
-  const [playerNames, cardsInHand, myTurn] = useBoardState((boardState) => {
-    return [
-      boardState.definition.playerNames,
-      boardState.viewTurn.hands[player].length,
-      player ===
-        (boardState.viewTurn.turn - 1) %
-          boardState.definition.variant.numPlayers,
-    ];
-  });
+  const [playerNames, cardsInHand, myTurn] = useBoardState(
+    ({ definition, viewTurn }) => {
+      return [
+        definition.playerNames,
+        viewTurn.hands[player].length,
+        player === (viewTurn.turn - 1) % definition.variant.numPlayers,
+      ];
+    },
+    ArrayUtil.shallowCompare
+  );
 
   const targets = ArrayUtil.fill(cardsInHand, (i) => (
     <CardTarget key={i} areaPath={["hands", player, i]} />

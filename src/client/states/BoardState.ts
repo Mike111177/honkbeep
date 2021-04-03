@@ -1,9 +1,7 @@
-import produce, { Draft, immerable, setAutoFreeze } from "immer";
+import produce, { Draft, immerable } from "immer";
 import { GameDefinition, GameEventMessage } from "../../game/GameTypes";
 import { GameEvent } from "../../game/types/GameEvent";
 import { initTurnState, reduceTurnEvent, TurnState } from "./TurnState";
-
-setAutoFreeze(false);
 
 export class BoardState {
   readonly [immerable] = true;
