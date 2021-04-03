@@ -3,11 +3,12 @@
   grid-template-areas:
     "playhistory    playhistory    playhistory    handarea cluehistory"
     "stackarea      stackarea      stackarea      handarea cluehistory"
+    "stackarea      stackarea      stackarea      handarea discardpile"
     "cluearea       cluearea       cluearea       handarea discardpile"
     "replaycontrols replaycontrols replaycontrols handarea discardpile"
     "blank          scoreboard     deck           handarea discardpile";
   grid-template-columns: 24% 10% 6% 30% 30%;
-  grid-template-rows: 25% 25% 25% 10% 15%;
+  grid-template-rows: 35% 10% 10% 20% 10% 15%;
   font-size: calc(10px + 2vmin);
   color: white;
   height: 100%;

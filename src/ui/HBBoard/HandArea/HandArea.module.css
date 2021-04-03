@@ -13,11 +13,14 @@
 
 .HandsArea {
   grid-area: handarea;
+  padding: 2.5%;
+  padding-top: 10%;
 }
 
 .handName {
   font-size: 20px;
   text-align: center;
+  user-select: none;
 }
 
 .handCardArea {

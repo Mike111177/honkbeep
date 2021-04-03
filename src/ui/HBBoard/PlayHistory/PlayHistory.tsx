@@ -140,7 +140,7 @@ export default function PlayHistory() {
     s.viewTurn.turn,
     s.definition.variant.numPlayers,
   ]);
-  const displayAmount = Math.min(numPlayers, turnNumber);
+  const displayAmount = Math.min(numPlayers * 2, turnNumber);
   return (
     <div className={classNames(styles.PlayHistory, darkregion.DarkRegion)}>
       {[...Array(displayAmount).keys()]
