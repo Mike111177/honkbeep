@@ -7,15 +7,15 @@ import {
   FloatAreaPath,
   FloatContext,
 } from "../../util/Floating";
-import { useDrag } from "../../guestures";
+import { useDrag } from "../../input";
 import { Rectangle, vecAdd, vecInRectangle } from "../../../util/Vector";
 import { GameEventType } from "../../../game/types/GameEvent";
 import { GameState } from "../../../game/states/GameState";
 import { useBoardReducer, useBoardState } from "../../BoardContext";
 import { UserActionType } from "../../../client/types/UserAction";
+import ArrayUtil from "../../../util/ArrayUtil";
 
 import styles from "./AnimatedDeck.module.css";
-import ArrayUtil from "../../../util/ArrayUtil";
 
 function getCardHome(index: number, game: GameState): FloatAreaPath {
   //Search hands

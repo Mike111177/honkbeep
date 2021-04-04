@@ -1,25 +1,10 @@
-import { ComponentPropsWithoutRef, useEffect, useMemo, useState } from "react";
+import { ComponentPropsWithoutRef, useMemo } from "react";
 
 import Card, { CardProps } from "../../Card";
 import { getPipsFromEmpathy } from "../../../game/types/Empathy";
 import { useBoardState } from "../../BoardContext";
 import ArrayUtil from "../../../util/ArrayUtil";
-
-//TODO: PLS REMOVE, REPLACE WITH BETTER THING
-let spaceIsDown = false;
-const listeners: ((sd: boolean) => void)[] = [];
-window.addEventListener("keydown", (event) => {
-  if (event.code === "Space" && spaceIsDown === false) {
-    spaceIsDown = true;
-    listeners.forEach((i) => i(spaceIsDown));
-  }
-});
-window.addEventListener("keyup", (event) => {
-  if (event.code === "Space" && spaceIsDown === true) {
-    spaceIsDown = false;
-    listeners.forEach((i) => i(spaceIsDown));
-  }
-});
+import { useSpacebar } from "../../input";
 
 export type HBDeckCardProps = {
   index: number;
@@ -65,17 +50,7 @@ export default function HBDeckCard({ index, ...props }: HBDeckCardProps) {
       return undefined;
     }
   }, [deck, card]);
-
-  const [spaceDown, setSpaceDown] = useState(spaceIsDown);
-  useEffect(() => {
-    listeners.push(setSpaceDown);
-    return () => {
-      listeners.splice(
-        listeners.findIndex((i) => i === setSpaceDown),
-        1
-      );
-    };
-  }, []);
+  const spaceDown = useSpacebar();
 
   const cardProps = useMemo((): CardProps => {
     const borderOverride = touched ? "orange" : undefined;
