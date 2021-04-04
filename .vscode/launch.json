@@ -5,7 +5,7 @@
       "name": "Client/Dev",
       "type": "chrome",
       "request": "launch",
-      "url": "http://localhost:3000/game",
+      "url": "http://localhost:3000/",
       "webRoot": "${workspaceFolder}/src",
       "sourceMapPathOverrides": {
         "webpack:///src/*": "${webRoot}/*"
@@ -17,7 +17,7 @@
       "name": "Client/Production",
       "type": "chrome",
       "request": "launch",
-      "url": "http://localhost:5000/game",
+      "url": "http://localhost:5000/",
       "webRoot": "${workspaceFolder}/src",
       "sourceMapPathOverrides": {
         "webpack:///src/*": "${webRoot}/*"

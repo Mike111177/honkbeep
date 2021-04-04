@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import { LoginPage } from "./ui/pages";
 import HBSolitaireBoard from "./ui/HBBoard/HBSolitaireBoard";
 
 import background from "./background_black.jpg";
@@ -13,9 +14,12 @@ function App() {
         style={{ backgroundImage: `url(${background})` }}
       >
         <Route exact path="/">
-          <Redirect to="/game" />
+          <Redirect to="/login" />
         </Route>
-        <Route path="/game">
+        <Route path="/login">
+          <LoginPage />
+        </Route>
+        <Route path="/solitaire">
           <HBSolitaireBoard />
         </Route>
       </div>

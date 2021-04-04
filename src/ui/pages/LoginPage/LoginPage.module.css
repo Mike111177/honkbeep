@@ -1,0 +1,17 @@
+.LoginPage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  height: 300px;
+  transform: translate(-50%, -50%);
+  background-color: rgb(107, 107, 107);
+  padding: 5%;
+  box-sizing: border-box;
+  border-radius: 20px;
+}
+
+.LoginPage input {
+  background-color: rgb(83, 83, 83);
+  color: white;
+}
