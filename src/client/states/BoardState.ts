@@ -81,6 +81,7 @@ export class BoardState {
     return setPerspectiveProd(this, player);
   }
 }
+export default BoardState;
 
 function appendEventFn(state: Draft<BoardState>, event: GameEvent) {
   //Push event into history

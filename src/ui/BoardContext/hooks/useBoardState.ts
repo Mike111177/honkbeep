@@ -1,22 +1,7 @@
-import { Immutable } from "../util/HelperTypes";
-import React, { useCallback, useContext, useState } from "react";
-import { useEffect } from "react";
-import Board, { NullBoard } from "../client/Board";
-import { BoardState } from "../client/states/BoardState";
-import UserAction from "../client/types/UserAction";
-
-export const BoardContext = React.createContext<Readonly<Board>>(
-  new NullBoard()
-);
-export default BoardContext;
-
-/**
- * Shorthand for useContext(BoardContext);
- * @returns Current board context
- */
-export function useBoard() {
-  return useContext(BoardContext);
-}
+import { useCallback, useState, useEffect, DependencyList } from "react";
+import BoardState from "../../../client/states/BoardState";
+import { Immutable } from "../../../util/HelperTypes";
+import useBoard from "./useBoard";
 
 export type BoardStateUser<T> = (newState: Immutable<BoardState>) => T;
 export type BoardStateComparator<T> = (a: T, b: T) => boolean;
@@ -32,13 +17,13 @@ export type BoardStateComparator<T> = (a: T, b: T) => boolean;
  * @param comparator custom comparator function check if previous result is equivalent to new result
  * @returns The result of applying supplied function on the current board state
  */
-export function useBoardState<T>(
+export default function useBoardState<T>(
   transform: BoardStateUser<T>,
-  dependencies: React.DependencyList = [],
+  dependencies: DependencyList = [],
   comparator: BoardStateComparator<T> = Object.is
 ) {
   //Get our board context
-  const context = useContext(BoardContext);
+  const context = useBoard();
 
   // The user should provide their own dependencies for their callback
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -64,11 +49,4 @@ export function useBoardState<T>(
   );
 
   return state;
-}
-
-export function useBoardReducer() {
-  const context = useBoard();
-  return useCallback((action: UserAction) => context.reduceUserAction(action), [
-    context,
-  ]);
 }

@@ -1,11 +1,10 @@
-import { useContext } from "react";
 import chroma from "chroma-js";
 
 import CardTarget from "../AnimatedDeck/CardTarget";
 import { useFloatArea } from "../../util/Floating";
 import { CARD_VIEW_MIDPOINT as mid, OutlineFilter } from "../../Card";
 import { vecAdd } from "../../../util/Vector";
-import { BoardContext } from "../../BoardContext";
+import { useBoard } from "../../BoardContext";
 
 import colors from "../../BaseColors";
 import pips from "../../pips";
@@ -70,7 +69,7 @@ export function Stack({ suit, number }: HBStackProps) {
 }
 
 export default function StackArea() {
-  const suits = useContext(BoardContext).state.definition.variant.suits;
+  const suits = useBoard().state.definition.variant.suits;
   const ref = useFloatArea(["stackArea"], { dropZone: true });
   return (
     <div ref={ref} className={styles.StackArea}>
