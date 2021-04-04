@@ -2,13 +2,16 @@ import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import HBSolitaireBoard from "./ui/HBBoard/HBSolitaireBoard";
 
 import background from "./background_black.jpg";
-import "./App.scss";
+import styles from "./App.module.css";
 
 //Attach UI interface to backend adapter
 function App() {
   return (
     <Router>
-      <div className="App" style={{ backgroundImage: `url(${background})` }}>
+      <div
+        className={styles.App}
+        style={{ backgroundImage: `url(${background})` }}
+      >
         <Route exact path="/">
           <Redirect to="/game" />
         </Route>
