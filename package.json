@@ -46,6 +46,7 @@
     "@types/webpack-env": "^1.16.0",
     "chroma-js": "^2.1.0",
     "eslint-config-prettier": "^8.1.0",
+    "hygen": "^6.0.4",
     "immer": "^9.0.1",
     "prettier": "^2.2.1",
     "react": "^17.0.1",
