@@ -1,11 +1,11 @@
 import {
-  GameEvent,
+  genericSampleGame,
+  reduceGameEvent,
   GameEventType,
+  GameEvent,
   GamePlayResultType,
-} from "../types/GameEvent";
-import { genericSampleGame } from "../GenericData";
-import { ClueType } from "../types/Clue";
-import { reduceGameEvent } from "./GameState";
+  ClueType,
+} from "..";
 
 test("Cards are dealt in the right order", () => {
   const { variant, state0 } = genericSampleGame();

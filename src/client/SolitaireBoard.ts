@@ -1,11 +1,16 @@
-import { resolveGameAction } from "../game/ActionResolving";
-import { getShuffledOrder } from "../game/DeckBuilding";
-import { GameAttempt, GameEventType } from "../game/types/GameEvent";
-import { BoardState } from "./states/BoardState";
+import {
+  VariantDefinition,
+  GameDefinition,
+  buildVariant,
+  genericPlayers,
+  getShuffledOrder,
+  GameEventType,
+  GameAttempt,
+  genericVariant,
+  resolveGameAttempt,
+} from "../game";
 import Board from "./Board";
-import { buildVariant, VariantDefinition } from "../game/types/Variant";
-import { genericPlayers, genericVariant } from "../game/GenericData";
-import { GameDefinition } from "../game/GameTypes";
+import BoardState from "./states/BoardState";
 
 export default class SolitaireBoard extends Board {
   constructor(variantDef: VariantDefinition) {
@@ -26,7 +31,7 @@ export default class SolitaireBoard extends Board {
   }
 
   async attemptPlayerAction(action: GameAttempt): Promise<boolean> {
-    const event = resolveGameAction(
+    const event = resolveGameAttempt(
       action,
       this.state.latestTurn,
       this.state.definition.variant,

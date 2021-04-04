@@ -1,50 +1,10 @@
 import ArrayUtil from "../util/ArrayUtil";
-import { CardData, ShufflerInput } from "./GameTypes";
-import { VariantDefinition } from "./types/Variant";
-import xorshift32 from "./xorshift32";
+import { xorshift32 } from "../util/rng";
+import { Card, Deck } from ".";
 
-const DEFAULT_SUIT_RANKS: ReadonlyArray<number> = [1, 2, 3, 4, 5];
-const DEFAULT_SUIT_RANK_DIVISION: ReadonlyArray<number> = [3, 2, 2, 2, 1];
-
-export class Deck {
-  readonly cards: ReadonlyArray<{
-    readonly data: Readonly<CardData>;
-    readonly count: number;
-  }>;
-  readonly lookup: ReadonlyArray<number>;
-
-  constructor(variant: VariantDefinition) {
-    const suits = variant.suits;
-    this.cards = suits
-      .map((suit) =>
-        DEFAULT_SUIT_RANKS.map((rank, i) => ({
-          data: { suit, rank },
-          count: DEFAULT_SUIT_RANK_DIVISION[i],
-        }))
-      )
-      .flat();
-    this.lookup = this.cards.reduce<number[]>(
-      (acc, val, i) => acc.concat(ArrayUtil.fill(val.count, i)),
-      []
-    );
-  }
-
-  getCard(index: number) {
-    return this.cards[this.lookup[index]].data;
-  }
-
-  get length() {
-    return this.lookup.length;
-  }
-}
-
-function areCardsSame(a: CardData, b: CardData) {
-  return a.rank === b.rank && a.suit === b.suit;
-}
-
-export function createProcuredOrder(
+export function createProcuredDeckOrder(
   deck: Deck,
-  inputOrder: (number | CardData)[],
+  inputOrder: (number | Card)[],
   seed?: ShufflerInput
 ) {
   let order = ArrayUtil.iota(deck.length);
@@ -74,7 +34,7 @@ export function createProcuredOrder(
       throw new Error("Card Type Depleted");
     }
   }
-  //Fill rest of deck with random order, who cares
+  //Fill rest of deck with random order
   let remaining = order.slice(countProcured);
   let { order: rOrder, seed: rSeed } = getShuffledOrder(remaining.length, seed);
   for (let i = 0; i < remaining.length; i++) {
@@ -84,6 +44,11 @@ export function createProcuredOrder(
   return { order, seed: rSeed };
 }
 
+export function areCardsSame(a: Card, b: Card) {
+  return a.rank === b.rank && a.suit === b.suit;
+}
+
+export type ShufflerInput = number | undefined;
 export function getShuffledOrder(
   length: number,
   seed: ShufflerInput = undefined

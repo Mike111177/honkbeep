@@ -1,13 +1,11 @@
 import EventEmitter from "events";
-import BackendInterface from "./BackendInterface";
-import { GameAttempt } from "./types/GameEvent";
+import Backend from "./types/Backend";
+import { GameAttempt } from "../game/types/GameEvent";
 import LocalServer from "./LocalServer";
-import { GameData, GameEventMessage } from "./GameTypes";
+import { GameData, GameEventMessage } from "./types/GameData";
 
 //Meant for dictating logic of local games or template games
-export default class LocalBackend
-  extends EventEmitter
-  implements BackendInterface {
+export default class LocalBackend extends EventEmitter implements Backend {
   private player: number;
   private server: LocalServer;
   private state?: GameData;

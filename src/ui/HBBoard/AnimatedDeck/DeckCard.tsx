@@ -1,6 +1,6 @@
 import { ComponentPropsWithoutRef, useMemo } from "react";
 
-import Card, { CardProps } from "../../Card";
+import DrawCard, { CardProps } from "../../DrawCard";
 import { getPipsFromEmpathy } from "../../../game/types/Empathy";
 import { useBoardState } from "../../BoardContext";
 import ArrayUtil from "../../../util/ArrayUtil";
@@ -69,5 +69,5 @@ export default function HBDeckCard({ index, ...props }: HBDeckCardProps) {
       };
     }
   }, [cardInfo, definition.variant, pips, props, spaceDown, touched]);
-  return <Card {...cardProps} />;
+  return <DrawCard {...cardProps} />;
 }

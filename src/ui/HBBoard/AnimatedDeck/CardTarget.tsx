@@ -1,5 +1,5 @@
 import { ComponentPropsWithoutRef } from "react";
-import { CardSVG } from "../../Card";
+import { CardSVG } from "../../DrawCard";
 import { FloatAreaPath, useFloatArea } from "../../util/Floating";
 
 //Helper to make card targets

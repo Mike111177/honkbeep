@@ -1,11 +1,12 @@
-import { createProcuredOrder } from "./DeckBuilding";
-import { GameDefinition } from "./GameTypes";
 import {
+  createProcuredDeckOrder,
+  GameDefinition,
   initGameStateFromDefinition,
   reduceGameEvent,
-} from "./states/GameState";
-import { GameEventType } from "./types/GameEvent";
-import { buildVariant, VariantDefinition } from "./types/Variant";
+  GameEventType,
+  buildVariant,
+  VariantDefinition,
+} from ".";
 
 export function genericPlayers<T extends VariantDefinition>({ numPlayers }: T) {
   return [
@@ -39,7 +40,7 @@ export function genericDefinition(): GameDefinition {
 export function genericSampleGame() {
   const definition = genericDefinition();
   const { variant } = definition;
-  const deckOrderDef = createProcuredOrder(variant.deck, [
+  const deckOrderDef = createProcuredDeckOrder(variant.deck, [
     //Player 1
     { rank: 1, suit: "Red" },
     { rank: 1, suit: "Red" },

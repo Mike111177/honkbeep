@@ -1,10 +1,10 @@
 import { Immutable } from "../../util/HelperTypes";
-import { Deck } from "../DeckBuilding";
-import { SuitData } from "../GameTypes";
+import { Deck } from "..";
+import { Suit } from "./Suit";
 
 //Minimum data to build decks and get initial state
 export type VariantDefinition = Immutable<{
-  suits: SuitData[];
+  suits: Suit[];
   numPlayers: number;
   handSize: number;
 }>;

@@ -2,7 +2,7 @@ import { Meta, Story } from "@storybook/react";
 import colors from "../colors.json";
 
 import { CardIcon } from ".";
-import { CardData } from "../../game/GameTypes";
+import { Card } from "../../game";
 
 export default {
   title: "Card/Icon",
@@ -30,7 +30,7 @@ export default {
   },
 } as Meta;
 
-export const CardIconStory: Story<CardData> = ({ rank, suit, ...props }) => (
+export const CardIconStory: Story<Card> = ({ rank, suit, ...props }) => (
   <span
     style={{
       color: "white",

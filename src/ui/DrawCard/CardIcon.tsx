@@ -2,14 +2,14 @@ import { ComponentPropsWithoutRef } from "react";
 import chroma from "chroma-js";
 
 import colors from "../BaseColors";
-import { CardData } from "../../game/GameTypes";
+import { Card } from "../../game";
 
 import { CardRectangle, CardSVG } from ".";
 
 import styles from "./Card.module.css";
 
 export type CardIconProps = {
-  card: Readonly<CardData>;
+  card: Readonly<Card>;
 } & ComponentPropsWithoutRef<"svg">;
 
 export default function CardIcon({

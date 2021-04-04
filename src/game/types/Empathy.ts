@@ -1,7 +1,5 @@
+import { GameState, Deck, GameDefinition } from "..";
 import { Immutable } from "../../util/HelperTypes";
-import { Deck } from "../DeckBuilding";
-import { GameDefinition } from "../GameTypes";
-import { GameState } from "../states/GameState";
 
 export enum EmpathyStatus {
   NotedFor = 0, //Player gave it an elim note

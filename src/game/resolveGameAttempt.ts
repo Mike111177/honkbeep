@@ -1,39 +1,13 @@
-import { GameState } from "./states/GameState";
 import {
+  GameState,
   GameAttempt,
   GameEvent,
   GameEventType,
   GamePlayResultType,
-} from "./types/GameEvent";
-import { doesClueMatchCard } from "./Rules";
-import Variant from "./types/Variant";
-
-function isCardPlayableOnStack(
-  card: number,
-  stackNumber: number,
-  state: Readonly<GameState>,
-  variant: Variant,
-  shuffleOrder: readonly number[]
-) {
-  const cardInfo = variant.deck.getCard(shuffleOrder[card]);
-  const suit = variant.suits[stackNumber];
-  const stack = state.stacks[stackNumber];
-  if (suit === cardInfo.suit) {
-    if (stack.length === 0) {
-      if (cardInfo.rank === 1) {
-        return true;
-      }
-    } else {
-      const { rank } = variant.deck.getCard(
-        shuffleOrder[stack[stack.length - 1]]
-      );
-      if (rank === cardInfo.rank - 1) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
+  doesClueMatchCard,
+  Variant,
+  isCardPlayableOnStack,
+} from ".";
 
 /**
  * Test if a GameAttempt is valid given a GameState, and return the resulting event if it is
@@ -42,7 +16,7 @@ function isCardPlayableOnStack(
  * @param shuffleOrder Known deck order
  * @returns Resulting event if attempt was valid, undefined if not
  */
-export function resolveGameAction(
+export default function resolveGameAttempt(
   action: Readonly<GameAttempt>,
   state: Readonly<GameState>,
   variant: Variant,

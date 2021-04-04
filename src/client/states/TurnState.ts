@@ -1,13 +1,15 @@
 import produce, { Draft } from "immer";
-import { GameEvent, GameEventType } from "../../game/types/GameEvent";
-import { doesClueMatchCard } from "../../game/Rules";
 import {
+  DeckEmpathy,
   GameState,
-  initGameStateFromDefinition,
+  GameEvent,
+  GameEventType,
+  doesClueMatchCard,
+  EmpathyStatus,
   reduceGameEventFn,
-} from "../../game/states/GameState";
-import { DeckEmpathy, EmpathyStatus } from "../../game/types/Empathy";
-import Variant from "../../game/types/Variant";
+  initGameStateFromDefinition,
+  Variant,
+} from "../../game";
 import ArrayUtil from "../../util/ArrayUtil";
 
 //Per turn metadata for cards

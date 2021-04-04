@@ -1,7 +1,7 @@
-import produce, { Draft, immerable } from "immer";
-import { GameDefinition, GameEventMessage } from "../../game/GameTypes";
-import { GameEvent } from "../../game/types/GameEvent";
-import { initTurnState, reduceTurnEvent, TurnState } from "./TurnState";
+import produce, { immerable, Draft } from "immer";
+import { GameEventMessage } from "../../backend/types/GameData";
+import { GameDefinition, GameEvent } from "../../game";
+import { TurnState, initTurnState, reduceTurnEvent } from "./TurnState";
 
 export class BoardState {
   readonly [immerable] = true;

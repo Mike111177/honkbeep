@@ -1,7 +1,7 @@
-import Card from "./Card";
-export default Card;
-export { default as Card } from "./Card";
-export * from "./Card";
+import DrawCard from "./DrawCard";
+export default DrawCard;
+export { default as DrawCard } from "./DrawCard";
+export * from "./DrawCard";
 export { default as CardFront } from "./CardFront";
 export * from "./CardFront";
 export { default as CardBack } from "./CardBack";

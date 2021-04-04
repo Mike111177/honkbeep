@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import HBBoardLayout from "./HBBoardLayout";
-import LocalServer from "../../game/LocalServer";
-import LocalBackend from "../../game/LocalBackend";
+import LocalServer from "../../backend/LocalServer";
+import LocalBackend from "../../backend/LocalBackend";
 import ClientBoard from "../../client/ClientBoard";
 import { genericDefinition } from "../../game/GenericData";
 

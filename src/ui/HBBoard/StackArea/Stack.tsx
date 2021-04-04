@@ -2,7 +2,7 @@ import chroma from "chroma-js";
 
 import CardTarget from "../AnimatedDeck/CardTarget";
 import { useFloatArea } from "../../util/Floating";
-import { CARD_VIEW_MIDPOINT as mid, OutlineFilter } from "../../Card";
+import { CARD_VIEW_MIDPOINT as mid, OutlineFilter } from "../../DrawCard";
 import { vecAdd } from "../../../util/Vector";
 import { useBoard } from "../../BoardContext";
 

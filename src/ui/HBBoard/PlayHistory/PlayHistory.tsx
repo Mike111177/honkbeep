@@ -9,7 +9,7 @@ import {
   GamePlayEvent,
   GamePlayResultType,
 } from "../../../game/types/GameEvent";
-import Card from "../../Card";
+import Card from "../../DrawCard";
 import { useBoardState } from "../../BoardContext";
 import classNames from "../../util/classNames";
 

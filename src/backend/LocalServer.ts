@@ -1,13 +1,17 @@
-import { CardReveal, GameDefinition, GameEventMessage } from "./GameTypes";
-import { Deck, getShuffledOrder } from "./DeckBuilding";
 import {
+  GameDefinition,
+  Deck,
+  GameEvent,
   GameState,
-  initGameStateFromDefinition,
+  GameEventType,
   reduceGameEvent,
-} from "./states/GameState";
+  initGameStateFromDefinition,
+  getShuffledOrder,
+  GameAttempt,
+  resolveGameAttempt,
+} from "../game";
 import ArrayUtil from "../util/ArrayUtil";
-import { resolveGameAction } from "./ActionResolving";
-import GameEvent, { GameAttempt, GameEventType } from "./types/GameEvent";
+import { CardReveal, GameEventMessage } from "./types/GameData";
 
 type PlayerRevealTurn = {
   turn: number;
@@ -144,7 +148,7 @@ export default class LocalServer {
     //Check to make sure its this players turn
     if (!this.isPlayersTurn(player)) return false;
     //If build event from attempt
-    const event = resolveGameAction(
+    const event = resolveGameAttempt(
       action,
       this.state,
       this.definition.variant,

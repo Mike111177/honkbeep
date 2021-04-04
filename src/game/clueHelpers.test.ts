@@ -1,5 +1,4 @@
-import { doesClueMatchCard } from "./Rules";
-import { ClueType } from "./types/Clue";
+import { ClueType, doesClueMatchCard } from ".";
 
 describe("doesClueMatchCard helper", () => {
   test("Clue correctly matches number clues", () => {

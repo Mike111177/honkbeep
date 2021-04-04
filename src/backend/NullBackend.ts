@@ -1,10 +1,10 @@
-import BackendInterface from "./BackendInterface";
+import Backend from "./types/Backend";
 
 function nullError<T>(...args: any[]): T {
   throw new Error("Attempted to use NullBackend");
 }
 
-export default class NullBackend implements BackendInterface {
+export default class NullBackend implements Backend {
   addListener = nullError;
   on = nullError;
   once = nullError;

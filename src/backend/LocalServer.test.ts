@@ -1,7 +1,7 @@
 import LocalServer from "./LocalServer";
-import { GameClueAttempt, GameEventType } from "./types/GameEvent";
-import { ClueType } from "./types/Clue";
-import { genericSampleGame } from "./GenericData";
+import { GameClueAttempt, GameEventType } from "../game/types/GameEvent";
+import { ClueType } from "../game/types/Clue";
+import { genericSampleGame } from "../game/GenericData";
 
 test("Initializes without error", () => {
   const { definition: gamedef } = genericSampleGame();

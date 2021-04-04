@@ -1,14 +1,14 @@
-import BackendInterface from "../game/BackendInterface";
-import { GameAttempt } from "../game/types/GameEvent";
-import NullBackend from "../game/NullBackend";
+import NullBackend from "../backend/NullBackend";
+import Backend from "../backend/types/Backend";
+import { GameAttempt } from "../game";
 import Board from "./Board";
-import { BoardState } from "./states/BoardState";
+import BoardState from "./states/BoardState";
 
 export default class ClientBoard extends Board {
   //Adapter to use to communicate with server
-  private backend: BackendInterface;
+  private backend: Backend;
 
-  constructor(backend: BackendInterface) {
+  constructor(backend: Backend) {
     if (!(backend instanceof NullBackend)) {
       //Create new ClientState
       super(
