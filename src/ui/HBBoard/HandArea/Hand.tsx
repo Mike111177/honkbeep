@@ -18,6 +18,7 @@ export default function Hand({ player }: HandProps) {
         player === (viewTurn.turn - 1) % definition.variant.numPlayers,
       ];
     },
+    [player],
     ArrayUtil.shallowCompare
   );
 

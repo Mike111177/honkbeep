@@ -103,14 +103,18 @@ function PlayerButton({ val: { p, i }, selected, set }: PlayerButtonProps) {
 export default function HBClueArea() {
   //Get state
   const boardDispatch = useBoardReducer();
-  const [players, turn, suits, clues] = useBoardState((s) => {
-    return [
-      s.definition.playerNames,
-      s.viewTurn.turn,
-      s.definition.variant.suits,
-      s.viewTurn.clues,
-    ];
-  }, ArrayUtil.shallowCompare);
+  const [players, turn, suits, clues] = useBoardState(
+    (s) => {
+      return [
+        s.definition.playerNames,
+        s.viewTurn.turn,
+        s.definition.variant.suits,
+        s.viewTurn.clues,
+      ];
+    },
+    [],
+    ArrayUtil.shallowCompare
+  );
 
   const [selectedPlayer, setSelectedPlayer] = useState<number | null>(null);
   const [selectedClue, setSelectedClue] = useState<Clue | null>(null);

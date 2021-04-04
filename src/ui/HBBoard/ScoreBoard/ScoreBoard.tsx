@@ -14,6 +14,7 @@ export default function ScoreBoard() {
       strikes,
       stacks,
     ],
+    [],
     ArrayUtil.shallowCompare
   );
 

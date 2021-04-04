@@ -5,9 +5,13 @@ import styles from "./Deck.module.css";
 import ArrayUtil from "../../../util/ArrayUtil";
 
 export default function Deck() {
-  const [deck, topDeck] = useBoardState((s) => {
-    return [s.definition.variant.deck, s.viewTurn.topDeck];
-  }, ArrayUtil.shallowCompare);
+  const [deck, topDeck] = useBoardState(
+    (s) => {
+      return [s.definition.variant.deck, s.viewTurn.topDeck];
+    },
+    [],
+    ArrayUtil.shallowCompare
+  );
 
   return (
     <CardTarget className={styles.Deck} areaPath={["deck"]}>

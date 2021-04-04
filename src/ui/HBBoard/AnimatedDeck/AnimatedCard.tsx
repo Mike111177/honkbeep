@@ -61,34 +61,32 @@ export default function FloatingCard({ index }: FloatCardProps) {
   const boardDispatch = useBoardReducer();
   const floatContext = useContext(FloatContext);
 
-  const [
-    draggable,
-    cardOnTopOfStack,
-    cardOnBottomOfStack,
-    ...home
-  ] = useBoardState((s) => {
-    const home = getCardHome(index, s.viewTurn);
-    const cardInCurrentPlayerHand =
-      home[0] === "hands" &&
-      home[1] === (s.viewTurn.turn - 1) % s.definition.variant.numPlayers;
-    let cardOnTopOfStack = false;
-    let cardOnBottomOfStack = false;
-    if (home[0] === "stacks") {
-      const stack = s.viewTurn.stacks[home[1] as number];
-      if (stack[stack.length - 1] === index) {
-        cardOnTopOfStack = true;
-      } else if (stack[stack.length - 2] !== index) {
-        cardOnBottomOfStack = true;
-      }
-    }
-    return [
-      cardInCurrentPlayerHand && !s.paused,
-      cardOnTopOfStack,
-      cardOnBottomOfStack,
-      ...home,
-    ];
-  }, ArrayUtil.shallowCompare);
-  const visible = !(home[0] === "deck" || cardOnBottomOfStack);
+  const [draggable, cardOnTopOfStack, visible, ...home] = useBoardState(
+    ({ paused, viewTurn, definition: { variant } }) => {
+      const home = getCardHome(index, viewTurn);
+      const cardInCurrentPlayerHand =
+        home[0] === "hands" &&
+        home[1] === (viewTurn.turn - 1) % variant.numPlayers;
+      const stack =
+        home[0] === "stacks" ? viewTurn.stacks[home[1] as number] : undefined;
+      const cardOnTopOfStack =
+        stack !== undefined && stack[stack.length - 1] === index;
+      const visible =
+        cardOnTopOfStack ||
+        !(
+          home[0] === "deck" ||
+          (stack !== undefined && stack[stack.length - 2] !== index)
+        );
+      return [
+        cardInCurrentPlayerHand && !paused,
+        cardOnTopOfStack,
+        visible,
+        ...home,
+      ];
+    },
+    [index],
+    ArrayUtil.shallowCompare
+  );
 
   const [dragging, setDragging] = useState(false);
   const [dropPath, setDropPath] = useState<FloatAreaPath | null>(null);
@@ -194,7 +192,6 @@ export default function FloatingCard({ index }: FloatCardProps) {
 
   const dragBinder = useDrag<HTMLDivElement>(onDrag, draggable);
 
-  //Detach listeners if not in current persons hand
   const props = useMemo(() => {
     //Set correct zIndex
     let zIndex = 0;
@@ -206,14 +203,13 @@ export default function FloatingCard({ index }: FloatCardProps) {
       zIndex = 1;
     }
     return {
-      className: styles.AnimatedCard,
       style: { zIndex, ...spring },
     };
   }, [cardOnTopOfStack, dragging, home, spring]);
 
   if (visible) {
     return (
-      <animated.div {...dragBinder} {...props}>
+      <animated.div className={styles.AnimatedCard} {...dragBinder} {...props}>
         <HBDeckCard index={index} />
       </animated.div>
     );

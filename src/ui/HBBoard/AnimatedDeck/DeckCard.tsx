@@ -51,6 +51,7 @@ export default function HBDeckCard({ index, ...props }: HBDeckCardProps) {
         s.viewTurn.cardMeta[index].touched,
       ];
     },
+    [index],
     ArrayUtil.shallowCompare
   );
   const pips = useMemo(

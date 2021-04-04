@@ -10,14 +10,18 @@ import darkregion from "../DarkRegion.module.css";
 import ArrayUtil from "../../../util/ArrayUtil";
 
 export default function DiscardPile() {
-  const [cards, shuffleOrder, deck, suits] = useBoardState((s) => {
-    return [
-      s.viewTurn.discardPile,
-      s.shuffleOrder,
-      s.definition.variant.deck,
-      s.definition.variant.suits,
-    ];
-  }, ArrayUtil.shallowCompare);
+  const [cards, shuffleOrder, deck, suits] = useBoardState(
+    (s) => {
+      return [
+        s.viewTurn.discardPile,
+        s.shuffleOrder,
+        s.definition.variant.deck,
+        s.definition.variant.suits,
+      ];
+    },
+    [],
+    ArrayUtil.shallowCompare
+  );
   const ref = useFloatArea(["discardPile"], { dropZone: true });
 
   const targets = useMemo(() => {

@@ -66,17 +66,21 @@ function CluePlayDescriber({
 
 type DiscardPlayDescriberProps = { turn: number; event: GameDiscardEvent };
 function DiscardPlayDescriber({ turn, event }: DiscardPlayDescriberProps) {
-  const [card, playerName, slotNumber] = useBoardState((s) => {
-    const shuffleOrder = s.shuffleOrder;
-    const deck = s.definition.variant.deck;
-    const numPlayers = s.definition.variant.numPlayers;
-    const player = (turn - 1) % numPlayers;
-    return [
-      deck.getCard(shuffleOrder[event.card]),
-      s.definition.playerNames[player],
-      s.turnHistory[turn].hands[player].indexOf(event.card),
-    ];
-  }, ArrayUtil.shallowCompare);
+  const [card, playerName, slotNumber] = useBoardState(
+    (s) => {
+      const shuffleOrder = s.shuffleOrder;
+      const deck = s.definition.variant.deck;
+      const numPlayers = s.definition.variant.numPlayers;
+      const player = (turn - 1) % numPlayers;
+      return [
+        deck.getCard(shuffleOrder[event.card]),
+        s.definition.playerNames[player],
+        s.turnHistory[turn].hands[player].indexOf(event.card),
+      ];
+    },
+    [event.card, turn],
+    ArrayUtil.shallowCompare
+  );
   return (
     <span>
       {`${playerName} discarded `}
@@ -88,17 +92,21 @@ function DiscardPlayDescriber({ turn, event }: DiscardPlayDescriberProps) {
 
 type PlayPlayDescriberProps = { turn: number; event: GamePlayEvent };
 function PlayPlayDescriber({ turn, event }: PlayPlayDescriberProps) {
-  const [card, playerName, slotNumber] = useBoardState((s) => {
-    const shuffleOrder = s.shuffleOrder;
-    const deck = s.definition.variant.deck;
-    const numPlayers = s.definition.variant.numPlayers;
-    const player = (turn - 1) % numPlayers;
-    return [
-      deck.getCard(shuffleOrder[event.card]),
-      s.definition.playerNames[player],
-      s.turnHistory[turn].hands[player].indexOf(event.card),
-    ];
-  }, ArrayUtil.shallowCompare);
+  const [card, playerName, slotNumber] = useBoardState(
+    (s) => {
+      const shuffleOrder = s.shuffleOrder;
+      const deck = s.definition.variant.deck;
+      const numPlayers = s.definition.variant.numPlayers;
+      const player = (turn - 1) % numPlayers;
+      return [
+        deck.getCard(shuffleOrder[event.card]),
+        s.definition.playerNames[player],
+        s.turnHistory[turn].hands[player].indexOf(event.card),
+      ];
+    },
+    [event.card, turn],
+    ArrayUtil.shallowCompare
+  );
   if (event.result === GamePlayResultType.Success) {
     return (
       <span>
