@@ -28,12 +28,12 @@ export default class SolitaireBoard extends Board {
   async attemptPlayerAction(action: GameAttempt): Promise<boolean> {
     const event = resolveGameAction(
       action,
-      this.boardState.latestTurn,
-      this.boardState.definition.variant,
-      this.boardState.shuffleOrder
+      this.state.latestTurn,
+      this.state.definition.variant,
+      this.state.shuffleOrder
     );
     if (event !== undefined) {
-      this.updateBoardState(this.boardState.appendEvent(event));
+      this.updateBoardState(this.state.appendEvent(event));
       return true;
     }
     return false;

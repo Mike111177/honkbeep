@@ -7,14 +7,13 @@ import styles from "./AnimatedDeck.module.css";
 
 //Create layer for all cards
 export default function CardFloatLayer() {
-  const context = useContext(BoardContext);
+  const cardAmount = useContext(BoardContext).state.definition.variant.deck
+    .length;
   return (
     <div className={styles.AnimatedDeck}>
-      {ArrayUtil.iota(context.boardState.definition.variant.deck.length).map(
-        (i) => (
-          <AnimatedCard key={i} index={i} />
-        )
-      )}
+      {ArrayUtil.iota(cardAmount).map((i) => (
+        <AnimatedCard key={i} index={i} />
+      ))}
     </div>
   );
 }

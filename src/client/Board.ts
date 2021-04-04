@@ -38,21 +38,15 @@ export default abstract class Board {
   get state(): Immutable<BoardState> {
     return this._boardState!;
   }
-  /**
-   * @deprecated Please use .state instead
-   */
-  get boardState(): Immutable<BoardState> {
-    return this._boardState!;
-  }
 
   reduceUserAction(action: UserAction) {
     switch (action.type) {
       case UserActionType.GameAttempt:
         return this.attemptPlayerAction(action.attempt);
       case UserActionType.SetViewTurn:
-        return this.updateBoardState(this.boardState.jumpToTurn(action.turn));
+        return this.updateBoardState(this.state.jumpToTurn(action.turn));
       case UserActionType.Resume:
-        return this.updateBoardState(this.boardState.resume());
+        return this.updateBoardState(this.state.resume());
     }
   }
 }

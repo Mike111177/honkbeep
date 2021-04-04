@@ -24,8 +24,8 @@ export default class ClientBoard extends Board {
         const { events } = this.backend.currentState();
         this.updateBoardState(
           events
-            .slice(this.boardState.latestTurn.turn)
-            .reduce((s, event) => s.appendEventMessage(event), this.boardState)
+            .slice(this.state.latestTurn.turn)
+            .reduce((s, event) => s.appendEventMessage(event), this.state)
         );
       });
     } else {

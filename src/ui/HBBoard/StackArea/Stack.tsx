@@ -70,8 +70,7 @@ export function Stack({ suit, number }: HBStackProps) {
 }
 
 export default function StackArea() {
-  const context = useContext(BoardContext);
-  const suits = context.boardState.definition.variant.suits;
+  const suits = useContext(BoardContext).state.definition.variant.suits;
   const ref = useFloatArea(["stackArea"], { dropZone: true });
   return (
     <div ref={ref} className={styles.StackArea}>
