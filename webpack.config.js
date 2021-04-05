@@ -1,5 +1,7 @@
 const path = require("path");
 const webpack = require("webpack");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
@@ -17,7 +19,7 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader"],
+        use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
       {
         test: /\.jpe?g|\.svg/,
@@ -30,6 +32,10 @@ module.exports = {
     ],
   },
   plugins: [
+    new MiniCssExtractPlugin({
+      filename: "static/css/[name].[contenthash:8].css",
+      chunkFilename: "static/css/[name].[contenthash:8].chunk.css",
+    }),
     new HtmlWebpackPlugin({ template: "./public/index.html" }),
     new webpack.SourceMapDevToolPlugin({
       filename: "[name].js.map",
@@ -38,6 +44,7 @@ module.exports = {
   ],
   optimization: {
     minimizer: [
+      new CssMinimizerPlugin(),
       new TerserPlugin({
         terserOptions: {
           parse: {
