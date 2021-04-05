@@ -1,17 +1,17 @@
 const path = require("path");
 const webpack = require("webpack");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
-
+const TerserPlugin = require("terser-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+
 module.exports = {
   devtool: false,
   output: {
     path: path.resolve(__dirname, "build"),
+    filename: "static/js/[name].[contenthash:8].js",
+    chunkFilename: "static/js/[name].[contenthash:8].chunk.js",
     clean: true,
   },
   entry: "./src/index.tsx",
-  devtool: "inline-source-map",
   resolve: { extensions: [".ts", ".tsx", ".js", ".css"] },
   module: {
     rules: [
@@ -21,7 +21,10 @@ module.exports = {
       },
       {
         test: /\.jpe?g|\.svg/,
-        use: ["file-loader"],
+        loader: "file-loader",
+        options: {
+          name: "static/media/[name].[hash:8].[ext]",
+        },
       },
       { test: /\.tsx?$/, use: "ts-loader" },
     ],
@@ -34,6 +37,26 @@ module.exports = {
     }),
   ],
   optimization: {
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          parse: {
+            ecma: 8,
+          },
+          compress: {
+            ecma: 5,
+            warnings: false,
+            comparisons: false,
+            inline: 2,
+          },
+          output: {
+            ecma: 8,
+            comments: false,
+            ascii_only: true,
+          },
+        },
+      }),
+    ],
     splitChunks: {
       chunks: "all",
       cacheGroups: {
