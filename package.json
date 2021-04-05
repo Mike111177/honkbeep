@@ -5,8 +5,8 @@
   "scripts": {
     "lint": "node node_modules/eslint/bin/eslint.js --config node_modules/eslint-config-react-app/index.js src",
     "lintfix": "node node_modules/eslint/bin/eslint.js --config node_modules/eslint-config-react-app/index.js src --fix",
-    "start": "react-scripts start",
-    "build": "webpack --mode production --progress",
+    "start": "webpack serve --history-api-fallback --port 3000 --no-stats",
+    "build": "webpack --env production --progress",
     "test": "react-scripts test",
     "serve": "serve -s build",
     "storybook": "start-storybook -p 6006 -s public",
@@ -52,6 +52,7 @@
     "typescript": "^4.2.3",
     "web-vitals": "^1.1.1",
     "webpack": "^5.30.0",
-    "webpack-cli": "^4.6.0"
+    "webpack-cli": "^4.6.0",
+    "webpack-dev-server": "^3.11.2"
   }
 }
