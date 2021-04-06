@@ -76,33 +76,30 @@ module.exports = (env) => {
       minimizer: [
         new CssMinimizerPlugin(),
         new TerserPlugin({
+          parallel: true,
           terserOptions: {
-            parse: {
-              ecma: 8,
-            },
-            compress: {
-              ecma: 5,
-              warnings: false,
-              comparisons: false,
-              inline: 2,
-            },
-            output: {
-              ecma: 8,
-              comments: false,
-              ascii_only: true,
-            },
+            compress: { ecma: 2018 },
           },
         }),
       ],
       splitChunks: {
         chunks: "all",
         cacheGroups: {
-          commons: {
+          vendors: {
             test: /[\\/]node_modules[\\/]/,
-            name: "vendor",
-            chunks: "initial",
+            name: "vendors",
+            priority: -10,
+            reuseExistingChunk: true,
+          },
+          default: {
+            minChunks: 2,
+            priority: -20,
+            reuseExistingChunk: true,
           },
         },
+      },
+      runtimeChunk: {
+        name: (entrypoint) => `${entrypoint.name}.runtime`,
       },
     },
   };
