@@ -102,5 +102,10 @@ module.exports = (env) => {
         name: (entrypoint) => `${entrypoint.name}.runtime`,
       },
     },
+    performance: { hints: false },
+    devServer: {
+      historyApiFallback: true,
+      noInfo: true,
+    },
   };
 };
