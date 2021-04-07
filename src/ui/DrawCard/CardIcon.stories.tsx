@@ -30,7 +30,7 @@ export default {
   },
 } as Meta;
 
-export const CardIconStory: Story<Card> = ({ rank, suit, ...props }) => (
+export const CardIconStory: Story<Card> = ({ rank, suit }) => (
   <span
     style={{
       color: "white",
@@ -38,7 +38,7 @@ export const CardIconStory: Story<Card> = ({ rank, suit, ...props }) => (
       fontSize: "40px",
     }}
   >
-    Alice played <CardIcon card={{ rank, suit }} {...props} /> from Slot 1
+    Alice played <CardIcon card={{ rank, suit }} /> from Slot 1
   </span>
 );
 CardIconStory.args = { rank: 1, suit: "Red" };
