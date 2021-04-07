@@ -1,5 +1,4 @@
 const path = require("path");
-const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
@@ -11,7 +10,6 @@ module.exports = (env) => {
   //Get mode
   const mode = env.production ? "production" : "development";
   const isProduction = mode === "production";
-  const isDevelopment = !isProduction;
 
   //Init rules
   const CSSRule = {
@@ -106,6 +104,7 @@ module.exports = (env) => {
     devServer: {
       historyApiFallback: true,
       noInfo: true,
+      hot: true,
     },
   };
 };
