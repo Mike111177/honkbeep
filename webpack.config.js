@@ -1,7 +1,4 @@
 const path = require("path");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const buildDir = path.resolve(__dirname, "build");
@@ -10,12 +7,13 @@ module.exports = (env) => {
   //Get mode
   const mode = env.production ? "production" : "development";
   const isProduction = mode === "production";
+  const isDevelopment = !isProduction;
 
   //Init rules
   const CSSRule = {
     test: /\.css$/,
+    //This will have MiniCssExtractPlugin.loader or "style-loader" injected into it
     use: [
-      isProduction ? MiniCssExtractPlugin.loader : "style-loader",
       {
         loader: "css-loader",
         options: {
@@ -29,23 +27,72 @@ module.exports = (env) => {
     ],
   };
 
+  const MediaRule = {
+    test: /\.jpe?g|\.svg/,
+    loader: "file-loader",
+    options: {
+      name: "static/media/[name].[hash:8].[ext]",
+    },
+  };
+
+  const TypeScriptRule = {
+    test: /\.tsx?$/,
+    loader: "ts-loader",
+    options: { happyPackMode: true, transpileOnly: true },
+  };
+
   //Init Plugins
   const plugins = [new HtmlWebpackPlugin({ template: "./src/index.html" })];
 
+  //Init minimizing settings
+  let minimizing = {};
+
+  //Things to add in development environment
+  if (isDevelopment) {
+    //Add typechecking
+    const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
+    plugins.push(new ForkTsCheckerWebpackPlugin());
+
+    //Make sure css is loaded without minification
+    CSSRule.use.unshift("style-loader");
+
+    //Disable minimizer
+    minimizing = { minimize: false };
+  }
+
   //Things to add for production build
   if (isProduction) {
+    const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+    const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+    const TerserPlugin = require("terser-webpack-plugin");
+
     //Minify css
+    CSSRule.use.unshift(MiniCssExtractPlugin.loader);
     plugins.unshift(
       new MiniCssExtractPlugin({
         filename: "static/css/[name].[contenthash:8].css",
         chunkFilename: "static/css/[name].[contenthash:8].chunk.css",
       })
     );
+
+    //Enable minimizers
+    minimizing = {
+      minimize: true,
+      minimizer: [
+        new CssMinimizerPlugin(),
+        new TerserPlugin({
+          parallel: true,
+          terserOptions: {
+            compress: { ecma: 2018 },
+          },
+        }),
+      ],
+    };
   }
 
   return {
     mode,
-    devtool: isProduction ? "source-map" : "eval",
+    devtool: isProduction ? false : "source-map",
     output: {
       path: isProduction ? buildDir : undefined,
       filename: "static/js/[name].[contenthash:8].js",
@@ -56,30 +103,11 @@ module.exports = (env) => {
     entry: "./src/index.tsx",
     resolve: { extensions: [".ts", ".tsx", ".js", ".css"] },
     module: {
-      rules: [
-        CSSRule,
-        {
-          test: /\.jpe?g|\.svg/,
-          loader: "file-loader",
-          options: {
-            name: "static/media/[name].[hash:8].[ext]",
-          },
-        },
-        { test: /\.tsx?$/, use: "ts-loader" },
-      ],
+      rules: [CSSRule, MediaRule, TypeScriptRule],
     },
     plugins,
     optimization: {
-      minimize: isProduction,
-      minimizer: [
-        new CssMinimizerPlugin(),
-        new TerserPlugin({
-          parallel: true,
-          terserOptions: {
-            compress: { ecma: 2018 },
-          },
-        }),
-      ],
+      ...minimizing,
       splitChunks: {
         chunks: "all",
         cacheGroups: {

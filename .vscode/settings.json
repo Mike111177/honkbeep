@@ -11,5 +11,6 @@
   },
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "cSpell.words": ["VIEWBOX", "omni"]
+  "cSpell.words": ["VIEWBOX", "omni"],
+  "typescript.tsdk": "node_modules\\typescript\\lib"
 }
