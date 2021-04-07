@@ -5,9 +5,7 @@
  * @returns {number} Array with ascending numbers
  */
 function iota(length: number, start: number = 0): number[] {
-  const arr = [...Array(length).keys()];
-  if (start > 0) return arr.map((i) => i + start);
-  else return arr;
+  return [...Array(length).keys()].map((i) => i + start);
 }
 
 /**

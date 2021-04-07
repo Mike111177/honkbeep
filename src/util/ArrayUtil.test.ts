@@ -1,8 +1,14 @@
 import ArrayUtil from "./ArrayUtil";
 
-test("Iota", () => {
-  expect(ArrayUtil.iota(4)).toStrictEqual([0, 1, 2, 3]);
-  expect(ArrayUtil.iota(10)).toStrictEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+describe("Iota", () => {
+  test("Correctly produces counts from 0", () => {
+    expect(ArrayUtil.iota(4)).toStrictEqual([0, 1, 2, 3]);
+    expect(ArrayUtil.iota(10)).toStrictEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  });
+  test("Correctly produces counts from other numbers", () => {
+    expect(ArrayUtil.iota(4, -4)).toStrictEqual([-4, -3, -2, -1]);
+    expect(ArrayUtil.iota(4, 5)).toStrictEqual([5, 6, 7, 8]);
+  });
 });
 
 test("Fill", () => {
