@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
-import { LoginPage } from "./ui/pages";
+import { Home, LoginPage } from "./ui/pages";
 import HBSolitaireBoard from "./ui/HBBoard/HBSolitaireBoard";
 
 import background from "./background_black.jpg";
@@ -18,6 +18,9 @@ function App() {
         </Route>
         <Route path="/login">
           <LoginPage />
+        </Route>
+        <Route path="/home">
+          <Home />
         </Route>
         <Route path="/solitaire">
           <HBSolitaireBoard />
