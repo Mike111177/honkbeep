@@ -31,8 +31,8 @@ export default {
   },
 } as Meta;
 
-export const HBCardFrontStory: Story<Card> = ({ rank, suit, ...props }) => (
-  <CardFront height="200px" card={{ rank, suit }} {...props} />
+export const HBCardFrontStory: Story<Card> = ({ rank, suit }) => (
+  <CardFront height="200px" card={{ rank, suit }} />
 );
 HBCardFrontStory.args = { rank: 1, suit: "Red" };
 HBCardFrontStory.storyName = "Front";
