@@ -45,7 +45,7 @@ module.exports = (env) => {
 
   return {
     mode,
-    devtool: isProduction ? "source-map" : "eval-source-map",
+    devtool: isProduction ? "source-map" : "eval",
     output: {
       path: isProduction ? buildDir : undefined,
       filename: "static/js/[name].[contenthash:8].js",
@@ -101,9 +101,9 @@ module.exports = (env) => {
       },
     },
     performance: { hints: false },
+    stats: isProduction ? "normal" : "minimal",
     devServer: {
       historyApiFallback: true,
-      noInfo: true,
       hot: true,
     },
   };
