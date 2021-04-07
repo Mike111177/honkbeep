@@ -90,8 +90,6 @@ export default function resolveGameAttempt(
         target,
         touched,
       };
-    }
-    default:
-      return undefined; //Invalid event, so obviously not valid attempt
+    } //Invalid event, so obviously not valid attempt
   }
 }
