@@ -92,7 +92,7 @@ module.exports = (env) => {
 
   return {
     mode,
-    devtool: isProduction ? false : "source-map",
+    devtool: isProduction ? "source-map" : "eval-cheap-source-map",
     output: {
       path: isProduction ? buildDir : undefined,
       filename: "static/js/[name].[contenthash:8].js",
@@ -110,25 +110,12 @@ module.exports = (env) => {
       ...minimizing,
       splitChunks: {
         chunks: "all",
-        cacheGroups: {
-          vendors: {
-            test: /[\\/]node_modules[\\/]/,
-            name: "vendors",
-            priority: -10,
-            reuseExistingChunk: true,
-          },
-          default: {
-            minChunks: 2,
-            priority: -20,
-            reuseExistingChunk: true,
-          },
-        },
       },
       runtimeChunk: {
         name: (entrypoint) => `${entrypoint.name}.runtime`,
       },
     },
-    performance: { hints: false },
+    performance: isProduction ? {} : false,
     stats: isProduction ? "normal" : "minimal",
     devServer: {
       historyApiFallback: true,
