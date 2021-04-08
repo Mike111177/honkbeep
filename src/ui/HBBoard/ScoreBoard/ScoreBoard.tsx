@@ -3,8 +3,8 @@ import ArrayUtil from "../../../util/ArrayUtil";
 import { useBoardState } from "../../BoardContext";
 import classNames from "../../util/classNames";
 
-import styles from "./ScoreBoard.module.css";
-import darkregion from "../DarkRegion.module.css";
+import styles from "./ScoreBoard.css";
+import darkregion from "../DarkRegion.css";
 
 export default function ScoreBoard() {
   const [turn, clues, strikes, stacks] = useBoardState(

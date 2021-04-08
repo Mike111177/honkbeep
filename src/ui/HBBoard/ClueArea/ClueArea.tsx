@@ -11,9 +11,9 @@ import {
 import colors from "../../BaseColors";
 import ArrayUtil from "../../../util/ArrayUtil";
 import { useBoardReducer, useBoardState } from "../../BoardContext";
-
-import styles from "./ClueArea.module.css";
 import { UserActionType } from "../../../client/types/UserAction";
+
+import styles from "./ClueArea.css";
 
 type Player = { p: string; i: number };
 type ClueButtonProps<T extends Clue | Player, S = T> = {

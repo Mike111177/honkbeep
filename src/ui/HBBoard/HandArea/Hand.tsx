@@ -3,7 +3,7 @@ import { useBoardState } from "../../BoardContext";
 import classNames from "../../util/classNames";
 import CardTarget from "../AnimatedDeck/CardTarget";
 
-import styles from "./HandArea.module.css";
+import styles from "./HandArea.css";
 
 type HandProps = {
   player: number;

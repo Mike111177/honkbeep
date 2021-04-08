@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import { Home, LoginPage } from "./ui/pages";
 
 import background from "./background_black.jpg";
-import styles from "./App.module.css";
+import styles from "./App.css";
 
 /*
 import HBSolitaireBoard from "./ui/HBBoard/HBSolitaireBoard";

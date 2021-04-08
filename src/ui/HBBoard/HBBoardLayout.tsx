@@ -12,7 +12,7 @@ import StackArea from "./StackArea/Stack";
 import BoardContext from "../BoardContext";
 import Board from "../../client/Board";
 
-import styles from "./BoardLayout.module.css";
+import styles from "./BoardLayout.css";
 
 export default function HBBoardLayout({ board }: { board: Board }) {
   const [floatData] = useState(() => new FloatContextData());

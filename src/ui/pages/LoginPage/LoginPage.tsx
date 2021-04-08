@@ -1,6 +1,6 @@
 import { useHistory } from "react-router-dom";
 import BoxButton from "../../components/BoxButton";
-import styles from "./LoginPage.module.css";
+import styles from "./LoginPage.css";
 
 export default function LoginPage() {
   const history = useHistory();

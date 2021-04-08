@@ -8,13 +8,13 @@ import {
   FloatContext,
 } from "../../util/Floating";
 import { useDrag } from "../../input";
-
-import styles from "./AnimatedDeck.module.css";
 import { UserActionType } from "../../../client/types/UserAction";
 import { GameState, GameEventType } from "../../../game";
 import ArrayUtil from "../../../util/ArrayUtil";
 import { Rectangle, vecAdd, vecInRectangle } from "../../../util/Vector";
 import { useBoardReducer, useBoardState } from "../../BoardContext";
+
+import styles from "./AnimatedDeck.css";
 
 function getCardHome(index: number, game: GameState): FloatAreaPath {
   //Search hands

@@ -1,7 +1,7 @@
 import { UserActionType } from "../../../client/types/UserAction";
 import ArrayUtil from "../../../util/ArrayUtil";
 import { useBoardReducer, useBoardState } from "../../BoardContext";
-import styles from "./ReplayControls.module.css";
+import styles from "./ReplayControls.css";
 
 const iconSkipBack = "⏮️";
 const iconBack = "⏪️";

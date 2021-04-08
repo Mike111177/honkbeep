@@ -2,7 +2,7 @@ import ArrayUtil from "../../../util/ArrayUtil";
 import { useBoardState } from "../../BoardContext";
 import Hand from "./Hand";
 
-import styles from "./HandArea.module.css";
+import styles from "./HandArea.css";
 
 export default function HandsArea() {
   const [playerNames, numPlayers, playerView] = useBoardState(

@@ -1,8 +1,8 @@
 import CardTarget from "../AnimatedDeck/CardTarget";
 import { useBoardState } from "../../BoardContext";
-
-import styles from "./Deck.module.css";
 import ArrayUtil from "../../../util/ArrayUtil";
+
+import styles from "./Deck.css";
 
 export default function Deck() {
   const [deck, topDeck] = useBoardState(

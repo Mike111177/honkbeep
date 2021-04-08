@@ -3,7 +3,7 @@ import HBBoardLayout from "./HBBoardLayout";
 import LocalServer from "../../backend/LocalServer";
 import LocalBackend from "../../backend/LocalBackend";
 import ClientBoard from "../../client/ClientBoard";
-import { genericDefinition } from "../../game/GenericData";
+import { genericDefinition } from "../../game";
 
 export default function HBClientBoard() {
   //Create virtual local Server

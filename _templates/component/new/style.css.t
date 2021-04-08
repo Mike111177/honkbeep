@@ -1,5 +1,5 @@
 ---
-to: src/ui/components/<%=name%>/<%=name%>.module.css
+to: src/ui/components/<%=name%>/<%=name%>.css
 ---
 .<%=name%> {
   height: 20px;

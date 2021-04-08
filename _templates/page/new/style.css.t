@@ -1,5 +1,5 @@
 ---
-to: src/ui/pages/<%=name%>/<%=name%>.module.css
+to: src/ui/pages/<%=name%>/<%=name%>.css
 ---
 .<%=name%> {
   height: 100%;

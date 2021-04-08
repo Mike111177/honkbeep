@@ -4,10 +4,10 @@ import { useFloatArea } from "../../util/Floating";
 import CardTarget from "../AnimatedDeck/CardTarget";
 import { useBoardState } from "../../BoardContext";
 import classNames from "../../util/classNames";
-
-import styles from "./DiscardPile.module.css";
-import darkregion from "../DarkRegion.module.css";
 import ArrayUtil from "../../../util/ArrayUtil";
+
+import styles from "./DiscardPile.css";
+import darkregion from "../DarkRegion.css";
 
 export default function DiscardPile() {
   const [cards, shuffleOrder, deck, suits] = useBoardState(

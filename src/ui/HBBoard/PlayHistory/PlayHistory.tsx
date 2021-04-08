@@ -1,21 +1,21 @@
 import chroma from "chroma-js";
 
 import colors from "../../BaseColors";
-import { ClueType } from "../../../game/types/Clue";
 import {
+  ClueType,
   GameClueEvent,
   GameDiscardEvent,
   GameEventType,
   GamePlayEvent,
   GamePlayResultType,
-} from "../../../game/types/GameEvent";
+} from "../../../game";
 import Card from "../../DrawCard";
 import { useBoardState } from "../../BoardContext";
 import classNames from "../../util/classNames";
-
-import styles from "./PlayHistory.module.css";
-import darkregion from "../DarkRegion.module.css";
 import ArrayUtil from "../../../util/ArrayUtil";
+
+import styles from "./PlayHistory.css";
+import darkregion from "../DarkRegion.css";
 
 const NaturalNums = ["zero", "one", "two", "three", "four", "five"];
 

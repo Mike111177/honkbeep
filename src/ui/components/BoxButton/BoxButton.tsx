@@ -1,6 +1,6 @@
 import { ComponentPropsWithRef, ReactChild } from "react";
 import classNames from "../../util/classNames";
-import styles from "./BoxButton.module.css";
+import styles from "./BoxButton.css";
 
 export type BoxButtonProps = {
   children: ReactChild;

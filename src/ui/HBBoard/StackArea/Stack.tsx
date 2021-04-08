@@ -9,7 +9,7 @@ import { useBoard } from "../../BoardContext";
 import colors from "../../BaseColors";
 import pips from "../../pips";
 
-import styles from "./Stack.module.css";
+import styles from "./Stack.css";
 
 type HBStackProps = {
   number: number;
