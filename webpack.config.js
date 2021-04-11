@@ -2,6 +2,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const buildDir = path.resolve(__dirname, "build");
+const SVGOConfig = require("./svgo.config");
 
 module.exports = (env) => {
   //Get mode
@@ -27,12 +28,34 @@ module.exports = (env) => {
     ],
   };
 
-  const MediaRule = {
-    test: /\.jpe?g|\.svg/,
-    loader: "file-loader",
-    options: {
-      name: "static/media/[name].[hash:8].[ext]",
-    },
+  const ImageRule = {
+    test: /\.(gif|png|jpe?g)$/i,
+    use: [
+      {
+        loader: "file-loader",
+        options: {
+          name: "static/media/[name].[hash:8].[ext]",
+        },
+      },
+    ],
+  };
+
+  const SVGRule = {
+    test: /\.svg$/,
+    use: [
+      {
+        loader: "@svgr/webpack",
+        options: {
+          svgo: SVGOConfig,
+        },
+      },
+      {
+        loader: "file-loader",
+        options: {
+          name: "static/media/[name].[hash:8].[ext]",
+        },
+      },
+    ],
   };
 
   const TypeScriptRule = {
@@ -88,6 +111,16 @@ module.exports = (env) => {
         }),
       ],
     };
+
+    //Compress Images
+    const ImageCompressLoader = {
+      loader: "image-webpack-loader",
+      options: {
+        svgo: SVGOConfig,
+      },
+    };
+    ImageRule.use.push(ImageCompressLoader);
+    SVGRule.use.push(ImageCompressLoader);
   }
 
   return {
@@ -103,7 +136,7 @@ module.exports = (env) => {
     entry: "./src/index.tsx",
     resolve: { extensions: [".ts", ".tsx", ".js", ".css"] },
     module: {
-      rules: [CSSRule, MediaRule, TypeScriptRule],
+      rules: [CSSRule, ImageRule, SVGRule, TypeScriptRule],
     },
     plugins,
     optimization: {
