@@ -1,4 +1,4 @@
-import ArrayUtil from "../util/ArrayUtil";
+import * as ArrayUtil from "../util/ArrayUtil";
 import { xorshift32 } from "../util/rng";
 import { Card, Deck } from ".";
 

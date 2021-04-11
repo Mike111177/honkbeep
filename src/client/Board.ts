@@ -1,6 +1,6 @@
 import { Immutable } from "../util/HelperTypes";
 import { GameAttempt } from "../game/types/GameEvent";
-import ArrayUtil from "../util/ArrayUtil";
+import * as ArrayUtil from "../util/ArrayUtil";
 import { BoardState } from "./states/BoardState";
 import { UserAction, UserActionType } from "./types/UserAction";
 

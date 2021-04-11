@@ -4,7 +4,7 @@ import {
   GamePlayResultType,
   GameEvent,
 } from "../types/GameEvent";
-import ArrayUtil from "../../util/ArrayUtil";
+import * as ArrayUtil from "../../util/ArrayUtil";
 import Variant from "../types/Variant";
 
 enableMapSet();

@@ -1,5 +1,5 @@
 import { Card, VariantDefinition } from "..";
-import ArrayUtil from "../../util/ArrayUtil";
+import * as ArrayUtil from "../../util/ArrayUtil";
 
 const DEFAULT_SUIT_RANKS: ReadonlyArray<number> = [1, 2, 3, 4, 5];
 const DEFAULT_SUIT_RANK_DIVISION: ReadonlyArray<number> = [3, 2, 2, 2, 1];

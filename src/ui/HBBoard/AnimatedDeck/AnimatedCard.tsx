@@ -10,7 +10,7 @@ import {
 import { useDrag } from "../../input";
 import { UserActionType } from "../../../client/types/UserAction";
 import { GameState, GameEventType } from "../../../game";
-import ArrayUtil from "../../../util/ArrayUtil";
+import * as ArrayUtil from "../../../util/ArrayUtil";
 import { Rectangle, vecAdd, vecInRectangle } from "../../../util/Vector";
 import { useBoardReducer, useBoardState } from "../../BoardContext";
 

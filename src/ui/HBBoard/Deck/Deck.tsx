@@ -1,6 +1,6 @@
 import CardTarget from "../AnimatedDeck/CardTarget";
 import { useBoardState } from "../../BoardContext";
-import ArrayUtil from "../../../util/ArrayUtil";
+import * as ArrayUtil from "../../../util/ArrayUtil";
 
 import styles from "./Deck.css";
 

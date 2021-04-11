@@ -10,7 +10,7 @@ import {
   initGameStateFromDefinition,
   Variant,
 } from "../../game";
-import ArrayUtil from "../../util/ArrayUtil";
+import * as ArrayUtil from "../../util/ArrayUtil";
 
 //Per turn metadata for cards
 type CardTurnMetaData = {

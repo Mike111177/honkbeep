@@ -1,4 +1,4 @@
-import ArrayUtil from "../../util/ArrayUtil";
+import * as ArrayUtil from "../../util/ArrayUtil";
 import { Deck, createProcuredDeckOrder } from "..";
 
 describe("createProcuredOrder", () => {

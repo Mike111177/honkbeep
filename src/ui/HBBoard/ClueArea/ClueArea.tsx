@@ -9,7 +9,7 @@ import {
   numberClue,
 } from "../../../game/types/Clue";
 import colors from "../../BaseColors";
-import ArrayUtil from "../../../util/ArrayUtil";
+import * as ArrayUtil from "../../../util/ArrayUtil";
 import { useBoardReducer, useBoardState } from "../../BoardContext";
 import { UserActionType } from "../../../client/types/UserAction";
 

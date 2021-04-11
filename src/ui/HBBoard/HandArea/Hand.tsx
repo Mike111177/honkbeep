@@ -1,4 +1,4 @@
-import ArrayUtil from "../../../util/ArrayUtil";
+import * as ArrayUtil from "../../../util/ArrayUtil";
 import { useBoardState } from "../../BoardContext";
 import classNames from "../../util/classNames";
 import CardTarget from "../AnimatedDeck/CardTarget";

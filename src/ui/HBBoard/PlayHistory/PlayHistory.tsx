@@ -12,7 +12,7 @@ import {
 import Card from "../../DrawCard";
 import { useBoardState } from "../../BoardContext";
 import classNames from "../../util/classNames";
-import ArrayUtil from "../../../util/ArrayUtil";
+import * as ArrayUtil from "../../../util/ArrayUtil";
 
 import styles from "./PlayHistory.css";
 import darkregion from "../DarkRegion.css";

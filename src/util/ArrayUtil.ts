@@ -4,7 +4,7 @@
  * @param {number} [start=0] Initial value
  * @returns {number} Array with ascending numbers
  */
-function iota(length: number, start: number = 0): number[] {
+export function iota(length: number, start: number = 0): number[] {
   return [...Array(length).keys()].map((i) => i + start);
 }
 
@@ -16,9 +16,9 @@ function iota(length: number, start: number = 0): number[] {
  * @param {(T | (i:number)=>T)} value Item to fill array with or a factory function
  * @returns {T[]} Array filled with requested values
  */
-function fill<T>(length: number, value: (i: number) => T): T[];
-function fill<T>(length: number, value: T): T[];
-function fill(length: number, value: any): any[] {
+export function fill<T>(length: number, value: (i: number) => T): T[];
+export function fill<T>(length: number, value: T): T[];
+export function fill(length: number, value: any): any[] {
   if (typeof value === "function") {
     let fn = value as () => any;
     return iota(length).map(fn);
@@ -27,14 +27,14 @@ function fill(length: number, value: any): any[] {
   }
 }
 
-function remove(array: any[], o: any) {
+export function remove(array: any[], o: any) {
   const index = array.findIndex((i) => i === o);
   if (index >= 0) {
     array.splice(index, 1);
   }
 }
 
-function shallowCompare(a: any[], b: any[]): boolean {
+export function shallowCompare(a: any[], b: any[]): boolean {
   if (a.length === b.length) {
     for (let i = 0; i < a.length; i++) {
       if (a[i] !== b[i]) {
@@ -46,12 +46,3 @@ function shallowCompare(a: any[], b: any[]): boolean {
     return false;
   }
 }
-
-const ArrayUtil = {
-  iota,
-  fill,
-  remove,
-  shallowCompare,
-};
-
-export default ArrayUtil;

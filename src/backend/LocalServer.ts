@@ -10,7 +10,7 @@ import {
   GameAttempt,
   resolveGameAttempt,
 } from "../game";
-import ArrayUtil from "../util/ArrayUtil";
+import * as ArrayUtil from "../util/ArrayUtil";
 import { CardReveal, GameEventMessage } from "./types/GameData";
 
 type PlayerRevealTurn = {

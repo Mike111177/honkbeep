@@ -1,4 +1,4 @@
-import ArrayUtil from "./ArrayUtil";
+import * as ArrayUtil from "./ArrayUtil";
 
 describe("Iota", () => {
   test("Correctly produces counts from 0", () => {
