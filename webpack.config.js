@@ -98,6 +98,18 @@ module.exports = (env) => {
       })
     );
 
+    //Analyze bundles
+    const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+      .BundleAnalyzerPlugin;
+    plugins.push(
+      new BundleAnalyzerPlugin({
+        analyzerMode: "disabled",
+        // bundleDir: "./build",
+        // openAnalyzer: false,
+        generateStatsFile: true,
+      })
+    );
+
     //Enable minimizers
     minimizing = {
       minimize: true,
@@ -149,7 +161,16 @@ module.exports = (env) => {
       },
     },
     performance: isProduction ? {} : false,
-    stats: isProduction ? "normal" : "minimal",
+    stats: isProduction
+      ? {
+          all: false,
+          assets: true,
+          chunks: true,
+          chunkOrigins: true,
+          performance: true,
+          errors: true,
+        }
+      : "minimal",
     devServer: {
       historyApiFallback: true,
       hot: true,
