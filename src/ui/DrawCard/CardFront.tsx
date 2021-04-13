@@ -2,7 +2,8 @@ import { ComponentPropsWithoutRef } from "react";
 import chroma from "chroma-js";
 
 import colors from "../BaseColors";
-import pips, { Pip } from "../pips";
+import pipShapes from "../SuitPips";
+import { Pip } from "../components/Pip";
 import { vecAdd, vecSub } from "../../util/Vector";
 
 import { CardRectangle, CardSVG } from ".";
@@ -40,7 +41,7 @@ export default function CardFront({
   ...props
 }: CardFrontProps) {
   let color = colors(suit);
-  let pip = pips[suit];
+  let pip = pipShapes[suit];
   const num = rank;
   const backgroundColor = chroma.mix(color, "#FFFFFF", 0.5, "lrgb").hex();
   const tNum = (
@@ -56,7 +57,7 @@ export default function CardFront({
       {num}
     </text>
   );
-  const cPip = <Pip pip={pip} size={cPipHeight} fill={color} {...pipC} />;
+  const cPip = <Pip shape={pip} size={cPipHeight} fill={color} {...pipC} />;
   const tPip = React.cloneElement(cPip, {
     size: rPipHeight,
     ...pipT,

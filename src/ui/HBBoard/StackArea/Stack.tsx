@@ -7,7 +7,8 @@ import { vecAdd } from "../../../util/Vector";
 import { useBoard } from "../../BoardContext";
 
 import colors from "../../BaseColors";
-import pips, { Pip } from "../../pips";
+import { Pip } from "../../components/Pip";
+import SuitPips from "../../SuitPips";
 
 import styles from "./Stack.css";
 
@@ -57,7 +58,7 @@ export function Stack({ suit, number }: HBStackProps) {
         stroke={color}
         rx="5%"
       />
-      <Pip pip={pips[suit]} {...pipDims} fill={color} />
+      <Pip shape={SuitPips[suit]} {...pipDims} fill={color} />
     </CardTarget>
   );
 }
