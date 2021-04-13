@@ -43,7 +43,9 @@ export default function Deck() {
         dominantBaseline="middle"
         textAnchor="middle"
         fill="#FFFFFF"
-        filter="url(#outline)"
+        strokeWidth="4"
+        stroke="black"
+        paintOrder="stroke"
       >
         {deck.length - topDeck + 1}
       </text>

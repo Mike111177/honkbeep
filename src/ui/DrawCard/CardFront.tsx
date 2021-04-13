@@ -17,7 +17,7 @@ export type CardFrontProps = {
 const rPipHeight = 17.5;
 const cPipHeight = 27.5;
 const pipDist = { x: 30, y: 35 };
-const numOffset = { x: 25, y: 30 };
+const numOffset = { x: 27, y: 32 };
 const numSize = 50;
 
 const pipCorner = vecSub(mid, pipDist);
@@ -56,7 +56,9 @@ export default function CardFront({
         textAnchor="middle"
         dominantBaseline="central"
         stroke="black"
-        strokeWidth="1%"
+        strokeWidth="4"
+        paintOrder="stroke fill"
+        strokeLinejoin="round"
       >
         {rank}
       </text>
