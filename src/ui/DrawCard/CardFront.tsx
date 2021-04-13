@@ -1,15 +1,12 @@
-import { ComponentPropsWithoutRef } from "react";
-import chroma from "chroma-js";
+import { cloneElement, ComponentPropsWithoutRef } from "react";
+import { mix } from "chroma-js";
 
 import colors from "../BaseColors";
 import pipShapes from "../SuitPips";
 import { Pip } from "../components/Pip";
-import { vecAdd, vecSub } from "../../util/Vector";
-
-import { CardRectangle, CardSVG } from ".";
-import { CARD_VIEW_MIDPOINT as mid } from "./Constants";
 import { Card } from "../../game";
-import React from "react";
+import { vecAdd, vecSub } from "../../util/Vector";
+import { CARD_VIEW_MIDPOINT as mid, CardRectangle, CardSVG } from ".";
 
 export type CardFrontProps = {
   card: Card;
@@ -42,45 +39,40 @@ export default function CardFront({
 }: CardFrontProps) {
   let color = colors(suit);
   let pip = pipShapes[suit];
-  const num = rank;
-  const backgroundColor = chroma.mix(color, "#FFFFFF", 0.5, "lrgb").hex();
-  const tNum = (
-    <text
-      fill={color}
-      {...numOffset}
-      fontSize={numSize}
-      textAnchor="middle"
-      dominantBaseline="central"
-      stroke="black"
-      strokeWidth="1%"
-    >
-      {num}
-    </text>
-  );
+
   const cPip = <Pip shape={pip} size={cPipHeight} fill={color} {...pipC} />;
-  const tPip = React.cloneElement(cPip, {
+  const tPip = cloneElement(cPip, {
     size: rPipHeight,
     ...pipT,
     strokeWidth: "7%",
   });
-  const lPip = React.cloneElement(tPip, pipR);
-  const topLeftItems = (
-    <>
-      {tNum}
-      {num > 1 ? tPip : undefined}
-      {num > 3 ? lPip : undefined}
-    </>
+  const lPip = cloneElement(tPip, pipR);
+  const cornerPips = (
+    <g>
+      <text
+        fill={color}
+        {...numOffset}
+        fontSize={numSize}
+        textAnchor="middle"
+        dominantBaseline="central"
+        stroke="black"
+        strokeWidth="1%"
+      >
+        {rank}
+      </text>
+      {rank > 1 ? tPip : undefined}
+      {rank > 3 ? lPip : undefined}
+    </g>
   );
-
   return (
     <CardSVG {...props}>
       <CardRectangle
         border={borderOverride ?? color}
-        background={backgroundColor}
+        background={mix(color, "white").hex()}
       />
-      {num % 2 === 1 ? cPip : undefined}
-      {topLeftItems}
-      <g {...pipFlip}>{topLeftItems}</g>
+      {rank % 2 === 1 ? cPip : undefined}
+      {cornerPips}
+      {cloneElement(cornerPips, pipFlip)}
     </CardSVG>
   );
 }

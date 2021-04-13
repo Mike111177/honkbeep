@@ -2,7 +2,7 @@ import chroma from "chroma-js";
 
 import CardTarget from "../AnimatedDeck/CardTarget";
 import { useFloatArea } from "../../util/Floating";
-import { CARD_VIEW_MIDPOINT as mid, OutlineFilter } from "../../DrawCard";
+import { CARD_VIEW_MIDPOINT as mid } from "../../DrawCard";
 import { vecAdd } from "../../../util/Vector";
 import { useBoard } from "../../BoardContext";
 
@@ -29,7 +29,6 @@ export function Stack({ suit, number }: HBStackProps) {
     .hex();
   return (
     <CardTarget height="100%" width="100%" areaPath={["stacks", number]}>
-      {OutlineFilter}
       <rect
         x="5%"
         y="5%"

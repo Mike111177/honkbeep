@@ -8,7 +8,7 @@ import colors from "../BaseColors";
 import pipShapes from "../SuitPips";
 import { Pip } from "../components/Pip";
 
-import { OutlineFilter, CardRectangle, CardSVG } from ".";
+import { CardRectangle, CardSVG } from ".";
 import { CARD_VIEW_MIDPOINT as mid } from "./Constants";
 
 export type CardBackProps = {
@@ -20,6 +20,9 @@ export type CardBackProps = {
 const pipHeight = 17.5;
 const pipOff = { x: -pipHeight / 2, y: -pipHeight / 2 };
 const pipCenter = vecAdd(mid, pipOff);
+const bigPipHeight = 40;
+const bigPipOff = { x: -bigPipHeight / 2, y: -bigPipHeight / 2 };
+const bigPipCenter = vecAdd(mid, bigPipOff);
 
 export default function CardBack({
   variant: { suits },
@@ -33,12 +36,12 @@ export default function CardBack({
   if (pips.suits.length === 1) {
     color = colors(pips.suits[0]);
     suitPips = [
-      <image
+      <Pip
         key={suits.findIndex((i) => i === pips.suits[0])}
-        href={pipShapes[pips.suits[0]]}
-        height={20}
-        {...pipCenter}
-        filter="url(#outline)"
+        shape={pipShapes[pips.suits[0]]}
+        fill={color}
+        size={bigPipHeight}
+        {...bigPipCenter}
       />,
     ];
   } else {
@@ -49,7 +52,15 @@ export default function CardBack({
           pipCenter,
           vecMul({ x: -Math.sin(angle), y: -Math.cos(angle) }, 30)
         );
-        return <Pip key={n} shape={pipShapes[s]} fill={s} size={20} {...loc} />;
+        return (
+          <Pip
+            key={n}
+            shape={pipShapes[s]}
+            fill={colors(s)}
+            size={20}
+            {...loc}
+          />
+        );
       } else {
         return undefined;
       }
@@ -66,7 +77,9 @@ export default function CardBack({
           fontSize="20px"
           x={13 + i * 18}
           y="135"
-          filter="url(#outline)"
+          stroke="black"
+          strokeWidth="3"
+          paintOrder="stroke fill"
         >
           {n}
         </text>
@@ -78,7 +91,6 @@ export default function CardBack({
 
   return (
     <CardSVG {...props}>
-      {OutlineFilter}
       <CardRectangle
         border={borderOverride ?? color}
         background={backgroundColor}

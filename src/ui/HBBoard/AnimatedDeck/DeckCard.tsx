@@ -1,6 +1,6 @@
 import { ComponentPropsWithoutRef, useMemo } from "react";
 
-import DrawCard, { CardProps } from "../../DrawCard";
+import { DrawCard, CardProps } from "../../DrawCard";
 import { getPipsFromEmpathy } from "../../../game/types/Empathy";
 import { useBoardState } from "../../BoardContext";
 import * as ArrayUtil from "../../../util/ArrayUtil";

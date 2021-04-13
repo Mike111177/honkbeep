@@ -9,7 +9,7 @@ import {
   GamePlayEvent,
   GamePlayResultType,
 } from "../../../game";
-import Card from "../../DrawCard";
+import { DrawCard } from "../../DrawCard";
 import { useBoardState } from "../../BoardContext";
 import classNames from "../../util/classNames";
 import * as ArrayUtil from "../../../util/ArrayUtil";
@@ -84,7 +84,7 @@ function DiscardPlayDescriber({ turn, event }: DiscardPlayDescriberProps) {
   return (
     <span>
       {`${playerName} discarded `}
-      <Card card={card} icon />
+      <DrawCard card={card} icon />
       {` from slot ${slotNumber + 1}`}
     </span>
   );
@@ -111,7 +111,7 @@ function PlayPlayDescriber({ turn, event }: PlayPlayDescriberProps) {
     return (
       <span>
         {`${playerName} played `}
-        <Card card={card} icon />
+        <DrawCard card={card} icon />
         {` from slot ${slotNumber + 1}`}
       </span>
     );
@@ -119,7 +119,7 @@ function PlayPlayDescriber({ turn, event }: PlayPlayDescriberProps) {
     return (
       <span>
         {`${playerName} misplayed `}
-        <Card card={card} icon />
+        <DrawCard card={card} icon />
         {` from slot ${slotNumber + 1}`}
       </span>
     );
