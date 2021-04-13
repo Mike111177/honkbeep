@@ -2,12 +2,13 @@ import { ComponentPropsWithoutRef } from "react";
 import chroma from "chroma-js";
 
 import colors from "../BaseColors";
-import pips from "../pips";
+import pips, { Pip } from "../pips";
 import { vecAdd, vecSub } from "../../util/Vector";
 
-import { OutlineFilter, CardRectangle, CardSVG } from ".";
+import { CardRectangle, CardSVG } from ".";
 import { CARD_VIEW_MIDPOINT as mid } from "./Constants";
 import { Card } from "../../game";
+import React from "react";
 
 export type CardFrontProps = {
   card: Card;
@@ -26,7 +27,7 @@ const pipCorner = vecSub(mid, pipDist);
 const rPipOff = { x: -rPipHeight / 2, y: -rPipHeight / 2 };
 const cPipOff = { x: -cPipHeight / 2, y: -cPipHeight / 2 };
 
-const pipFlip = `rotate(180 ${mid.x} ${mid.y})`;
+const pipFlip = { transform: `rotate(180 ${mid.x} ${mid.y})` };
 
 const pipT = vecAdd({ x: mid.x, y: pipCorner.y }, rPipOff);
 const pipR = vecAdd({ x: pipCorner.x, y: mid.y }, rPipOff);
@@ -42,80 +43,43 @@ export default function CardFront({
   let pip = pips[suit];
   const num = rank;
   const backgroundColor = chroma.mix(color, "#FFFFFF", 0.5, "lrgb").hex();
+  const tNum = (
+    <text
+      fill={color}
+      {...numOffset}
+      fontSize={numSize}
+      textAnchor="middle"
+      dominantBaseline="central"
+      stroke="black"
+      strokeWidth="1%"
+    >
+      {num}
+    </text>
+  );
+  const cPip = <Pip pip={pip} size={cPipHeight} fill={color} {...pipC} />;
+  const tPip = React.cloneElement(cPip, {
+    size: rPipHeight,
+    ...pipT,
+    strokeWidth: "7%",
+  });
+  const lPip = React.cloneElement(tPip, pipR);
+  const topLeftItems = (
+    <>
+      {tNum}
+      {num > 1 ? tPip : undefined}
+      {num > 3 ? lPip : undefined}
+    </>
+  );
+
   return (
     <CardSVG {...props}>
-      {OutlineFilter}
       <CardRectangle
         border={borderOverride ?? color}
         background={backgroundColor}
       />
-      <text
-        fill={color}
-        {...numOffset}
-        fontSize={numSize}
-        textAnchor="middle"
-        dominantBaseline="central"
-        stroke="black"
-        strokeWidth="1%"
-      >
-        {num}
-      </text>
-      <text
-        fill={color}
-        {...numOffset}
-        fontSize={numSize}
-        textAnchor="middle"
-        dominantBaseline="central"
-        transform={pipFlip}
-        stroke="black"
-        strokeWidth="1%"
-      >
-        {num}
-      </text>
-      {num % 2 === 1 ? (
-        /*Center Pip*/ <>
-          <image
-            href={pip}
-            height={cPipHeight}
-            {...pipC}
-            filter="url(#outline)"
-          />
-        </>
-      ) : undefined}
-      {num > 1 ? (
-        /*Top And Bottom Pip*/ <>
-          <image
-            href={pip}
-            height={rPipHeight}
-            {...pipT}
-            filter="url(#outline)"
-          />
-          <image
-            href={pip}
-            height={rPipHeight}
-            {...pipT}
-            filter="url(#outline)"
-            transform={pipFlip}
-          />
-        </>
-      ) : undefined}
-      {num > 3 ? (
-        /*Left And Right Pip*/ <>
-          <image
-            href={pip}
-            height={rPipHeight}
-            {...pipR}
-            filter="url(#outline)"
-          />
-          <image
-            href={pip}
-            height={rPipHeight}
-            {...pipR}
-            filter="url(#outline)"
-            transform={pipFlip}
-          />
-        </>
-      ) : undefined}
+      {num % 2 === 1 ? cPip : undefined}
+      {topLeftItems}
+      <g {...pipFlip}>{topLeftItems}</g>
     </CardSVG>
   );
 }

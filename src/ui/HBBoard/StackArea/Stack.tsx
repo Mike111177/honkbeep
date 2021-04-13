@@ -7,7 +7,7 @@ import { vecAdd } from "../../../util/Vector";
 import { useBoard } from "../../BoardContext";
 
 import colors from "../../BaseColors";
-import pips from "../../pips";
+import pips, { Pip } from "../../pips";
 
 import styles from "./Stack.css";
 
@@ -18,7 +18,7 @@ type HBStackProps = {
 
 const pipHeight = 35;
 const pipOff = { x: -pipHeight / 2, y: -pipHeight / 2 };
-const pipCenter = vecAdd(mid, pipOff);
+const pipDims = { ...vecAdd(mid, pipOff), size: pipHeight };
 
 export function Stack({ suit, number }: HBStackProps) {
   const color = colors(suit);
@@ -57,13 +57,7 @@ export function Stack({ suit, number }: HBStackProps) {
         stroke={color}
         rx="5%"
       />
-      <image
-        href={pips[suit]}
-        height={pipHeight}
-        {...pipCenter}
-        {...pipCenter}
-        filter="url(#outline)"
-      />
+      <Pip pip={pips[suit]} {...pipDims} fill={color} />
     </CardTarget>
   );
 }

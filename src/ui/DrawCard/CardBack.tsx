@@ -5,7 +5,7 @@ import { vecAdd, vecMul } from "../../util/Vector";
 import { Pips } from "../../game/types/Empathy";
 import Variant from "../../game/types/Variant";
 import colors from "../BaseColors";
-import pipsIcons from "../pips";
+import pipsIcons, { Pip } from "../pips";
 
 import { OutlineFilter, CardRectangle, CardSVG } from ".";
 import { CARD_VIEW_MIDPOINT as mid } from "./Constants";
@@ -48,15 +48,7 @@ export default function CardBack({
           pipCenter,
           vecMul({ x: -Math.sin(angle), y: -Math.cos(angle) }, 30)
         );
-        return (
-          <image
-            key={n}
-            href={pipsIcons[s]}
-            height={20}
-            {...loc}
-            filter="url(#outline)"
-          />
-        );
+        return <Pip key={n} pip={pipsIcons[s]} fill={s} size={20} {...loc} />;
       } else {
         return undefined;
       }

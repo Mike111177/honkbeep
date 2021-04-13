@@ -12,6 +12,7 @@ export const CardSVG = React.forwardRef<SVGSVGElement, CardSVGProps>(
   function CardSVG({ children, className, ...props }, ref) {
     return (
       <svg
+        xmlns="http://www.w3.org/2000/svg"
         className={classNames(styles.Card, className)}
         ref={ref}
         viewBox={CARD_VIEWBOX}
