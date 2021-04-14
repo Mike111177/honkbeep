@@ -1,7 +1,7 @@
 import { ComponentPropsWithoutRef } from "react";
 import chroma from "chroma-js";
 
-import { vecAdd, vecMul } from "../../util/Vector";
+import { vecAdd, vecMul } from "../../util/Geometry";
 import { Pips } from "../../game/types/Empathy";
 import Variant from "../../game/types/Variant";
 import colors from "../BaseColors";

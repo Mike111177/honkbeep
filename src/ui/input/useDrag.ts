@@ -1,5 +1,5 @@
 import { useMemo, useRef } from "react";
-import { Vec2D, vecSub } from "../../util/Vector";
+import { Vec2D, vecSub } from "../../util/Geometry";
 
 type DragStatus = {
   enabled: boolean;

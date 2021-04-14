@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import * as ArrayUtil from "../../../util/ArrayUtil";
 import BoardContext from "../../BoardContext";
-import AnimatedCard from "./AnimatedCard";
+import { CardSled } from "./CardSled";
 import useMeasure from "react-use-measure";
 
 import styles from "./AnimatedDeck.css";
@@ -14,7 +14,7 @@ export default function AnimatedDeck() {
   return (
     <div ref={ref} className={styles.AnimatedDeck}>
       {ArrayUtil.iota(cardAmount).map((i) => (
-        <AnimatedCard key={i} index={i} area={bounds} />
+        <CardSled key={i} index={i} area={bounds} />
       ))}
     </div>
   );

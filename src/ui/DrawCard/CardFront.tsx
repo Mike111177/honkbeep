@@ -5,7 +5,7 @@ import colors from "../BaseColors";
 import pipShapes from "../SuitPips";
 import { Pip } from "../components/Pip";
 import { Card } from "../../game";
-import { vecAdd, vecSub } from "../../util/Vector";
+import { vecAdd, vecSub } from "../../util/Geometry";
 import { CARD_VIEW_MIDPOINT as mid, CardRectangle, CardSVG } from ".";
 
 export type CardFrontProps = {

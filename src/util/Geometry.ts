@@ -38,3 +38,9 @@ export function vecInRectangle(vec: Vec2D, rect: Rectangle): boolean {
     rect.y + rect.height > vec.y
   );
 }
+
+export function compareRects(a: Rectangle, b: Rectangle) {
+  return (
+    a.height === b.height && a.width === b.width && a.x === b.x && a.y === b.y
+  );
+}

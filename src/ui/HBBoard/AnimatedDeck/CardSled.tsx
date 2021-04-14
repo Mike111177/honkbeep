@@ -9,101 +9,40 @@ import {
 } from "../../util/Floating";
 import { useDrag } from "../../input";
 import { UserActionType } from "../../../client/types/UserAction";
-import { GameState, GameEventType } from "../../../game";
-import * as ArrayUtil from "../../../util/ArrayUtil";
-import {
-  Rectangle,
-  vecAdd,
-  vecInRectangle,
-  vecSub,
-} from "../../../util/Vector";
-import { useBoardReducer, useBoardState } from "../../BoardContext";
+import { GameEventType } from "../../../game";
+import { compareRects, vecAdd, vecInRectangle } from "../../../util/Geometry";
+import { useBoardReducer } from "../../BoardContext";
 import { RectReadOnly } from "react-use-measure";
 
 import styles from "./AnimatedDeck.css";
+import { useSledCardState } from "./useSledCardState";
+import { constrainCardRect } from "./constrainCardRect";
 
-function getCardHome(index: number, game: GameState): FloatAreaPath {
-  //Search hands
-  for (let h = 0; h < game.hands.length; h++) {
-    const hand = game.hands[h];
-    for (let c = 0; c < hand.length; c++) {
-      if (index === hand[c]) {
-        return ["hands", h, c];
-      }
-    }
-  }
-  //Search Stacks
-  for (let s = 0; s < game.stacks.length; s++) {
-    const stack = game.stacks[s];
-    for (let c = 0; c < stack.length; c++) {
-      if (index === stack[c]) {
-        return ["stacks", s];
-      }
-    }
-  }
-  //Search discard
-  for (let c = 0; c < game.discardPile.length; c++) {
-    if (index === game.discardPile[c]) {
-      return ["discard", index];
-    }
-  }
-
-  return ["deck"];
-}
-
-function compareRects(a: Rectangle, b: Rectangle) {
-  return (
-    a.height === b.height && a.width === b.width && a.x === b.x && a.y === b.y
-  );
-}
-
-type FloatCardProps = {
+export type CardSledProps = {
   index: number;
   area: RectReadOnly;
 };
 //TODO: Generalize this code, a lot of elements from it would be nice to be able to use in other places
-export default function FloatingCard({ index, area }: FloatCardProps) {
+export function CardSled({ index, area }: CardSledProps) {
   //Get contexts
   const boardDispatch = useBoardReducer();
   const floatContext = useContext(FloatContext);
 
-  const [draggable, cardOnTopOfStack, visible, ...home] = useBoardState(
-    ({ paused, viewTurn, definition: { variant } }) => {
-      const home = getCardHome(index, viewTurn);
-      const cardInCurrentPlayerHand =
-        home[0] === "hands" &&
-        home[1] === (viewTurn.turn - 1) % variant.numPlayers;
-      const stack =
-        home[0] === "stacks" ? viewTurn.stacks[home[1] as number] : undefined;
-      const cardOnTopOfStack =
-        stack !== undefined && stack[stack.length - 1] === index;
-      const visible =
-        cardOnTopOfStack ||
-        !(
-          home[0] === "deck" ||
-          (stack !== undefined && stack[stack.length - 2] !== index)
-        );
-      return [
-        cardInCurrentPlayerHand && !paused,
-        cardOnTopOfStack,
-        visible,
-        ...home,
-      ];
-    },
-    [index],
-    ArrayUtil.shallowCompare
-  );
-
+  const [draggable, topStack, visible, ...home] = useSledCardState(index);
   const [dragging, setDragging] = useState(false);
   const [dropPath, setDropPath] = useState<FloatAreaPath | null>(null);
   const [spring, sprRef] = useSpring({ x: 0, y: 0, width: 0, height: 0 }, []);
   const setHomeRect = useCallback(
     function setHomeRect(p) {
-      const newHomeRect = {
-        ...vecSub({ x: p.x, y: p.y }, { x: area.x, y: area.y }),
-        width: p.width,
-        height: p.height,
-      };
+      const newHomeRect = constrainCardRect(
+        { x: area.x, y: area.y, width: area.width, height: area.height },
+        {
+          x: p.x,
+          y: p.y,
+          width: p.width,
+          height: p.height,
+        }
+      );
       if (
         !compareRects(
           {
@@ -119,6 +58,8 @@ export default function FloatingCard({ index, area }: FloatCardProps) {
       }
     },
     [
+      area.height,
+      area.width,
       area.x,
       area.y,
       sprRef,
@@ -169,7 +110,7 @@ export default function FloatingCard({ index, area }: FloatCardProps) {
       if (homeRect !== undefined) {
         if (down) {
           const { x, y } = homeRect;
-          const dragTarget = vecAdd({ x, y }, offset);
+          const dragTarget = { ...homeRect, ...vecAdd({ x, y }, offset) };
           setHomeRect({ ...dragTarget, immediate: true });
           setDragging(true);
           const dropZone = floatContext.dropZones.find((zone) =>
@@ -212,13 +153,13 @@ export default function FloatingCard({ index, area }: FloatCardProps) {
       zIndex = 100;
     } else if (home[0] === "discard") {
       zIndex = home[1] as number;
-    } else if (cardOnTopOfStack) {
+    } else if (topStack) {
       zIndex = 1;
     }
     return {
       style: { zIndex, ...spring },
     };
-  }, [cardOnTopOfStack, dragging, home, spring]);
+  }, [topStack, dragging, home, spring]);
 
   if (visible) {
     return (

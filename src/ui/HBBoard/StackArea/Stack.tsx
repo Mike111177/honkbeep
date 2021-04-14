@@ -3,7 +3,7 @@ import chroma from "chroma-js";
 import CardTarget from "../AnimatedDeck/CardTarget";
 import { useFloatArea } from "../../util/Floating";
 import { CARD_VIEW_MIDPOINT as mid } from "../../DrawCard";
-import { vecAdd } from "../../../util/Vector";
+import { vecAdd } from "../../../util/Geometry";
 import { useBoard } from "../../BoardContext";
 
 import colors from "../../BaseColors";
