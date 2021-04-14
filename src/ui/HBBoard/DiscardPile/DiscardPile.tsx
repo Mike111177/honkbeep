@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { useFloatArea } from "../../util/Floating";
+import { useZone } from "../../Zone";
 import CardTarget from "../AnimatedDeck/CardTarget";
 import { useBoardState } from "../../BoardContext";
 import classNames from "../../util/classNames";
@@ -22,7 +22,7 @@ export default function DiscardPile() {
     [],
     ArrayUtil.shallowCompare
   );
-  const ref = useFloatArea(["discardPile"], { dropZone: true });
+  const ref = useZone(["discardPile"], { dropZone: true });
 
   const targets = useMemo(() => {
     const cardValues = cards.map((c) => deck.getCard(shuffleOrder[c]));

@@ -1,7 +1,7 @@
 import chroma from "chroma-js";
 
 import CardTarget from "../AnimatedDeck/CardTarget";
-import { useFloatArea } from "../../util/Floating";
+import { useZone } from "../../Zone";
 import { CARD_VIEW_MIDPOINT as mid } from "../../DrawCard";
 import { vecAdd } from "../../../util/Geometry";
 import { useBoard } from "../../BoardContext";
@@ -64,7 +64,7 @@ export function Stack({ suit, number }: HBStackProps) {
 
 export default function StackArea() {
   const suits = useBoard().state.definition.variant.suits;
-  const ref = useFloatArea(["stackArea"], { dropZone: true });
+  const ref = useZone(["stackArea"], { dropZone: true });
   return (
     <div ref={ref} className={styles.StackArea}>
       {suits.map((c, i) => (

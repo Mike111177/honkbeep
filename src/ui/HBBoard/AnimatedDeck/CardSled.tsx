@@ -1,12 +1,8 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { animated, useSpring } from "@react-spring/web";
 
 import HBDeckCard from "./DeckCard";
-import {
-  FloatAreaEventType,
-  FloatAreaPath,
-  FloatContext,
-} from "../../util/Floating";
+import { useFacility, ZoneEventType, ZonePath } from "../../Zone";
 import { useDrag } from "../../input";
 import { UserActionType } from "../../../client/types/UserAction";
 import { GameEventType } from "../../../game";
@@ -26,11 +22,11 @@ export type CardSledProps = {
 export function CardSled({ index, area }: CardSledProps) {
   //Get contexts
   const boardDispatch = useBoardReducer();
-  const floatContext = useContext(FloatContext);
+  const facility = useFacility();
 
   const [draggable, topStack, visible, ...home] = useSledCardState(index);
   const [dragging, setDragging] = useState(false);
-  const [dropPath, setDropPath] = useState<FloatAreaPath | null>(null);
+  const [dropPath, setDropPath] = useState<ZonePath | null>(null);
   const [spring, sprRef] = useSpring({ x: 0, y: 0, width: 0, height: 0 }, []);
   const setHomeRect = useCallback(
     function setHomeRect(p) {
@@ -71,15 +67,15 @@ export function CardSled({ index, area }: CardSledProps) {
   );
 
   useEffect(() => {
-    setHomeRect(floatContext.getRect(home));
-    return floatContext.subscribeToArea(home, ({ type, area }) => {
+    setHomeRect(facility.getRect(home));
+    return facility.subscribeToArea(home, ({ type, area }) => {
       if (visible) {
         //No need to animate if we aren't visible
-        const immediate = type === FloatAreaEventType.Resize;
+        const immediate = type === ZoneEventType.Resize;
         setHomeRect({ immediate, ...area.getRect() });
       }
     });
-  }, [home, floatContext, setHomeRect, visible]);
+  }, [home, facility, setHomeRect, visible]);
 
   const onDrop = useCallback(
     async (loc: string) => {
@@ -106,14 +102,14 @@ export function CardSled({ index, area }: CardSledProps) {
 
   const onDrag = useCallback(
     ({ down, offset, origin }) => {
-      const homeRect = floatContext.getRect(home);
+      const homeRect = facility.getRect(home);
       if (homeRect !== undefined) {
         if (down) {
           const { x, y } = homeRect;
           const dragTarget = { ...homeRect, ...vecAdd({ x, y }, offset) };
           setHomeRect({ ...dragTarget, immediate: true });
           setDragging(true);
-          const dropZone = floatContext.dropZones.find((zone) =>
+          const dropZone = facility.dropZones.find((zone) =>
             vecInRectangle(vecAdd(origin, offset), zone.getRect()!)
           );
           if (dropZone !== undefined) {
@@ -141,7 +137,7 @@ export function CardSled({ index, area }: CardSledProps) {
         }
       }
     },
-    [dropPath, floatContext, home, onDrop, setHomeRect]
+    [dropPath, facility, home, onDrop, setHomeRect]
   );
 
   const dragBinder = useDrag<HTMLDivElement>(onDrag, draggable);

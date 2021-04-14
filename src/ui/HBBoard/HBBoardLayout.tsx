@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import { FloatContext, FloatContextData } from "../util/Floating";
 import AnimatedDeck from "./AnimatedDeck/AnimatedDeck";
 import ClueArea from "./ClueArea/ClueArea";
 import Deck from "./Deck/Deck";
@@ -11,17 +9,14 @@ import ScoreBoard from "./ScoreBoard/ScoreBoard";
 import StackArea from "./StackArea/Stack";
 import BoardContext from "../BoardContext";
 import Board from "../../client/Board";
+import { FacilityBoundary } from "../Zone";
 
 import styles from "./BoardLayout.css";
 
 export default function HBBoardLayout({ board }: { board: Board }) {
-  const [floatData] = useState(() => new FloatContextData());
-  useEffect(() => {
-    floatData.init();
-  });
   return (
     <BoardContext.Provider value={board}>
-      <FloatContext.Provider value={floatData}>
+      <FacilityBoundary>
         <div className={styles.Board}>
           <div className={styles.BoardGrid}>
             <PlayHistory />
@@ -35,7 +30,7 @@ export default function HBBoardLayout({ board }: { board: Board }) {
           </div>
           <AnimatedDeck />
         </div>
-      </FloatContext.Provider>
+      </FacilityBoundary>
     </BoardContext.Provider>
   );
 }

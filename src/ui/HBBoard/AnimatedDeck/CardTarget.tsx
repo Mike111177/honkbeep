@@ -1,10 +1,10 @@
 import { ComponentPropsWithoutRef } from "react";
 import { CardSVG } from "../../DrawCard";
-import { FloatAreaPath, useFloatArea } from "../../util/Floating";
+import { ZonePath, useZone } from "../../Zone";
 
 //Helper to make card targets
 type CardTargetProps = {
-  areaPath: FloatAreaPath;
+  areaPath: ZonePath;
 } & ComponentPropsWithoutRef<"svg">;
 export default function CardTarget({
   areaPath,
@@ -12,7 +12,7 @@ export default function CardTarget({
   ...props
 }: CardTargetProps) {
   return (
-    <CardSVG ref={useFloatArea(areaPath)} {...props}>
+    <CardSVG ref={useZone(areaPath)} {...props}>
       {children}
     </CardSVG>
   );

@@ -1,11 +1,11 @@
 import * as ArrayUtil from "../../../util/ArrayUtil";
 import { useBoardState } from "../../BoardContext";
-import { FloatAreaPath } from "../../util/Floating";
+import { ZonePath } from "../../Zone";
 import { getCardHome } from "./getCardHome";
 
 export function useSledCardState(
   index: number
-): [boolean, boolean, boolean, ...FloatAreaPath] {
+): [boolean, boolean, boolean, ...ZonePath] {
   return useBoardState(
     ({ paused, viewTurn, definition: { variant } }) => {
       const home = getCardHome(index, viewTurn);

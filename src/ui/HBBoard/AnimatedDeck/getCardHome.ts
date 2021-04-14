@@ -1,8 +1,8 @@
 import { GameState } from "../../../game";
-import { FloatAreaPath } from "../../util/Floating";
+import { ZonePath } from "../../Zone";
 
 //TODO: This should be replaced at some point with metadata stored along side the card state
-export function getCardHome(index: number, game: GameState): FloatAreaPath {
+export function getCardHome(index: number, game: GameState): ZonePath {
   //Search hands
   for (let h = 0; h < game.hands.length; h++) {
     const hand = game.hands[h];
