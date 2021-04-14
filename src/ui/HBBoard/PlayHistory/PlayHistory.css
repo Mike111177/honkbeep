@@ -11,3 +11,26 @@
 .PlayHistory span {
   text-align: center;
 }
+
+.PlayHistory span:hover {
+  border-color: white;
+  border-style: solid;
+  border-width: 1px;
+  box-sizing: content-box;
+}
+
+.ColorSubject {
+  border-radius: 5px;
+  border-style: solid;
+  display: inline-block;
+  font-size: 30px;
+  -webkit-text-stroke: black;
+  -webkit-text-stroke-width: 0.04em;
+}
+
+.NumberSubject {
+  font-size: 30px;
+  border-radius: 5px;
+  border-style: solid;
+  display: inline-block;
+}
