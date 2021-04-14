@@ -11,8 +11,14 @@ import { useDrag } from "../../input";
 import { UserActionType } from "../../../client/types/UserAction";
 import { GameState, GameEventType } from "../../../game";
 import * as ArrayUtil from "../../../util/ArrayUtil";
-import { Rectangle, vecAdd, vecInRectangle } from "../../../util/Vector";
+import {
+  Rectangle,
+  vecAdd,
+  vecInRectangle,
+  vecSub,
+} from "../../../util/Vector";
 import { useBoardReducer, useBoardState } from "../../BoardContext";
+import { RectReadOnly } from "react-use-measure";
 
 import styles from "./AnimatedDeck.css";
 
@@ -53,9 +59,10 @@ function compareRects(a: Rectangle, b: Rectangle) {
 
 type FloatCardProps = {
   index: number;
+  area: RectReadOnly;
 };
 //TODO: Generalize this code, a lot of elements from it would be nice to be able to use in other places
-export default function FloatingCard({ index }: FloatCardProps) {
+export default function FloatingCard({ index, area }: FloatCardProps) {
   //Get contexts
   const boardDispatch = useBoardReducer();
   const floatContext = useContext(FloatContext);
@@ -92,6 +99,11 @@ export default function FloatingCard({ index }: FloatCardProps) {
   const [spring, sprRef] = useSpring({ x: 0, y: 0, width: 0, height: 0 }, []);
   const setHomeRect = useCallback(
     function setHomeRect(p) {
+      const newHomeRect = {
+        ...vecSub({ x: p.x, y: p.y }, { x: area.x, y: area.y }),
+        width: p.width,
+        height: p.height,
+      };
       if (
         !compareRects(
           {
@@ -100,13 +112,15 @@ export default function FloatingCard({ index }: FloatCardProps) {
             x: spring.x.goal,
             y: spring.y.goal,
           },
-          p
+          newHomeRect
         )
       ) {
-        return sprRef.current[0].start(p);
+        return sprRef.current[0].start({ ...p, ...newHomeRect });
       }
     },
     [
+      area.x,
+      area.y,
       sprRef,
       spring.height.goal,
       spring.width.goal,

@@ -8,7 +8,7 @@ export default function HandsArea() {
   const [playerNames, numPlayers, playerView] = useBoardState(
     (boardState) => {
       const numPlayers = boardState.definition.variant.numPlayers;
-      let playerView = boardState.playerView;
+      let playerView = boardState.viewOrder;
       if (playerView === undefined) {
         playerView = 0;
       } else if (playerView === -1) {

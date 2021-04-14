@@ -26,7 +26,7 @@ export class BoardState {
   readonly perspective: number | undefined;
   //Which players hand should be displayed on top, -1 to follow viewTurn
   //This only effects the order of hands
-  readonly playerView: number;
+  readonly viewOrder: number;
 
   constructor(definition: GameDefinition) {
     this.definition = definition;
@@ -36,7 +36,7 @@ export class BoardState {
     this.shuffleOrder = [];
     this.events = [];
     this.perspective = undefined;
-    this.playerView = 0;
+    this.viewOrder = 0;
     this.hypotheticalTurns = [];
     this.hypothetical = false;
   }
@@ -79,6 +79,10 @@ export class BoardState {
 
   setPerspective(player?: number) {
     return setPerspectiveProd(this, player);
+  }
+
+  setViewOrder(viewOrder: number) {
+    return setViewOrderProd(this, viewOrder);
   }
 }
 export default BoardState;
@@ -130,5 +134,11 @@ const setShuffleOrderProd = produce(
 const setPerspectiveProd = produce(
   (state: Draft<BoardState>, player?: number) => {
     state.perspective = player;
+  }
+);
+
+const setViewOrderProd = produce(
+  (state: Draft<BoardState>, viewOrder: number) => {
+    state.viewOrder = viewOrder;
   }
 );

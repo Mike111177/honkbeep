@@ -7,6 +7,7 @@ export default class ClientBoard extends Board {
   //Adapter to use to communicate with server
   private backend: Backend;
 
+  //TODO: viewOrder should probably somehow be controlled by the backend
   constructor(backend: Backend) {
     //Create new ClientState
     super(
@@ -14,7 +15,9 @@ export default class ClientBoard extends Board {
         .currentState()
         .events.reduce(
           (s, event) => s.appendEventMessage(event),
-          new BoardState(backend.currentState().definition)
+          new BoardState(backend.currentState().definition).setViewOrder(
+            backend.viewOrder
+          )
         )
     );
     //Listen for further game events

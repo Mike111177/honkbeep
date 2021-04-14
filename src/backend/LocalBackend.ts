@@ -5,7 +5,7 @@ import { GameData, GameEventMessage } from "./types/GameData";
 
 //Meant for dictating logic of local games or template games
 export default class LocalBackend implements Backend {
-  private player: number;
+  readonly player: number;
   private server: LocalServer;
   private state?: GameData;
   private connected = false;
@@ -49,5 +49,9 @@ export default class LocalBackend implements Backend {
 
   onChange(callback: () => void): void {
     this.listener = callback;
+  }
+
+  get viewOrder() {
+    return this.player;
   }
 }

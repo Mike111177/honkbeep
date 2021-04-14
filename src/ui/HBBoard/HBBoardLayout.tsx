@@ -23,14 +23,16 @@ export default function HBBoardLayout({ board }: { board: Board }) {
     <BoardContext.Provider value={board}>
       <FloatContext.Provider value={floatData}>
         <div className={styles.Board}>
-          <PlayHistory />
-          <HandsArea />
-          <DiscardPile />
-          <StackArea />
-          <ReplayControls />
-          <ClueArea />
-          <Deck />
-          <ScoreBoard />
+          <div className={styles.BoardGrid}>
+            <PlayHistory />
+            <HandsArea />
+            <DiscardPile />
+            <StackArea />
+            <ReplayControls />
+            <ClueArea />
+            <Deck />
+            <ScoreBoard />
+          </div>
           <AnimatedDeck />
         </div>
       </FloatContext.Provider>

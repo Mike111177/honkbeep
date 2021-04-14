@@ -1,4 +1,9 @@
 .Board {
+  display: block;
+  position: relative;
+}
+
+.BoardGrid {
   display: grid;
   grid-template-areas:
     "playhistory    playhistory    playhistory    handarea cluehistory"
