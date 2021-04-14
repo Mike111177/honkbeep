@@ -6,8 +6,6 @@ export default function LoginPage() {
   const history = useHistory();
   return (
     <div className={styles.LoginPage}>
-      <span>Login to play online</span>
-      <br />
       <label htmlFor="username">Username or Email:</label>
       <br />
       <input type="text" id="username" name="username"></input>
@@ -23,6 +21,13 @@ export default function LoginPage() {
         }}
       >
         Play Solitaire
+      </BoxButton>
+      <BoxButton
+        onClick={() => {
+          history.push("/splitscreen");
+        }}
+      >
+        Play 4 Player splitscreen
       </BoxButton>
     </div>
   );

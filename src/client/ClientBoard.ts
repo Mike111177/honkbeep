@@ -1,4 +1,3 @@
-import NullBackend from "../backend/NullBackend";
 import Backend from "../backend/types/Backend";
 import { GameAttempt } from "../game";
 import Board from "./Board";
@@ -9,28 +8,24 @@ export default class ClientBoard extends Board {
   private backend: Backend;
 
   constructor(backend: Backend) {
-    if (!(backend instanceof NullBackend)) {
-      //Create new ClientState
-      super(
-        backend
-          .currentState()
-          .events.reduce(
-            (s, event) => s.appendEventMessage(event),
-            new BoardState(backend.currentState().definition)
-          )
+    //Create new ClientState
+    super(
+      backend
+        .currentState()
+        .events.reduce(
+          (s, event) => s.appendEventMessage(event),
+          new BoardState(backend.currentState().definition)
+        )
+    );
+    //Listen for further game events
+    backend.onChange(() => {
+      const { events } = this.backend.currentState();
+      this.updateBoardState(
+        events
+          .slice(this.state.latestTurn.turn)
+          .reduce((s, event) => s.appendEventMessage(event), this.state)
       );
-      //Listen for further game events
-      backend.on("gameStateChanged", () => {
-        const { events } = this.backend.currentState();
-        this.updateBoardState(
-          events
-            .slice(this.state.latestTurn.turn)
-            .reduce((s, event) => s.appendEventMessage(event), this.state)
-        );
-      });
-    } else {
-      super();
-    }
+    });
     this.backend = backend;
   }
 

@@ -1,19 +1,18 @@
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
-import { Home, LoginPage } from "./ui/pages";
+// @ts-ignore
+import loadable from "@loadable/component";
+
+import LoginPage from "./ui/pages/LoginPage";
+import Home from "./ui/pages/Home";
 
 import background from "./background_black.jpg";
 import styles from "./App.css";
 
-/*
-import HBSolitaireBoard from "./ui/HBBoard/HBSolitaireBoard";
-/**/
-//*
-// @ts-ignore
-import loadable from "@loadable/component";
 const HBSolitaireBoard = loadable(
   () => import("./ui/HBBoard/HBSolitaireBoard")
 );
-/**/
+
+const SplitScreen = loadable(() => import("./ui/pages/SplitScreen"));
 
 //Attach UI interface to backend adapter
 function App() {
@@ -34,6 +33,9 @@ function App() {
         </Route>
         <Route path="/solitaire">
           <HBSolitaireBoard />
+        </Route>
+        <Route path="/splitscreen">
+          <SplitScreen />
         </Route>
       </div>
     </Router>

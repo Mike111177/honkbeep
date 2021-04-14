@@ -1,24 +1,20 @@
 import { useEffect, useState } from "react";
 import HBBoardLayout from "./HBBoardLayout";
-import LocalServer from "../../backend/LocalServer";
-import LocalBackend from "../../backend/LocalBackend";
 import ClientBoard from "../../client/ClientBoard";
-import { genericDefinition } from "../../game";
+import Backend from "../../backend/types/Backend";
 
-export default function HBClientBoard() {
-  //Create virtual local Server
-  const [server] = useState(() => new LocalServer(genericDefinition()));
-  //Connect to local server as player 0
-  const [backend] = useState(() => new LocalBackend(0, server));
-
-  const [manager, setManager] = useState<undefined | ClientBoard>(undefined);
+type HBClientBoardProps = {
+  backend: Backend;
+};
+export default function HBClientBoard({ backend }: HBClientBoardProps) {
+  const [board, setBoard] = useState<ClientBoard | null>(null);
 
   useEffect(() => {
-    backend.onReady(() => setManager(new ClientBoard(backend)));
+    backend.connect().then(() => setBoard(new ClientBoard(backend)));
   }, [backend]);
 
-  if (manager !== undefined) {
-    return <HBBoardLayout board={manager} />;
+  if (board !== null) {
+    return <HBBoardLayout board={board} />;
   } else {
     return <span>Waiting for initialization.</span>;
   }
