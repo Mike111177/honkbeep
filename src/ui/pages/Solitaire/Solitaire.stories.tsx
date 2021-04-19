@@ -1,15 +1,15 @@
 import { Meta } from "@storybook/react";
 
-import HBSolitaireBoard from "./HBSolitaireBoard";
+import Solitaire from "./Solitaire";
 
 export default {
-  title: "Game Boards/Solitaire",
-  component: HBSolitaireBoard,
+  title: "Pages/Solitaire",
+  component: Solitaire,
   parameters: {
     controls: { disabled: true, hideNoControlsWarning: true },
     actions: { disabled: true },
   },
 } as Meta;
 
-export const SolitaireBoardStory = () => <HBSolitaireBoard />;
+export const SolitaireBoardStory = () => <Solitaire />;
 SolitaireBoardStory.storyName = "Solitaire";

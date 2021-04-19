@@ -8,10 +8,7 @@ import Home from "./ui/pages/Home";
 import background from "./background_black.jpg";
 import styles from "./App.css";
 
-const HBSolitaireBoard = loadable(
-  () => import("./ui/HBBoard/HBSolitaireBoard")
-);
-
+const Solitaire = loadable(() => import("./ui/pages/Solitaire"));
 const SplitScreen = loadable(() => import("./ui/pages/SplitScreen"));
 
 //Attach UI interface to backend adapter
@@ -32,7 +29,7 @@ function App() {
           <Home />
         </Route>
         <Route path="/solitaire">
-          <HBSolitaireBoard />
+          <Solitaire />
         </Route>
         <Route path="/splitscreen">
           <SplitScreen />
