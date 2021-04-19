@@ -137,7 +137,7 @@ module.exports = (env) => {
 
   return {
     mode,
-    devtool: isProduction ? "source-map" : "eval-cheap-source-map",
+    devtool: isProduction ? "source-map" : "source-map",
     output: {
       path: isProduction ? buildDir : undefined,
       filename: "static/js/[name].[contenthash:8].js",

@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es2018",
     "lib": ["dom", "dom.iterable", "esnext"],
+    "sourceMap": true,
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

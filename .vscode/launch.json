@@ -6,21 +6,19 @@
       "type": "chrome",
       "request": "launch",
       "url": "http://localhost:3000/",
-      "webRoot": "${workspaceFolder}/src",
-      "sourceMapPathOverrides": {
-        "webpack:///src/*": "${webRoot}/*"
-      },
       "runtimeArgs": ["--new-window"],
-      "userDataDir": "${workspaceRoot}/chrome/dev"
+      "userDataDir": "${workspaceRoot}/chrome/dev",
+      "sourceMaps": true,
+      "webRoot": "${workspaceRoot}"
     },
     {
       "name": "Client/Production",
       "type": "chrome",
       "request": "launch",
       "url": "http://localhost:5000/",
-      "webRoot": "${workspaceFolder}/src",
+      "webRoot": "${workspaceFolder}",
       "sourceMapPathOverrides": {
-        "webpack:///src/*": "${webRoot}/*"
+        "*": "${webRoot}/*"
       },
       "runtimeArgs": ["--new-window"],
       "userDataDir": "${workspaceRoot}/chrome/prod"
