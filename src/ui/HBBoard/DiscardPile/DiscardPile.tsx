@@ -8,6 +8,7 @@ import * as ArrayUtil from "../../../util/ArrayUtil";
 
 import styles from "./DiscardPile.css";
 import darkregion from "../DarkRegion.css";
+import { ErrorBoundary } from "../../util/ErrorBoundry";
 
 export default function DiscardPile() {
   const [cards, shuffleOrder, deck, suits] = useBoardState(
@@ -48,7 +49,7 @@ export default function DiscardPile() {
       className={classNames(styles.DiscardPile, darkregion.DarkRegion)}
       ref={ref}
     >
-      {targets}
+      <ErrorBoundary>{targets}</ErrorBoundary>
     </div>
   );
 }

@@ -14,6 +14,7 @@ import { useBoardReducer, useBoardState } from "../../BoardContext";
 import { UserActionType } from "../../../client/types/UserAction";
 
 import styles from "./ClueArea.css";
+import { ErrorBoundary } from "../../util/ErrorBoundry";
 
 type Player = { p: string; i: number };
 type ClueButtonProps<T extends Clue | Player, S = T> = {
@@ -175,14 +176,16 @@ export default function HBClueArea() {
   if (clues !== 0) {
     return (
       <div className={styles.ClueArea}>
-        <div className={styles.PlayerArea}>{playerButtons}</div>
-        <div className={styles.ClueSelector}>
-          <div className={styles.ClueButtonArea}>{colorClueButtons}</div>
-          <div className={styles.ClueButtonArea}>{numberClueButtons}</div>
-        </div>
-        <div className={styles.SubmitButton} onClick={submit}>
-          ✓
-        </div>
+        <ErrorBoundary>
+          <div className={styles.PlayerArea}>{playerButtons}</div>
+          <div className={styles.ClueSelector}>
+            <div className={styles.ClueButtonArea}>{colorClueButtons}</div>
+            <div className={styles.ClueButtonArea}>{numberClueButtons}</div>
+          </div>
+          <div className={styles.SubmitButton} onClick={submit}>
+            ✓
+          </div>
+        </ErrorBoundary>
       </div>
     );
   } else {

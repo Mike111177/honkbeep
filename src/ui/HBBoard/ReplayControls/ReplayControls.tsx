@@ -1,6 +1,7 @@
 import { UserActionType } from "../../../client/types/UserAction";
 import * as ArrayUtil from "../../../util/ArrayUtil";
 import { useBoardReducer, useBoardState } from "../../BoardContext";
+import { ErrorBoundary } from "../../util/ErrorBoundry";
 import styles from "./ReplayControls.css";
 
 const iconSkipBack = "⏮️";
@@ -32,30 +33,32 @@ export default function ReplayControls() {
 
   return (
     <div className={styles.ReplayControls}>
-      <span onClick={() => setTurn(1)}>{iconSkipBack}</span>
-      <span onClick={() => setTurn(viewTurn - 1)}>{iconBack}</span>
-      {paused ? (
-        <span onClick={() => dispatch({ type: UserActionType.Resume })}>
-          {iconPlay}
-        </span>
-      ) : (
-        <span onClick={() => setTurn(viewTurn)}>{iconPause}</span>
-      )}
-      <span onClick={() => setTurn(viewTurn + 1)}>{iconFor}</span>
-      <span onClick={() => setTurn(latestTurn)}>{iconSkipFor}</span>
-      {hypothetical ? (
-        <span
-          onClick={() => dispatch({ type: UserActionType.EndHypothetical })}
-        >
-          {iconExit}
-        </span>
-      ) : (
-        <span
-          onClick={() => dispatch({ type: UserActionType.StartHypothetical })}
-        >
-          {iconHypothetical}
-        </span>
-      )}
+      <ErrorBoundary>
+        <span onClick={() => setTurn(1)}>{iconSkipBack}</span>
+        <span onClick={() => setTurn(viewTurn - 1)}>{iconBack}</span>
+        {paused ? (
+          <span onClick={() => dispatch({ type: UserActionType.Resume })}>
+            {iconPlay}
+          </span>
+        ) : (
+          <span onClick={() => setTurn(viewTurn)}>{iconPause}</span>
+        )}
+        <span onClick={() => setTurn(viewTurn + 1)}>{iconFor}</span>
+        <span onClick={() => setTurn(latestTurn)}>{iconSkipFor}</span>
+        {hypothetical ? (
+          <span
+            onClick={() => dispatch({ type: UserActionType.EndHypothetical })}
+          >
+            {iconExit}
+          </span>
+        ) : (
+          <span
+            onClick={() => dispatch({ type: UserActionType.StartHypothetical })}
+          >
+            {iconHypothetical}
+          </span>
+        )}
+      </ErrorBoundary>
     </div>
   );
 }

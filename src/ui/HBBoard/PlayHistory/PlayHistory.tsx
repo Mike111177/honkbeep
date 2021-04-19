@@ -17,6 +17,7 @@ import * as ArrayUtil from "../../../util/ArrayUtil";
 import styles from "./PlayHistory.css";
 import darkregion from "../DarkRegion.css";
 import { UserActionType } from "../../../client/types/UserAction";
+import { ErrorBoundary } from "../../util/ErrorBoundry";
 
 const NaturalNums = ["zero", "one", "two", "three", "four", "five"];
 
@@ -164,24 +165,21 @@ export default function PlayHistory() {
   ]);
   const boardDispatch = useBoardReducer();
   const displayAmount = Math.min(numPlayers * 2, turnNumber);
-  const thisIsNotBroken = false;
-  const describers = thisIsNotBroken
-    ? [...Array(displayAmount).keys()]
-        .map((_, i) => turnNumber - displayAmount + i)
-        .map((i) => (
-          <PlayDescriber
-            key={i}
-            turn={i}
-            onClick={() =>
-              boardDispatch({ type: UserActionType.SetViewTurn, turn: i + 1 })
-            }
-          />
-        ))
-    : undefined;
   return (
     <div className={classNames(styles.PlayHistory, darkregion.DarkRegion)}>
-      {describers}
-      TODO: FIX ME REEEEEEE
+      <ErrorBoundary>
+        {[...Array(displayAmount).keys()]
+          .map((_, i) => turnNumber - displayAmount + i)
+          .map((i) => (
+            <PlayDescriber
+              key={i}
+              turn={i}
+              onClick={() =>
+                boardDispatch({ type: UserActionType.SetViewTurn, turn: i + 1 })
+              }
+            />
+          ))}
+      </ErrorBoundary>
     </div>
   );
 }

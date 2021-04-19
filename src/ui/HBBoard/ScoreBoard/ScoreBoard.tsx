@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import * as ArrayUtil from "../../../util/ArrayUtil";
 import { useBoardState } from "../../BoardContext";
 import classNames from "../../util/classNames";
+import { ErrorBoundary } from "../../util/ErrorBoundry";
 
 import styles from "./ScoreBoard.css";
 import darkregion from "../DarkRegion.css";
@@ -36,21 +37,23 @@ export default function ScoreBoard() {
 
   return (
     <div className={classNames(styles.ScoreBoard, darkregion.DarkRegion)}>
-      Turn: {turn}
-      <br />
-      Score: {score} / 25
-      <br />
-      Clues: <span style={clueStyle}>{clues}</span>
-      <br />
-      Strikes:{" "}
-      {ArrayUtil.fill(3, (i) =>
-        i + 1 > strikes ? undefined : (
-          <span key={i} style={{ color: "red" }}>
-            {" "}
-            X{" "}
-          </span>
-        )
-      )}
+      <ErrorBoundary>
+        Turn: {turn}
+        <br />
+        Score: {score} / 25
+        <br />
+        Clues: <span style={clueStyle}>{clues}</span>
+        <br />
+        Strikes:{" "}
+        {ArrayUtil.fill(3, (i) =>
+          i + 1 > strikes ? undefined : (
+            <span key={i} style={{ color: "red" }}>
+              {" "}
+              X{" "}
+            </span>
+          )
+        )}
+      </ErrorBoundary>
     </div>
   );
 }
