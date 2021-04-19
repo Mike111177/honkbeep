@@ -2,7 +2,7 @@ import { ComponentPropsWithoutRef, useMemo } from "react";
 
 import { DrawCard, CardProps } from "../../DrawCard";
 import { getPipsFromEmpathy } from "../../../game/types/Empathy";
-import { useBoardState } from "../../BoardContext";
+import { useBoard, useBoardState } from "../../BoardContext";
 import * as ArrayUtil from "../../../util/ArrayUtil";
 import { useSpacebar } from "../../input";
 
@@ -10,7 +10,8 @@ export type HBDeckCardProps = {
   index: number;
 } & ComponentPropsWithoutRef<"svg">;
 export default function HBDeckCard({ index, ...props }: HBDeckCardProps) {
-  const [empathy, latestGame, card, definition, deck, touched] = useBoardState(
+  const definition = useBoard().state.definition;
+  const [empathy, card, touched] = useBoardState(
     (s) => {
       let card = undefined;
       const cardValue = s.shuffleOrder[index];
@@ -20,7 +21,7 @@ export default function HBDeckCard({ index, ...props }: HBDeckCardProps) {
           card = cardValue;
         } else {
           if (view === -1) {
-            view = (s.viewTurn.turn - 1) % s.definition.variant.numPlayers;
+            view = (s.viewTurn.turn - 1) % definition.variant.numPlayers;
           }
           if (s.latestTurn.cardReveals[view].has(index)) {
             card = cardValue;
@@ -29,31 +30,22 @@ export default function HBDeckCard({ index, ...props }: HBDeckCardProps) {
       }
       return [
         s.latestTurn.empathy[index],
-        s.latestTurn,
         card,
-        s.definition,
-        s.definition.variant.deck,
         s.viewTurn.cardMeta[index].touched,
       ];
     },
-    [index],
+    [definition.variant.numPlayers, index],
     ArrayUtil.shallowCompare
   );
   const pips = useMemo(
-    () => getPipsFromEmpathy(empathy, latestGame, deck, definition),
-    [deck, definition, empathy, latestGame]
+    () => getPipsFromEmpathy(empathy, definition.variant.deck, definition),
+    [definition, empathy]
   );
-  const cardInfo = useMemo(() => {
-    if (card !== undefined) {
-      return deck.getCard(card);
-    } else {
-      return undefined;
-    }
-  }, [deck, card]);
   const spaceDown = useSpacebar();
-
   const cardProps = useMemo((): CardProps => {
     const borderOverride = touched ? "orange" : undefined;
+    const cardInfo =
+      card !== undefined ? definition.variant.deck.getCard(card) : undefined;
     if (cardInfo !== undefined && !spaceDown) {
       return {
         borderOverride,
@@ -68,6 +60,6 @@ export default function HBDeckCard({ index, ...props }: HBDeckCardProps) {
         ...props,
       };
     }
-  }, [cardInfo, definition.variant, pips, props, spaceDown, touched]);
+  }, [card, definition.variant, pips, props, spaceDown, touched]);
   return <DrawCard {...cardProps} />;
 }

@@ -1,4 +1,4 @@
-import { GameState, Deck, GameDefinition } from "..";
+import { Deck, GameDefinition } from "..";
 import { Immutable } from "../../util/HelperTypes";
 
 export enum EmpathyStatus {
@@ -18,7 +18,6 @@ export type Pips = {
 
 export function getPipsFromEmpathy(
   empathy: Immutable<CardEmpathy>,
-  game: GameState,
   deck: Deck,
   definition: GameDefinition
 ): Pips {
