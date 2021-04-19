@@ -30,6 +30,8 @@ export default function resolveGameAttempt(
       //Make sure card is actually in player hand
       if (state.hands[player].find((i) => i === card) === undefined)
         return undefined;
+      //To know if this card is playable, we need to know that we know that value of this card
+      if (shuffleOrder[card] === undefined) return undefined;
       //Try to play card on each stack, until we find one that works
       for (let i = 0; i < variant.suits.length; i++) {
         if (isCardPlayableOnStack(card, i, state, variant, shuffleOrder)) {

@@ -1,4 +1,4 @@
-import produce, { immerable, Draft } from "immer";
+import produce, { immerable, Draft, Immutable } from "immer";
 import { GameEventMessage } from "../../backend/types/GameData";
 import { GameDefinition, GameEvent } from "../../game";
 import { TurnState, initTurnState, reduceTurnEvent } from "./TurnState";
@@ -11,6 +11,7 @@ export class BoardState {
   readonly turnHistory: ReadonlyArray<TurnState>;
   //Most hypothetical turns
   readonly hypotheticalTurns: ReadonlyArray<TurnState>;
+  readonly hypotheticalEvents: ReadonlyArray<GameEvent>;
   //Turn state currently being viewed
   readonly viewTurnNumber: number;
   //Whether or not the viewTurn is synchronized with the latestTurn
@@ -38,22 +39,35 @@ export class BoardState {
     this.perspective = undefined;
     this.viewOrder = 0;
     this.hypotheticalTurns = [];
+    this.hypotheticalEvents = [];
     this.hypothetical = false;
   }
 
   get latestTurn() {
-    if (this.hypothetical) {
-      return this.hypotheticalTurns[this.hypotheticalTurns.length - 1];
-    } else {
-      return this.turnHistory[this.turnHistory.length - 1];
-    }
+    return this.turnHistory[this.turnHistory.length - 1];
   }
 
   get viewTurn() {
-    if (this.hypothetical) {
+    if (this.hypothetical && this.hypotheticalTurns.length > 0) {
       return this.hypotheticalTurns[this.hypotheticalTurns.length - 1];
     } else {
       return this.turnHistory[this.viewTurnNumber];
+    }
+  }
+
+  getTurn(num: number) {
+    if (this.hypothetical && num >= this.viewTurnNumber) {
+      return this.hypotheticalTurns[num - this.viewTurnNumber];
+    } else {
+      return this.turnHistory[num];
+    }
+  }
+
+  getEvent(num: number) {
+    if (this.hypothetical && num >= this.viewTurnNumber) {
+      return this.hypotheticalEvents[num - this.viewTurnNumber];
+    } else {
+      return this.events[num];
     }
   }
 
@@ -63,14 +77,6 @@ export class BoardState {
 
   appendEventMessage(msg: GameEventMessage) {
     return appendEventMessageProd(this, msg);
-  }
-
-  jumpToTurn(turn: number) {
-    return jumpToTurnProd(this, turn);
-  }
-
-  resume() {
-    return resumeProd(this);
   }
 
   setShuffleOrder(order: number[]) {
@@ -112,19 +118,6 @@ const appendEventMessageProd = produce(
   }
 );
 
-const jumpToTurnProd = produce((state: Draft<BoardState>, turn: number) => {
-  state.paused = true;
-  state.viewTurnNumber = Math.min(
-    Math.max(turn, 1),
-    state.turnHistory.length - 1
-  );
-});
-
-const resumeProd = produce((state: Draft<BoardState>) => {
-  state.paused = false;
-  state.viewTurnNumber = state.latestTurn.turn;
-});
-
 const setShuffleOrderProd = produce(
   (state: Draft<BoardState>, order: number[]) => {
     state.shuffleOrder = order;
@@ -142,3 +135,11 @@ const setViewOrderProd = produce(
     state.viewOrder = viewOrder;
   }
 );
+
+//I think this is roughly the programming model im going to switch to for the rest of BoardState mutations
+export function modifyBoardState(
+  state: Immutable<BoardState>,
+  fn: (s: Draft<Immutable<BoardState>>) => void
+) {
+  return produce(state, fn);
+}

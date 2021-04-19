@@ -7,7 +7,6 @@ import {
   GameEventType,
   GameAttempt,
   genericVariant,
-  resolveGameAttempt,
 } from "../game";
 import Board from "./Board";
 import BoardState from "./states/BoardState";
@@ -31,12 +30,7 @@ export default class SolitaireBoard extends Board {
   }
 
   async attemptPlayerAction(action: GameAttempt): Promise<boolean> {
-    const event = resolveGameAttempt(
-      action,
-      this.state.latestTurn,
-      this.state.definition.variant,
-      this.state.shuffleOrder
-    );
+    const event = this.checkMoveValidity(action);
     if (event !== undefined) {
       this.updateBoardState(this.state.appendEvent(event));
       return true;

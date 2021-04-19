@@ -171,4 +171,15 @@ describe("resolve clue attempt", () => {
     );
     expect(result).toStrictEqual(undefined);
   });
+
+  test("Produces no event when trying to play a card with unknown value", () => {
+    const { state1, variant } = genericSampleGame();
+    const result = resolveGameAttempt(
+      { type: GameEventType.Play, card: 0 },
+      state1,
+      variant,
+      []
+    );
+    expect(result).toStrictEqual(undefined);
+  });
 });

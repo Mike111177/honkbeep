@@ -4,6 +4,8 @@ export enum UserActionType {
   GameAttempt = 1,
   SetViewTurn,
   Resume,
+  StartHypothetical,
+  EndHypothetical,
 }
 
 type UserActionGameAttempt = {
@@ -20,9 +22,19 @@ type UserActionResume = {
   type: UserActionType.Resume;
 };
 
+type UserActionStartHypothetical = {
+  type: UserActionType.StartHypothetical;
+};
+
+type UserActionEndHypothetical = {
+  type: UserActionType.EndHypothetical;
+};
+
 export type UserAction =
   | UserActionGameAttempt
   | UserActionSetViewTurn
-  | UserActionResume;
+  | UserActionResume
+  | UserActionStartHypothetical
+  | UserActionEndHypothetical;
 
 export default UserAction;

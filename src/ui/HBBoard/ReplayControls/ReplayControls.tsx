@@ -9,12 +9,19 @@ const iconPause = "⏸";
 const iconPlay = "▶️";
 const iconFor = "⏩️";
 const iconSkipFor = "⏭️";
+const iconHypothetical = "❓";
+const iconExit = "❌";
 
 export default function ReplayControls() {
   const dispatch = useBoardReducer();
-  const [viewTurn, latestTurn, paused] = useBoardState(
+  const [viewTurn, latestTurn, paused, hypothetical] = useBoardState(
     (state) => {
-      return [state.viewTurn.turn, state.latestTurn.turn, state.paused];
+      return [
+        state.viewTurn.turn,
+        state.latestTurn.turn,
+        state.paused,
+        state.hypothetical,
+      ];
     },
     [],
     ArrayUtil.shallowCompare
@@ -23,19 +30,32 @@ export default function ReplayControls() {
   const setTurn = (turn: number) =>
     dispatch({ type: UserActionType.SetViewTurn, turn });
 
-  const pausePlay = paused
-    ? () => dispatch({ type: UserActionType.Resume })
-    : () => setTurn(latestTurn);
-
-  const pausePlayIcon = paused ? iconPlay : iconPause;
-
   return (
     <div className={styles.ReplayControls}>
       <span onClick={() => setTurn(1)}>{iconSkipBack}</span>
       <span onClick={() => setTurn(viewTurn - 1)}>{iconBack}</span>
-      <span onClick={pausePlay}>{pausePlayIcon}</span>
+      {paused ? (
+        <span onClick={() => dispatch({ type: UserActionType.Resume })}>
+          {iconPlay}
+        </span>
+      ) : (
+        <span onClick={() => setTurn(viewTurn)}>{iconPause}</span>
+      )}
       <span onClick={() => setTurn(viewTurn + 1)}>{iconFor}</span>
       <span onClick={() => setTurn(latestTurn)}>{iconSkipFor}</span>
+      {hypothetical ? (
+        <span
+          onClick={() => dispatch({ type: UserActionType.EndHypothetical })}
+        >
+          {iconExit}
+        </span>
+      ) : (
+        <span
+          onClick={() => dispatch({ type: UserActionType.StartHypothetical })}
+        >
+          {iconHypothetical}
+        </span>
+      )}
     </div>
   );
 }

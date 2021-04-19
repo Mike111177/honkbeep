@@ -7,7 +7,7 @@ export function useSledCardState(
   index: number
 ): [boolean, boolean, boolean, ...ZonePath] {
   return useBoardState(
-    ({ paused, viewTurn, definition: { variant } }) => {
+    ({ paused, viewTurn, hypothetical, definition: { variant } }) => {
       const home = getCardHome(index, viewTurn);
       const cardInCurrentPlayerHand =
         home[0] === "hands" &&
@@ -23,7 +23,7 @@ export function useSledCardState(
           (stack !== undefined && stack[stack.length - 2] !== index)
         );
       return [
-        cardInCurrentPlayerHand && !paused,
+        cardInCurrentPlayerHand && (!paused || hypothetical),
         cardOnTopOfStack,
         visible,
         ...home,

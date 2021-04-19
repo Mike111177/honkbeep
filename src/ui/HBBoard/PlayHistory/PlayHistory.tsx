@@ -38,7 +38,7 @@ function useCardPlayData(
       return [
         deck.getCard(shuffleOrder[event.card]),
         s.definition.playerNames[player],
-        s.turnHistory[turn].hands[player].indexOf(event.card),
+        s.getTurn(turn).hands[player].indexOf(event.card),
       ];
     },
     [event.card, turn],
@@ -139,7 +139,7 @@ type PlayDescriberProps = {
   onClick: React.ComponentPropsWithoutRef<"span">["onClick"];
 };
 function PlayDescriber({ turn, onClick }: PlayDescriberProps) {
-  const event = useBoardState(({ events }) => events[turn]);
+  const event = useBoardState((state) => state.getEvent(turn));
   switch (event.type) {
     case GameEventType.Deal: {
       return <span onClick={onClick}>Game Started</span>;
@@ -164,9 +164,9 @@ export default function PlayHistory() {
   ]);
   const boardDispatch = useBoardReducer();
   const displayAmount = Math.min(numPlayers * 2, turnNumber);
-  return (
-    <div className={classNames(styles.PlayHistory, darkregion.DarkRegion)}>
-      {[...Array(displayAmount).keys()]
+  const thisIsNotBroken = false;
+  const describers = thisIsNotBroken
+    ? [...Array(displayAmount).keys()]
         .map((_, i) => turnNumber - displayAmount + i)
         .map((i) => (
           <PlayDescriber
@@ -176,7 +176,12 @@ export default function PlayHistory() {
               boardDispatch({ type: UserActionType.SetViewTurn, turn: i + 1 })
             }
           />
-        ))}
+        ))
+    : undefined;
+  return (
+    <div className={classNames(styles.PlayHistory, darkregion.DarkRegion)}>
+      {describers}
+      TODO: FIX ME REEEEEEE
     </div>
   );
 }
