@@ -44,15 +44,8 @@ export default function ScoreBoard() {
         <br />
         Clues: <span style={clueStyle}>{clues}</span>
         <br />
-        Strikes:{" "}
-        {ArrayUtil.fill(3, (i) =>
-          i + 1 > strikes ? undefined : (
-            <span key={i} style={{ color: "red" }}>
-              {" "}
-              X{" "}
-            </span>
-          )
-        )}
+        Strikes:
+        {ArrayUtil.fill(3, (i) => (i + 1 > strikes ? null : "❌")).join("")}
       </ErrorBoundary>
     </div>
   );
