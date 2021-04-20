@@ -1,32 +1,43 @@
 import Backend from "../backend/types/Backend";
+import { GameEventMessage } from "../backend/types/GameData";
 import { GameAttempt } from "../game";
 import Board from "./Board";
-import BoardState from "./states/BoardState";
+import BoardState, { appendEvent } from "./states/BoardState";
+
+function appendEventMessage(
+  state: BoardState,
+  { event, reveals }: GameEventMessage
+) {
+  appendEvent(state, event);
+  if (reveals) {
+    for (let revealedCard of reveals) {
+      state.shuffleOrder[revealedCard.deck] = revealedCard.card;
+    }
+  }
+  return state;
+}
 
 export default class ClientBoard extends Board {
   //Adapter to use to communicate with server
   private backend: Backend;
 
-  //TODO: viewOrder should probably somehow be controlled by the backend
   constructor(backend: Backend) {
-    //Create new ClientState
-    super(
-      backend
-        .currentState()
-        .events.reduce(
-          (s, event) => s.appendEventMessage(event),
-          new BoardState(backend.currentState().definition).setViewOrder(
-            backend.viewOrder
-          )
-        )
-    );
+    //Create new BoardState
+    const state0 = backend
+      .currentState()
+      .events.reduce(
+        (s, event) => appendEventMessage(s, event),
+        new BoardState(backend.currentState().definition)
+      );
+    state0.viewOrder = backend.viewOrder;
+    super(state0);
     //Listen for further game events
     backend.onChange(() => {
       const { events } = this.backend.currentState();
-      this.updateBoardState(
+      this.updateBoardState((state) =>
         events
-          .slice(this.state.latestTurn.turn)
-          .reduce((s, event) => s.appendEventMessage(event), this.state)
+          .slice(state.latestTurn.turn)
+          .reduce((s, event) => appendEventMessage(s, event), state)
       );
     });
     this.backend = backend;

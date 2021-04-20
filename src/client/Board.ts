@@ -1,12 +1,13 @@
 import { Immutable } from "../util/HelperTypes";
 import { GameAttempt, GameEvent, resolveGameAttempt } from "../game";
 import * as ArrayUtil from "../util/ArrayUtil";
-import { BoardState, modifyBoardState } from "./states/BoardState";
+import { BoardState } from "./states/BoardState";
 import { UserAction, UserActionType } from "./types/UserAction";
 import { reduceTurnEvent } from "./states/TurnState";
 import { Draft } from "immer";
 
 export type BoardUpdateListener = () => void;
+
 export default abstract class Board {
   private listeners: BoardUpdateListener[];
   private _boardState?: Immutable<BoardState>;
@@ -32,8 +33,8 @@ export default abstract class Board {
     return removeFunc;
   }
 
-  protected updateBoardState(newState: Immutable<BoardState>) {
-    this._boardState = newState;
+  protected updateBoardState(fn: (s: BoardState) => void) {
+    fn(this._boardState as BoardState);
     for (let f of this.listeners) f();
   }
 
@@ -61,17 +62,15 @@ export default abstract class Board {
           //We may however want to try to simulate a hypothetical play, so we will try that here
           const move = this.checkMoveValidity(action.attempt);
           if (move !== undefined) {
-            this.updateBoardState(
-              modifyBoardState(this.state as BoardState, (state) => {
-                const newHypotheticalTurn = reduceTurnEvent(
-                  state.viewTurn,
-                  move,
-                  state.definition.variant
-                );
-                state.hypotheticalTurns.push(newHypotheticalTurn);
-                state.hypotheticalEvents.push(move as Draft<GameEvent>);
-              })
-            );
+            this.updateBoardState((state) => {
+              const newHypotheticalTurn = reduceTurnEvent(
+                state.viewTurn,
+                move,
+                state.definition.variant
+              );
+              state.hypotheticalTurns.push(newHypotheticalTurn);
+              state.hypotheticalEvents.push(move as Draft<GameEvent>);
+            });
             return true;
           } else {
             return false;
@@ -81,40 +80,32 @@ export default abstract class Board {
         return false;
       }
       case UserActionType.SetViewTurn:
-        return this.updateBoardState(
-          modifyBoardState(this.state as BoardState, (state) => {
-            state.paused = true;
-            state.viewTurnNumber = Math.min(
-              Math.max(action.turn, 1),
-              state.turnHistory.length - 1
-            );
-          })
-        );
+        return this.updateBoardState((state) => {
+          state.paused = true;
+          state.turnNumber = Math.min(
+            Math.max(action.turn, 1),
+            state.turns.length - 1
+          );
+        });
       case UserActionType.Resume:
-        return this.updateBoardState(
-          modifyBoardState(this.state as BoardState, (state) => {
-            state.paused = false;
-            state.hypothetical = false;
-            state.hypotheticalTurns.length = 0;
-            state.hypotheticalEvents.length = 0;
-            state.viewTurnNumber = state.latestTurn.turn;
-          })
-        );
+        return this.updateBoardState((state) => {
+          state.paused = false;
+          state.hypothetical = false;
+          state.hypotheticalTurns.length = 0;
+          state.hypotheticalEvents.length = 0;
+          state.turnNumber = state.latestTurn.turn;
+        });
       case UserActionType.StartHypothetical:
-        return this.updateBoardState(
-          modifyBoardState(this.state as BoardState, (state) => {
-            state.paused = true;
-            state.hypothetical = true;
-          })
-        );
+        return this.updateBoardState((state) => {
+          state.paused = true;
+          state.hypothetical = true;
+        });
       case UserActionType.EndHypothetical:
-        return this.updateBoardState(
-          modifyBoardState(this.state as BoardState, (state) => {
-            state.hypothetical = false;
-            state.hypotheticalTurns.length = 0;
-            state.hypotheticalEvents.length = 0;
-          })
-        );
+        return this.updateBoardState((state) => {
+          state.hypothetical = false;
+          state.hypotheticalTurns.length = 0;
+          state.hypotheticalEvents.length = 0;
+        });
     }
   }
 }

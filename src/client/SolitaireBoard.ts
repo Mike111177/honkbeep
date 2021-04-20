@@ -9,7 +9,7 @@ import {
   genericVariant,
 } from "../game";
 import Board from "./Board";
-import BoardState from "./states/BoardState";
+import BoardState, { appendEvent } from "./states/BoardState";
 
 export default class SolitaireBoard extends Board {
   constructor(variantDef: VariantDefinition) {
@@ -18,21 +18,17 @@ export default class SolitaireBoard extends Board {
       playerNames: genericPlayers(variantDef),
     };
     const boardState = new BoardState(definition);
-    const { order } = getShuffledOrder(
+    boardState.shuffleOrder = getShuffledOrder(
       boardState.definition.variant.deck.length
-    );
-    super(
-      boardState
-        .setPerspective(-1)
-        .setShuffleOrder(order)
-        .appendEvent({ turn: 0, type: GameEventType.Deal })
-    );
+    ).order;
+    appendEvent(boardState, { turn: 0, type: GameEventType.Deal });
+    super(boardState);
   }
 
   async attemptPlayerAction(action: GameAttempt): Promise<boolean> {
     const event = this.checkMoveValidity(action);
     if (event !== undefined) {
-      this.updateBoardState(this.state.appendEvent(event));
+      this.updateBoardState((state) => appendEvent(state, event));
       return true;
     }
     return false;

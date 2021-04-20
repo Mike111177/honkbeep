@@ -1,38 +1,46 @@
-import produce, { immerable, Draft, Immutable } from "immer";
-import { GameEventMessage } from "../../backend/types/GameData";
 import { GameDefinition, GameEvent } from "../../game";
+import { Immutable } from "../../util/HelperTypes";
 import { TurnState, initTurnState, reduceTurnEvent } from "./TurnState";
 
+//This class sh
 export class BoardState {
-  readonly [immerable] = true;
-  //info to define game
-  readonly definition: GameDefinition;
-  //Historic turns
-  readonly turnHistory: ReadonlyArray<TurnState>;
-  //Most hypothetical turns
-  readonly hypotheticalTurns: ReadonlyArray<TurnState>;
-  readonly hypotheticalEvents: ReadonlyArray<GameEvent>;
+  //Info to define game, should NEVER change after creation
+  readonly definition: Immutable<GameDefinition>;
+
+  //Turns and events
+  readonly turns: TurnState[];
+  readonly events: GameEvent[];
+
+  //Hypothetical turns and events
+  readonly hypotheticalTurns: TurnState[];
+  readonly hypotheticalEvents: GameEvent[];
+
   //Turn state currently being viewed
-  readonly viewTurnNumber: number;
-  //Whether or not the viewTurn is synchronized with the latestTurn
-  readonly paused: boolean;
+  //If in a hypothetical, this will be the last turn
+  //before the hypothetical started
+  turnIndex: number;
+
+  //Whether or not the turnIndex is synchronized with the latestTurn
+  paused: boolean;
+
   //Whether or not we are viewing a hypothetical
-  readonly hypothetical: boolean;
+  hypothetical: boolean;
+
   //Known shuffle order
-  readonly shuffleOrder: ReadonlyArray<number>;
-  //Event History
-  readonly events: ReadonlyArray<GameEvent>;
-  //Player of current perspective, -1 to follow viewTurn, undefined for spectator
+  shuffleOrder: number[];
+
+  //Player of current perspective, -1 to follow turnIndex, undefined for spectator
   //This only effects card visibility
-  readonly perspective: number | undefined;
-  //Which players hand should be displayed on top, -1 to follow viewTurn
+  perspective: number | undefined;
+
+  //Which players hand should be displayed on top, -1 to follow turnIndex
   //This only effects the order of hands
-  readonly viewOrder: number;
+  viewOrder: number;
 
   constructor(definition: GameDefinition) {
     this.definition = definition;
-    this.turnHistory = [initTurnState(definition.variant)];
-    this.viewTurnNumber = 0;
+    this.turns = [initTurnState(definition.variant)];
+    this.turnIndex = 0;
     this.paused = false;
     this.shuffleOrder = [];
     this.events = [];
@@ -43,103 +51,53 @@ export class BoardState {
     this.hypothetical = false;
   }
 
+  //TODO: seperate playernames from definition, so we can just store the shallower variant value
+  get playerNames() {
+    return this.definition.playerNames;
+  }
+  get variant() {
+    return this.definition.variant;
+  }
+
   get latestTurn() {
-    return this.turnHistory[this.turnHistory.length - 1];
+    return this.turns[this.turns.length - 1];
   }
 
   get viewTurn() {
     if (this.hypothetical && this.hypotheticalTurns.length > 0) {
       return this.hypotheticalTurns[this.hypotheticalTurns.length - 1];
     } else {
-      return this.turnHistory[this.viewTurnNumber];
+      return this.turns[this.turnIndex];
     }
   }
 
   getTurn(num: number) {
-    if (this.hypothetical && num >= this.viewTurnNumber) {
-      return this.hypotheticalTurns[num - this.viewTurnNumber];
+    if (this.hypothetical && num >= this.turnIndex) {
+      return this.hypotheticalTurns[num - this.turnIndex];
     } else {
-      return this.turnHistory[num];
+      return this.turns[num];
     }
   }
 
   getEvent(num: number) {
-    if (this.hypothetical && num >= this.viewTurnNumber) {
-      return this.hypotheticalEvents[num - this.viewTurnNumber];
+    if (this.hypothetical && num >= this.turnIndex) {
+      return this.hypotheticalEvents[num - this.turnIndex];
     } else {
       return this.events[num];
     }
   }
-
-  appendEvent(event: GameEvent) {
-    return appendEventProd(this, event);
-  }
-
-  appendEventMessage(msg: GameEventMessage) {
-    return appendEventMessageProd(this, msg);
-  }
-
-  setShuffleOrder(order: number[]) {
-    return setShuffleOrderProd(this, order);
-  }
-
-  setPerspective(player?: number) {
-    return setPerspectiveProd(this, player);
-  }
-
-  setViewOrder(viewOrder: number) {
-    return setViewOrderProd(this, viewOrder);
-  }
 }
 export default BoardState;
 
-function appendEventFn(state: Draft<BoardState>, event: GameEvent) {
+//Quick helper for adding events to the turn history
+export function appendEvent(state: BoardState, event: GameEvent) {
   //Push event into history
-  state.events.push(event as Draft<GameEvent>);
-  state.turnHistory.push(
+  state.events.push(event);
+  state.turns.push(
     reduceTurnEvent(state.latestTurn, event, state.definition.variant)
   );
-  //If the viewTurn is not paused (as in we are not in replay or hypothetical mode), have the viewTurn follow the latestTurn
+  //If the turnIndex is not paused (as in we are not in replay or hypothetical mode), have the turnIndex follow the latestTurn
   if (!state.paused) {
-    state.viewTurnNumber = state.latestTurn.turn;
+    state.turnIndex = state.latestTurn.turn;
   }
-}
-
-const appendEventProd = produce(appendEventFn);
-
-const appendEventMessageProd = produce(
-  (state: Draft<BoardState>, { event, reveals }: GameEventMessage) => {
-    appendEventFn(state, event);
-    if (reveals) {
-      for (let revealedCard of reveals) {
-        state.shuffleOrder[revealedCard.deck] = revealedCard.card;
-      }
-    }
-  }
-);
-
-const setShuffleOrderProd = produce(
-  (state: Draft<BoardState>, order: number[]) => {
-    state.shuffleOrder = order;
-  }
-);
-
-const setPerspectiveProd = produce(
-  (state: Draft<BoardState>, player?: number) => {
-    state.perspective = player;
-  }
-);
-
-const setViewOrderProd = produce(
-  (state: Draft<BoardState>, viewOrder: number) => {
-    state.viewOrder = viewOrder;
-  }
-);
-
-//I think this is roughly the programming model im going to switch to for the rest of BoardState mutations
-export function modifyBoardState(
-  state: Immutable<BoardState>,
-  fn: (s: Draft<Immutable<BoardState>>) => void
-) {
-  return produce(state, fn);
 }
