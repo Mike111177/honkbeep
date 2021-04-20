@@ -7,14 +7,14 @@ import styles from "./HandArea.css";
 export default function HandsArea() {
   const [playerNames, numPlayers, playerView] = useBoardState(
     (boardState) => {
-      const numPlayers = boardState.definition.variant.numPlayers;
+      const numPlayers = boardState.variant.numPlayers;
       let playerView = boardState.viewOrder;
       if (playerView === undefined) {
         playerView = 0;
       } else if (playerView === -1) {
         playerView = (boardState.viewTurn.turn - 1) % numPlayers;
       }
-      return [boardState.definition.playerNames, numPlayers, playerView];
+      return [boardState.playerNames, numPlayers, playerView];
     },
     [],
     ArrayUtil.shallowCompare

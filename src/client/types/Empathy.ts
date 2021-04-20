@@ -1,4 +1,4 @@
-import { Deck, GameDefinition } from "../../game";
+import { Variant } from "../../game";
 import { Immutable } from "../../util/HelperTypes";
 
 export enum EmpathyStatus {
@@ -18,11 +18,8 @@ export type Pips = {
 
 export function getPipsFromEmpathy(
   empathy: Immutable<CardEmpathy>,
-  deck: Deck,
-  definition: GameDefinition
+  { deck, suits }: Variant
 ): Pips {
-  const suits = definition.variant.suits;
-
   if (typeof empathy !== "number") {
     return {
       ranks: [1, 2, 3, 4, 5].filter((rank) => {

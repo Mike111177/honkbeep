@@ -33,12 +33,12 @@ function useCardPlayData(
   return useBoardState(
     (s) => {
       const shuffleOrder = s.shuffleOrder;
-      const deck = s.definition.variant.deck;
-      const numPlayers = s.definition.variant.numPlayers;
+      const deck = s.variant.deck;
+      const numPlayers = s.variant.numPlayers;
       const player = (turn - 1) % numPlayers;
       return [
         deck.getCard(shuffleOrder[event.card]),
-        s.definition.playerNames[player],
+        s.playerNames[player],
         s.getTurn(turn).hands[player].indexOf(event.card),
       ];
     },
@@ -57,12 +57,15 @@ function CluePlayDescriber({
   event: { touched, clue, target },
   onClick,
 }: CluePlayDescriberProps) {
-  const definition = useBoardState(({ definition }) => definition);
-  const numPlayers = definition.variant.numPlayers;
+  const [variant, playerNames] = useBoardState(
+    ({ variant, playerNames }) => [variant, playerNames],
+    [],
+    ArrayUtil.shallowCompare
+  );
+  const numPlayers = variant.numPlayers;
   const player = (turn - 1) % numPlayers;
-  const playernames = definition.playerNames;
-  const giverName = playernames[player];
-  const targetName = playernames[target];
+  const giverName = playerNames[player];
+  const targetName = playerNames[target];
   const numTouched = touched.length;
   const subject = clue.type === ClueType.Number ? `#${clue.value}` : clue.value;
   let style =
@@ -161,7 +164,7 @@ function PlayDescriber({ turn, onClick }: PlayDescriberProps) {
 export default function PlayHistory() {
   const [turnNumber, numPlayers] = useBoardState((s) => [
     s.viewTurn.turn,
-    s.definition.variant.numPlayers,
+    s.variant.numPlayers,
   ]);
   const boardDispatch = useBoardReducer();
   const displayAmount = Math.min(numPlayers * 2, turnNumber);

@@ -1,11 +1,12 @@
-import { GameDefinition, GameEvent } from "../../game";
+import { GameDefinition, GameEvent, Variant } from "../../game";
 import { Immutable } from "../../util/HelperTypes";
 import { TurnState, initTurnState, reduceTurnEvent } from "./TurnState";
 
 //This class sh
 export class BoardState {
   //Info to define game, should NEVER change after creation
-  readonly definition: Immutable<GameDefinition>;
+  readonly variant: Immutable<Variant>;
+  readonly playerNames: ReadonlyArray<string>;
 
   //Turns and events
   readonly turns: TurnState[];
@@ -37,9 +38,10 @@ export class BoardState {
   //This only effects the order of hands
   viewOrder: number;
 
-  constructor(definition: GameDefinition) {
-    this.definition = definition;
-    this.turns = [initTurnState(definition.variant)];
+  constructor({ variant, playerNames }: GameDefinition) {
+    this.variant = variant;
+    this.playerNames = playerNames;
+    this.turns = [initTurnState(variant)];
     this.turnIndex = 0;
     this.paused = false;
     this.shuffleOrder = [];
@@ -51,14 +53,6 @@ export class BoardState {
     this.hypothetical = false;
   }
 
-  //TODO: seperate playernames from definition, so we can just store the shallower variant value
-  get playerNames() {
-    return this.definition.playerNames;
-  }
-  get variant() {
-    return this.definition.variant;
-  }
-
   get latestTurn() {
     return this.turns[this.turns.length - 1];
   }
@@ -68,6 +62,25 @@ export class BoardState {
       return this.hypotheticalTurns[this.hypotheticalTurns.length - 1];
     } else {
       return this.turns[this.turnIndex];
+    }
+  }
+
+  get playerOfTurn() {
+    return (this.viewTurn.turn - 1) % this.variant.numPlayers;
+  }
+
+  getCardIfRevealed(index: number) {
+    const cardValue = this.shuffleOrder[index];
+    if (
+      cardValue !== undefined &&
+      (this.perspective === undefined ||
+        this.latestTurn.cardReveals[
+          this.perspective === -1 ? this.playerOfTurn : this.perspective
+        ].has(index))
+    ) {
+      return cardValue;
+    } else {
+      return undefined;
     }
   }
 
@@ -93,9 +106,7 @@ export default BoardState;
 export function appendEvent(state: BoardState, event: GameEvent) {
   //Push event into history
   state.events.push(event);
-  state.turns.push(
-    reduceTurnEvent(state.latestTurn, event, state.definition.variant)
-  );
+  state.turns.push(reduceTurnEvent(state.latestTurn, event, state.variant));
   //If the turnIndex is not paused (as in we are not in replay or hypothetical mode), have the turnIndex follow the latestTurn
   if (!state.paused) {
     state.turnIndex = state.latestTurn.turn;

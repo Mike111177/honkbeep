@@ -8,8 +8,7 @@ import styles from "./AnimatedDeck.css";
 
 //Create layer for all cards
 export default function AnimatedDeck() {
-  const cardAmount = useContext(BoardContext).state.definition.variant.deck
-    .length;
+  const cardAmount = useContext(BoardContext).state.variant.deck.length;
   const [ref, bounds] = useMeasure();
   return (
     <div ref={ref} className={styles.AnimatedDeck}>

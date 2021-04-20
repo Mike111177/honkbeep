@@ -42,7 +42,7 @@ export default abstract class Board {
     return resolveGameAttempt(
       move,
       this.state.viewTurn,
-      this.state.definition.variant,
+      this.state.variant,
       this.state.shuffleOrder
     );
   }
@@ -66,7 +66,7 @@ export default abstract class Board {
               const newHypotheticalTurn = reduceTurnEvent(
                 state.viewTurn,
                 move,
-                state.definition.variant
+                state.variant
               );
               state.hypotheticalTurns.push(newHypotheticalTurn);
               state.hypotheticalEvents.push(move as Draft<GameEvent>);
@@ -82,7 +82,7 @@ export default abstract class Board {
       case UserActionType.SetViewTurn:
         return this.updateBoardState((state) => {
           state.paused = true;
-          state.turnNumber = Math.min(
+          state.turnIndex = Math.min(
             Math.max(action.turn, 1),
             state.turns.length - 1
           );
@@ -93,7 +93,7 @@ export default abstract class Board {
           state.hypothetical = false;
           state.hypotheticalTurns.length = 0;
           state.hypotheticalEvents.length = 0;
-          state.turnNumber = state.latestTurn.turn;
+          state.turnIndex = state.latestTurn.turn;
         });
       case UserActionType.StartHypothetical:
         return this.updateBoardState((state) => {

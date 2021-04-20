@@ -16,8 +16,8 @@ export default function DiscardPile() {
       return [
         s.viewTurn.discardPile,
         s.shuffleOrder,
-        s.definition.variant.deck,
-        s.definition.variant.suits,
+        s.variant.deck,
+        s.variant.suits,
       ];
     },
     [],

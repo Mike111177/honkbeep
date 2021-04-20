@@ -107,9 +107,9 @@ export default function HBClueArea() {
   const [players, turn, suits, clues] = useBoardState(
     (s) => {
       return [
-        s.definition.playerNames,
+        s.playerNames,
         s.viewTurn.turn,
-        s.definition.variant.suits,
+        s.variant.suits,
         s.viewTurn.clues,
       ];
     },

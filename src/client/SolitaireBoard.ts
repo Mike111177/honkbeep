@@ -19,8 +19,9 @@ export default class SolitaireBoard extends Board {
     };
     const boardState = new BoardState(definition);
     boardState.shuffleOrder = getShuffledOrder(
-      boardState.definition.variant.deck.length
+      boardState.variant.deck.length
     ).order;
+    boardState.perspective = -1;
     appendEvent(boardState, { turn: 0, type: GameEventType.Deal });
     super(boardState);
   }

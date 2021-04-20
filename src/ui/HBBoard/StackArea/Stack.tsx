@@ -63,7 +63,7 @@ export function Stack({ suit, number }: HBStackProps) {
 }
 
 export default function StackArea() {
-  const suits = useBoard().state.definition.variant.suits;
+  const suits = useBoard().state.variant.suits;
   const ref = useZone(["stackArea"], { dropZone: true });
   return (
     <div ref={ref} className={styles.StackArea}>

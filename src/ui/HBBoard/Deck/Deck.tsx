@@ -7,7 +7,7 @@ import styles from "./Deck.css";
 export default function Deck() {
   const [deck, topDeck] = useBoardState(
     (s) => {
-      return [s.definition.variant.deck, s.viewTurn.topDeck];
+      return [s.variant.deck, s.viewTurn.topDeck];
     },
     [],
     ArrayUtil.shallowCompare

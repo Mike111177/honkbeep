@@ -11,11 +11,11 @@ type HandProps = {
 
 export default function Hand({ player }: HandProps) {
   const [playerNames, cardsInHand, myTurn] = useBoardState(
-    ({ definition, viewTurn }) => {
+    ({ playerNames, variant: { numPlayers }, viewTurn }) => {
       return [
-        definition.playerNames,
+        playerNames,
         viewTurn.hands[player].length,
-        player === (viewTurn.turn - 1) % definition.variant.numPlayers,
+        player === (viewTurn.turn - 1) % numPlayers,
       ];
     },
     [player],
