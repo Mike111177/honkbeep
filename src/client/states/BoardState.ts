@@ -69,6 +69,14 @@ export class BoardState {
     return (this.viewTurn.turn - 1) % this.variant.numPlayers;
   }
 
+  get myTurn() {
+    return (
+      this.perspective === undefined ||
+      this.perspective === -1 ||
+      this.perspective === this.playerOfTurn
+    );
+  }
+
   getCardIfRevealed(index: number) {
     const cardValue = this.shuffleOrder[index];
     if (

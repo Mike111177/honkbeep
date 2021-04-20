@@ -30,6 +30,7 @@ export default class ClientBoard extends Board {
         new BoardState(backend.currentState().definition)
       );
     state0.viewOrder = backend.viewOrder;
+    state0.perspective = backend.viewOrder;
     super(state0);
     //Listen for further game events
     backend.onChange(() => {

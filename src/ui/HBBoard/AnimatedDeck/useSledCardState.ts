@@ -7,11 +7,10 @@ export function useSledCardState(
   index: number
 ): [boolean, boolean, boolean, ...ZonePath] {
   return useBoardState(
-    ({ paused, viewTurn, hypothetical, variant }) => {
+    ({ paused, viewTurn, hypothetical, playerOfTurn, myTurn }) => {
       const home = getCardHome(index, viewTurn);
       const cardInCurrentPlayerHand =
-        home[0] === "hands" &&
-        home[1] === (viewTurn.turn - 1) % variant.numPlayers;
+        home[0] === "hands" && home[1] === playerOfTurn;
       const stack =
         home[0] === "stacks" ? viewTurn.stacks[home[1] as number] : undefined;
       const cardOnTopOfStack =
@@ -23,7 +22,7 @@ export function useSledCardState(
           (stack !== undefined && stack[stack.length - 2] !== index)
         );
       return [
-        cardInCurrentPlayerHand && (!paused || hypothetical),
+        hypothetical || (cardInCurrentPlayerHand && !paused && myTurn),
         cardOnTopOfStack,
         visible,
         ...home,
