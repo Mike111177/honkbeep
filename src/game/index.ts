@@ -8,7 +8,6 @@ export * from "./gameStateHelpers";
 
 //Types
 export * from "./types/Clue";
-export * from "./types/Empathy";
 export * from "./types/GameEvent";
 export * from "./types/Variant";
 export * from "./types/Card";

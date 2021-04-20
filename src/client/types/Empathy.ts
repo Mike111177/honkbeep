@@ -1,4 +1,4 @@
-import { Deck, GameDefinition } from "..";
+import { Deck, GameDefinition } from "../../game";
 import { Immutable } from "../../util/HelperTypes";
 
 export enum EmpathyStatus {
