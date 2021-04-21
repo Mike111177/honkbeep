@@ -3,7 +3,7 @@ import { animated, useSpring } from "@react-spring/web";
 
 import HBDeckCard from "./DeckCard";
 import { useFacility, ZoneEventType, ZonePath } from "../../Zone";
-import { useDrag } from "../../input";
+import { useGesture } from "../../input";
 import { UserActionType } from "../../../client/types/UserAction";
 import { GameEventType } from "../../../game";
 import { compareRects, vecAdd, vecInRectangle } from "../../../util/Geometry";
@@ -13,6 +13,7 @@ import { RectReadOnly } from "react-use-measure";
 import styles from "./AnimatedDeck.css";
 import { useSledCardState } from "./useSledCardState";
 import { constrainCardRect } from "./constrainCardRect";
+import NoteBubble from "../../components/NoteBubble";
 
 export type CardSledProps = {
   index: number;
@@ -26,6 +27,7 @@ export function CardSled({ index, area }: CardSledProps) {
 
   const [draggable, topStack, visible, ...home] = useSledCardState(index);
   const [dragging, setDragging] = useState(false);
+  const [notesOpen, setNotesOpen] = useState(false);
   const [dropPath, setDropPath] = useState<ZonePath | null>(null);
   const [spring, sprRef] = useSpring({ x: 0, y: 0, width: 0, height: 0 }, []);
   const setHomeRect = useCallback(
@@ -102,6 +104,7 @@ export function CardSled({ index, area }: CardSledProps) {
 
   const onDrag = useCallback(
     ({ down, offset, origin }) => {
+      setNotesOpen(false);
       const homeRect = facility.getRect(home);
       if (homeRect !== undefined) {
         if (down) {
@@ -140,7 +143,15 @@ export function CardSled({ index, area }: CardSledProps) {
     [dropPath, facility, home, onDrop, setHomeRect]
   );
 
-  const dragBinder = useDrag<HTMLDivElement>(onDrag, draggable);
+  const dragBinder = useGesture(
+    {
+      onDrag,
+      onRightClick: () => {
+        setNotesOpen(!notesOpen);
+      },
+    },
+    { drag: { enable: draggable } }
+  );
 
   const props = useMemo(() => {
     //Set correct zIndex
@@ -159,9 +170,18 @@ export function CardSled({ index, area }: CardSledProps) {
 
   if (visible) {
     return (
-      <animated.div className={styles.AnimatedCard} {...dragBinder} {...props}>
-        <HBDeckCard index={index} />
-      </animated.div>
+      <NoteBubble
+        open={notesOpen}
+        notes={`Card #${index} Notes not implemented yet...`}
+      >
+        <animated.div
+          className={styles.AnimatedCard}
+          {...dragBinder}
+          {...props}
+        >
+          <HBDeckCard index={index} />
+        </animated.div>
+      </NoteBubble>
     );
   } else {
     return <></>;
