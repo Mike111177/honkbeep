@@ -109,9 +109,3 @@ export default abstract class Board {
     }
   }
 }
-
-export class NullBoard extends Board {
-  attemptPlayerAction(action: GameAttempt): Promise<boolean> {
-    throw new Error("Tried to use null board!");
-  }
-}
