@@ -1,8 +1,10 @@
+import { MutableRefObject } from "react";
 import useDrag from "../hooks/useDrag";
 import { DragStatus } from "./DragTypes";
+import { Recognizer } from "./RecognizerTypes";
 
 export type GestureBuilder = {
-  [key: string]: any[];
+  [key in keyof Recognizer]: Required<Recognizer>[key][];
 };
 
 export type GestureHandlers = {
@@ -21,3 +23,5 @@ export type GestureStatus = {
   };
   config: GestureConfig;
 };
+
+export type GestureRef = MutableRefObject<GestureStatus>;

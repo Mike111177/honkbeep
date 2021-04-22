@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import ClickRecognizer from "../recognizers/ClickRecognizer";
 import DragRecognizer from "../recognizers/DragRecognizer";
 import {
-  appendGesture,
+  appendRecognizer,
   GestureRecognizer,
 } from "../recognizers/GestureRecognizer";
 import {
@@ -21,10 +21,10 @@ export default function useGesture(
   const binder = useMemo(() => {
     const builder: GestureBuilder = {};
     if (handlers.onDrag !== undefined) {
-      appendGesture(builder, DragRecognizer(handlers.onDrag, status));
+      appendRecognizer(builder, DragRecognizer(handlers.onDrag, status));
     }
     if (handlers.onRightClick !== undefined) {
-      appendGesture(builder, ClickRecognizer(handlers.onRightClick, 2));
+      appendRecognizer(builder, ClickRecognizer(handlers.onRightClick, 2));
     }
     return { ref, ...GestureRecognizer(builder) };
   }, [handlers.onDrag, handlers.onRightClick, ref, status]);
