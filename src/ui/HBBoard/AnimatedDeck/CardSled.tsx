@@ -29,7 +29,12 @@ export function CardSled({ index, area }: CardSledProps) {
   const [dragging, setDragging] = useState(false);
   const [notesOpen, setNotesOpen] = useState(false);
   const [dropPath, setDropPath] = useState<ZonePath | null>(null);
-  const [spring, sprRef] = useSpring({ x: 0, y: 0, width: 0, height: 0 }, []);
+  const [spring, springApi] = useSpring(() => ({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  }));
   const setHomeRect = useCallback(
     function setHomeRect(p) {
       const newHomeRect = constrainCardRect(
@@ -52,20 +57,10 @@ export function CardSled({ index, area }: CardSledProps) {
           newHomeRect
         )
       ) {
-        return sprRef.current[0].start({ ...p, ...newHomeRect });
+        return springApi.start({ ...p, ...newHomeRect });
       }
     },
-    [
-      area.height,
-      area.width,
-      area.x,
-      area.y,
-      sprRef,
-      spring.height.goal,
-      spring.width.goal,
-      spring.x.goal,
-      spring.y.goal,
-    ]
+    [area, springApi, spring]
   );
 
   useEffect(() => {
