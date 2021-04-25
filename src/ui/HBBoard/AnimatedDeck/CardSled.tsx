@@ -165,10 +165,7 @@ export function CardSled({ index, area }: CardSledProps) {
 
   if (visible) {
     return (
-      <NoteBubble
-        open={notesOpen}
-        notes={`Card #${index} Notes not implemented yet...`}
-      >
+      <NoteBubble open={notesOpen} index={index}>
         <animated.div
           className={styles.AnimatedCard}
           {...dragBinder}

@@ -1,5 +1,6 @@
 import { GameDefinition, GameEvent, Variant } from "../../game";
 import { Immutable } from "../../util/HelperTypes";
+import { CardNotes } from "../types/Notes";
 import { TurnState, initTurnState, reduceTurnEvent } from "./TurnState";
 
 //This class sh
@@ -38,6 +39,9 @@ export class BoardState {
   //This only effects the order of hands
   viewOrder: number;
 
+  //Card notes
+  cardNotes: CardNotes;
+
   constructor({ variant, playerNames }: GameDefinition) {
     this.variant = variant;
     this.playerNames = playerNames;
@@ -51,6 +55,7 @@ export class BoardState {
     this.hypotheticalTurns = [];
     this.hypotheticalEvents = [];
     this.hypothetical = false;
+    this.cardNotes = [];
   }
 
   get latestTurn() {

@@ -6,6 +6,7 @@ export enum UserActionType {
   Resume,
   StartHypothetical,
   EndHypothetical,
+  EditNote,
 }
 
 type UserActionGameAttempt = {
@@ -30,11 +31,18 @@ type UserActionEndHypothetical = {
   type: UserActionType.EndHypothetical;
 };
 
+type UserActionEditNote = {
+  type: UserActionType.EditNote;
+  card: number;
+  content: string;
+};
+
 export type UserAction =
   | UserActionGameAttempt
   | UserActionSetViewTurn
   | UserActionResume
   | UserActionStartHypothetical
-  | UserActionEndHypothetical;
+  | UserActionEndHypothetical
+  | UserActionEditNote;
 
 export default UserAction;

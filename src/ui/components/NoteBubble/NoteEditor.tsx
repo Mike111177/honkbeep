@@ -1,18 +1,34 @@
+import { useState } from "react";
 import { NoteBubbleStyles as styles } from ".";
 export type NoteEditorProps = {
-  notes: { [key: string]: string } | string;
+  notes:
+    | string
+    | {
+        readonly [x: string]: string;
+      }
+    | undefined;
+  setNotes: (c: string) => void;
 };
-export function NoteEditor({ notes }: NoteEditorProps) {
+export function NoteEditor({ notes, setNotes }: NoteEditorProps) {
+  const [editing, setEditing] = useState(false);
+
   return (
-    <div className={styles.NoteEditor}>
-      {typeof notes === "string" ? (
-        <span>{notes}</span>
+    <div
+      className={styles.NoteEditor}
+      onDoubleClick={() => setEditing(!editing)}
+    >
+      {editing ? (
+        <input
+          type="text"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              setNotes((e.target as HTMLInputElement).value);
+              setEditing(false);
+            }
+          }}
+        />
       ) : (
-        Object.getOwnPropertyNames(notes).map((name, i) => (
-          <span key={i}>
-            {name}: {notes[name]}
-          </span>
-        ))
+        <span>{notes}</span>
       )}
     </div>
   );

@@ -10,7 +10,7 @@ export type BoardUpdateListener = () => void;
 
 export default abstract class Board {
   private listeners: BoardUpdateListener[];
-  private _boardState?: Immutable<BoardState>;
+  private readonly _boardState?: Immutable<BoardState>;
   constructor(initialBoardState?: BoardState) {
     this._boardState = initialBoardState;
     this.listeners = [];
@@ -105,6 +105,10 @@ export default abstract class Board {
           state.hypothetical = false;
           state.hypotheticalTurns.length = 0;
           state.hypotheticalEvents.length = 0;
+        });
+      case UserActionType.EditNote:
+        return this.updateBoardState((state) => {
+          state.cardNotes[action.card] = action.content;
         });
     }
   }
