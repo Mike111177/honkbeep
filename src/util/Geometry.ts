@@ -44,3 +44,15 @@ export function compareRects(a: Rectangle, b: Rectangle) {
     a.height === b.height && a.width === b.width && a.x === b.x && a.y === b.y
   );
 }
+
+export function compareDOMRects(a: Partial<DOMRect>, b: Partial<DOMRect>) {
+  return (
+    a === b ||
+    (a?.bottom === b?.bottom &&
+      a?.height === b?.height &&
+      a?.left === b?.left &&
+      a?.right === b?.right &&
+      a?.top === b?.top &&
+      a?.width === b?.width)
+  );
+}

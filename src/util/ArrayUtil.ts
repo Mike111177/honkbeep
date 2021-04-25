@@ -34,15 +34,12 @@ export function remove(array: any[], o: any) {
   }
 }
 
-export function shallowCompare(a: any[], b: any[]): boolean {
-  if (a.length === b.length) {
-    for (let i = 0; i < a.length; i++) {
-      if (a[i] !== b[i]) {
-        return false;
-      }
-    }
-    return true;
-  } else {
-    return false;
-  }
+export function shallowCompare(
+  a: ReadonlyArray<any>,
+  b: ReadonlyArray<any>
+): boolean {
+  if (a === b) return true;
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+  return true;
 }

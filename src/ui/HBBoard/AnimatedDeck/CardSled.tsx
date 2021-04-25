@@ -13,7 +13,8 @@ import { RectReadOnly } from "react-use-measure";
 import styles from "./AnimatedDeck.css";
 import { useSledCardState } from "./useSledCardState";
 import { constrainCardRect } from "./constrainCardRect";
-import NoteBubble from "../../components/NoteBubble";
+import { NoteBubble } from "../../components/NoteBubble";
+import { useRefRouter, useRefHook } from "../../util/hooks/useRefRouter";
 
 export type CardSledProps = {
   index: number;
@@ -138,7 +139,7 @@ export function CardSled({ index, area }: CardSledProps) {
     [dropPath, facility, home, onDrop, setHomeRect]
   );
 
-  const dragBinder = useGesture(
+  const { ref: dragRef, ...dragBinder } = useGesture(
     {
       onDrag,
       onRightClick: () => {
@@ -163,17 +164,24 @@ export function CardSled({ index, area }: CardSledProps) {
     };
   }, [topStack, dragging, home, spring]);
 
+  const [ref, refHook] = useRefRouter<HTMLDivElement>();
+  useRefHook(refHook, dragRef);
+
   if (visible) {
     return (
-      <NoteBubble open={notesOpen} index={index}>
+      <>
         <animated.div
           className={styles.AnimatedCard}
+          ref={ref}
           {...dragBinder}
           {...props}
         >
           <HBDeckCard index={index} />
         </animated.div>
-      </NoteBubble>
+        {notesOpen ? (
+          <NoteBubble open={notesOpen} index={index} refHook={refHook} />
+        ) : undefined}
+      </>
     );
   } else {
     return <></>;

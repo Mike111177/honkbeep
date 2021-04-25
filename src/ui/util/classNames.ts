@@ -1,4 +1,4 @@
-export default function classNames(
+export function classNames(
   ...nC: [string | undefined, ...(string | boolean | undefined)[]]
 ): string {
   return nC
@@ -9,3 +9,5 @@ export default function classNames(
     )
     .join(" ");
 }
+
+export default classNames;
