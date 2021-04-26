@@ -26,7 +26,7 @@ export default class LocalServer {
   private deck: Deck;
 
   private shuffleOrder: number[];
-  private seed: number;
+  private seed?: number;
 
   private events: GameEvent[];
   private reveals: PlayerRevealHistory[];
@@ -41,7 +41,7 @@ export default class LocalServer {
 
   constructor(
     definition: GameDefinition,
-    deckDef?: number | { order: number[]; seed: number }
+    deckDef?: number | { order: number[]; seed?: number }
   ) {
     //Variant Info
     this.definition = definition;

@@ -51,7 +51,7 @@ function reduceEmpathyFn(
         for (let i = 0; i < empathy.length; i++) {
           const possibilityMatchesClue = doesClueMatchCard(
             event.clue,
-            deck.cards[i].data
+            deck.cards[i]
           );
           if (cardWasTouched !== possibilityMatchesClue) {
             empathy[i] = EmpathyStatus.KnownNotPossible;

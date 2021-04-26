@@ -1,9 +1,11 @@
 //State machines
 export * from "./states/GameState";
 
+//Classes
+export * from "./Deck";
+
 //Helpers
 export * from "./clueHelpers";
-export * from "./deckHelpers";
 export * from "./gameStateHelpers";
 
 //Types
@@ -13,7 +15,7 @@ export * from "./types/Variant";
 export * from "./types/Card";
 export * from "./types/Suit";
 export * from "./types/GameDefinition";
-export * from "./types/Deck";
+export * from "./Deck";
 
 //State manipulation
 export { default as resolveGameAttempt } from "./resolveGameAttempt";

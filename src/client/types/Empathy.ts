@@ -26,7 +26,7 @@ export function getPipsFromEmpathy(
         return (
           empathy.filter((v, i) => {
             return (
-              deck.cards[i].data.rank === rank &&
+              deck.cards[i].rank === rank &&
               v !== EmpathyStatus.KnownNotPossible
             );
           }).length > 0
@@ -36,7 +36,7 @@ export function getPipsFromEmpathy(
         return (
           empathy.filter((v, i) => {
             return (
-              deck.cards[i].data.suit === suit &&
+              deck.cards[i].suit === suit &&
               v !== EmpathyStatus.KnownNotPossible
             );
           }).length > 0
