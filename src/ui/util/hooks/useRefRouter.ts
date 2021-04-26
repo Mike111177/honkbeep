@@ -30,7 +30,6 @@ export function useRefHook<T>(
   router: RefObject<RefRouterState<T>>,
   ref: AttachableRef<T>
 ) {
-  console.log("hook");
   useEffect(() => {
     const { current } = router;
     current!.listeners.push(ref);
@@ -48,8 +47,6 @@ export function useRefRouter<T>(
     listeners: [],
     last: useRef<T>(initial ?? null),
   });
-  console.log(routerState);
-
   return [
     (object) => {
       applyObject(routerState.current.last, object);
