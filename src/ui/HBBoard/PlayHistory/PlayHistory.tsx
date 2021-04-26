@@ -9,7 +9,7 @@ import {
   GamePlayEvent,
   GamePlayResultType,
 } from "../../../game";
-import { DrawCard } from "../../DrawCard";
+import { DrawCard } from "../../components/DrawCard";
 import { useBoardReducer, useBoardState } from "../../BoardContext";
 import classNames from "../../util/classNames";
 import * as ArrayUtil from "../../../util/ArrayUtil";
@@ -67,7 +67,7 @@ function CluePlayDescriber({
   const giverName = playerNames[player];
   const targetName = playerNames[target];
   const numTouched = touched.length;
-  const subject = clue.type === ClueType.Number ? `#${clue.value}` : clue.value;
+  const subject = clue.type === ClueType.Rank ? `#${clue.value}` : clue.value;
   let style =
     clue.type === ClueType.Color
       ? {
@@ -79,7 +79,7 @@ function CluePlayDescriber({
               .hex(),
           },
         }
-      : clue.type === ClueType.Number
+      : clue.type === ClueType.Rank
       ? { className: styles.NumberSubject }
       : undefined;
 

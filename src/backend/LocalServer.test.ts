@@ -32,7 +32,7 @@ test("Does not allow player to take turn twice in a row", async () => {
     await server.attemptPlayerAction(1, {
       type: GameEventType.Clue,
       target: 0,
-      clue: { type: ClueType.Number, value: 1 },
+      clue: { type: ClueType.Rank, value: 1 },
     })
   ).toBe(false);
   //Test having player 3 make a discard 2 times
@@ -58,12 +58,12 @@ test("Does not allow clues sent to invalid players", async () => {
   const player1GoodClue: GameClueAttempt = {
     type: GameEventType.Clue,
     target: 3,
-    clue: { type: ClueType.Number, value: 2 },
+    clue: { type: ClueType.Rank, value: 2 },
   };
   const player2BadTClue: GameClueAttempt = {
     type: GameEventType.Clue,
     target: 4,
-    clue: { type: ClueType.Number, value: 2 },
+    clue: { type: ClueType.Rank, value: 2 },
   };
   const player2SelfClue: GameClueAttempt = {
     type: GameEventType.Clue,

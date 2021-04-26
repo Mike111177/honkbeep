@@ -1,8 +1,8 @@
 import { Meta, Story } from "@storybook/react";
-import colors from "../colors.json";
+import colors from "../../colors.json";
 
 import { CardFront } from ".";
-import { Card } from "../../game";
+import { Card } from "../../../game";
 
 export default {
   title: "Card/Front",

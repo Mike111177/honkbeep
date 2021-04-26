@@ -1,5 +1,5 @@
 import { ComponentPropsWithoutRef } from "react";
-import { CardSVG } from "../../DrawCard";
+import { CardSVG } from "../../components/DrawCard";
 import { ZonePath, useZone } from "../../Zone";
 
 //Helper to make card targets

@@ -2,7 +2,7 @@ import chroma from "chroma-js";
 
 import CardTarget from "../AnimatedDeck/CardTarget";
 import { useZone } from "../../Zone";
-import { CARD_VIEW_MIDPOINT as mid } from "../../DrawCard";
+import { CARD_VIEW_MIDPOINT as mid } from "../../components/DrawCard";
 import { vecAdd } from "../../../util/Geometry";
 import { useBoard } from "../../BoardContext";
 

@@ -1,11 +1,11 @@
 import { cloneElement, ComponentPropsWithoutRef } from "react";
 import { mix } from "chroma-js";
 
-import colors from "../BaseColors";
-import pipShapes from "../SuitPips";
-import { Pip } from "../components/Pip";
-import { Card } from "../../game";
-import { vecAdd, vecSub } from "../../util/Geometry";
+import colors from "../../BaseColors";
+import pipShapes from "../../SuitPips";
+import { Pip } from "../Pip";
+import { Card } from "../../../game";
+import { vecAdd, vecSub } from "../../../util/Geometry";
 import { CARD_VIEW_MIDPOINT as mid, CardRectangle, CardSVG } from ".";
 
 export type CardFrontProps = {

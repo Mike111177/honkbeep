@@ -5,8 +5,8 @@ import {
   Clue,
   ColorClue,
   colorClue,
-  NumberClue,
-  numberClue,
+  RankClue,
+  rankClue,
 } from "../../../game/types/Clue";
 import colors from "../../BaseColors";
 import * as ArrayUtil from "../../../util/ArrayUtil";
@@ -57,7 +57,7 @@ function ColorClueButton({ val: clue, selected, set }: ColorButtonProps) {
   );
 }
 
-type NumberButtonProps = ClueButtonProps<NumberClue>;
+type NumberButtonProps = ClueButtonProps<RankClue>;
 function NumberClueButton({ val: clue, selected, set }: NumberButtonProps) {
   return (
     <svg
@@ -144,7 +144,7 @@ export default function HBClueArea() {
   ));
 
   //Make Number Clue Buttons
-  const [numberClues] = useState(() => ArrayUtil.iota(5, 1).map(numberClue));
+  const [numberClues] = useState(() => ArrayUtil.iota(5, 1).map(rankClue));
   const numberClueButtons = numberClues.map((clue, n) => (
     <NumberClueButton
       val={clue}

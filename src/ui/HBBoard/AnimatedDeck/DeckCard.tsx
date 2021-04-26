@@ -1,7 +1,6 @@
 import { ComponentPropsWithoutRef, useMemo } from "react";
 
-import { DrawCard, CardProps } from "../../DrawCard";
-import { getPipsFromEmpathy } from "../../../client/types/Empathy";
+import { DrawCard, CardProps } from "../../components/DrawCard";
 import { useBoard, useBoardState } from "../../BoardContext";
 import * as ArrayUtil from "../../../util/ArrayUtil";
 import { useSpacebar } from "../../input";
@@ -12,21 +11,14 @@ export type DeckCardProps = {
 
 export default function DeckCard({ index, ...props }: DeckCardProps) {
   const variant = useBoard().state.variant;
-  const [empathy, card, touched] = useBoardState(
+  const [card, touched, pips] = useBoardState(
     (state) => {
-      return [
-        state.latestTurn.empathy[index],
-        state.getCardIfRevealed(index),
-        state.viewTurn.cardMeta[index].touched,
-      ];
+      const { touched, cluedPips } = state.viewTurn.cardMeta[index];
+      return [state.getCardIfRevealed(index), touched, cluedPips];
     },
     [index],
     ArrayUtil.shallowCompare
   );
-  const pips = useMemo(() => getPipsFromEmpathy(empathy, variant), [
-    empathy,
-    variant,
-  ]);
   const spaceDown = useSpacebar();
   const cardProps = useMemo((): CardProps => {
     const cardInfo =
@@ -38,6 +30,6 @@ export default function DeckCard({ index, ...props }: DeckCardProps) {
         : { variant, pips }),
       ...props,
     };
-  }, [card, variant, pips, props, spaceDown, touched]);
+  }, [card, variant, touched, spaceDown, pips, props]);
   return <DrawCard {...cardProps} />;
 }

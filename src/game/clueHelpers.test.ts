@@ -4,13 +4,13 @@ describe("doesClueMatchCard helper", () => {
   test("Clue correctly matches number clues", () => {
     expect(
       doesClueMatchCard(
-        { type: ClueType.Number, value: 1 },
+        { type: ClueType.Rank, value: 1 },
         { suit: "Red", rank: 1 }
       )
     ).toBe(true);
     expect(
       doesClueMatchCard(
-        { type: ClueType.Number, value: 1 },
+        { type: ClueType.Rank, value: 1 },
         { suit: "Purple", rank: 2 }
       )
     ).toBe(false);

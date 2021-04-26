@@ -79,7 +79,7 @@ test("Clues subtract one from the bank", () => {
     turn: 1,
     type: GameEventType.Clue,
     target: 3,
-    clue: { type: ClueType.Number, value: 2 },
+    clue: { type: ClueType.Rank, value: 2 },
     touched: [5],
   };
   const state2 = reduceGameEvent(state1, clueEvent, variant);

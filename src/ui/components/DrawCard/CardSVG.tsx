@@ -1,6 +1,6 @@
 import React from "react";
 
-import classNames from "../util/classNames";
+import classNames from "../../util/classNames";
 import { CARD_VIEWBOX } from ".";
 
 import styles from "./Card.css";

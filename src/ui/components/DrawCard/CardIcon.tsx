@@ -1,8 +1,8 @@
 import { ComponentPropsWithoutRef } from "react";
 import chroma from "chroma-js";
 
-import colors from "../BaseColors";
-import { Card } from "../../game";
+import colors from "../../BaseColors";
+import { Card } from "../../../game";
 
 import { CardRectangle, CardSVG } from ".";
 
