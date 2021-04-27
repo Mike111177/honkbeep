@@ -1,5 +1,5 @@
 import * as ArrayUtil from "../../../util/ArrayUtil";
-import { useBoardState } from "../../BoardContext";
+import { useBoardStateSelector } from "../../BoardContext";
 import classNames from "../../util/classNames";
 import CardTarget from "../AnimatedDeck/CardTarget";
 
@@ -10,7 +10,7 @@ type HandProps = {
 };
 
 export default function Hand({ player }: HandProps) {
-  const [playerNames, cardsInHand, myTurn] = useBoardState(
+  const [playerNames, cardsInHand, myTurn] = useBoardStateSelector(
     ({ playerNames, variant: { numPlayers }, viewTurn }) => {
       return [
         playerNames,

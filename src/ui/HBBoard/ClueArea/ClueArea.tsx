@@ -10,7 +10,7 @@ import {
 } from "../../../game/types/Clue";
 import colors from "../../BaseColors";
 import * as ArrayUtil from "../../../util/ArrayUtil";
-import { useBoardReducer, useBoardState } from "../../BoardContext";
+import { useBoardReducer, useBoardStateSelector } from "../../BoardContext";
 import { UserActionType } from "../../../client/types/UserAction";
 
 import styles from "./ClueArea.css";
@@ -104,7 +104,7 @@ function PlayerButton({ val: { p, i }, selected, set }: PlayerButtonProps) {
 export default function HBClueArea() {
   //Get state
   const boardDispatch = useBoardReducer();
-  const [players, turn, suits, clues] = useBoardState(
+  const [players, turn, suits, clues] = useBoardStateSelector(
     (s) => {
       return [
         s.playerNames,

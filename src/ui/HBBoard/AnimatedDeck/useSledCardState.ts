@@ -1,12 +1,12 @@
 import * as ArrayUtil from "../../../util/ArrayUtil";
-import { useBoardState } from "../../BoardContext";
+import { useBoardStateSelector } from "../../BoardContext";
 import { ZonePath } from "../../Zone";
 import { getCardHome } from "./getCardHome";
 
 export function useSledCardState(
   index: number
 ): [boolean, boolean, boolean, ...ZonePath] {
-  return useBoardState(
+  return useBoardStateSelector(
     ({ paused, viewTurn, hypothetical, playerOfTurn, myTurn }) => {
       const home = getCardHome(index, viewTurn);
       const cardInCurrentPlayerHand =

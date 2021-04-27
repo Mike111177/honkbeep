@@ -1,6 +1,6 @@
 import { UserActionType } from "../../../client/types/UserAction";
 import * as ArrayUtil from "../../../util/ArrayUtil";
-import { useBoardReducer, useBoardState } from "../../BoardContext";
+import { useBoardReducer, useBoardStateSelector } from "../../BoardContext";
 import { ErrorBoundary } from "../../util/ErrorBoundry";
 import styles from "./ReplayControls.css";
 
@@ -15,7 +15,7 @@ const iconExit = "❌";
 
 export default function ReplayControls() {
   const dispatch = useBoardReducer();
-  const [viewTurn, latestTurn, paused, hypothetical] = useBoardState(
+  const [viewTurn, latestTurn, paused, hypothetical] = useBoardStateSelector(
     (state) => {
       return [
         state.viewTurn.turn,

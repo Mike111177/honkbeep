@@ -10,7 +10,7 @@ import {
   GamePlayResultType,
 } from "../../../game";
 import { DrawCard } from "../../components/DrawCard";
-import { useBoardReducer, useBoardState } from "../../BoardContext";
+import { useBoardReducer, useBoardStateSelector } from "../../BoardContext";
 import classNames from "../../util/classNames";
 import * as ArrayUtil from "../../../util/ArrayUtil";
 
@@ -30,7 +30,7 @@ function useCardPlayData(
   event: GamePlayEvent | GameDiscardEvent,
   turn: number
 ): [LocalCardData, string, number] {
-  return useBoardState(
+  return useBoardStateSelector(
     (s) => {
       const shuffleOrder = s.shuffleOrder;
       const deck = s.variant.deck;
@@ -57,7 +57,7 @@ function CluePlayDescriber({
   event: { touched, clue, target },
   onClick,
 }: CluePlayDescriberProps) {
-  const [variant, playerNames] = useBoardState(
+  const [variant, playerNames] = useBoardStateSelector(
     ({ variant, playerNames }) => [variant, playerNames],
     [],
     ArrayUtil.shallowCompare
@@ -143,7 +143,7 @@ type PlayDescriberProps = {
   onClick: React.ComponentPropsWithoutRef<"span">["onClick"];
 };
 function PlayDescriber({ turn, onClick }: PlayDescriberProps) {
-  const event = useBoardState((state) => state.getEvent(turn));
+  const event = useBoardStateSelector((state) => state.getEvent(turn));
   switch (event.type) {
     case GameEventType.Deal: {
       return <span onClick={onClick}>Game Started</span>;
@@ -162,7 +162,7 @@ function PlayDescriber({ turn, onClick }: PlayDescriberProps) {
 }
 
 export default function PlayHistory() {
-  const [turnNumber, numPlayers] = useBoardState((s) => [
+  const [turnNumber, numPlayers] = useBoardStateSelector((s) => [
     s.viewTurn.turn,
     s.variant.numPlayers,
   ]);

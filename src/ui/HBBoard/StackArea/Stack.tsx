@@ -4,7 +4,7 @@ import CardTarget from "../AnimatedDeck/CardTarget";
 import { useZone } from "../../Zone";
 import { CARD_VIEW_MIDPOINT as mid } from "../../components/DrawCard";
 import { vecAdd } from "../../../util/Geometry";
-import { useBoard } from "../../BoardContext";
+import { useStaticBoardState } from "../../BoardContext";
 
 import colors from "../../BaseColors";
 import { Pip } from "../../components/Pip";
@@ -63,7 +63,7 @@ export function Stack({ suit, number }: HBStackProps) {
 }
 
 export default function StackArea() {
-  const suits = useBoard().state.variant.suits;
+  const { suits } = useStaticBoardState().variant;
   const ref = useZone(["stackArea"], { dropZone: true });
   return (
     <div ref={ref} className={styles.StackArea}>

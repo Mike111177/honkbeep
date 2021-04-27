@@ -115,6 +115,29 @@ export class BoardState {
 }
 export default BoardState;
 
+//You should only ever store board state as this
+export type ImmutableBoardState = Immutable<BoardState>;
+//Guaranteed subset of boardstate never to change
+
+export type StaticBoardState = Pick<
+  ImmutableBoardState,
+  "variant" | "playerNames"
+>;
+
+//Board state that you may mutate, but only non static properties
+export type MutableBoardState = BoardState & StaticBoardState;
+
+//Function to mutate a board state
+export type BoardStateMutator = (state: MutableBoardState) => void;
+
+//Use this function to mutate the state
+export function mutateBoardState(
+  state: ImmutableBoardState,
+  mutator: BoardStateMutator
+) {
+  mutator(state as MutableBoardState);
+}
+
 //Quick helper for adding events to the turn history
 export function appendEvent(state: BoardState, event: GameEvent) {
   //Push event into history

@@ -1,11 +1,11 @@
 import CardTarget from "../AnimatedDeck/CardTarget";
-import { useBoardState } from "../../BoardContext";
+import { useBoardStateSelector } from "../../BoardContext";
 import * as ArrayUtil from "../../../util/ArrayUtil";
 
 import styles from "./Deck.css";
 
 export default function Deck() {
-  const [deck, topDeck] = useBoardState(
+  const [deck, topDeck] = useBoardStateSelector(
     (s) => {
       return [s.variant.deck, s.viewTurn.topDeck];
     },

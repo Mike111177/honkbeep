@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import * as ArrayUtil from "../../../util/ArrayUtil";
-import { useBoardState } from "../../BoardContext";
+import { useBoardStateSelector } from "../../BoardContext";
 import classNames from "../../util/classNames";
 import { ErrorBoundary } from "../../util/ErrorBoundry";
 
@@ -8,7 +8,7 @@ import styles from "./ScoreBoard.css";
 import darkregion from "../DarkRegion.css";
 
 export default function ScoreBoard() {
-  const [turn, clues, strikes, stacks] = useBoardState(
+  const [turn, clues, strikes, stacks] = useBoardStateSelector(
     ({ viewTurn: { turn, clues, strikes, stacks } }) => [
       turn,
       clues,

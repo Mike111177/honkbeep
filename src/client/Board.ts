@@ -1,7 +1,12 @@
 import { Immutable } from "../util/HelperTypes";
 import { GameAttempt, GameEvent, resolveGameAttempt } from "../game";
 import * as ArrayUtil from "../util/ArrayUtil";
-import { BoardState } from "./states/BoardState";
+import {
+  BoardState,
+  BoardStateMutator,
+  ImmutableBoardState,
+  mutateBoardState,
+} from "./states/BoardState";
 import { UserAction, UserActionType } from "./types/UserAction";
 import { reduceTurnEvent } from "./states/TurnState";
 import { Draft } from "immer";
@@ -10,7 +15,7 @@ export type BoardUpdateListener = () => void;
 
 export default abstract class Board {
   private listeners: BoardUpdateListener[];
-  private readonly _boardState?: Immutable<BoardState>;
+  private readonly _boardState?: ImmutableBoardState;
   constructor(initialBoardState?: BoardState) {
     this._boardState = initialBoardState;
     this.listeners = [];
@@ -33,8 +38,8 @@ export default abstract class Board {
     return removeFunc;
   }
 
-  protected updateBoardState(fn: (s: BoardState) => void) {
-    fn(this._boardState as BoardState);
+  protected updateBoardState(fn: BoardStateMutator) {
+    mutateBoardState(this._boardState!, fn);
     for (let f of this.listeners) f();
   }
 

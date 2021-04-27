@@ -1,7 +1,7 @@
 import { ComponentPropsWithoutRef, useMemo } from "react";
 
 import { DrawCard, CardProps } from "../../components/DrawCard";
-import { useBoard, useBoardState } from "../../BoardContext";
+import { useStaticBoardState, useBoardStateSelector } from "../../BoardContext";
 import * as ArrayUtil from "../../../util/ArrayUtil";
 import { useSpacebar } from "../../input";
 
@@ -10,8 +10,8 @@ export type DeckCardProps = {
 } & ComponentPropsWithoutRef<"svg">;
 
 export default function DeckCard({ index, ...props }: DeckCardProps) {
-  const variant = useBoard().state.variant;
-  const [card, touched, pips] = useBoardState(
+  const { variant } = useStaticBoardState();
+  const [card, touched, pips] = useBoardStateSelector(
     (state) => {
       const { touched, cluedPips } = state.viewTurn.cardMeta[index];
       return [state.getCardIfRevealed(index), touched, cluedPips];

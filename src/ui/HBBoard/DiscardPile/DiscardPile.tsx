@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import { useZone } from "../../Zone";
 import CardTarget from "../AnimatedDeck/CardTarget";
-import { useBoardState } from "../../BoardContext";
+import { useBoardStateSelector } from "../../BoardContext";
 import classNames from "../../util/classNames";
 import * as ArrayUtil from "../../../util/ArrayUtil";
 
@@ -11,7 +11,7 @@ import darkregion from "../DarkRegion.css";
 import { ErrorBoundary } from "../../util/ErrorBoundry";
 
 export default function DiscardPile() {
-  const [cards, shuffleOrder, deck, suits] = useBoardState(
+  const [cards, shuffleOrder, deck, suits] = useBoardStateSelector(
     (s) => {
       return [
         s.viewTurn.discardPile,

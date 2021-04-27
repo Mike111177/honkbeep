@@ -1,7 +1,7 @@
 import { useCallback, useState, useEffect, DependencyList } from "react";
 import BoardState from "../../../client/states/BoardState";
 import { Immutable } from "../../../util/HelperTypes";
-import useBoard from "./useBoard";
+import { useBoard } from "./useBoard";
 
 export type BoardStateUser<T> = (newState: Immutable<BoardState>) => T;
 export type BoardStateComparator<T> = (a: T, b: T) => boolean;
@@ -17,7 +17,7 @@ export type BoardStateComparator<T> = (a: T, b: T) => boolean;
  * @param comparator custom comparator function check if previous result is equivalent to new result
  * @returns The result of applying supplied function on the current board state
  */
-export default function useBoardState<T>(
+export function useBoardStateSelector<T>(
   transform: BoardStateUser<T>,
   dependencies: DependencyList = [],
   comparator: BoardStateComparator<T> = Object.is
