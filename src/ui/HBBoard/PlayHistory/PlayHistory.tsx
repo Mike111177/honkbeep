@@ -1,4 +1,4 @@
-import chroma from "chroma-js";
+import { mix } from "chroma-js";
 
 import colors from "../../BaseColors";
 import {
@@ -74,9 +74,12 @@ function CluePlayDescriber({
           className: styles.ColorSubject,
           style: {
             color: colors(clue.value),
-            backgroundColor: chroma
-              .mix(colors(clue.value), "#FFFFFF", 0.5, "lrgb")
-              .hex(),
+            backgroundColor: mix(
+              colors(clue.value),
+              "#FFFFFF",
+              0.5,
+              "lrgb"
+            ).hex(),
           },
         }
       : clue.type === ClueType.Rank

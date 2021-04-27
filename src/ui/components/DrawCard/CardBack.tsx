@@ -1,5 +1,5 @@
 import { ComponentPropsWithoutRef } from "react";
-import chroma from "chroma-js";
+import { mix } from "chroma-js";
 
 import { vecAdd, vecMul } from "../../../util/Geometry";
 import { Pips } from "../../../client/types/Empathy";
@@ -82,7 +82,7 @@ function CardBackUnknown({
   ...props
 }: CardBackProps) {
   const color = pips.suits.length === 1 ? colors(pips.suits[0]) : "#777777";
-  const backgroundColor = chroma.mix(color, "#FFFFFF", 0.5, "lrgb").hex();
+  const backgroundColor = mix(color, "#FFFFFF", 0.5, "lrgb").hex();
   return (
     <CardSVG {...props}>
       <CardRectangle

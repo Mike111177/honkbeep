@@ -1,5 +1,5 @@
 import { ComponentPropsWithoutRef } from "react";
-import chroma from "chroma-js";
+import { mix } from "chroma-js";
 
 import colors from "../../BaseColors";
 import { Card } from "../../../game";
@@ -17,7 +17,7 @@ export default function CardIcon({
   ...props
 }: CardIconProps) {
   let color = colors(suit);
-  const backgroundColor = chroma.mix(color, "#FFFFFF", 0.6, "lrgb").hex();
+  const backgroundColor = mix(color, "#FFFFFF", 0.6, "lrgb").hex();
   return (
     <CardSVG className={styles.CardIcon} height="1em" {...props}>
       <CardRectangle background={backgroundColor} border={color} />

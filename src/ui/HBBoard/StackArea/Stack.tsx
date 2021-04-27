@@ -1,4 +1,4 @@
-import chroma from "chroma-js";
+import { mix } from "chroma-js";
 
 import CardTarget from "../AnimatedDeck/CardTarget";
 import { useZone } from "../../Zone";
@@ -23,10 +23,7 @@ const pipDims = { ...vecAdd(mid, pipOff), size: pipHeight };
 
 export function Stack({ suit, number }: HBStackProps) {
   const color = colors(suit);
-  const backgroundColor = chroma
-    .mix(color, "#FFFFFF", 0.3, "lrgb")
-    .alpha(0.4)
-    .hex();
+  const backgroundColor = mix(color, "#FFFFFF", 0.3, "lrgb").alpha(0.4).hex();
   return (
     <CardTarget height="100%" width="100%" areaPath={["stacks", number]}>
       <rect
