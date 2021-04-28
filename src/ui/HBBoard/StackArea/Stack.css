@@ -1,9 +1,7 @@
 .StackArea {
-  display: grid;
   grid-area: stackarea;
-  height: min-content;
-  grid-auto-flow: column;
+  display: flex;
   justify-content: center;
-  align-content: center;
-  padding: 5%;
+  padding-top: 1%;
+  padding-bottom: 1%;
 }

@@ -1,20 +1,21 @@
 .PlayHistory {
   grid-area: playhistory;
-  align-content: center;
-  contain: paint;
+  contain: content;
+  overflow: hidden;
 }
 
 .PlayHistory span {
   text-align: center;
   display: block;
-  font-size: 25px;
+  font-size: 28px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #0000;
+  box-sizing: content-box;
 }
 
 .PlayHistory span:hover {
   border-color: white;
-  border-style: solid;
-  border-width: 1px;
-  box-sizing: content-box;
 }
 
 .ColorSubject {

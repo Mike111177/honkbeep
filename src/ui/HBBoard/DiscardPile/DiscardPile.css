@@ -4,6 +4,7 @@
   grid-auto-flow: column;
   grid-auto-columns: 20%;
   grid-auto-rows: 1fr;
+  contain: content;
 }
 
 .DiscardPile svg {

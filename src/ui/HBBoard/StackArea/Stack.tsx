@@ -25,7 +25,7 @@ export function Stack({ suit, number }: HBStackProps) {
   const color = colors(suit);
   const backgroundColor = mix(color, "#FFFFFF", 0.3, "lrgb").alpha(0.4).hex();
   return (
-    <CardTarget height="100%" width="100%" areaPath={["stacks", number]}>
+    <CardTarget areaPath={["stacks", number]}>
       <rect
         x="5%"
         y="5%"
