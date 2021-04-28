@@ -1,55 +1,53 @@
-import { useMemo } from "react";
-
-import { useZone } from "../../Zone";
+import React from "react";
+import { useZone, ZonePath } from "../../Zone";
 import CardTarget from "../AnimatedDeck/CardTarget";
-import { useBoardStateSelector } from "../../BoardContext";
+import { useBoardStateSelector, useStaticBoardState } from "../../BoardContext";
 import classNames from "../../util/classNames";
+import { ErrorBoundary } from "../../util/ErrorBoundry";
 import * as ArrayUtil from "../../../util/ArrayUtil";
 
 import styles from "./DiscardPile.css";
 import darkregion from "../DarkRegion.css";
-import { ErrorBoundary } from "../../util/ErrorBoundry";
 
-export default function DiscardPile() {
-  const [cards, shuffleOrder, deck, suits] = useBoardStateSelector(
-    (s) => {
-      return [
-        s.viewTurn.discardPile,
-        s.shuffleOrder,
-        s.variant.deck,
-        s.variant.suits,
-      ];
-    },
-    [],
+const DiscardPileTargets = React.memo(function DiscardPileTargets() {
+  const { deck, suits } = useStaticBoardState().variant;
+  const cards = useBoardStateSelector(
+    (s) =>
+      s.viewTurn.discardPile.map((card) => deck.getCard(s.shuffleOrder[card])),
+    [deck],
     ArrayUtil.shallowCompare
   );
-  const ref = useZone(["discardPile"], { dropZone: true });
-
-  const targets = useMemo(() => {
-    const cardValues = cards.map((c) => deck.getCard(shuffleOrder[c]));
-    const suitsPresent = suits.filter(
-      (s) => cardValues.find((c) => c.suit === s) !== undefined
-    );
-    return cards.map((card, i) => {
-      const cardValue = cardValues[i];
-      const suitNumber =
-        suitsPresent.findIndex((s) => s === cardValue.suit) + 1;
-      return (
+  const suitsPresent = suits.filter(
+    (s) => cards.find((c) => c.suit === s) !== undefined
+  );
+  return (
+    <>
+      {cards.map((card, i) => (
         <CardTarget
           key={i}
-          areaPath={["discard", card]}
-          style={{ gridColumn: suitNumber }}
+          areaPath={["discard", i]}
+          style={{
+            gridColumn: suitsPresent.findIndex((s) => s === card.suit) + 1,
+          }}
         />
-      );
-    });
-  }, [cards, deck, shuffleOrder, suits]);
+      ))}
+    </>
+  );
+});
 
+const discardPilePath: ZonePath = ["discardPile"];
+const discardPileConfig = { dropZone: true };
+const discardPileClass = classNames(styles.DiscardPile, darkregion.DarkRegion);
+
+export default function DiscardPile() {
   return (
     <div
-      className={classNames(styles.DiscardPile, darkregion.DarkRegion)}
-      ref={ref}
+      className={discardPileClass}
+      ref={useZone(discardPilePath, discardPileConfig)}
     >
-      <ErrorBoundary>{targets}</ErrorBoundary>
+      <ErrorBoundary>
+        <DiscardPileTargets />
+      </ErrorBoundary>
     </div>
   );
 }

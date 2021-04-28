@@ -1,15 +1,13 @@
 .PlayHistory {
-  display: grid;
   grid-area: playhistory;
-  justify-content: center;
-  align-content: initial;
-  font-size: 30px;
-  user-select: none;
-  grid-template-rows: repeat(8, 12.5%);
+  align-content: center;
+  contain: paint;
 }
 
 .PlayHistory span {
   text-align: center;
+  display: block;
+  font-size: 25px;
 }
 
 .PlayHistory span:hover {

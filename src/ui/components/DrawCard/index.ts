@@ -7,5 +7,4 @@ export { default as CardBack } from "./CardBack";
 export * from "./CardBack";
 export { default as CardIcon } from "./CardIcon";
 export * from "./CardIcon";
-export { default as DrawCard } from "./DrawCard";
 export * from "./DrawCard";

@@ -8,6 +8,7 @@
     "format": "prettier . -c",
     "format:write": "prettier . --write",
     "start": "webpack serve --port 3000",
+    "start:production": "webpack serve --env production --port 5000",
     "build": "webpack --env production --progress",
     "test": "jest",
     "test:watch": "jest --watch",

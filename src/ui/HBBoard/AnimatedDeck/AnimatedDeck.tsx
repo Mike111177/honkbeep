@@ -3,6 +3,7 @@ import * as ArrayUtil from "../../../util/ArrayUtil";
 import BoardContext from "../../BoardContext";
 import { CardSled } from "./CardSled";
 import useMeasure from "react-use-measure";
+import { ErrorBoundary } from "../../util";
 
 import styles from "./AnimatedDeck.css";
 
@@ -12,9 +13,11 @@ export default function AnimatedDeck() {
   const [ref, bounds] = useMeasure();
   return (
     <div ref={ref} className={styles.AnimatedDeck}>
-      {ArrayUtil.iota(cardAmount).map((i) => (
-        <CardSled key={i} index={i} area={bounds} />
-      ))}
+      <ErrorBoundary>
+        {ArrayUtil.iota(cardAmount).map((i) => (
+          <CardSled key={i} index={i} area={bounds} />
+        ))}
+      </ErrorBoundary>
     </div>
   );
 }
