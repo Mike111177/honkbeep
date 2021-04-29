@@ -22,6 +22,16 @@ export interface GameState {
   readonly cardReveals: ReadonlyArray<ReadonlySet<number>>;
 }
 
+function drawCard<T extends Draft<GameState>>(state: T, { deck }: Variant) {
+  if (deck.length - state.topDeck >= 0) {
+    const card = state.topDeck;
+    state.topDeck++;
+    return card;
+  } else {
+    return (undefined as unknown) as number;
+  }
+}
+
 export function reduceGameEventFn<T extends Draft<GameState>>(
   state: T,
   event: GameEvent,
@@ -36,12 +46,12 @@ export function reduceGameEventFn<T extends Draft<GameState>>(
       for (let p = 0; p < variant.numPlayers; p++) {
         state.hands[p] = [];
         for (let s = 0; s < variant.handSize; s++) {
-          state.hands[p].push(state.topDeck);
+          const newCard = drawCard(state, variant);
+          state.hands[p].push(newCard);
           //The dealt card gets revealed to everyone but the recipient
           state.cardReveals
             .filter((_, i) => i !== p)
-            .forEach((reveals) => reveals.add(state.topDeck));
-          state.topDeck++;
+            .forEach((reveals) => reveals.add(newCard));
         }
       }
       //Advance to next players turn
@@ -67,7 +77,8 @@ export function reduceGameEventFn<T extends Draft<GameState>>(
         state.strikes++;
       }
       //Put card on top of deck in leftmost slot
-      newHand.unshift(state.topDeck);
+      const newCard = drawCard(state, variant);
+      newHand.unshift(newCard);
       //Update the players hand
       state.hands[player] = newHand;
       //the played card gets revealed to the player
@@ -75,9 +86,7 @@ export function reduceGameEventFn<T extends Draft<GameState>>(
       //The card at the top of the deck gets revealed to everyone else
       state.cardReveals
         .filter((_, i) => i !== player)
-        .forEach((reveals) => reveals.add(state.topDeck));
-      //Mark off another from the deck
-      state.topDeck++;
+        .forEach((reveals) => reveals.add(newCard));
       //Advance to next players turn
       state.turn++;
       break;
@@ -94,7 +103,8 @@ export function reduceGameEventFn<T extends Draft<GameState>>(
       //Put it in the discard pile
       state.discardPile.push(card);
       //Put card on top of deck in leftmost slot
-      newHand.unshift(state.topDeck);
+      const newCard = drawCard(state, variant);
+      newHand.unshift(newCard);
       //Update the players hand
       state.hands[player] = newHand;
       //the played card gets revealed to the player
@@ -102,9 +112,7 @@ export function reduceGameEventFn<T extends Draft<GameState>>(
       //The card at the top of the deck gets revealed to everyone else
       state.cardReveals
         .filter((_, i) => i !== player)
-        .forEach((reveals) => reveals.add(state.topDeck));
-      //Mark off another from the deck
-      state.topDeck++;
+        .forEach((reveals) => reveals.add(newCard));
       //Advance to next players turn
       state.turn++;
       //If clue bank not full add clue
