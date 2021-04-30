@@ -1,4 +1,4 @@
-const custom = require("../webpack.config.js")({});
+const custom = require("../webpack.client.config")({});
 
 module.exports = {
   webpackFinal: (config) => {

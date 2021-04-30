@@ -2,6 +2,14 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Server",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "pwa-node",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": ["start:server"]
+    },
+    {
       "name": "Client/Dev",
       "type": "chrome",
       "request": "launch",
@@ -23,6 +31,7 @@
       "runtimeArgs": ["--new-window"],
       "userDataDir": "${workspaceRoot}/chrome/prod"
     },
+
     {
       "name": "Storybook",
       "type": "chrome",

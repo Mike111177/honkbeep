@@ -6,6 +6,7 @@
     "**/node_modules": true,
     "**/storybook-static": true,
     "**/build": true,
+    "**/dist": true,
     "**/coverage": true,
     "**/chrome": true
   },

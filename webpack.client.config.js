@@ -1,7 +1,5 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-
-const buildDir = path.resolve(__dirname, "build");
 const SVGOConfig = require("./svgo.config");
 
 module.exports = (env) => {
@@ -9,6 +7,24 @@ module.exports = (env) => {
   const mode = env.production ? "production" : "development";
   const isProduction = mode === "production";
   const isDevelopment = !isProduction;
+
+  const namePatterns = isProduction
+    ? {
+        JSModule: "static/[contenthash].js",
+        JSChunk: "static/[contenthash].js",
+        Image: "static/[contenthash].[ext]",
+        CSSModule: "static/[contenthash].css",
+        CSSChunk: "static/[contenthash].css",
+        CSSClass: "[hash:base64:10]",
+      }
+    : {
+        JSModule: "static/js/[name].[contenthash:8].js",
+        JSChunk: "static/js/[name].[contenthash:8].chunk.js",
+        Image: "static/media/[name].[contenthash:8].[ext]",
+        CSSModule: "static/css/[name].[contenthash:8].css",
+        CSSChunk: "static/css/[name].[contenthash:8].chunk.css",
+        CSSClass: "[local]-[hash:base64:5]",
+      };
 
   //Init rules
   const CSSRule = {
@@ -19,9 +35,7 @@ module.exports = (env) => {
         loader: "css-loader",
         options: {
           modules: {
-            localIdentName: isProduction
-              ? "[hash:base64:10]"
-              : "[local]-[hash:base64:5]",
+            localIdentName: namePatterns.CSSClass,
           },
         },
       },
@@ -34,7 +48,7 @@ module.exports = (env) => {
       {
         loader: "file-loader",
         options: {
-          name: "static/media/[name].[hash:8].[ext]",
+          name: namePatterns.Image,
         },
       },
     ],
@@ -52,7 +66,7 @@ module.exports = (env) => {
       {
         loader: "file-loader",
         options: {
-          name: "static/media/[name].[hash:8].[ext]",
+          name: namePatterns.Image,
         },
       },
     ],
@@ -93,8 +107,8 @@ module.exports = (env) => {
     CSSRule.use.unshift(MiniCssExtractPlugin.loader);
     plugins.unshift(
       new MiniCssExtractPlugin({
-        filename: "static/css/[name].[contenthash:8].css",
-        chunkFilename: "static/css/[name].[contenthash:8].chunk.css",
+        filename: namePatterns.CSSModule,
+        chunkFilename: namePatterns.CSSChunk,
       })
     );
 
@@ -104,8 +118,6 @@ module.exports = (env) => {
     plugins.push(
       new BundleAnalyzerPlugin({
         analyzerMode: "disabled",
-        // bundleDir: "./build",
-        // openAnalyzer: false,
         generateStatsFile: true,
       })
     );
@@ -137,11 +149,11 @@ module.exports = (env) => {
 
   return {
     mode,
-    devtool: isProduction ? "source-map" : "source-map",
+    devtool: "source-map",
     output: {
-      path: isProduction ? buildDir : undefined,
-      filename: "static/js/[name].[contenthash:8].js",
-      chunkFilename: "static/js/[name].[contenthash:8].chunk.js",
+      filename: namePatterns.JSModule,
+      chunkFilename: namePatterns.JSChunk,
+      path: path.resolve(__dirname, "build", "client"),
       publicPath: "/",
       clean: true,
     },
@@ -156,9 +168,7 @@ module.exports = (env) => {
       splitChunks: {
         chunks: "all",
       },
-      runtimeChunk: {
-        name: (entrypoint) => `${entrypoint.name}.runtime`,
-      },
+      runtimeChunk: true,
     },
     performance: isProduction ? {} : false,
     stats: isProduction
@@ -174,6 +184,9 @@ module.exports = (env) => {
     devServer: {
       historyApiFallback: true,
       hot: true,
+      proxy: {
+        "/api": { target: "http://localhost:3001", logLevel: "silent" },
+      },
     },
   };
 };

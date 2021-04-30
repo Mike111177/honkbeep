@@ -5,9 +5,9 @@ import loadable from "@loadable/component";
 import LoginPage from "./ui/pages/LoginPage";
 import Home from "./ui/pages/Home";
 
-import background from "./background_black.jpg";
 import styles from "./App.css";
 import { ErrorBoundary } from "./ui/util/ErrorBoundry";
+import StatusIndicator from "./ui/components/StatusIndicator";
 
 const Solitaire = loadable(() => import("./ui/pages/Solitaire"));
 const SplitScreen = loadable(() => import("./ui/pages/SplitScreen"));
@@ -16,10 +16,7 @@ const SplitScreen = loadable(() => import("./ui/pages/SplitScreen"));
 function App() {
   return (
     <Router>
-      <div
-        className={styles.App}
-        style={{ backgroundImage: `url(${background})` }}
-      >
+      <div className={styles.App}>
         <ErrorBoundary>
           <Route exact path="/">
             <Redirect to="/login" />
@@ -36,6 +33,9 @@ function App() {
           <Route path="/splitscreen">
             <SplitScreen />
           </Route>
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <StatusIndicator />
         </ErrorBoundary>
       </div>
     </Router>
