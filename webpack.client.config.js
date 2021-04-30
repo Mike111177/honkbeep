@@ -186,6 +186,11 @@ module.exports = (env) => {
       hot: true,
       proxy: {
         "/api": { target: "http://localhost:3001", logLevel: "silent" },
+        "ws://": {
+          target: "ws://localhost:3001",
+          logLevel: "silent",
+          ws: true,
+        },
       },
     },
   };

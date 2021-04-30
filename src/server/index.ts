@@ -1,19 +1,21 @@
 import Koa from "koa";
-import Router from "@koa/router";
-
-import { StatusMessage } from "../backend/types/ApiMessages";
-
-const app = new Koa();
-const apiRouter = new Router({ prefix: "/api" });
+import Api from "./Api";
+import { ServerContext, ServerState } from "./ServerTypes";
+import WebSocket from "./WebSocket";
 
 console.log("Starting Honkbeep Server");
 
-apiRouter.get("/status", (ctx, next) => {
-  const msg: StatusMessage = { status: "UP" };
-  ctx.body = JSON.stringify(msg);
-  ctx.response.type = "application/json";
-});
+const app = new Koa<ServerState, ServerContext>();
+const ws = WebSocket();
+const api = Api();
 
-app.use(apiRouter.routes()).use(apiRouter.allowedMethods());
+app
+  .use(ws)
+  .use(async (ctx, next) => {
+    if (ctx.ws) console.log("REEEE");
+    await next();
+  })
+  .use(api.routes())
+  .use(api.allowedMethods());
 
 app.listen(3001);

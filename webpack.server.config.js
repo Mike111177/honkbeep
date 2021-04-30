@@ -13,6 +13,7 @@ module.exports = {
     path: path.resolve(__dirname, "build", "server"),
     clean: true,
   },
+  resolve: { extensions: [".js", ".ts"] },
   module: {
     rules: [
       {
