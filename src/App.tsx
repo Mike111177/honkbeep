@@ -9,6 +9,7 @@ import styles from "./App.css";
 import { ErrorBoundary } from "./ui/util/ErrorBoundry";
 import StatusIndicator from "./ui/components/StatusIndicator";
 
+const Game = loadable(() => import("./ui/pages/Game"));
 const Solitaire = loadable(() => import("./ui/pages/Solitaire"));
 const SplitScreen = loadable(() => import("./ui/pages/SplitScreen"));
 
@@ -23,6 +24,9 @@ function App() {
           </Route>
           <Route path="/login">
             <LoginPage />
+          </Route>
+          <Route path="/game">
+            <Game />
           </Route>
           <Route path="/home">
             <Home />

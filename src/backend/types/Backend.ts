@@ -10,6 +10,7 @@ interface Backend {
   currentState(): GameData;
   onChange(callback: () => void): void;
   attemptPlayerAction(action: GameAttempt): Promise<boolean>;
+  close(): void;
 }
 
 export default Backend;

@@ -13,7 +13,13 @@ export default function LoginPage() {
       <label htmlFor="password">Password:</label>
       <br />
       <input type="password" id="password" name="password"></input>
-      <BoxButton>Login</BoxButton>
+      <BoxButton
+        onClick={() => {
+          history.push("/game");
+        }}
+      >
+        Login
+      </BoxButton>
       <span>Or play solitaire by yourself</span>
       <BoxButton
         onClick={() => {

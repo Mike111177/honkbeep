@@ -21,7 +21,7 @@ export default function StatusIndicator(props: StatusIndicatorProps) {
   }, []);
   useEffect(() => {
     checkServerStatus();
-    const timer = setInterval(checkServerStatus, 10000);
+    const timer = setInterval(checkServerStatus, 100000);
     return () => clearInterval(timer);
   }, [checkServerStatus]);
   return (

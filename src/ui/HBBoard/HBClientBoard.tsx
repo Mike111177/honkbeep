@@ -11,6 +11,7 @@ export default function HBClientBoard({ backend }: HBClientBoardProps) {
 
   useEffect(() => {
     backend.connect().then(() => setBoard(new ClientBoard(backend)));
+    return () => backend.close();
   }, [backend]);
 
   if (board !== null) {

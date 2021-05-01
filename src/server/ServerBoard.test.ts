@@ -1,4 +1,4 @@
-import LocalServer from "./LocalServer";
+import LocalServer from "./ServerBoard";
 import { GameClueAttempt, GameEventType } from "../game/types/GameEvent";
 import { ClueType } from "../game/types/Clue";
 import { genericSampleGame } from "../game/GenericData";

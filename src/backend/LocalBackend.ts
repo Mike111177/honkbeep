@@ -1,6 +1,6 @@
 import Backend from "./types/Backend";
 import { GameAttempt } from "../game/types/GameEvent";
-import LocalServer from "./LocalServer";
+import LocalServer from "../server/ServerBoard";
 import { GameData, GameEventMessage } from "./types/GameData";
 
 //Meant for dictating logic of local games or template games
@@ -54,4 +54,7 @@ export default class LocalBackend implements Backend {
   get viewOrder() {
     return this.player;
   }
+
+  //Nothing needs to be don to close this
+  close() {}
 }

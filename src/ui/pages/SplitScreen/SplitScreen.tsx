@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { SplitScreenStyles as styles } from ".";
 import LocalBackend from "../../../backend/LocalBackend";
-import LocalServer from "../../../backend/LocalServer";
+import LocalServer from "../../../server/ServerBoard";
 import { genericDefinition } from "../../../game";
 import HBClientBoard from "../../HBBoard/HBClientBoard";
 import { ErrorBoundary } from "../../util/ErrorBoundry";

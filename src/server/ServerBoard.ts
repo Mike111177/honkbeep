@@ -11,7 +11,7 @@ import {
   resolveGameAttempt,
 } from "../game";
 import * as ArrayUtil from "../util/ArrayUtil";
-import { CardReveal, GameEventMessage } from "./types/GameData";
+import { CardReveal, GameEventMessage } from "../backend/types/GameData";
 
 type PlayerRevealTurn = {
   turn: number;
