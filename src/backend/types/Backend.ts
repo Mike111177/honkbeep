@@ -7,7 +7,7 @@ import { GameData } from "./GameData";
 interface Backend {
   readonly viewOrder: number;
   connect(): Promise<void>;
-  currentState(): GameData;
+  currentData(): GameData;
   onChange(callback: () => void): void;
   attemptPlayerAction(action: GameAttempt): Promise<boolean>;
   close(): void;

@@ -1,4 +1,5 @@
-import { GameData } from "./GameData";
+import { GameAttempt } from "../../game";
+import { GameData, GameEventMessage } from "./GameData";
 
 export enum GameMessageType {
   GameServerReady = 1,
@@ -6,11 +7,13 @@ export enum GameMessageType {
   GameDataRequest,
   GameDataResponse,
   GameAttemptRequest,
+  GameAttemptRejected,
   GameEventNotification,
 }
 
 export type GameServerReady = {
   type: GameMessageType.GameServerReady;
+  player: number;
 };
 
 export type GameClientReady = {
@@ -26,8 +29,25 @@ export type GameDataResponse = {
   data: GameData;
 };
 
+export type GameAttemptRejected = {
+  type: GameMessageType.GameAttemptRejected;
+};
+
+export type GameAttemptRequest = {
+  type: GameMessageType.GameAttemptRequest;
+  action: GameAttempt;
+};
+
+export type GameEventNotification = {
+  type: GameMessageType.GameEventNotification;
+  event: GameEventMessage;
+};
+
 export type GameMessage =
   | GameServerReady
   | GameClientReady
   | GameDataRequest
-  | GameDataResponse;
+  | GameDataResponse
+  | GameAttemptRequest
+  | GameAttemptRejected
+  | GameEventNotification;

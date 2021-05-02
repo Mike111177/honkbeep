@@ -1,17 +1,17 @@
 import Backend from "./types/Backend";
 import { GameAttempt } from "../game/types/GameEvent";
-import LocalServer from "../server/ServerBoard";
+import ServerBoard from "../server/ServerBoard";
 import { GameData, GameEventMessage } from "./types/GameData";
 
 //Meant for dictating logic of local games or template games
 export default class LocalBackend implements Backend {
   readonly player: number;
-  private server: LocalServer;
-  private state?: GameData;
-  private connected = false;
+  private data?: GameData;
+  private server: ServerBoard;
   private listener?: () => void;
+  private connected = false;
 
-  constructor(player: number, server: LocalServer) {
+  constructor(player: number, server: ServerBoard) {
     this.player = player;
     this.server = server;
   }
@@ -19,21 +19,24 @@ export default class LocalBackend implements Backend {
   async connect() {
     if (!this.connected) {
       //Connect to "Server"
-      await this.server.connect(this.player, this.onEvent.bind(this));
+      await this.server.connect({
+        player: this.player,
+        callback: this.onEvent.bind(this),
+      });
 
       //"Download" game events up to this point
-      this.state = await this.server.requestInitialState(this.player);
+      this.data = await this.server.requestInitialState(this.player);
 
       this.connected = true;
     }
   }
 
-  currentState(): GameData {
-    return this.state!;
+  currentData(): GameData {
+    return this.data!;
   }
 
   onEvent(e: GameEventMessage) {
-    this.state!.events[e.event.turn] = e;
+    this.data!.events[e.event.turn] = e;
     if (this.listener !== undefined) {
       this.listener();
     }
@@ -55,6 +58,6 @@ export default class LocalBackend implements Backend {
     return this.player;
   }
 
-  //Nothing needs to be don to close this
+  //Nothing needs to be done to close this
   close() {}
 }

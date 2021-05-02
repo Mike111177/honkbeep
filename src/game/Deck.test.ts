@@ -1,12 +1,10 @@
 import * as ArrayUtil from "../util/ArrayUtil";
-import { Deck, createProcuredDeckOrder } from ".";
-import { genericDefinition } from "./GenericData";
+import { Deck, createProcuredDeckOrder, buildVariant } from ".";
+import { genericVariant } from "./GenericData";
 
 describe("createProcuredOrder", () => {
   test("Creates correct order", () => {
-    const {
-      variant: { deck },
-    } = genericDefinition();
+    const deck = buildVariant(genericVariant()).deck;
 
     let requestedOrder = [
       { rank: 5, suit: "Red" },

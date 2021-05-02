@@ -1,6 +1,5 @@
 import {
   createProcuredDeckOrder,
-  GameDefinition,
   initGameStateFromDefinition,
   reduceGameEvent,
   GameEventType,
@@ -29,17 +28,9 @@ export function genericVariant(): VariantDefinition {
   };
 }
 
-export function genericDefinition(): GameDefinition {
-  const variant = buildVariant(genericVariant());
-  return {
-    variant,
-    playerNames: genericPlayers(variant),
-  };
-}
-
 export function genericSampleGame() {
-  const definition = genericDefinition();
-  const { variant } = definition;
+  const variantDef = genericVariant();
+  const variant = buildVariant(variantDef);
   const deckOrderDef = createProcuredDeckOrder(variant.deck, [
     //Player 1
     { rank: 1, suit: "Red" },
@@ -70,11 +61,11 @@ export function genericSampleGame() {
   );
   return {
     variant,
+    variantDef,
     deck: variant.deck,
     deckOrderDef,
     order: deckOrderDef.order,
     state0,
     state1,
-    definition,
   };
 }

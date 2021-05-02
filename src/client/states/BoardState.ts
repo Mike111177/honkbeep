@@ -1,4 +1,9 @@
-import { GameDefinition, GameEvent, Variant } from "../../game";
+import {
+  buildVariant,
+  GameEvent,
+  Variant,
+  VariantDefinition,
+} from "../../game";
 import { Immutable } from "../../util/HelperTypes";
 import { CardNotes } from "../types/Notes";
 import { TurnState, initTurnState, reduceTurnEvent } from "./TurnState";
@@ -42,10 +47,13 @@ export class BoardState {
   //Card notes
   cardNotes: CardNotes;
 
-  constructor({ variant, playerNames }: GameDefinition) {
-    this.variant = variant;
+  constructor(
+    variantDef: VariantDefinition,
+    playerNames: ReadonlyArray<string>
+  ) {
+    this.variant = buildVariant(variantDef);
     this.playerNames = playerNames;
-    this.turns = [initTurnState(variant)];
+    this.turns = [initTurnState(this.variant)];
     this.turnIndex = 0;
     this.paused = false;
     this.shuffleOrder = [];

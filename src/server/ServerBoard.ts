@@ -1,6 +1,4 @@
 import {
-  GameDefinition,
-  Deck,
   GameEvent,
   GameState,
   GameEventType,
@@ -9,9 +7,17 @@ import {
   getShuffledOrder,
   GameAttempt,
   resolveGameAttempt,
+  Variant,
+  VariantDefinition,
+  buildVariant,
 } from "../game";
 import * as ArrayUtil from "../util/ArrayUtil";
-import { CardReveal, GameEventMessage } from "../backend/types/GameData";
+import {
+  CardReveal,
+  GameData,
+  GameEventMessage,
+} from "../backend/types/GameData";
+import { GameClientConnection } from "./types/GameClientConnection";
 
 type PlayerRevealTurn = {
   turn: number;
@@ -21,9 +27,10 @@ type PlayerRevealTurn = {
 type PlayerRevealHistory = PlayerRevealTurn[];
 
 //Will be the substitute for a server in these local games
-export default class LocalServer {
-  private definition: GameDefinition;
-  private deck: Deck;
+export default class ServerBoard {
+  private playerNames: ReadonlyArray<string>;
+  private variantDef: VariantDefinition;
+  private variant: Variant;
 
   private shuffleOrder: number[];
   private seed?: number;
@@ -34,31 +41,29 @@ export default class LocalServer {
   //TODO: transfer all possible state to be managed by this state
   private state: GameState;
 
-  private connections: {
-    player: number;
-    callback: (e: GameEventMessage) => void;
-  }[];
-
+  private connections: GameClientConnection[];
   constructor(
-    definition: GameDefinition,
+    definition: VariantDefinition,
+    playerNames: ReadonlyArray<string>,
     deckDef?: number | { order: number[]; seed?: number }
   ) {
     //Variant Info
-    this.definition = definition;
-    this.deck = new Deck(definition.variant);
+    this.variantDef = definition;
+    this.variant = buildVariant(this.variantDef);
+    this.playerNames = playerNames;
 
     //Build Server side game state
     const dealEvent: GameEvent = { turn: 0, type: GameEventType.Deal };
     this.state = reduceGameEvent(
-      initGameStateFromDefinition(definition.variant),
+      initGameStateFromDefinition(this.variant),
       dealEvent,
-      definition.variant
+      this.variant
     );
     this.events = [dealEvent];
 
     //Order Deck
     if (deckDef === undefined || typeof deckDef === "number") {
-      const shuffle = getShuffledOrder(this.deck.length, deckDef);
+      const shuffle = getShuffledOrder(this.variant.deck.length);
       this.shuffleOrder = shuffle.order;
       this.seed = shuffle.seed;
     } else {
@@ -67,7 +72,7 @@ export default class LocalServer {
     }
 
     //Build reveals
-    this.reveals = ArrayUtil.fill(this.definition.variant.numPlayers, () => []);
+    this.reveals = ArrayUtil.fill(this.variant.numPlayers, () => []);
     this.state.hands.forEach((hand, player) => {
       hand.forEach((card) => {
         this.revealCardToAllButOnePlayer(card, player, 0);
@@ -101,7 +106,7 @@ export default class LocalServer {
   ) {
     for (
       let playerOfReveal = 0;
-      playerOfReveal < this.definition.variant.numPlayers;
+      playerOfReveal < this.variant.numPlayers;
       playerOfReveal++
     ) {
       //Reveal each card to each player other than the one named
@@ -131,9 +136,7 @@ export default class LocalServer {
   }
 
   private isPlayersTurn(player: number) {
-    return (
-      player === (this.state.turn - 1) % this.definition.variant.numPlayers
-    );
+    return player === (this.state.turn - 1) % this.variant.numPlayers;
   }
 
   private async broadcastLatestEvent() {
@@ -151,7 +154,7 @@ export default class LocalServer {
     const event = resolveGameAttempt(
       action,
       this.state,
-      this.definition.variant,
+      this.variant,
       this.shuffleOrder
     );
     //If event is valid...
@@ -166,11 +169,7 @@ export default class LocalServer {
         }
         // falls through so any event gets propagated onto the state and announced to clients
         case GameEventType.Clue:
-          this.state = reduceGameEvent(
-            this.state,
-            event,
-            this.definition.variant
-          );
+          this.state = reduceGameEvent(this.state, event, this.variant);
           this.events.push(event);
           this.broadcastLatestEvent();
           return true;
@@ -180,17 +179,19 @@ export default class LocalServer {
     return false;
   }
 
-  public async requestInitialState(player: number) {
+  public async requestInitialState(player: number): Promise<GameData> {
     return {
-      definition: this.definition,
+      variant: this.variant,
+      playerNames: this.playerNames,
       events: this.buildStateHistory(player),
     };
   }
 
-  public async connect(
-    player: number,
-    callback: (e: GameEventMessage) => void
-  ) {
-    this.connections.push({ player, callback });
+  public async connect(connection: GameClientConnection) {
+    this.connections.push(connection);
+  }
+
+  get connectedPlayers() {
+    return this.connections.length;
   }
 }

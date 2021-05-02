@@ -15,7 +15,6 @@ export * from "./types/Variant";
 export * from "./types/Card";
 export * from "./types/Suit";
 export * from "./types/Rank";
-export * from "./types/GameDefinition";
 
 //State manipulation
 export { default as resolveGameAttempt } from "./resolveGameAttempt";

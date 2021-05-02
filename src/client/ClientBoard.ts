@@ -23,18 +23,17 @@ export default class ClientBoard extends Board {
 
   constructor(backend: Backend) {
     //Create new BoardState
-    const state0 = backend
-      .currentState()
-      .events.reduce(
-        (s, event) => appendEventMessage(s, event),
-        new BoardState(backend.currentState().definition)
-      );
+    const data = backend.currentData();
+    const state0 = data.events.reduce(
+      (s, event) => appendEventMessage(s, event),
+      new BoardState(data.variant, data.playerNames)
+    );
     state0.viewOrder = backend.viewOrder;
     state0.perspective = backend.viewOrder;
     super(state0);
     //Listen for further game events
     backend.onChange(() => {
-      const { events } = this.backend.currentState();
+      const { events } = this.backend.currentData();
       this.updateBoardState((state) =>
         events
           .slice(state.latestTurn.turn)

@@ -1,18 +1,22 @@
-import LocalServer from "./ServerBoard";
+import ServerBoard from "./ServerBoard";
 import { GameClueAttempt, GameEventType } from "../game/types/GameEvent";
 import { ClueType } from "../game/types/Clue";
-import { genericSampleGame } from "../game/GenericData";
+import { genericPlayers, genericSampleGame } from "../game/GenericData";
 
 test("Initializes without error", () => {
-  const { definition: gamedef } = genericSampleGame();
   //Create virtual local Server
-  new LocalServer(gamedef);
+  const { variantDef } = genericSampleGame();
+  new ServerBoard(variantDef, genericPlayers(variantDef));
 });
 
 test("Does not allow player to take turn twice in a row", async () => {
-  const { definition: gamedef, deckOrderDef: deckDef } = genericSampleGame();
   //Create virtual local Server
-  const server = new LocalServer(gamedef, deckDef);
+  const { variantDef, deckOrderDef: deckDef } = genericSampleGame();
+  const server = new ServerBoard(
+    variantDef,
+    genericPlayers(variantDef),
+    deckDef
+  );
   //Test having player 1 make a play 2 times
   expect(
     await server.attemptPlayerAction(0, { type: GameEventType.Play, card: 0 })
@@ -51,9 +55,13 @@ test("Does not allow player to take turn twice in a row", async () => {
 });
 
 test("Does not allow clues sent to invalid players", async () => {
-  const { definition: gamedef, deckOrderDef: deckDef } = genericSampleGame();
-  //Create virtual local Server with 4 players
-  const server = new LocalServer(gamedef, deckDef);
+  //Create virtual local Server
+  const { variantDef, deckOrderDef: deckDef } = genericSampleGame();
+  const server = new ServerBoard(
+    variantDef,
+    genericPlayers(variantDef),
+    deckDef
+  );
 
   const player1GoodClue: GameClueAttempt = {
     type: GameEventType.Clue,

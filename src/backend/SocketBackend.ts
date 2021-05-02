@@ -1,70 +1,112 @@
+import { unstable_batchedUpdates } from "react-dom";
 import { GameAttempt } from "../game";
+import { MessageSocket } from "../util/MessageSocket";
 import Backend from "./types/Backend";
 import { GameData } from "./types/GameData";
 import { GameMessage, GameMessageType } from "./types/GameMessages";
 
 export default class SocketBackend implements Backend {
-  viewOrder: number;
-  private state?: GameData;
-  private ws?: WebSocket;
+  private player?: number;
+  private data?: GameData;
+  private ws?: MessageSocket<GameMessage>;
   private listener?: () => void;
-  constructor() {
-    this.viewOrder = 0;
-  }
+  private pendingAttempt?: (result: boolean) => void;
+
   connect(): Promise<void> {
-    const ws = new WebSocket(`ws://${window.location.host}/socket`);
+    const ws = new MessageSocket<GameMessage>(
+      new WebSocket(`ws://${window.location.host}/socket`)
+    );
+    this.ws = ws;
     const onMessage = this.onMessage.bind(this);
-    const setState = (s: GameData) => (this.state = s);
-    const prom = new Promise<void>((resolve, reject) => {
-      ws.onopen = () => {
-        //Only run this once
-        ws.onopen = () => {};
-        ws.onmessage = (event) => {
-          //Lets now wait for the server ready message
-          const data = JSON.parse(event.data) as GameMessage;
-          if (data.type !== GameMessageType.GameServerReady) {
-            reject(
-              `Server sent data before it sent ready message! MsgType: ${data}`
-            );
-          }
+    const setState = (s: GameData) => (this.data = s);
+    return new Promise<GameMessage>((resolve) => {
+      //Then lets wait for the first server ready message to come in
+      ws.onmessage = (data) => resolve(data);
+    })
+      .then(
+        (serverReadyMsg) =>
           //Now lets ask the server for the current game data
-          ws.onmessage = (event) => {
-            const data = JSON.parse(event.data) as GameMessage;
-            if (data.type === GameMessageType.GameDataResponse) {
-              setState(data.data);
-              ws.onmessage = onMessage;
-              ws.send(
-                JSON.stringify({ type: GameMessageType.GameClientReady })
+          new Promise<GameMessage>((resolve, reject) => {
+            if (serverReadyMsg.type === GameMessageType.GameServerReady) {
+              ws.onmessage = (data) => resolve(data);
+              ws.send({ type: GameMessageType.GameDataRequest });
+              this.player = serverReadyMsg.player;
+            } else {
+              reject(
+                `Server sent data before it sent ready message! MsgType: ${serverReadyMsg}`
               );
+            }
+          })
+      )
+      .then(
+        (gameDataMsg) =>
+          //Now load game data
+          new Promise<void>((resolve, reject) => {
+            if (gameDataMsg.type === GameMessageType.GameDataResponse) {
+              setState(gameDataMsg.data);
+              //Transfer to our onMessage method
+              ws.onmessage = onMessage;
+              ws.send({ type: GameMessageType.GameClientReady });
               resolve();
             } else {
               reject(
-                `Server sent data before we were ready! MsgType: ${data.type}`
+                `Server sent data before we were ready! MsgType: ${gameDataMsg.type}`
               );
             }
-            //Next time we get a message lets handle it normally
-          };
-          ws.send(JSON.stringify({ type: GameMessageType.GameDataRequest }));
-        };
-      };
-    });
-    this.ws = ws;
-    return prom;
+          })
+      );
   }
-  onMessage() {}
-  currentState(): GameData {
-    return this.state!;
+
+  onMessage(msg: GameMessage) {
+    switch (msg.type) {
+      case GameMessageType.GameEventNotification: {
+        unstable_batchedUpdates(() => {
+          const { event: e } = msg;
+          this.data!.events[e.event.turn] = e;
+          if (this.listener !== undefined) {
+            this.listener();
+          }
+          if (this.pendingAttempt !== undefined) {
+            this.pendingAttempt(true);
+            this.pendingAttempt = undefined;
+          }
+        });
+        break;
+      }
+      case GameMessageType.GameAttemptRejected: {
+        if (this.pendingAttempt !== undefined) {
+          unstable_batchedUpdates(() => {
+            this.pendingAttempt!(false);
+            this.pendingAttempt = undefined;
+          });
+        }
+      }
+    }
   }
+
+  currentData(): GameData {
+    return this.data!;
+  }
+
   onChange(callback: () => void): void {
     this.listener = callback;
   }
-  attemptPlayerAction(action: GameAttempt): Promise<boolean> {
-    throw new Error("Method not implemented.");
+
+  attemptPlayerAction(action: GameAttempt) {
+    this.ws!.send({ type: GameMessageType.GameAttemptRequest, action });
+    return new Promise<boolean>((resolve) => {
+      this.pendingAttempt = resolve;
+    });
   }
+
   close() {
     if (this.ws) {
       this.ws.close();
     }
     this.ws = undefined;
+  }
+
+  get viewOrder() {
+    return this.player!;
   }
 }

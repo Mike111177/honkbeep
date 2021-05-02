@@ -1,7 +1,5 @@
 import {
   VariantDefinition,
-  GameDefinition,
-  buildVariant,
   genericPlayers,
   getShuffledOrder,
   GameEventType,
@@ -13,11 +11,7 @@ import BoardState, { appendEvent } from "./states/BoardState";
 
 export default class SolitaireBoard extends Board {
   constructor(variantDef: VariantDefinition) {
-    const definition: GameDefinition = {
-      variant: buildVariant(variantDef),
-      playerNames: genericPlayers(variantDef),
-    };
-    const boardState = new BoardState(definition);
+    const boardState = new BoardState(variantDef, genericPlayers(variantDef));
     boardState.shuffleOrder = getShuffledOrder(
       boardState.variant.deck.length
     ).order;

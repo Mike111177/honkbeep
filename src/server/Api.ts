@@ -1,6 +1,6 @@
 import Router from "@koa/router";
 import { StatusMessage } from "../backend/types/ApiMessages";
-import { ServerContext, ServerState } from "./ServerTypes";
+import { ServerContext, ServerState } from "./types/ServerTypes";
 
 export default function Api() {
   const router = new Router<ServerState, ServerContext>({ prefix: "/api" });
