@@ -1,10 +1,10 @@
 import Koa from "koa";
+import session from "koa-session";
+import bodyparser from "koa-bodyparser";
+import WebSocketMiddleware from "./WebSocket";
+
 import Api from "./Api";
 import { ServerContext, ServerState } from "./types/ServerTypes";
-import WebSocketMiddleware from "./WebSocket";
-import ServerBoard from "./ServerBoard";
-import { genericPlayers, genericVariant } from "../game";
-import { GameServerBackend } from "./GameServerBackend";
 
 console.log("Starting Honkbeep Server");
 
@@ -12,18 +12,19 @@ const app = new Koa<ServerState, ServerContext>();
 const ws = WebSocketMiddleware();
 const api = Api();
 
-const variantDef = genericVariant();
-const board = new ServerBoard(variantDef, genericPlayers(variantDef));
+let user = 0;
 
 app
+  .use(session({ key: "honk.sess", signed: false }, app))
   .use(ws)
   .use(async (ctx, next) => {
-    if (ctx.ws && ctx.path.startsWith("/socket")) {
-      const ws = await ctx.ws();
-      new GameServerBackend(ws, board);
+    if (ctx.session!.isNew) {
+      ctx.session!.user = user;
+      user++;
     }
     await next();
   })
+  .use(bodyparser())
   .use(api.routes())
   .use(api.allowedMethods());
 

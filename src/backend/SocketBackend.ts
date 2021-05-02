@@ -4,6 +4,7 @@ import { MessageSocket } from "../util/MessageSocket";
 import Backend from "./types/Backend";
 import { GameData } from "./types/GameData";
 import { GameMessage, GameMessageType } from "./types/GameMessages";
+import * as Api from "../client/Api";
 
 export default class SocketBackend implements Backend {
   private player?: number;
@@ -13,9 +14,7 @@ export default class SocketBackend implements Backend {
   private pendingAttempt?: (result: boolean) => void;
 
   connect(): Promise<void> {
-    const ws = new MessageSocket<GameMessage>(
-      new WebSocket(`ws://${window.location.host}/socket`)
-    );
+    const ws = Api.game();
     this.ws = ws;
     const onMessage = this.onMessage.bind(this);
     const setState = (s: GameData) => (this.data = s);

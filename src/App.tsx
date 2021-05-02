@@ -2,12 +2,14 @@ import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 // @ts-ignore
 import loadable from "@loadable/component";
 
-import LoginPage from "./ui/pages/LoginPage";
 import Home from "./ui/pages/Home";
+import Lobby from "./ui/pages/Lobby";
+import Login from "./ui/pages/Login";
 
 import styles from "./App.css";
 import { ErrorBoundary } from "./ui/util/ErrorBoundry";
 import StatusIndicator from "./ui/components/StatusIndicator";
+import LoggedInGuard from "./ui/components/LoggedInGuard";
 
 const Game = loadable(() => import("./ui/pages/Game"));
 const Solitaire = loadable(() => import("./ui/pages/Solitaire"));
@@ -23,13 +25,22 @@ function App() {
             <Redirect to="/login" />
           </Route>
           <Route path="/login">
-            <LoginPage />
+            <Login />
+          </Route>
+          <Route path="/lobby">
+            <LoggedInGuard>
+              <Lobby />
+            </LoggedInGuard>
           </Route>
           <Route path="/game">
-            <Game />
+            <LoggedInGuard>
+              <Game />
+            </LoggedInGuard>
           </Route>
           <Route path="/home">
-            <Home />
+            <LoggedInGuard>
+              <Home />
+            </LoggedInGuard>
           </Route>
           <Route path="/solitaire">
             <Solitaire />

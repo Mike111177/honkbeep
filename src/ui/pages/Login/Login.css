@@ -1,4 +1,4 @@
-.LoginPage {
+.Login {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -11,7 +11,11 @@
   border-radius: 20px;
 }
 
-.LoginPage input {
+.Login input {
   background-color: rgb(83, 83, 83);
   color: white;
+}
+
+.Error {
+  color: rgb(233, 81, 81);
 }

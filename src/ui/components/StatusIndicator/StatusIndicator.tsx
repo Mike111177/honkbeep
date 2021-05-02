@@ -1,13 +1,12 @@
 import { Pip } from "../Pip";
 import { useCallback, useEffect, useState } from "react";
-import axios from "axios";
-import { StatusMessage } from "../../../backend/types/ApiMessages";
+import * as Api from "../../../client/Api";
 
 import { StatusIndicatorStyles as styles } from ".";
 
 async function isServerUp() {
   try {
-    return (await axios.get<StatusMessage>("api/status")).data.status === "UP";
+    return (await Api.status()).status === "UP";
   } catch {
     return false;
   }
