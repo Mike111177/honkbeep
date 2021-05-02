@@ -1,5 +1,15 @@
 {
   "version": "0.2.0",
+  "compounds": [
+    {
+      "name": "Development",
+      "configurations": ["Host/Dev", "Client/Dev"]
+    },
+    {
+      "name": "Production",
+      "configurations": ["Host/Production", "Client/Production"]
+    }
+  ],
   "configurations": [
     {
       "name": "Server",
@@ -10,6 +20,28 @@
       "runtimeArgs": ["start:server"]
     },
     {
+      "name": "Host/Dev",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "pwa-node",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": ["start"],
+      "presentation": {
+        "hidden": true
+      }
+    },
+    {
+      "name": "Host/Production",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "pwa-node",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": ["start:production"],
+      "presentation": {
+        "hidden": true
+      }
+    },
+    {
       "name": "Client/Dev",
       "type": "chrome",
       "request": "launch",
@@ -17,7 +49,10 @@
       "runtimeArgs": ["--new-window"],
       "userDataDir": "${workspaceRoot}/chrome/dev",
       "sourceMaps": true,
-      "webRoot": "${workspaceRoot}"
+      "webRoot": "${workspaceRoot}",
+      "presentation": {
+        "hidden": true
+      }
     },
     {
       "name": "Client/Production",
@@ -29,11 +64,13 @@
         "*": "${webRoot}/*"
       },
       "runtimeArgs": ["--new-window"],
-      "userDataDir": "${workspaceRoot}/chrome/prod"
+      "userDataDir": "${workspaceRoot}/chrome/prod",
+      "presentation": {
+        "hidden": true
+      }
     },
-
     {
-      "name": "Storybook",
+      "name": "Host/Storybook",
       "type": "chrome",
       "request": "launch",
       "url": "http://localhost:6006",
@@ -42,7 +79,10 @@
         "webpack:///src/*": "${webRoot}/*"
       },
       "runtimeArgs": ["--new-window"],
-      "userDataDir": "${workspaceRoot}/chrome/storybook"
+      "userDataDir": "${workspaceRoot}/chrome/storybook",
+      "presentation": {
+        "hidden": true
+      }
     }
   ]
 }
