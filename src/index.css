@@ -1,6 +1,18 @@
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  font-size: min(0.1vh, 0.05vw);
+}
+
 body {
   margin: 0;
   font-family: Consolas, monospace;
+  font-size: 20rem;
 }
 
 html,

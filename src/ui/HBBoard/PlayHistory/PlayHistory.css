@@ -2,14 +2,16 @@
   grid-area: playhistory;
   contain: content;
   overflow: hidden;
+  width: 640rem;
+  height: 320rem;
 }
 
 .PlayHistory span {
   text-align: center;
   display: block;
-  font-size: 28px;
+  font-size: 20rem;
   border-style: solid;
-  border-width: 1px;
+  border-width: 1rem;
   border-color: #0000;
   box-sizing: content-box;
 }
@@ -19,17 +21,18 @@
 }
 
 .ColorSubject {
-  border-radius: 5px;
+  border-radius: 3rem;
   border-style: solid;
   display: inline-block;
-  font-size: 30px;
+  font-size: 20rem;
+  padding: 0 2rem;
   -webkit-text-stroke: black;
   -webkit-text-stroke-width: 0.04em;
 }
 
 .NumberSubject {
-  font-size: 30px;
-  border-radius: 5px;
+  font-size: 20rem;
+  border-radius: 3rem;
   border-style: solid;
   display: inline-block;
 }

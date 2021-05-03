@@ -1,8 +1,8 @@
 .DarkRegion {
-  border-radius: 10px;
-  margin: 10px;
-  padding: 20px;
+  border-radius: 10rem;
+  margin: 20rem;
+  padding: 20rem;
   background-color: rgba(0, 0, 0, 0.5);
-  font-size: 17px;
+  font-size: 16rem;
   box-sizing: border-box;
 }

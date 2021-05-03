@@ -38,7 +38,6 @@ function DrawDeck() {
       <text
         x="50%"
         y="50%"
-        fontSize="50px"
         dominantBaseline="middle"
         textAnchor="middle"
         fill="#FFFFFF"

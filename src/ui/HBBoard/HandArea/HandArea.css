@@ -1,9 +1,10 @@
 .Hand {
   display: grid;
-  border-width: 2px;
+  border-width: 2rem;
   border-color: #00000000;
   border-style: solid;
-  border-radius: 5px;
+  border-radius: 5rem;
+  padding: 10rem;
 }
 
 .Hand.OnPlayerTurn {
@@ -13,12 +14,12 @@
 
 .HandsArea {
   grid-area: handarea;
-  padding: 2.5vw;
-  padding-top: 10vh;
+  padding: 10rem;
+  padding-top: 30rem;
 }
 
 .handName {
-  font-size: 20px;
+  font-size: 20rem;
   text-align: center;
   user-select: none;
 }
