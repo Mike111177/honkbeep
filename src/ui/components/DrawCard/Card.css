@@ -1,8 +1,10 @@
 .Card {
   font-family: Consolas, monospace;
   user-select: none;
+  width: 115px;
 }
 
 .CardIcon {
   transform: translate(0, 15%);
+  width: auto;
 }
