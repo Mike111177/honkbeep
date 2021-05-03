@@ -7,7 +7,7 @@ import { useGesture } from "../../input";
 import { UserActionType } from "../../../client/types/UserAction";
 import { GameEventType } from "../../../game";
 import { compareRects, vecAdd, vecInRectangle } from "../../../util/Geometry";
-import { useBoardReducer } from "../../BoardContext";
+import { useBoardReducer, useStaticBoardState, useBoardStateSelector } from "../../BoardContext";
 import { RectReadOnly } from "react-use-measure";
 
 import styles from "./AnimatedDeck.css";
@@ -19,9 +19,10 @@ import { useRefRouter, useRefHook } from "../../util/hooks/useRefRouter";
 export type CardSledProps = {
   index: number;
   area: RectReadOnly;
+  discardZIndices: Map<number, number>;
 };
 //TODO: Generalize this code, a lot of elements from it would be nice to be able to use in other places
-export function CardSled({ index, area }: CardSledProps) {
+export function CardSled({ index, area, discardZIndices }: CardSledProps) {
   //Get contexts
   const boardDispatch = useBoardReducer();
   const facility = useFacility();
@@ -155,14 +156,14 @@ export function CardSled({ index, area }: CardSledProps) {
     if (dragging) {
       zIndex = 100;
     } else if (home[0] === "discard") {
-      zIndex = home[1] as number;
+      zIndex = discardZIndices.get(home[1] as number)! + 10;
     } else if (topStack) {
       zIndex = 1;
     }
     return {
       style: { zIndex, ...spring },
     };
-  }, [topStack, dragging, home, spring]);
+  }, [discardZIndices, topStack, dragging, home, spring]);
 
   const [ref, refHook] = useRefRouter<HTMLDivElement>();
   useRefHook(refHook, dragRef);

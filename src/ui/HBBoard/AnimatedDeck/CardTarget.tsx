@@ -12,7 +12,7 @@ export default function CardTarget({
   ...props
 }: CardTargetProps) {
   return (
-    <CardSVG ref={useZone(areaPath)} {...props}>
+    <CardSVG ref={areaPath ? useZone(areaPath) : undefined} {...props}>
       {children}
     </CardSVG>
   );

@@ -13,8 +13,8 @@
 
 .HandsArea {
   grid-area: handarea;
-  padding: 2.5%;
-  padding-top: 10%;
+  padding: 2.5vw;
+  padding-top: 10vh;
 }
 
 .handName {
