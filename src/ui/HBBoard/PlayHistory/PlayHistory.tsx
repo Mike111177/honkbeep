@@ -67,7 +67,7 @@ function CluePlayDescriber({
   const giverName = playerNames[player];
   const targetName = playerNames[target];
   const numTouched = touched.length;
-  const subject = clue.type === ClueType.Rank ? `#${clue.value}` : clue.value;
+  const subject = clue.type === ClueType.Rank ? `${clue.value}` : clue.value;
   let style =
     clue.type === ClueType.Color
       ? {
@@ -106,10 +106,23 @@ function DiscardPlayDescriber({
   onClick,
 }: DiscardPlayDescriberProps) {
   const [card, playerName, slotNumber] = useCardPlayData(event, turn);
+  const props = {
+    className: styles.ColorSubject,
+    style: {
+      color: colors(card.suit),
+      backgroundColor: mix(
+        colors(card.suit),
+        "#FFFFFF",
+        0.5,
+        "lrgb"
+      ).hex(),
+    },
+  };
+
   return (
     <span onClick={onClick}>
       {`${playerName} discarded `}
-      <DrawCard card={card} icon />
+      <div {...props}>{card.rank}</div>
       {` from slot ${slotNumber + 1}`}
     </span>
   );
@@ -122,23 +135,30 @@ type PlayPlayDescriberProps = {
 };
 function PlayPlayDescriber({ turn, event, onClick }: PlayPlayDescriberProps) {
   const [card, playerName, slotNumber] = useCardPlayData(event, turn);
-  if (event.result === GamePlayResultType.Success) {
-    return (
-      <span onClick={onClick}>
-        {`${playerName} played `}
-        <DrawCard card={card} icon />
-        {` from slot ${slotNumber + 1}`}
-      </span>
-    );
-  } else {
-    return (
-      <span onClick={onClick}>
-        {`${playerName} misplayed `}
-        <DrawCard card={card} icon />
-        {` from slot ${slotNumber + 1}`}
-      </span>
-    );
-  }
+  const props = {
+    className: styles.ColorSubject,
+    style: {
+      color: colors(card.suit),
+      backgroundColor: mix(
+        colors(card.suit),
+        "#FFFFFF",
+        0.5,
+        "lrgb"
+      ).hex(),
+    },
+  };
+
+  const playedVerb =
+    event.result === GamePlayResultType.Success
+      ? "successfully played"
+      : "failed to play";
+  return (
+    <span onClick={onClick}>
+      {`${playerName} ${playedVerb} `}
+      <div {...props}>{card.rank}</div>
+      {` from slot ${slotNumber + 1}`}
+    </span>
+  );
 }
 
 type PlayDescriberProps = {

@@ -1,10 +1,13 @@
 .Card {
   font-family: Consolas, monospace;
   user-select: none;
-  width: 115px;
+  width: 120rem;
 }
 
-.CardIcon {
-  transform: translate(0, 15%);
-  width: auto;
+.CardRank {
+  font-size: 40px;
+}
+
+.CardRankPip {
+  font-size: 16px;
 }
