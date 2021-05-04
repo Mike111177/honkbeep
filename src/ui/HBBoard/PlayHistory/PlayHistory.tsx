@@ -9,7 +9,6 @@ import {
   GamePlayEvent,
   GamePlayResultType,
 } from "../../../game";
-import { DrawCard } from "../../components/DrawCard";
 import { useBoardReducer, useBoardStateSelector } from "../../BoardContext";
 import classNames from "../../util/classNames";
 import * as ArrayUtil from "../../../util/ArrayUtil";
@@ -110,12 +109,7 @@ function DiscardPlayDescriber({
     className: styles.ColorSubject,
     style: {
       color: colors(card.suit),
-      backgroundColor: mix(
-        colors(card.suit),
-        "#FFFFFF",
-        0.5,
-        "lrgb"
-      ).hex(),
+      backgroundColor: mix(colors(card.suit), "#FFFFFF", 0.5, "lrgb").hex(),
     },
   };
 
@@ -139,12 +133,7 @@ function PlayPlayDescriber({ turn, event, onClick }: PlayPlayDescriberProps) {
     className: styles.ColorSubject,
     style: {
       color: colors(card.suit),
-      backgroundColor: mix(
-        colors(card.suit),
-        "#FFFFFF",
-        0.5,
-        "lrgb"
-      ).hex(),
+      backgroundColor: mix(colors(card.suit), "#FFFFFF", 0.5, "lrgb").hex(),
     },
   };
 
