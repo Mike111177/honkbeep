@@ -36,7 +36,7 @@ function useCardPlayData(
       const numPlayers = s.variant.numPlayers;
       const player = (turn - 1) % numPlayers;
       return [
-        deck.getCard(shuffleOrder[event.card]),
+        deck.getFaceByCard(shuffleOrder[event.card]),
         s.playerNames[player],
         s.getTurn(turn).hands[player].indexOf(event.card),
       ];

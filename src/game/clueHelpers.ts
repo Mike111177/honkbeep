@@ -1,9 +1,9 @@
-import { Card } from ".";
+import { CardFace } from ".";
 import { Clue, ClueType } from "./types/Clue";
 
-export function doesClueMatchCard(clue: Clue, info: Card) {
+export function doesClueMatchCard(clue: Clue, face: CardFace) {
   return (
-    (clue.type === ClueType.Rank && clue.value === info.rank) ||
-    (clue.type === ClueType.Color && clue.value === info.suit)
+    (clue.type === ClueType.Rank && clue.value === face.rank) ||
+    (clue.type === ClueType.Color && clue.value === face.suit)
   );
 }

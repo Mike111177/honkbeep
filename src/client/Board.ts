@@ -8,7 +8,7 @@ import {
   mutateBoardState,
 } from "./states/BoardState";
 import { UserAction, UserActionType } from "./types/UserAction";
-import { reduceTurnEvent } from "./states/TurnState";
+import { reduceTurnEvent } from "./reducers/TurnStateReducers";
 import { Draft } from "immer";
 
 export type BoardUpdateListener = () => void;

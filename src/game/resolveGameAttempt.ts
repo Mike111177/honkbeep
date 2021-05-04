@@ -78,7 +78,7 @@ export default function resolveGameAttempt(
       //See which cards in target hand get touched
       const targetHand = state.hands[target];
       let touched = targetHand.filter((card) =>
-        doesClueMatchCard(clue, variant.deck.getCard(shuffleOrder[card]))
+        doesClueMatchCard(clue, variant.deck.getFaceByCard(shuffleOrder[card]))
       );
 
       //If no cards were touched, this clue is illegal

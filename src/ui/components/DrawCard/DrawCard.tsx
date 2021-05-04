@@ -8,7 +8,7 @@ export type CardProps = CardPropsForFront | CardPropsForBack;
 export const DrawCard = React.memo(function DrawCard(
   props: CardProps
 ): JSX.Element {
-  if ("card" in props) {
+  if ("face" in props) {
     return <CardFront {...(props as CardFrontProps)} />;
   } else {
     return <CardBack {...(props as CardBackProps)} />;

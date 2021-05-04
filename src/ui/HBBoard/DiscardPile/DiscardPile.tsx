@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Card } from "../../../game";
+import { CardFace } from "../../../game";
 import { useZone, ZonePath } from "../../Zone";
 import CardTarget from "../AnimatedDeck/CardTarget";
 import { CardSVG } from "../../components/DrawCard";
@@ -43,19 +43,17 @@ const DiscardPileTargets = React.memo(function DiscardPileTargets() {
 
   const [discardPile, setDiscardPile] = useState(() => _.viewTurn.discardPile);
   const [discardIndices, setDiscardIndicies] = useState(() =>
-    discardPile.map((i) => deck.lookup[_.shuffleOrder[i]])
+    discardPile.map((i) => _.shuffleOrder[i])
   );
 
   useBoardStateUpdates(
     ({ shuffleOrder, viewTurn }) => {
       if (viewTurn.discardPile !== discardPile) {
         setDiscardPile(viewTurn.discardPile);
-        setDiscardIndicies(
-          viewTurn.discardPile.map((i) => deck.lookup[shuffleOrder[i]])
-        );
+        setDiscardIndicies(viewTurn.discardPile.map((i) => shuffleOrder[i]));
       }
     },
-    [deck.lookup, discardPile]
+    [discardPile]
   );
 
   const { sortedPile, zIndices } = useMemo(() => {
@@ -68,9 +66,9 @@ const DiscardPileTargets = React.memo(function DiscardPileTargets() {
       zIndices.set(i, z);
     }
 
-    const sortedPile: Array<[number, Card]> = sorted.map(([i, card]) => [
+    const sortedPile: Array<[number, CardFace]> = sorted.map(([i, card]) => [
       i,
-      deck.getCardByIndex(_.shuffleOrder[card]),
+      deck.getFaceByCardIndex(_.shuffleOrder[card]),
     ]);
 
     return { sortedPile, zIndices };
@@ -96,7 +94,7 @@ const DiscardPileTargets = React.memo(function DiscardPileTargets() {
   return (
     <>
       {ArrayUtil.iota(deck.length).map((i) => {
-        const card = deck.getCardByIndex(i);
+        const card = deck.getFaceByCardIndex(i);
         if (lastSuit !== card.suit) {
           lastSuit = card.suit;
           row++;

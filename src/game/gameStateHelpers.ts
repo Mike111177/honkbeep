@@ -7,7 +7,7 @@ export function isCardPlayableOnStack(
   variant: Variant,
   shuffleOrder: readonly number[]
 ) {
-  const cardInfo = variant.deck.getCard(shuffleOrder[card]);
+  const cardInfo = variant.deck.getFaceByCard(shuffleOrder[card]);
   const suit = variant.suits[stackNumber];
   const stack = state.stacks[stackNumber];
   if (suit === cardInfo.suit) {
@@ -16,7 +16,7 @@ export function isCardPlayableOnStack(
         return true;
       }
     } else {
-      const { rank } = variant.deck.getCard(
+      const { rank } = variant.deck.getFaceByCard(
         shuffleOrder[stack[stack.length - 1]]
       );
       if (rank === cardInfo.rank - 1) {

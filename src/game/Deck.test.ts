@@ -23,10 +23,10 @@ describe("createProcuredOrder", () => {
 
     //Check we have cards in the requested order
     requestedOrder.forEach((card, i) => {
-      const test = expect(deck.getCard(order[i]));
+      const test = expect(deck.getFaceByCard(order[i]));
       if (card !== undefined) {
         test.toStrictEqual(
-          typeof card === "number" ? deck.getCard(card) : card
+          typeof card === "number" ? deck.getFaceByCard(card) : card
         );
       }
     });

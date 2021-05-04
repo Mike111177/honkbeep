@@ -4,12 +4,12 @@ import { mix } from "chroma-js";
 import colors from "../../BaseColors";
 import pipShapes from "../../SuitPips";
 import { Pip } from "../Pip";
-import { Card } from "../../../game";
+import { CardFace } from "../../../game";
 import { vecAdd, vecSub } from "../../../util/Geometry";
 import { CARD_VIEW_MIDPOINT as mid, CardRectangle, CardSVG } from ".";
 
 export type CardFrontProps = {
-  card: Card;
+  face: CardFace;
   borderOverride?: string;
 } & ComponentPropsWithoutRef<"svg">;
 
@@ -32,7 +32,7 @@ const pipC = vecAdd(mid, cPipOff);
 
 //For rendering front-face of absolutely known card
 export default function CardFront({
-  card: { rank, suit },
+  face: { rank, suit },
   borderOverride,
   ...props
 }: CardFrontProps) {

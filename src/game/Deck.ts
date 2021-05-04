@@ -1,4 +1,4 @@
-import { Card, VariantDefinition } from ".";
+import { CardFace, VariantDefinition } from ".";
 import * as ArrayUtil from "../util/ArrayUtil";
 import { xorshift32 } from "../util/rng";
 
@@ -10,15 +10,15 @@ const DEFAULT_SUIT_RANK_DIVISION: ReadonlyArray<number> = [3, 2, 2, 2, 1];
  */
 export class Deck {
   //Ordered Set of unique cards
-  readonly cards: ReadonlyArray<Readonly<Card>>;
+  readonly faces: ReadonlyArray<Readonly<CardFace>>;
   //Map of cards for quick lookup as well as the count of each card
-  readonly countMap: ReadonlyMap<Readonly<Card>, number>;
+  readonly countMap: ReadonlyMap<Readonly<CardFace>, number>;
   //Map of deck index to card
-  readonly lookup: ReadonlyArray<number>;
-  //Map to use when finding the location of a card not sourced from deck
-  readonly nonLocalCardMap: ReadonlyMap<
-    Card["suit"],
-    ReadonlyArray<Readonly<Card>>
+  readonly cardFaces: ReadonlyArray<Readonly<CardFace>>;
+  //Map to use when finding the location of a face not sourced from deck
+  readonly nonLocalFaceMap: ReadonlyMap<
+    CardFace["suit"],
+    ReadonlyArray<Readonly<CardFace>>
   >;
 
   constructor(variant: VariantDefinition) {
@@ -36,28 +36,28 @@ export class Deck {
     });
 
     //The lookup index is just a flat list of all the cards
-    this.cards = cardsBySuit.flat();
-    Object.freeze(this.cards);
+    this.faces = cardsBySuit.flat();
+    Object.freeze(this.faces);
 
     //The count map just figures out how many of each card should exist
-    this.countMap = this.cards.reduce(
+    this.countMap = this.faces.reduce(
       (map, card) => map.set(card, DEFAULT_SUIT_RANK_DIVISION[card.rank - 1]),
-      new Map<Readonly<Card>, number>()
+      new Map<Readonly<CardFace>, number>()
     );
     Object.freeze(this.countMap);
 
     //For the lookup, each duplicate card needs to be accounted for from the countmap
-    this.lookup = this.cards.reduce<number[]>(
-      (acc, card, i) => acc.concat(ArrayUtil.fill(this.countMap.get(card)!, i)),
+    this.cardFaces = this.faces.reduce<Readonly<CardFace>[]>(
+      (acc, card) => acc.concat(ArrayUtil.fill(this.countMap.get(card)!, card)),
       []
     );
-    Object.freeze(this.lookup);
+    Object.freeze(this.cardFaces);
 
-    this.nonLocalCardMap = cardsBySuit.reduce(
+    this.nonLocalFaceMap = cardsBySuit.reduce(
       (map, suitCards, i) => map.set(suits[i], suitCards),
       new Map()
     );
-    Object.freeze(this.nonLocalCardMap);
+    Object.freeze(this.nonLocalFaceMap);
 
     //The deck depends on it being immutable to function
     Object.freeze(this);
@@ -68,8 +68,8 @@ export class Deck {
    * @param card
    * @returns
    */
-  getCardByDescription({ suit, rank }: Readonly<Card>) {
-    const card = this.nonLocalCardMap.get(suit)?.[rank - 1];
+  getFaceByCardDescription({ suit, rank }: Readonly<CardFace>) {
+    const card = this.nonLocalFaceMap.get(suit)?.[rank - 1];
     if (process.env.NODE_ENV !== "production" && card === undefined) {
       throw new Error(`Unknown card Suit: ${suit}, Rank: ${rank}!`);
     }
@@ -81,25 +81,25 @@ export class Deck {
    * @param index
    * @returns
    */
-  getCardByIndex(index: number) {
+  getFaceByCardIndex(index: number) {
     if (process.env.NODE_ENV !== "production" && index >= this.length) {
       throw new Error(`Card index out of bounds!`);
     }
-    return this.cards[this.lookup[index]];
+    return this.cardFaces[index];
   }
 
   /**
-   * Given a card to match or a deck index, find a corresponding card from the deck
+   * Given a face to match or a deck index, find a corresponding face from the deck
    * Try to avoid usage of this in performance sensitive code, prefer to use
    * `getCardByDescription` or `getCardByIndex`
    * @param indexOrRef
    * @returns
    */
-  getCard(indexOrRef: number | Readonly<Card>) {
+  getFaceByCard(indexOrRef: number | Readonly<CardFace>) {
     if (typeof indexOrRef === "number") {
-      return this.getCardByIndex(indexOrRef);
+      return this.getFaceByCardIndex(indexOrRef);
     } else {
-      return this.getCardByDescription(indexOrRef);
+      return this.getFaceByCardDescription(indexOrRef);
     }
   }
 
@@ -109,10 +109,10 @@ export class Deck {
    * @param card
    * @returns
    */
-  getCardCount(card: Readonly<Card>) {
+  getCardCount(card: Readonly<CardFace>) {
     let count = this.countMap.get(card);
     if (count === undefined) {
-      const localCard = this.getCardByDescription(card);
+      const localCard = this.getFaceByCardDescription(card);
       count =
         localCard !== undefined ? this.countMap.get(localCard) : undefined;
     }
@@ -124,19 +124,21 @@ export class Deck {
    * This is not intended to be efficient...
    * @param card
    */
-  getCardInstances({ rank, suit }: Readonly<Card>) {
-    const card = this.getCard({ rank, suit });
-    return ArrayUtil.iota(this.length).filter((i) => this.getCard(i) === card);
+  getCardInstances({ rank, suit }: Readonly<CardFace>) {
+    const card = this.getFaceByCard({ rank, suit });
+    return ArrayUtil.iota(this.length).filter(
+      (i) => this.getFaceByCard(i) === card
+    );
   }
 
   get length() {
-    return this.lookup.length;
+    return this.cardFaces.length;
   }
 }
 
 export function createProcuredDeckOrder(
   deck: Deck,
-  inputOrder: (number | Readonly<Card> | undefined)[],
+  inputOrder: (number | Readonly<CardFace> | undefined)[],
   seed?: number
 ) {
   //First check to make sure the input order is not longer than the deck
@@ -147,7 +149,7 @@ export function createProcuredDeckOrder(
   //Create array to fill requested cards
   const requestedOrder: (number | undefined)[] = [];
   //Also keep track of how many of each card we put in
-  const inserted = new Map<Readonly<Card>, number>();
+  const inserted = new Map<Readonly<CardFace>, number>();
 
   for (const inputCard of inputOrder) {
     //Skip if user left this item undefined
@@ -157,7 +159,7 @@ export function createProcuredDeckOrder(
     }
 
     //Get the card and the indices of this card, and the amount we have already inserted
-    const cardFromDeck = deck.getCard(inputCard);
+    const cardFromDeck = deck.getFaceByCard(inputCard);
     const cardInstances = deck.getCardInstances(cardFromDeck);
     const amountAlreadyInserted = inserted.get(cardFromDeck) ?? 0;
 
@@ -202,7 +204,7 @@ export function createProcuredDeckOrder(
   return { order: requestedOrder as number[] };
 }
 
-export function areCardsSame(a: Card, b: Card) {
+export function areCardsSame(a: CardFace, b: CardFace) {
   return a.rank === b.rank && a.suit === b.suit;
 }
 

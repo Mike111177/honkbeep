@@ -12,7 +12,7 @@ export * from "./gameStateHelpers";
 export * from "./types/Clue";
 export * from "./types/GameEvent";
 export * from "./types/Variant";
-export * from "./types/Card";
+export * from "./types/CardFace";
 export * from "./types/Suit";
 export * from "./types/Rank";
 

@@ -6,9 +6,10 @@ import {
 } from "../../game";
 import { Immutable } from "../../util/HelperTypes";
 import { CardNotes } from "../types/Notes";
-import { TurnState, initTurnState, reduceTurnEvent } from "./TurnState";
+import { TurnState } from "./TurnState";
+import { initTurnState, reduceTurnEvent } from "../reducers/TurnStateReducers";
 
-//This class sh
+//Visible data for react components
 export class BoardState {
   //Info to define game, should NEVER change after creation
   readonly variant: Immutable<Variant>;

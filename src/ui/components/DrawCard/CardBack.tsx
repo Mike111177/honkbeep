@@ -104,7 +104,7 @@ function CardBackUnknown({
 export default function CardBack(props: CardBackProps) {
   return props.pips.ranks.length === 1 && props.pips.suits.length === 1 ? (
     <CardFront
-      card={{ rank: props.pips.ranks[0], suit: props.pips.suits[0] }}
+      face={{ rank: props.pips.ranks[0], suit: props.pips.suits[0] }}
       borderOverride={props.borderOverride}
     />
   ) : (

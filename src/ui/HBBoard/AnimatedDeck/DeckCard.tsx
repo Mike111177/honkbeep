@@ -22,11 +22,11 @@ export default function DeckCard({ index, ...props }: DeckCardProps) {
   const spaceDown = useSpacebar();
   const cardProps = useMemo((): CardProps => {
     const cardInfo =
-      card !== undefined ? variant.deck.getCard(card) : undefined;
+      card !== undefined ? variant.deck.getFaceByCard(card) : undefined;
     return {
       borderOverride: touched ? "orange" : undefined,
       ...(cardInfo !== undefined && !spaceDown
-        ? { card: cardInfo }
+        ? { face: cardInfo }
         : { variant, pips }),
       ...props,
     };
