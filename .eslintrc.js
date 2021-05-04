@@ -8,7 +8,7 @@ module.exports = {
     "react-hooks/exhaustive-deps": [
       "warn",
       {
-        additionalHooks: "useBoardStateSelector",
+        additionalHooks: "useBoardStateSelector|useBoardStateUpdates",
       },
     ],
   },

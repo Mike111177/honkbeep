@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { animated, useSpring } from "@react-spring/web";
 
 import HBDeckCard from "./DeckCard";
-import { useFacility, ZoneEventType, ZonePath } from "../../Zone";
+import { useFacility, ZoneEventType, ZoneListener, ZonePath } from "../../Zone";
 import { useGesture } from "../../input";
 import { UserActionType } from "../../../client/types/UserAction";
 import { GameEventType } from "../../../game";
 import { compareRects, vecAdd, vecInRectangle } from "../../../util/Geometry";
-import { useBoardReducer, useStaticBoardState, useBoardStateSelector } from "../../BoardContext";
+import { useBoardReducer } from "../../BoardContext";
 import { RectReadOnly } from "react-use-measure";
 
 import styles from "./AnimatedDeck.css";
@@ -19,10 +19,9 @@ import { useRefRouter, useRefHook } from "../../util/hooks/useRefRouter";
 export type CardSledProps = {
   index: number;
   area: RectReadOnly;
-  discardZIndices: Map<number, number>;
 };
 //TODO: Generalize this code, a lot of elements from it would be nice to be able to use in other places
-export function CardSled({ index, area, discardZIndices }: CardSledProps) {
+export function CardSled({ index, area }: CardSledProps) {
   //Get contexts
   const boardDispatch = useBoardReducer();
   const facility = useFacility();
@@ -31,6 +30,7 @@ export function CardSled({ index, area, discardZIndices }: CardSledProps) {
   const [dragging, setDragging] = useState(false);
   const [notesOpen, setNotesOpen] = useState(false);
   const [dropPath, setDropPath] = useState<ZonePath | null>(null);
+  const [discardZ, setDiscardZ] = useState(0);
   const [spring, springApi] = useSpring(() => ({
     x: 0,
     y: 0,
@@ -66,14 +66,16 @@ export function CardSled({ index, area, discardZIndices }: CardSledProps) {
   );
 
   useEffect(() => {
-    setHomeRect(facility.getRect(home));
-    return facility.subscribeToArea(home, ({ type, area }) => {
-      if (visible) {
-        //No need to animate if we aren't visible
-        const immediate = type === ZoneEventType.Resize;
-        setHomeRect({ immediate, ...area.getRect() });
+    const updateHome: ZoneListener = ({ type, area }) => {
+      const immediate = type === ZoneEventType.Resize;
+      setHomeRect({ immediate, ...area.getRect() });
+      if (home[0] === "discard" && area.config?.meta?.z !== undefined) {
+        setDiscardZ(area.config?.meta?.z);
       }
-    });
+    };
+    const area = facility.getZone(home);
+    updateHome({ type: ZoneEventType.Register, area });
+    return facility.subscribeToArea(home, updateHome);
   }, [home, facility, setHomeRect, visible]);
 
   const onDrop = useCallback(
@@ -150,20 +152,14 @@ export function CardSled({ index, area, discardZIndices }: CardSledProps) {
     { drag: { enable: draggable } }
   );
 
-  const props = useMemo(() => {
-    //Set correct zIndex
-    let zIndex = 0;
-    if (dragging) {
-      zIndex = 100;
-    } else if (home[0] === "discard") {
-      zIndex = discardZIndices.get(home[1] as number)! + 10;
-    } else if (topStack) {
-      zIndex = 1;
-    }
-    return {
-      style: { zIndex, ...spring },
-    };
-  }, [discardZIndices, topStack, dragging, home, spring]);
+  let zIndex = 0;
+  if (dragging) {
+    zIndex = 100;
+  } else if (home[0] === "discard") {
+    zIndex = discardZ + 10;
+  } else if (topStack) {
+    zIndex = 1;
+  }
 
   const [ref, refHook] = useRefRouter<HTMLDivElement>();
   useRefHook(refHook, dragRef);
@@ -175,7 +171,7 @@ export function CardSled({ index, area, discardZIndices }: CardSledProps) {
           className={styles.AnimatedCard}
           ref={ref}
           {...dragBinder}
-          {...props}
+          style={{ zIndex, ...spring }}
         >
           <HBDeckCard index={index} />
         </animated.div>

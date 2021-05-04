@@ -2,6 +2,8 @@ import { Zone } from "./Zone";
 
 export type ZoneConfig = {
   dropZone?: boolean;
+  attributes?: string[];
+  meta?: any;
 };
 
 export type ZoneListener = (event: ZoneEvent) => any;

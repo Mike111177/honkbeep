@@ -60,6 +60,10 @@ export class Facility {
     yield* helper(this.areas);
   }
 
+  getZone(path: ZonePath) {
+    return this.getOrCreateArea(path);
+  }
+
   getRect(path: ZonePath) {
     return this.getOrCreateArea(path).getRect();
   }

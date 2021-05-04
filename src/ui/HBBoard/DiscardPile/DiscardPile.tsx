@@ -1,37 +1,80 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { Card } from "../../../game";
 import { useZone, ZonePath } from "../../Zone";
 import CardTarget from "../AnimatedDeck/CardTarget";
 import { CardSVG } from "../../components/DrawCard";
-import { useBoardStateSelector, useStaticBoardState } from "../../BoardContext";
+import { useBoardStateUpdates } from "../../BoardContext";
 import classNames from "../../util/classNames";
 import { ErrorBoundary } from "../../util/ErrorBoundry";
 import * as ArrayUtil from "../../../util/ArrayUtil";
+import { useBoard } from "../../BoardContext/hooks/useBoard";
 
 import styles from "./DiscardPile.css";
 import darkregion from "../DarkRegion.css";
 
+type DiscardTargetProps = {
+  row: number;
+  col: number;
+  discard: ZonePath | undefined;
+  z: number;
+};
+
+const DiscardTarget = React.memo(function DiscardTarget({
+  row,
+  col,
+  discard,
+  z,
+}: DiscardTargetProps) {
+  const style = {
+    gridRow: `${row * 2 + 1} / ${row * 2 + 6}`,
+    gridColumn: `${col * 2 + 1} / ${col * 2 + 6}`,
+  };
+  if (discard) {
+    return (
+      <CardTarget areaPath={discard} style={style} config={{ meta: { z } }} />
+    );
+  }
+  return <CardSVG style={style} />;
+});
+
 const DiscardPileTargets = React.memo(function DiscardPileTargets() {
-  const { deck, suits } = useStaticBoardState().variant;
+  const _ = useBoard().state;
+  const { deck } = _.variant;
 
-  const sortedPile: Array<[number, Card]> = useBoardStateSelector(
-    ((state) => {
-      const entries = Array.from(state.viewTurn.discardPile.entries());
-      const sortedPile = entries.sort((entryA, entryB) => {
-        let [i, a] = entryA;
-        let [j, b] = entryB;
-        let cmp = deck.lookup[state.shuffleOrder[a]] - deck.lookup[state.shuffleOrder[b]];
-        if (cmp == 0) {
-          return i - j;
-        }
-        return cmp;
-      });
-
-      return sortedPile.map(([i, card]) => [i, deck.getCard(state.shuffleOrder[card])]);
-    }),
-    [deck],
-    ArrayUtil.shallowCompare
+  const [discardPile, setDiscardPile] = useState(() => _.viewTurn.discardPile);
+  const [discardIndices, setDiscardIndicies] = useState(() =>
+    discardPile.map((i) => deck.lookup[_.shuffleOrder[i]])
   );
+
+  useBoardStateUpdates(
+    ({ shuffleOrder, viewTurn }) => {
+      if (viewTurn.discardPile !== discardPile) {
+        setDiscardPile(viewTurn.discardPile);
+        setDiscardIndicies(
+          viewTurn.discardPile.map((i) => deck.lookup[shuffleOrder[i]])
+        );
+      }
+    },
+    [deck.lookup, discardPile]
+  );
+
+  const { sortedPile, zIndices } = useMemo(() => {
+    const sorted = Array.from(discardPile.entries()).sort(
+      ([i], [j]) => discardIndices[i] - discardIndices[j] || i - j
+    );
+
+    const zIndices = new Map();
+    for (const [z, [i]] of sorted.entries()) {
+      zIndices.set(i, z);
+    }
+
+    const sortedPile: Array<[number, Card]> = sorted.map(([i, card]) => [
+      i,
+      deck.getCardByIndex(_.shuffleOrder[card]),
+    ]);
+
+    return { sortedPile, zIndices };
+  }, [_.shuffleOrder, deck, discardIndices, discardPile]);
 
   let row = 0;
   let col = 0;
@@ -39,7 +82,7 @@ const DiscardPileTargets = React.memo(function DiscardPileTargets() {
 
   const discards: Map<string, [string, number]> = new Map();
   for (const [i, card] of sortedPile) {
-    if (lastSuit != card.suit) {
+    if (lastSuit !== card.suit) {
       lastSuit = card.suit;
       col = 0;
     }
@@ -52,26 +95,24 @@ const DiscardPileTargets = React.memo(function DiscardPileTargets() {
   lastSuit = "";
   return (
     <>
-      {ArrayUtil.iota(deck.length).map(i => {
+      {ArrayUtil.iota(deck.length).map((i) => {
         const card = deck.getCardByIndex(i);
-        if (lastSuit != card.suit) {
+        if (lastSuit !== card.suit) {
           lastSuit = card.suit;
           row++;
           col = 0;
         }
         const key = `${card.suit}-${col++}`;
         const discard = discards.get(key);
-        const style = {
-          gridRow: `${(row * 2) + 1} / ${(row * 2) + 6}`,
-          gridColumn: `${(col * 2) + 1} / ${(col * 2) + 6}`,
-        };
-        if (discard) {
-          return (
-            <CardTarget key={key} areaPath={discard} style={style} />
-          );
-        }
+        const z = discard ? zIndices.get(discard[1]) : -10;
         return (
-          <CardSVG key={key} style={style} />
+          <DiscardTarget
+            key={key}
+            row={row}
+            col={col}
+            discard={discard}
+            z={z}
+          />
         );
       })}
     </>
