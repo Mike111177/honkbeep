@@ -8,8 +8,6 @@ import { Card } from "../../../game";
 import { vecAdd, vecSub } from "../../../util/Geometry";
 import { CARD_VIEW_MIDPOINT as mid, CardRectangle, CardSVG } from ".";
 
-import styles from "./Card.css";
-
 export type CardFrontProps = {
   card: Card;
   borderOverride?: string;
@@ -51,9 +49,9 @@ export default function CardFront({
   const cornerPips = (
     <g>
       <text
-        className={styles.CardRank}
         fill={color}
         {...numOffset}
+        fontSize="40"
         textAnchor="middle"
         dominantBaseline="central"
         stroke="black"

@@ -29,16 +29,16 @@
   grid-auto-flow: row;
   justify-content: center;
   text-align: center;
-  font-size: 20rem;
+  font-size: calc(20 * var(--bsf));
   height: min-content;
 }
 
 .PlayerButton,
 .SelectedPlayerButton {
-  margin: 3px;
-  padding: 3px;
-  border-radius: 5px;
-  width: 5em;
+  margin: calc(3 * var(--bsf));
+  padding: calc(3 * var(--bsf));
+  border-radius: calc(5 * var(--bsf));
+  width: calc(100 * var(--bsf));
   color: white;
   background-color: black;
 }
@@ -49,8 +49,7 @@
 }
 
 .ClueButton {
-  height: 60rem;
-  font-size: 50px;
+  height: calc(60 * var(--bsf));
 }
 
 .SubmitButton {
@@ -58,11 +57,11 @@
   align-items: center;
   justify-content: center;
   align-content: center;
-  margin: 3px;
-  padding: 5px;
+  margin: calc(3 * var(--bsf));
+  padding: calc(5 * var(--bsf));
   background-color: #000000;
-  border-radius: 5px;
+  border-radius: calc(5 * var(--bsf));
   color: green;
   font-weight: 1000;
-  font-size: 50rem;
+  font-size: calc(50 * var(--bsf));
 }

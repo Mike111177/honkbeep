@@ -6,13 +6,13 @@
 }
 
 :root {
-  font-size: min(0.1vh, 0.05vw);
+  /* root board scale factor */
+  --rbsf: min(0.1vh, 0.05vw);
 }
 
 body {
   margin: 0;
   font-family: Consolas, monospace;
-  font-size: 20rem;
 }
 
 html,

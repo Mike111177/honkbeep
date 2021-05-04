@@ -79,6 +79,7 @@ function NumberClueButton({ val: clue, selected, set }: NumberButtonProps) {
         fill={selected ? "black" : "white"}
         x="50%"
         y="50%"
+        fontSize="50"
         textAnchor="middle"
         alignmentBaseline="central"
         dominantBaseline="central"

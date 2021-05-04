@@ -12,8 +12,6 @@ import { CardRectangle, CardSVG } from ".";
 import { CARD_VIEW_MIDPOINT as mid } from "./Constants";
 import CardFront from "./CardFront";
 
-import styles from "./Card.css";
-
 export type CardBackProps = {
   variant: Variant;
   pips: Pips;
@@ -58,7 +56,7 @@ function NumberPips({ ranks }: { ranks: Pips["ranks"] }) {
           return (
             <text
               key={n}
-              className={styles.CardRankPip}
+              fontSize="16"
               textAnchor="middle"
               alignmentBaseline="middle"
               fill="white"

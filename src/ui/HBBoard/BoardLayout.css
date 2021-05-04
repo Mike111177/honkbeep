@@ -3,6 +3,14 @@
   height: 100%;
   width: 100%;
   contain: content;
+
+  /* container board scale factor */
+  --cbsf: var(--bsf, var(--rbsf, var(--cbsf-fallback)));
+
+  /* The fallback value is set so that the font-size in the play history
+   * matches the font size of the containing element, and the play history
+   * font-size is specified at 20 * --bsf. */
+  --cbsf-fallback: calc(1em / 20);
 }
 
 .BoardGrid {
@@ -20,4 +28,7 @@
   align-items: start;
   color: white;
   overflow: hidden;
+
+  /* board scale factor */
+  --bsf: var(--cbsf);
 }

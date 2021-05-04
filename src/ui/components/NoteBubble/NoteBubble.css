@@ -3,7 +3,7 @@
   padding: 20px;
   margin: 5px;
   border-radius: 20px;
-  font-size: 16rem;
+  font-size: calc(16 * var(--bsf));
   border-width: 2px;
   border-color: black;
   border-style: solid;
