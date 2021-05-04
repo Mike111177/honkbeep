@@ -62,7 +62,7 @@ function NumberPips({ ranks }: { ranks: Pips["ranks"] }) {
               textAnchor="middle"
               alignmentBaseline="middle"
               fill="white"
-              x={mid.x * (i + 1) / 3}
+              x={(mid.x * (i + 1)) / 3}
               y="130"
               stroke="black"
               strokeWidth="3"

@@ -7,7 +7,5 @@ export default {
   component: Slider,
 } as Meta;
 
-export const SliderStory: Story<SliderProps> = (props) => (
-  <Slider {...props}/>
-);
+export const SliderStory: Story<SliderProps> = (props) => <Slider {...props} />;
 SliderStory.storyName = "Slider";
