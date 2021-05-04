@@ -1,7 +1,7 @@
 import { Immutable } from "../../util/HelperTypes";
 import { Clue } from "./Clue";
 
-export enum GameEventType {
+export const enum GameEventType {
   Deal = 1,
   Play,
   Discard,
@@ -21,7 +21,7 @@ export type GamePlayAttempt = Immutable<{
   type: GameEventType.Play;
   card: number;
 }>;
-export enum GamePlayResultType {
+export const enum GamePlayResultType {
   Success = 1,
   Misplay,
 }

@@ -1,6 +1,6 @@
 import { GameAttempt } from "../../game/types/GameEvent";
 
-export enum UserActionType {
+export const enum UserActionType {
   GameAttempt = 1,
   SetViewTurn,
   Resume,

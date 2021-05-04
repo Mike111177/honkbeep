@@ -1,7 +1,7 @@
 import { Immutable } from "../../util/HelperTypes";
 import { Rank } from "./Rank";
 
-export enum ClueType {
+export const enum ClueType {
   Rank = 1,
   Color,
 }

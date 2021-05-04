@@ -123,7 +123,7 @@ module.exports = (env) => {
         {
           test: /\.tsx?$/,
           loader: "ts-loader",
-          options: { happyPackMode: true, transpileOnly: true },
+          options: { transpileOnly: isDevelopment },
         },
       ],
     },
