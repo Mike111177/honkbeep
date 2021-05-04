@@ -2,16 +2,16 @@
   grid-area: playhistory;
   contain: content;
   overflow: hidden;
-  width: 640rem;
-  height: 320rem;
+  width: calc(640 * var(--bsf));
+  height: calc(320 * var(--bsf));
 }
 
 .PlayHistory span {
   text-align: center;
   display: block;
-  font-size: 20rem;
+  font-size: calc(20 * var(--bsf));
   border-style: solid;
-  border-width: 1rem;
+  border-width: calc(1 * var(--bsf));
   border-color: #0000;
   box-sizing: content-box;
 }
@@ -21,18 +21,18 @@
 }
 
 .ColorSubject {
-  border-radius: 3rem;
+  border-radius: calc(5 * var(--bsf));
   border-style: solid;
   display: inline-block;
-  font-size: 20rem;
-  padding: 0 2rem;
+  font-size: calc(20 * var(--bsf));
+  padding: 0 calc(2 * var(--bsf));
   -webkit-text-stroke: black;
   -webkit-text-stroke-width: 0.04em;
 }
 
 .NumberSubject {
-  font-size: 20rem;
-  border-radius: 3rem;
+  font-size: calc(20 * var(--bsf));
+  border-radius: calc(5 * var(--bsf));
   border-style: solid;
   display: inline-block;
 }
