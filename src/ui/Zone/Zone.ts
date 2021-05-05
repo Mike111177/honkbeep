@@ -1,13 +1,13 @@
-import { ZoneConfig, ZoneEventType, ZoneListener, ZonePath } from ".";
+import { ZoneConfig, ZoneEventType, ZoneListener } from ".";
 
 export class Zone {
-  readonly path: ZonePath;
+  readonly path: string;
   ref?: React.RefObject<HTMLElement>;
   config?: ZoneConfig;
   listeners: ZoneListener[] = [];
 
-  constructor(path: ZonePath) {
-    this.path = [...path];
+  constructor(path: string) {
+    this.path = path;
   }
 
   getRect() {

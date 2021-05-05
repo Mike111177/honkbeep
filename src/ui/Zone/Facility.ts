@@ -1,71 +1,38 @@
 import { Zone, ZoneConfig, ZoneEventType, ZoneListener, ZonePath } from ".";
+import { LegacyZonePath } from "./types";
+import * as ArrayUtil from "../../util/ArrayUtil";
+
+function legacyZonePathToString(path: LegacyZonePath): string {
+  return path.join("-");
+}
 
 export class Facility {
-  areas: any = {};
-  dropZones: Zone[] = [];
+  zones: Map<string, Zone> = new Map();
+  attributedZones: Map<string, Array<Zone>> = new Map();
   private initialized: boolean = false;
-  private getOrCreateArea(path: ZonePath): Zone {
-    let area = this.areas;
-    let i = 0;
-    //Search recursively along path
-    for (i; i < path.length - 1; i++) {
-      //If the next link in the path is undefined
-      //Create it based on the next path item
-      if (area[path[i]] === undefined) {
-        switch (typeof path[i + 1]) {
-          //If the next path item is a string, we create an object
-          case "string":
-            area[path[i]] = {};
-            break;
-          //However if it is a number we prefer to use an array for better lookup perf
-          case "number":
-            area[path[i]] = [];
-            break;
-          default:
-            throw new Error("Unsupported path variable");
-        }
-      } else if (area[path[i]] instanceof Zone) {
-        //Do not recurse through a Zone, this request was malformed
-        throw new Error("Area found in middle of path.");
-      }
-      area = area[path[i]];
+  private getOrCreateZone(path: ZonePath): Zone {
+    if (Array.isArray(path)) {
+      path = legacyZonePathToString(path);
     }
-
-    if (area[path[i]] === undefined) {
-      //If the last item in the path is undef, we create it now and return it
-      const newArea = new Zone(path);
-      area[path[i]] = newArea;
-      return newArea;
-    } else if (area[path[i]] instanceof Zone) {
-      //else if the last item in the path is a Zone, we found it! return it
-      return area[path[i]] as Zone;
-    } else {
-      //Else the next item is not a valid area, the request was malformed
-      throw new Error("Incomplete area path");
+    let zone = this.zones.get(path);
+    if (zone === undefined) {
+      const newZone = new Zone(path);
+      this.zones.set(path, newZone);
+      zone = newZone;
     }
+    return zone;
   }
 
-  private *allAreas() {
-    function* helper(areas: any): Generator<Zone, void, unknown> {
-      for (let child of Object.keys(areas)) {
-        if (areas[child] !== undefined) {
-          if (areas[child] instanceof Zone) {
-            yield areas[child];
-          } else {
-            yield* helper(areas[child]);
-          }
-        }
-      }
-    }
-    yield* helper(this.areas);
+  private allAreas() {
+    return this.zones.values();
   }
 
   getZone(path: ZonePath) {
-    return this.getOrCreateArea(path);
+    return this.getOrCreateZone(path);
   }
 
   getRect(path: ZonePath) {
-    return this.getOrCreateArea(path).getRect();
+    return this.getOrCreateZone(path).getRect();
   }
 
   private onWindowResize() {
@@ -84,7 +51,7 @@ export class Facility {
   }
 
   subscribeToArea(path: ZonePath, callback: ZoneListener) {
-    const area = this.getOrCreateArea(path);
+    const area = this.getOrCreateZone(path);
     area.listeners.push(callback);
     return () => {
       area.listeners.splice(
@@ -94,22 +61,31 @@ export class Facility {
     };
   }
 
+  zonesWithAttribute(attribute: string) {
+    return this.attributedZones.get(attribute)!;
+  }
+
   registerZone(
     path: ZonePath,
     ref: React.MutableRefObject<null>,
     config?: ZoneConfig
   ) {
-    const area = this.getOrCreateArea(path);
-    //Cleanup old config for area
-    if (area.config?.dropZone) {
-      this.dropZones = this.dropZones.filter((a) => area !== a);
+    const zone = this.getOrCreateZone(path);
+    if (
+      config?.attributes !== undefined &&
+      (zone.config?.attributes === undefined ||
+        !ArrayUtil.shallowCompare(config.attributes, zone.config?.attributes))
+    ) {
+      for (const attribute of config.attributes) {
+        const attributed = (this.attributedZones.get(attribute) ??
+          this.attributedZones.set(attribute, []).get(attribute))!;
+        if (!attributed.includes(zone)) {
+          attributed.push(zone);
+        }
+      }
     }
-    area.ref = ref;
-    area.config = config;
-    //Setup new config for area
-    if (area.config?.dropZone) {
-      this.dropZones.push(area);
-    }
-    area.update(ZoneEventType.Register);
+    zone.ref = ref;
+    zone.config = config;
+    zone.update(ZoneEventType.Register);
   }
 }

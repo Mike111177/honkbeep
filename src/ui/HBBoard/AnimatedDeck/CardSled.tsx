@@ -2,19 +2,20 @@ import { useCallback, useEffect, useState } from "react";
 import { animated, useSpring } from "@react-spring/web";
 
 import HBDeckCard from "./DeckCard";
-import { useFacility, ZoneEventType, ZoneListener, ZonePath } from "../../Zone";
+import { useFacility, ZoneEventType, ZoneListener } from "../../Zone";
 import { useGesture } from "../../input";
 import { UserActionType } from "../../../client/types/UserAction";
 import { GameEventType } from "../../../game";
 import { compareRects, vecAdd, vecInRectangle } from "../../../util/Geometry";
 import { useBoardReducer } from "../../BoardContext";
 import { RectReadOnly } from "react-use-measure";
-
-import styles from "./AnimatedDeck.css";
 import { useSledCardState } from "./useSledCardState";
 import { constrainCardRect } from "./constrainCardRect";
 import { NoteBubble } from "../../components/NoteBubble";
 import { useRefRouter, useRefHook } from "../../util/hooks/useRefRouter";
+import { LocationType } from "../../../client/types/Location";
+
+import styles from "./AnimatedDeck.css";
 
 export type CardSledProps = {
   index: number;
@@ -26,10 +27,10 @@ export function CardSled({ index, area }: CardSledProps) {
   const boardDispatch = useBoardReducer();
   const facility = useFacility();
 
-  const [draggable, topStack, visible, ...home] = useSledCardState(index);
+  const [draggable, topStack, visible, home, loc] = useSledCardState(index);
   const [dragging, setDragging] = useState(false);
   const [notesOpen, setNotesOpen] = useState(false);
-  const [dropPath, setDropPath] = useState<ZonePath | null>(null);
+  const [dropPath, setDropPath] = useState<string | null>(null);
   const [discardZ, setDiscardZ] = useState(0);
   const [spring, springApi] = useSpring(() => ({
     x: 0,
@@ -69,14 +70,17 @@ export function CardSled({ index, area }: CardSledProps) {
     const updateHome: ZoneListener = ({ type, area }) => {
       const immediate = type === ZoneEventType.Resize;
       setHomeRect({ immediate, ...area.getRect() });
-      if (home[0] === "discard" && area.config?.meta?.z !== undefined) {
+      if (
+        loc.place === LocationType.Discard &&
+        area.config?.meta?.z !== undefined
+      ) {
         setDiscardZ(area.config?.meta?.z);
       }
     };
     const area = facility.getZone(home);
     updateHome({ type: ZoneEventType.Register, area });
     return facility.subscribeToArea(home, updateHome);
-  }, [home, facility, setHomeRect, visible]);
+  }, [home, facility, setHomeRect, visible, loc.place]);
 
   const onDrop = useCallback(
     async (loc: string) => {
@@ -111,9 +115,11 @@ export function CardSled({ index, area }: CardSledProps) {
           const dragTarget = { ...homeRect, ...vecAdd({ x, y }, offset) };
           setHomeRect({ ...dragTarget, immediate: true });
           setDragging(true);
-          const dropZone = facility.dropZones.find((zone) =>
-            vecInRectangle(vecAdd(origin, offset), zone.getRect()!)
-          );
+          const dropZone = facility
+            .zonesWithAttribute("dropzone")
+            .find((zone) =>
+              vecInRectangle(vecAdd(origin, offset), zone.getRect()!)
+            );
           if (dropZone !== undefined) {
             if (dropPath === null) {
               setDropPath(dropZone.path);
@@ -129,7 +135,7 @@ export function CardSled({ index, area }: CardSledProps) {
           if (dropPath === null) {
             setHomeRect(homeRect);
           } else {
-            onDrop(dropPath[0]).then((success) => {
+            onDrop(dropPath).then((success) => {
               if (!success) {
                 setHomeRect(homeRect);
               }
@@ -155,7 +161,7 @@ export function CardSled({ index, area }: CardSledProps) {
   let zIndex = 0;
   if (dragging) {
     zIndex = 100;
-  } else if (home[0] === "discard") {
+  } else if (loc.place === LocationType.Discard) {
     zIndex = discardZ + 10;
   } else if (topStack) {
     zIndex = 1;

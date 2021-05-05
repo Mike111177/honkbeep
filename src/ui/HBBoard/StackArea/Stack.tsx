@@ -59,9 +59,12 @@ export function Stack({ suit, number }: HBStackProps) {
   );
 }
 
+const stackAreaZonePath = "stackArea";
+const stackAreaZoneConfig = { attributes: ["dropzone"] };
+
 export default function StackArea() {
   const { suits } = useStaticBoardState().variant;
-  const ref = useZone(["stackArea"], { dropZone: true });
+  const ref = useZone(stackAreaZonePath, stackAreaZoneConfig);
   return (
     <div ref={ref} className={styles.StackArea}>
       {suits.map((c, i) => (

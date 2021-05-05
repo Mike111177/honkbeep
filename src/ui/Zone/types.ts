@@ -1,14 +1,14 @@
 import { Zone } from "./Zone";
 
 export type ZoneConfig = {
-  dropZone?: boolean;
   attributes?: string[];
   meta?: any;
 };
 
 export type ZoneListener = (event: ZoneEvent) => any;
-export type ZonePath = [string, ...(number | string)[]];
-export enum ZoneEventType {
+export type LegacyZonePath = [string, ...(number | string)[]];
+export type ZonePath = string | LegacyZonePath;
+export const enum ZoneEventType {
   Register = 1,
   Resize,
   DragEnter,

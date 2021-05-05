@@ -118,7 +118,7 @@ const DiscardPileTargets = React.memo(function DiscardPileTargets() {
 });
 
 const discardPilePath: ZonePath = ["discardPile"];
-const discardPileConfig = { dropZone: true };
+const discardPileConfig = { attributes: ["dropzone"] };
 const discardPileClass = classNames(styles.DiscardPile, darkregion.DarkRegion);
 
 export default function DiscardPile() {
