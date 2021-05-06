@@ -1,0 +1,20 @@
+steps:
+  - name: "gcr.io/cloud-builders/yarn"
+    args:
+      - install
+  - name: "gcr.io/cloud-builders/yarn"
+    args:
+      - "run"
+      - "deploy:server"
+  - name: "gcr.io/cloud-builders/yarn"
+    args:
+      - "run"
+      - "deploy:client"
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      - compute
+      - scp
+      - --zone=${_ZONE}
+      - --recurse
+      - ./build/
+      - ${_USER_NAME}@${_INSTANCE_NAME}:${_INSTANCE_PATH}
