@@ -9,6 +9,7 @@ module.exports = (env) => {
   const isProduction = mode === "production";
   // eslint-disable-next-line no-unused-vars
   const isDevelopment = !isProduction;
+  const isDeployment = !!env.deploy;
 
   return {
     target: "node",
@@ -34,6 +35,7 @@ module.exports = (env) => {
       isProduction
         ? new TerserPlugin({
             parallel: true,
+            extractComments: !isDeployment,
             terserOptions: {
               compress: { ecma: 2020 },
             },
