@@ -4,7 +4,7 @@ import { GameMessage } from "../backend/types/GameMessages";
 import { LobbyMessage } from "../backend/types/LobbyMessage";
 import { MessageSocket } from "../util/MessageSocket";
 
-const wsproto = window.location.protocol === "https" ? "wss" : "ws";
+const wsproto = window.location.protocol === "https:" ? "wss" : "ws";
 
 export function me() {
   return axios.get<MeMessage>("/api/me").then(({ data }) => data);
