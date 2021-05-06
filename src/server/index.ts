@@ -5,6 +5,7 @@ import WebSocketMiddleware from "./WebSocket";
 
 import Api from "./Api";
 import { ServerContext, ServerState } from "./types/ServerTypes";
+import { getUser } from "./OnlineUsers";
 
 console.log("Starting Honkbeep Server");
 
@@ -14,6 +15,16 @@ const api = Api();
 
 app
   .use(session({ key: "honk.sess", signed: false }, app))
+  .use(async (ctx, next) => {
+    //Clean up bad sessions
+    if (ctx.session && !ctx.session.isNew && ctx.session.user) {
+      const realUser = getUser(ctx.session.user.id);
+      if (!realUser || realUser.name !== ctx.session.user.name) {
+        ctx.session.user = undefined;
+      }
+    }
+    await next();
+  })
   .use(ws)
   .use(bodyparser())
   .use(api.routes())
