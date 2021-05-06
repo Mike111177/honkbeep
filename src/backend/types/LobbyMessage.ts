@@ -19,6 +19,7 @@ export type LobbyStartRequest = {
 
 export type GameStartNotification = {
   type: LobbyMessageType.GameStartNotification;
+  gameid: string;
 };
 
 export type LobbyMessage =

@@ -11,9 +11,8 @@ export class GameServerBackend implements GameClientConnection {
   private board: ServerBoard;
   private ws: MessageSocket<GameMessage, WebSocket>;
 
-  constructor(rws: WebSocket, board: ServerBoard) {
+  constructor(rws: WebSocket, player: number, board: ServerBoard) {
     const ws = new MessageSocket(rws);
-    const player = board.connectedPlayers % 4;
     const connector = this;
     const onMessage = this.onMessage.bind(this);
     async function handleWebsocket() {

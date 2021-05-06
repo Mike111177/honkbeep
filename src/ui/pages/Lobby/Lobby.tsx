@@ -11,12 +11,13 @@ import * as Api from "../../../client/Api";
 import BoxButton from "../../components/BoxButton";
 import { classNames } from "../../util";
 
-type LobbyComponentState = { starting: boolean } & LobbyState;
+type LobbyComponentState = { starting: boolean; id: string } & LobbyState;
 
 const initialLobbyState: LobbyComponentState = {
   players: [],
   leader: 0,
   starting: false,
+  id: "",
 };
 
 function LobbyReducer(
@@ -27,7 +28,7 @@ function LobbyReducer(
     case LobbyMessageType.LobbyUpdate:
       return { ...state, ...message.state };
     case LobbyMessageType.GameStartNotification:
-      return { ...state, starting: true };
+      return { ...state, starting: true, id: message.gameid };
     default:
       throw new Error();
   }
@@ -47,9 +48,9 @@ export default function Lobby() {
   }, []);
   useEffect(() => {
     if (state.starting) {
-      history.push("/game");
+      history.push(`/game?id=${state.id}`);
     }
-  }, [history, state.starting]);
+  }, [history, state.id, state.starting]);
   return (
     <div className={styles.Lobby}>
       {state.players.map(({ name, id }, i) => (

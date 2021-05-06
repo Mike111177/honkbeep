@@ -20,11 +20,14 @@ export function genericPlayers<T extends VariantDefinition>({ numPlayers }: T) {
   ].splice(0, numPlayers);
 }
 
-export function genericVariant(): VariantDefinition {
+export function genericVariant(
+  overrides?: Partial<VariantDefinition>
+): VariantDefinition {
   return {
     suits: ["Red", "Yellow", "Green", "Blue", "Purple"],
     numPlayers: 4,
     handSize: 4,
+    ...overrides,
   };
 }
 

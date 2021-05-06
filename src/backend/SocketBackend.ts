@@ -12,9 +12,14 @@ export default class SocketBackend implements Backend {
   private ws?: MessageSocket<GameMessage>;
   private listener?: () => void;
   private pendingAttempt?: (result: boolean) => void;
+  private id: string;
+
+  constructor(id: string) {
+    this.id = id;
+  }
 
   connect(): Promise<void> {
-    const ws = Api.game();
+    const ws = Api.game(this.id);
     this.ws = ws;
     const onMessage = this.onMessage.bind(this);
     const setState = (s: GameData) => (this.data = s);

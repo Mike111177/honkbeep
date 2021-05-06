@@ -4,6 +4,8 @@ import { GameMessage } from "../backend/types/GameMessages";
 import { LobbyMessage } from "../backend/types/LobbyMessage";
 import { MessageSocket } from "../util/MessageSocket";
 
+const wsproto = window.location.protocol === "https" ? "wss" : "ws";
+
 export function me() {
   return axios.get<MeMessage>("/api/me").then(({ data }) => data);
 }
@@ -16,14 +18,14 @@ export function login(name: string) {
   return axios.post("/api/login", { name });
 }
 
-export function game() {
+export function game(id: string) {
   return new MessageSocket<GameMessage>(
-    new WebSocket(`ws://${window.location.host}/api/game`)
+    new WebSocket(`${wsproto}://${window.location.host}/api/game/${id}`)
   );
 }
 
 export function lobby() {
   return new MessageSocket<LobbyMessage>(
-    new WebSocket(`ws://${window.location.host}/api/lobby`)
+    new WebSocket(`${wsproto}://${window.location.host}/api/lobby`)
   );
 }
