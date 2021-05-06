@@ -26,7 +26,7 @@ export default function Api() {
   });
   router.get("/me", (ctx, next) => {
     const user = ctx.session?.user;
-    (ctx.body as MeMessage) = { user };
+    (ctx.body as MeMessage) = user ? { user } : {};
   });
   router.all("/game/:id", async (ctx, next) => {
     const board = getActiveGame(ctx.params.id);
