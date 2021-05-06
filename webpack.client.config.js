@@ -21,6 +21,7 @@ module.exports = (env) => {
         CSSModule: "static/[contenthash].css",
         CSSChunk: "static/[contenthash].css",
         CSSClass: "[hash:base64:10]",
+        Font: "static/[contenthash].[ext]",
       }
     : {
         JSModule: "static/js/[name].[contenthash:8].js",
@@ -29,6 +30,7 @@ module.exports = (env) => {
         CSSModule: "static/css/[name].[contenthash:8].css",
         CSSChunk: "static/css/[name].[contenthash:8].chunk.css",
         CSSClass: "[local]-[hash:base64:5]",
+        Font: "static/fonts/[name].[contenthash:8].[ext]",
       };
 
   //Init Plugins
@@ -62,6 +64,7 @@ module.exports = (env) => {
     resolve: { extensions: [".ts", ".tsx", ".js", ".css"] },
     module: {
       rules: [
+        //CSS
         {
           test: /\.css$/,
           use: [
@@ -76,6 +79,7 @@ module.exports = (env) => {
             },
           ],
         },
+        //Images (non-svg)
         {
           test: /\.(gif|png|jpe?g)$/i,
           use: [
@@ -95,6 +99,7 @@ module.exports = (env) => {
               : null,
           ].filter((i) => i),
         },
+        //SVG
         {
           test: /\.svg$/,
           use: [
@@ -120,6 +125,19 @@ module.exports = (env) => {
               : null,
           ].filter((i) => i),
         },
+        //Fonts
+        {
+          test: /\.(woff|woff2|eot|ttf|otf)$/i,
+          use: [
+            {
+              loader: "file-loader",
+              options: {
+                name: Patterns.Font,
+              },
+            },
+          ],
+        },
+        //Typescript
         {
           test: /\.tsx?$/,
           loader: "ts-loader",
