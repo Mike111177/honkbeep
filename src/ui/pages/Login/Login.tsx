@@ -11,7 +11,7 @@ export default function Login() {
   useEffect(() => {
     Api.me().then((result) => {
       if (result.user !== undefined) {
-        history.push("/lobby");
+        history.push("/");
       }
     });
   }, [history]);
@@ -35,7 +35,7 @@ export default function Login() {
           try {
             await Api.login(name || "");
             setLoginError("");
-            history.push("/lobby");
+            history.push("/");
           } catch (error) {
             console.log(error);
             setLoginError(error.response!.data);

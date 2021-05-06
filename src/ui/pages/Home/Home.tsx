@@ -1,9 +1,33 @@
+import React from "react";
+import { useHistory } from "react-router-dom";
 import { HomeStyles as styles } from ".";
+import BoxButton from "../../components/BoxButton";
 
 export default function Home() {
+  const history = useHistory();
   return (
     <div className={styles.Home}>
-      <div className={styles.Blocks}></div>
+      <BoxButton
+        onClick={() => {
+          history.push("/lobby");
+        }}
+      >
+        Join Lobby
+      </BoxButton>
+      <BoxButton
+        onClick={() => {
+          history.push("/solitaire");
+        }}
+      >
+        Play Solitaire
+      </BoxButton>
+      <BoxButton
+        onClick={() => {
+          history.push("/splitscreen");
+        }}
+      >
+        Play 4 Player splitscreen
+      </BoxButton>
     </div>
   );
 }

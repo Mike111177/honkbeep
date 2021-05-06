@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 // @ts-ignore
 import loadable from "@loadable/component";
 
@@ -22,7 +22,9 @@ function App() {
       <div className={styles.App}>
         <ErrorBoundary>
           <Route exact path="/">
-            <Redirect to="/login" />
+            <LoggedInGuard>
+              <Home />
+            </LoggedInGuard>
           </Route>
           <Route path="/login">
             <Login />
@@ -35,11 +37,6 @@ function App() {
           <Route path="/game">
             <LoggedInGuard>
               <Game />
-            </LoggedInGuard>
-          </Route>
-          <Route path="/home">
-            <LoggedInGuard>
-              <Home />
             </LoggedInGuard>
           </Route>
           <Route path="/solitaire">
