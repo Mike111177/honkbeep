@@ -8,7 +8,7 @@ export default function LoggedInGuard({ children }: LoggedInGuardProps) {
   const [show, setShow] = useState(false);
   useEffect(() => {
     Api.me().then((result) => {
-      if (result.user === undefined) {
+      if (result?.user === undefined) {
         history.push("/login");
       } else {
         setShow(true);

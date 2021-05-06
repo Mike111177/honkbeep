@@ -6,12 +6,22 @@ import { MessageSocket } from "../util/MessageSocket";
 
 const wsproto = window.location.protocol === "https:" ? "wss" : "ws";
 
-export function me() {
-  return axios.get<MeMessage>("/api/me").then(({ data }) => data);
+export async function me() {
+  try {
+    const response = await axios.get<MeMessage>("/api/me");
+    return response.data;
+  } catch {
+    return undefined;
+  }
 }
 
-export function status() {
-  return axios.get<StatusMessage>("/api/status").then(({ data }) => data);
+export async function status() {
+  try {
+    const response = await axios.get<StatusMessage>("/api/status");
+    return response.data;
+  } catch {
+    return undefined;
+  }
 }
 
 export function login(name: string) {

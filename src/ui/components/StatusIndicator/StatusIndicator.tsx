@@ -6,7 +6,7 @@ import { StatusIndicatorStyles as styles } from ".";
 
 async function isServerUp() {
   try {
-    return (await Api.status()).status === "UP";
+    return (await Api.status())?.status === "UP";
   } catch {
     return false;
   }

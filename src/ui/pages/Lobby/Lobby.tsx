@@ -42,7 +42,7 @@ export default function Lobby() {
   useEffect(() => {
     const ws = Api.lobby();
     ws.onmessage = dispatch;
-    Api.me().then(({ user }) => setMeUser(user));
+    Api.me().then((response) => setMeUser(response?.user));
     setSendMessage(() => (msg: LobbyMessage) => ws.send(msg));
     return () => ws.close();
   }, []);

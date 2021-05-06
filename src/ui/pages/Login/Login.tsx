@@ -10,7 +10,7 @@ export default function Login() {
   const [loginError, setLoginError] = useState("");
   useEffect(() => {
     Api.me().then((result) => {
-      if (result.user !== undefined) {
+      if (result?.user !== undefined) {
         history.push("/");
       }
     });
