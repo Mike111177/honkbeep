@@ -1,18 +1,19 @@
 const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
-const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
-const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const SVGOConfig = require("./svgo.config");
+
+function newRequire(name, ...args) {
+  const module = require(name);
+  return new module(...args);
+}
 
 module.exports = (env) => {
   //Get mode
   const mode = env.production ? "production" : "development";
   const isProduction = mode === "production";
   const isDevelopment = !isProduction;
-  const useSourceMap = env.noMap ? false : true;
+  const isDeployment = !!env.deploy;
+
+  //File name patters for production or development
   const Patterns = isProduction
     ? {
         JSModule: "static/[contenthash].js",
@@ -33,26 +34,9 @@ module.exports = (env) => {
         Font: "static/fonts/[name].[contenthash:8].[ext]",
       };
 
-  //Init Plugins
-  const plugins = [
-    isProduction
-      ? new MiniCssExtractPlugin({
-          filename: Patterns.CSSModule,
-          chunkFilename: Patterns.CSSChunk,
-        })
-      : null,
-    new HtmlWebpackPlugin({ template: "./src/index.html" }),
-    isDevelopment ? new ForkTsCheckerWebpackPlugin() : null,
-    isProduction
-      ? new BundleAnalyzerPlugin({
-          analyzerMode: "disabled",
-          generateStatsFile: true,
-        })
-      : null,
-  ].filter((i) => i);
   return {
     mode,
-    devtool: useSourceMap ? "source-map" : false,
+    devtool: "source-map",
     output: {
       filename: Patterns.JSModule,
       chunkFilename: Patterns.JSChunk,
@@ -68,7 +52,9 @@ module.exports = (env) => {
         {
           test: /\.css$/,
           use: [
-            isProduction ? MiniCssExtractPlugin.loader : "style-loader",
+            isProduction
+              ? require("mini-css-extract-plugin").loader
+              : "style-loader",
             {
               loader: "css-loader",
               options: {
@@ -141,20 +127,46 @@ module.exports = (env) => {
         {
           test: /\.tsx?$/,
           loader: "ts-loader",
-          options: { transpileOnly: isDevelopment },
+          options: {
+            //For dev type checking is done separately for speed
+            transpileOnly: isDevelopment,
+          },
         },
       ],
     },
-    plugins,
+    plugins: [
+      //Minify CSS in Production
+      isProduction
+        ? newRequire("mini-css-extract-plugin", {
+            filename: Patterns.CSSModule,
+            chunkFilename: Patterns.CSSChunk,
+          })
+        : null,
+      //We always need to load index.html
+      newRequire("html-webpack-plugin", { template: "./src/index.html" }),
+      //Separately check types during development, during production this is done by ts-loader
+      isDevelopment ? newRequire("fork-ts-checker-webpack-plugin") : null,
+      //Analyze the bundle size during production, but not deployment
+      isProduction && !isDeployment
+        ? new require("webpack-bundle-analyzer").BundleAnalyzerPlugin({
+            analyzerMode: "disabled",
+            generateStatsFile: true,
+          })
+        : null,
+      //For deployment generate gzipped files
+      isDeployment ? newRequire("compression-webpack-plugin") : null,
+    ].filter((i) => i),
     optimization: {
+      //Only optimize for production
       ...(isDevelopment
         ? { minimize: false }
         : {
             minimize: true,
             minimizer: [
-              new CssMinimizerPlugin(),
-              new TerserPlugin({
+              newRequire("css-minimizer-webpack-plugin"),
+              newRequire("terser-webpack-plugin", {
                 parallel: true,
+                extractComments: !isDeployment,
                 terserOptions: {
                   compress: { ecma: 2018 },
                 },
@@ -166,7 +178,9 @@ module.exports = (env) => {
             runtimeChunk: true,
           }),
     },
+    //Default performance warnings for production
     performance: isProduction ? {} : false,
+    //Less verbose readout
     stats: isProduction
       ? {
           all: false,
@@ -177,6 +191,7 @@ module.exports = (env) => {
           errors: true,
         }
       : "minimal",
+    //In deployment we have nginx, here we just have this
     devServer: {
       historyApiFallback: true,
       hot: true,
