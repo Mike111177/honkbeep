@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import loadable from "@loadable/component";
 
 import Home from "./ui/pages/Home";
-import Lobby from "./ui/pages/Lobby";
+import Table from "./ui/pages/Table";
 import Login from "./ui/pages/Login";
 
 import styles from "./App.css";
@@ -29,9 +29,9 @@ function App() {
           <Route path="/login">
             <Login />
           </Route>
-          <Route path="/lobby">
+          <Route path="/table">
             <LoggedInGuard>
-              <Lobby />
+              <Table />
             </LoggedInGuard>
           </Route>
           <Route path="/game">

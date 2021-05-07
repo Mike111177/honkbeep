@@ -1,11 +1,11 @@
 import Router from "@koa/router";
 import { MeMessage, StatusMessage } from "../backend/types/ApiMessages";
 import { ServerContext, ServerState } from "./types/ServerTypes";
-import { Lobby } from "./Lobby";
+import { Table } from "./Table";
 import { getActiveGame } from "./ActiveGames";
 import { getUser } from "./OnlineUsers";
 
-const lobby = new Lobby();
+const table = new Table();
 
 export default function Api() {
   const router = new Router<ServerState, ServerContext>({ prefix: "/api" });
@@ -41,9 +41,9 @@ export default function Api() {
     }
     await next();
   });
-  router.all("/lobby", async (ctx, next) => {
+  router.all("/table", async (ctx, next) => {
     if (ctx.ws) {
-      lobby.addUser(await ctx.ws(), ctx.session!.user);
+      table.addUser(await ctx.ws(), ctx.session!.user);
     } else {
       ctx.status = 400;
     }

@@ -1,49 +1,49 @@
 import { useEffect, useReducer, useState } from "react";
 import { useHistory } from "react-router";
-import { LobbyStyles as styles } from ".";
+import { TableStyles as styles } from ".";
 import {
-  LobbyMessage,
-  LobbyMessageType,
-  LobbyState,
-} from "../../../backend/types/LobbyMessage";
+  TableMessage,
+  TableMessageType,
+  TableState,
+} from "../../../backend/types/TableMessage";
 import { User } from "../../../backend/types/User";
 import * as Api from "../../../client/Api";
 import BoxButton from "../../components/BoxButton";
 import { classNames } from "../../util";
 
-type LobbyComponentState = { starting: boolean; id: string } & LobbyState;
+type TableComponentState = { starting: boolean; id: string } & TableState;
 
-const initialLobbyState: LobbyComponentState = {
+const initialTableState: TableComponentState = {
   players: [],
   leader: 0,
   starting: false,
   id: "",
 };
 
-function LobbyReducer(
-  state: LobbyComponentState,
-  message: LobbyMessage
-): LobbyComponentState {
+function TableReducer(
+  state: TableComponentState,
+  message: TableMessage
+): TableComponentState {
   switch (message.type) {
-    case LobbyMessageType.LobbyUpdate:
+    case TableMessageType.TableUpdate:
       return { ...state, ...message.state };
-    case LobbyMessageType.GameStartNotification:
+    case TableMessageType.GameStartNotification:
       return { ...state, starting: true, id: message.gameid };
     default:
       throw new Error();
   }
 }
 
-export default function Lobby() {
+export default function Table() {
   const history = useHistory();
   const [meUser, setMeUser] = useState<User | undefined>();
-  const [state, dispatch] = useReducer(LobbyReducer, initialLobbyState);
-  const [sendMessage, setSendMessage] = useState<(msg: LobbyMessage) => void>();
+  const [state, dispatch] = useReducer(TableReducer, initialTableState);
+  const [sendMessage, setSendMessage] = useState<(msg: TableMessage) => void>();
   useEffect(() => {
-    const ws = Api.lobby();
+    const ws = Api.table();
     ws.onmessage = dispatch;
     Api.me().then((response) => setMeUser(response?.user));
-    setSendMessage(() => (msg: LobbyMessage) => ws.send(msg));
+    setSendMessage(() => (msg: TableMessage) => ws.send(msg));
     return () => ws.close();
   }, []);
   useEffect(() => {
@@ -52,13 +52,13 @@ export default function Lobby() {
     }
   }, [history, state.id, state.starting]);
   return (
-    <div className={styles.Lobby}>
+    <div className={styles.Table}>
       {state.players.map(({ name, id }, i) => (
         <div key={i}>
           <span
             className={classNames(
-              styles.LobbyName,
-              styles.LobbyLeaderName,
+              styles.TableName,
+              styles.TableLeaderName,
               id === state.leader
             )}
           >
@@ -70,7 +70,7 @@ export default function Lobby() {
       {meUser?.id === state.leader ? (
         <BoxButton
           onClick={() => {
-            sendMessage!({ type: LobbyMessageType.LobbyStartRequest });
+            sendMessage!({ type: TableMessageType.TableStartRequest });
           }}
         >
           Start

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { MeMessage, StatusMessage } from "../backend/types/ApiMessages";
 import { GameMessage } from "../backend/types/GameMessages";
-import { LobbyMessage } from "../backend/types/LobbyMessage";
+import { TableMessage } from "../backend/types/TableMessage";
 import { MessageSocket } from "../util/MessageSocket";
 
 const wsproto = window.location.protocol === "https:" ? "wss" : "ws";
@@ -34,8 +34,8 @@ export function game(id: string) {
   );
 }
 
-export function lobby() {
-  return new MessageSocket<LobbyMessage>(
-    new WebSocket(`${wsproto}://${window.location.host}/api/lobby`)
+export function table() {
+  return new MessageSocket<TableMessage>(
+    new WebSocket(`${wsproto}://${window.location.host}/api/table`)
   );
 }

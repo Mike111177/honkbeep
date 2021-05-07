@@ -1,4 +1,3 @@
-import React from "react";
 import { useHistory } from "react-router-dom";
 import { HomeStyles as styles } from ".";
 import BoxButton from "../../components/BoxButton";
@@ -9,10 +8,10 @@ export default function Home() {
     <div className={styles.Home}>
       <BoxButton
         onClick={() => {
-          history.push("/lobby");
+          history.push("/table");
         }}
       >
-        Join Lobby
+        Join Table
       </BoxButton>
       <BoxButton
         onClick={() => {

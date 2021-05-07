@@ -1,29 +1,29 @@
 import WebSocket from "ws";
 import {
-  LobbyMessage,
-  LobbyMessageType,
-  LobbyState,
-} from "../backend/types/LobbyMessage";
+  TableMessage,
+  TableMessageType,
+  TableState,
+} from "../backend/types/TableMessage";
 import { User } from "../backend/types/User";
 import { genericVariant } from "../game";
 import { MessageSocket } from "../util/MessageSocket";
 import { startNewGame } from "./ActiveGames";
 
-export class Lobby {
-  sockets: MessageSocket<LobbyMessage, WebSocket>[] = [];
-  state: LobbyState = { leader: 0, players: [] };
+export class Table {
+  sockets: MessageSocket<TableMessage, WebSocket>[] = [];
+  state: TableState = { leader: 0, players: [] };
   addUser(ws: WebSocket, { name, id }: User) {
-    const mws = new MessageSocket<LobbyMessage, WebSocket>(ws);
+    const mws = new MessageSocket<TableMessage, WebSocket>(ws);
     mws.onmessage = (msg) => {
       switch (msg.type) {
-        case LobbyMessageType.LobbyStartRequest:
+        case TableMessageType.TableStartRequest:
           if (id === this.state.leader) {
             const gameid = startNewGame(
               this.state.players,
               genericVariant({ numPlayers: this.state.players.length })
             );
             this.sockets.forEach((s) => {
-              s.send({ type: LobbyMessageType.GameStartNotification, gameid });
+              s.send({ type: TableMessageType.GameStartNotification, gameid });
             });
           }
       }
@@ -36,7 +36,7 @@ export class Lobby {
     }
     this.sockets.push(mws);
     this.sockets.forEach((s) => {
-      s.send({ type: LobbyMessageType.LobbyUpdate, state: this.state });
+      s.send({ type: TableMessageType.TableUpdate, state: this.state });
     });
   }
 }
