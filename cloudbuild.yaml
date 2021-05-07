@@ -4,17 +4,29 @@ steps:
       - install
   - name: "gcr.io/cloud-builders/yarn"
     args:
-      - "run"
-      - "deploy:server"
+      - run
+      - deploy:server
   - name: "gcr.io/cloud-builders/yarn"
     args:
-      - "run"
-      - "deploy:client"
+      - run
+      - deploy:client
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      - compute
+      - ssh
+      - --zone=${_ZONE}
+      - ${_USER_NAME}@${_INSTANCE_NAME}
+      - --command
+      - "rm -r ${_INSTANCE_PATH}"
   - name: "gcr.io/cloud-builders/gcloud"
     args:
       - compute
       - scp
       - --zone=${_ZONE}
+      - --compress
       - --recurse
-      - ./build/
+      - ${_BUILD_DIR}
       - ${_USER_NAME}@${_INSTANCE_NAME}:${_INSTANCE_PATH}
+
+substitutions:
+  _BUILD_DIR: ./build/
