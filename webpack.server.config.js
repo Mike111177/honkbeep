@@ -1,6 +1,5 @@
 const webpack = require("webpack");
-const TerserPlugin = require("terser-webpack-plugin");
-const NodemonPlugin = require("nodemon-webpack-plugin");
+const newRequire = require("./scripts/newRequire");
 const path = require("path");
 
 module.exports = (env) => {
@@ -27,30 +26,33 @@ module.exports = (env) => {
         {
           test: /\.ts$/,
           loader: "ts-loader",
+          options: {
+            //For dev type checking is done separately for speed
+            transpileOnly: isDevelopment,
+          },
         },
       ],
     },
     plugins: [
+      new webpack.IgnorePlugin({ resourceRegExp: /^pg-native$/ }),
       new webpack.ContextReplacementPlugin(/any-promise/),
-      isProduction
-        ? new TerserPlugin({
-            parallel: true,
-            extractComments: !isDeployment,
-            terserOptions: {
-              compress: { ecma: 2020 },
-            },
-          })
-        : null,
-      new NodemonPlugin(),
+      isDevelopment ? newRequire("fork-ts-checker-webpack-plugin") : null,
+      newRequire("nodemon-webpack-plugin"),
     ].filter((i) => i !== null),
-    optimization: {
-      splitChunks: {
-        name(module, chunks, cacheGroupKey) {
-          return cacheGroupKey;
-        },
-        chunks: "all",
-      },
-    },
+    optimization: isProduction
+      ? {
+          minimize: true,
+          minimizer: [
+            newRequire("terser-webpack-plugin", {
+              parallel: true,
+              extractComments: isDeployment ? /a^/ : true,
+              terserOptions: {
+                compress: { ecma: 2020 },
+              },
+            }),
+          ],
+        }
+      : { minimize: false },
     stats: {
       all: false,
       assets: true,

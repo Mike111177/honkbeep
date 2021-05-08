@@ -1,10 +1,6 @@
 const path = require("path");
+const newRequire = require("./scripts/newRequire");
 const SVGOConfig = require("./svgo.config");
-
-function newRequire(name, ...args) {
-  const module = require(name);
-  return new module(...args);
-}
 
 module.exports = (env) => {
   //Get mode
@@ -166,7 +162,7 @@ module.exports = (env) => {
               newRequire("css-minimizer-webpack-plugin"),
               newRequire("terser-webpack-plugin", {
                 parallel: true,
-                extractComments: !isDeployment,
+                extractComments: isDeployment ? /a^/ : true,
                 terserOptions: {
                   compress: { ecma: 2018 },
                 },
