@@ -1,5 +1,5 @@
-import { User } from "../backend/types/User";
-import { xorshift32 } from "../util/rng";
+import { User } from "../../backend/types/User";
+import { xorshift32 } from "../../util/rng";
 
 const rng = new xorshift32();
 

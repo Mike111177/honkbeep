@@ -1,7 +1,7 @@
-import { User } from "../backend/types/User";
-import { VariantDefinition } from "../game";
-import { UID } from "../util/rng";
-import { GameInstanceManager } from "./GameInstanceManager";
+import { User } from "../../backend/types/User";
+import { VariantDefinition } from "../../game";
+import { UID } from "../../util/rng";
+import { GameInstanceManager } from "../Game/GameInstanceManager";
 
 const ActiveGames = new Map<string, GameInstanceManager>();
 

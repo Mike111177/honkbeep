@@ -1,7 +1,7 @@
 import { GameAttempt } from "../../game";
 import { GameData, GameEventMessage } from "./GameData";
 
-export enum GameMessageType {
+export const enum GameMessageType {
   GameServerReady = 1,
   GameClientReady,
   GameDataRequest,

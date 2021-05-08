@@ -1,5 +1,5 @@
 import WebSocket from "ws";
-import { ServerMiddleware } from "./types/ServerTypes";
+import { ServerMiddleware } from "../types/ServerTypes";
 
 export type WebSocketContext = {
   ws?: () => Promise<WebSocket>;

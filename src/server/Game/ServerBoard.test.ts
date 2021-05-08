@@ -1,7 +1,11 @@
+import {
+  ClueType,
+  GameClueAttempt,
+  GameEventType,
+  genericPlayers,
+  genericSampleGame,
+} from "../../game";
 import ServerBoard from "./ServerBoard";
-import { GameClueAttempt, GameEventType } from "../game/types/GameEvent";
-import { ClueType } from "../game/types/Clue";
-import { genericPlayers, genericSampleGame } from "../game/GenericData";
 
 test("Initializes without error", () => {
   //Create virtual local Server

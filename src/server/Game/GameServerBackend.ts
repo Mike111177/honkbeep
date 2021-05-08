@@ -1,8 +1,8 @@
-import { GameMessage, GameMessageType } from "../backend/types/GameMessages";
-import { MessageSocket } from "../util/MessageSocket";
-import { GameClientConnection } from "./types/GameClientConnection";
+import { GameMessage, GameMessageType } from "../../backend/types/GameMessages";
+import { MessageSocket } from "../../util/MessageSocket";
+import { GameClientConnection } from "../types/GameClientConnection";
 import WebSocket from "ws";
-import { GameEventMessage } from "../backend/types/GameData";
+import { GameEventMessage } from "../../backend/types/GameData";
 import ServerBoard from "./ServerBoard";
 
 /**Liaison for game client over websocket */

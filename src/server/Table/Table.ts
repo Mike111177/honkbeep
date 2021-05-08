@@ -3,11 +3,11 @@ import {
   TableMessage,
   TableMessageType,
   TableState,
-} from "../backend/types/TableMessage";
-import { User } from "../backend/types/User";
-import { genericVariant } from "../game";
-import { MessageSocket } from "../util/MessageSocket";
-import { startNewGame } from "./ActiveGames";
+} from "../../backend/types/TableMessage";
+import { User } from "../../backend/types/User";
+import { genericVariant } from "../../game";
+import { MessageSocket } from "../../util/MessageSocket";
+import { startNewGame } from "../Server/ActiveGames";
 
 export class Table {
   sockets: MessageSocket<TableMessage, WebSocket>[] = [];

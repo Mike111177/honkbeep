@@ -1,8 +1,8 @@
-import { User } from "../backend/types/User";
-import { VariantDefinition } from "../game";
-import ServerBoard from "./ServerBoard";
 import WebSocket from "ws";
+import { User } from "../../backend/types/User";
+import { VariantDefinition } from "../../game";
 import { GameServerBackend } from "./GameServerBackend";
+import ServerBoard from "./ServerBoard";
 
 export class GameInstanceManager {
   private board: ServerBoard;

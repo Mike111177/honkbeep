@@ -10,14 +10,14 @@ import {
   Variant,
   VariantDefinition,
   buildVariant,
-} from "../game";
-import * as ArrayUtil from "../util/ArrayUtil";
+} from "../../game";
+import * as ArrayUtil from "../../util/ArrayUtil";
 import {
   CardReveal,
   GameData,
   GameEventMessage,
-} from "../backend/types/GameData";
-import { GameClientConnection } from "./types/GameClientConnection";
+} from "../../backend/types/GameData";
+import { GameClientConnection } from "../types/GameClientConnection";
 
 type PlayerRevealTurn = {
   turn: number;

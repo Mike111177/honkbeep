@@ -1,6 +1,6 @@
 import Backend from "./types/Backend";
 import { GameAttempt } from "../game/types/GameEvent";
-import ServerBoard from "../server/ServerBoard";
+import ServerBoard from "../server/Game/ServerBoard";
 import { GameData, GameEventMessage } from "./types/GameData";
 
 //Meant for dictating logic of local games or template games

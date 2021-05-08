@@ -2,7 +2,7 @@ import { User } from "./User";
 
 export type TableState = { players: User[]; leader: number };
 
-export enum TableMessageType {
+export const enum TableMessageType {
   TableUpdate = 1,
   TableStartRequest,
   GameStartNotification,

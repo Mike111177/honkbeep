@@ -1,11 +1,12 @@
 import Koa from "koa";
 import session from "koa-session";
 import bodyparser from "koa-bodyparser";
-import WebSocketMiddleware from "./WebSocket";
+import WebSocketMiddleware from "./middleware/WebSocket";
 
-import Api from "./Api";
+import Api from "./routes";
 import { ServerContext, ServerState } from "./types/ServerTypes";
-import { getUser } from "./OnlineUsers";
+import { getUser } from "./Server/OnlineUsers";
+import "./db";
 
 console.log("Starting Honkbeep Server");
 
