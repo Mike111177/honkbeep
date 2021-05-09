@@ -1,0 +1,6 @@
+{
+  "name": "honkbeep-game",
+  "dependencies": {
+    "immer": "^9.0.2"
+  }
+}

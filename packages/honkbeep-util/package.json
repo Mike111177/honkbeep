@@ -1,0 +1,8 @@
+{
+  "name": "honkbeep-util",
+  "dependencies": {
+    "immer": "^9.0.2",
+    "typescript": "^4.2.4",
+    "ws": "^7.4.5"
+  }
+}

@@ -1,0 +1,38 @@
+.PlayHistory {
+  grid-area: playhistory;
+  contain: content;
+  overflow: hidden;
+  width: calc(640 * var(--bsf));
+  height: calc(320 * var(--bsf));
+}
+
+.PlayHistory span {
+  text-align: center;
+  display: block;
+  font-size: calc(20 * var(--bsf));
+  border-style: solid;
+  border-width: calc(1 * var(--bsf));
+  border-color: #0000;
+  box-sizing: content-box;
+}
+
+.PlayHistory span:hover {
+  border-color: white;
+}
+
+.ColorSubject {
+  border-radius: calc(5 * var(--bsf));
+  border-style: solid;
+  display: inline-block;
+  font-size: calc(20 * var(--bsf));
+  padding: 0 calc(2 * var(--bsf));
+  -webkit-text-stroke: black;
+  -webkit-text-stroke-width: 0.04em;
+}
+
+.NumberSubject {
+  font-size: calc(20 * var(--bsf));
+  border-radius: calc(5 * var(--bsf));
+  border-style: solid;
+  display: inline-block;
+}

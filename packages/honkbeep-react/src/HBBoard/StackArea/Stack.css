@@ -1,0 +1,7 @@
+.StackArea {
+  grid-area: stackarea;
+  display: flex;
+  justify-content: center;
+  padding-top: 1%;
+  padding-bottom: 1%;
+}

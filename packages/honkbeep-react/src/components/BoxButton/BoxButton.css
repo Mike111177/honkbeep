@@ -1,0 +1,14 @@
+.BoxButton {
+  color: white;
+  background-color: black;
+  width: min-content;
+  padding: 1%;
+  border-radius: 10px;
+  font-size: calc(10 * var(--bsf));
+  white-space: nowrap;
+  margin: 1%;
+}
+
+.BoxButton:hover {
+  background-color: rgb(37, 37, 37);
+}

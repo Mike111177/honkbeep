@@ -1,0 +1,36 @@
+.Slider {
+  position: relative;
+  height: 20px;
+  padding: 15px 0;
+  width: 100%;
+  color: rgb(0, 204, 255);
+}
+
+.Track,
+.Rail {
+  display: block;
+  position: absolute;
+  height: 5px;
+  top: 50%;
+  transform: translate(0, -50%);
+  border-radius: 1px;
+  background-color: currentColor;
+}
+
+.Rail {
+  width: 100%;
+  opacity: 0.38;
+}
+
+.Mark {
+  width: 10px;
+  height: 10px;
+  top: 50%;
+  position: absolute;
+  border-radius: 100%;
+  border-width: 3px;
+  border-style: solid;
+  border-color: currentColor;
+  background-color: black;
+  transform: translate(-50%, -50%);
+}

@@ -1,0 +1,8 @@
+.DarkRegion {
+  border-radius: calc(10 * var(--bsf));
+  margin: calc(20 * var(--bsf));
+  padding: calc(20 * var(--bsf));
+  background-color: rgba(0, 0, 0, 0.5);
+  font-size: calc(16 * var(--bsf));
+  box-sizing: border-box;
+}

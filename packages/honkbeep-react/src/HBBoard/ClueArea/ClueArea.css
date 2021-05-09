@@ -1,0 +1,67 @@
+.ClueArea {
+  display: grid;
+  grid-area: cluearea;
+  grid-auto-flow: column;
+  justify-content: center;
+  align-content: center;
+  user-select: none;
+  font-family: Consolas, monospace;
+}
+
+.ClueSelector {
+  display: grid;
+  height: 100%;
+  grid-template-rows: 50% 50%;
+  justify-content: center;
+  align-content: center;
+}
+
+.ClueButtonArea {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: center;
+  align-content: center;
+  justify-items: center;
+}
+
+.PlayerArea {
+  display: grid;
+  grid-auto-flow: row;
+  justify-content: center;
+  text-align: center;
+  font-size: calc(20 * var(--bsf));
+  height: min-content;
+}
+
+.PlayerButton,
+.SelectedPlayerButton {
+  margin: calc(3 * var(--bsf));
+  padding: calc(3 * var(--bsf));
+  border-radius: calc(5 * var(--bsf));
+  width: calc(100 * var(--bsf));
+  color: white;
+  background-color: black;
+}
+
+.SelectedPlayerButton {
+  color: black;
+  background-color: white;
+}
+
+.ClueButton {
+  height: calc(60 * var(--bsf));
+}
+
+.SubmitButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  margin: calc(3 * var(--bsf));
+  padding: calc(5 * var(--bsf));
+  background-color: #000000;
+  border-radius: calc(5 * var(--bsf));
+  color: green;
+  font-weight: 1000;
+  font-size: calc(50 * var(--bsf));
+}

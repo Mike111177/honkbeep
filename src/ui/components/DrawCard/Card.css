@@ -1,5 +1,0 @@
-.Card {
-  font-family: Consolas, monospace;
-  user-select: none;
-  width: calc(120 * var(--bsf));
-}
