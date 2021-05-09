@@ -1,10 +1,10 @@
+import { genericPlayers, genericVariant } from "honkbeep-game";
+import ServerBoard from "honkbeep-play/ServerBoard";
+import HBClientBoard from "honkbeep-react/HBBoard/HBClientBoard";
+import { ErrorBoundary } from "honkbeep-react/util/ErrorBoundry";
 import { useState } from "react";
 import { SplitScreenStyles as styles } from ".";
-import LocalBackend from "../../../backend/LocalBackend";
-import { genericPlayers, genericVariant } from "../../../game";
-import ServerBoard from "../../../server/Game/ServerBoard";
-import HBClientBoard from "../../HBBoard/HBClientBoard";
-import { ErrorBoundary } from "../../util/ErrorBoundry";
+import LocalBackend from "../../LocalBackend";
 
 export default function SplitScreen() {
   //Create virtual local Server

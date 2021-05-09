@@ -12,7 +12,7 @@
   },
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "cSpell.words": ["VIEWBOX", "omni"],
+  "cSpell.words": ["VIEWBOX", "honkbeep", "omni"],
   "typescript.tsdk": ".yarn/sdks/typescript/lib",
   "search.exclude": {
     "**/.yarn": true,
