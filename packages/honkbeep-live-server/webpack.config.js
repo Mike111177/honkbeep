@@ -1,5 +1,6 @@
 const webpack = require("webpack");
-const newRequire = require("./scripts/newRequire");
+const NodemonPlugin = require("nodemon-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 const path = require("path");
 
 module.exports = (env) => {
@@ -14,7 +15,7 @@ module.exports = (env) => {
     target: "node",
     devtool: "source-map",
     mode,
-    entry: "./src/server/index.ts",
+    entry: "./src/index.ts",
     output: {
       filename: "[name].js",
       path: path.resolve(__dirname, "build", "server"),
@@ -26,24 +27,19 @@ module.exports = (env) => {
         {
           test: /\.ts$/,
           loader: "ts-loader",
-          options: {
-            //For dev type checking is done separately for speed
-            transpileOnly: isDevelopment,
-          },
         },
       ],
     },
     plugins: [
       new webpack.IgnorePlugin({ resourceRegExp: /^pg-native$/ }),
       new webpack.ContextReplacementPlugin(/any-promise/),
-      isDevelopment ? newRequire("fork-ts-checker-webpack-plugin") : null,
-      newRequire("nodemon-webpack-plugin"),
+      new NodemonPlugin(),
     ].filter((i) => i !== null),
     optimization: isProduction
       ? {
           minimize: true,
           minimizer: [
-            newRequire("terser-webpack-plugin", {
+            new TerserPlugin({
               parallel: true,
               extractComments: isDeployment ? /a^/ : true,
               terserOptions: {

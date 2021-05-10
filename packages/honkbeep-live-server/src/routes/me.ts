@@ -1,4 +1,4 @@
-import { MeMessage } from "../../backend/types/ApiMessages";
+import { MeMessage } from "honkbeep-protocol/types/ApiMessages";
 import { Router } from "../types/ServerTypes";
 
 export default function meRoute(router: Router) {

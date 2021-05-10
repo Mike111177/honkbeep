@@ -1,5 +1,5 @@
-import { User } from "../../backend/types/User";
-import { UID } from "../../util/rng";
+import { User } from "honkbeep-protocol/types/User";
+import { UID } from "honkbeep-util/rng";
 import { Table } from "../Table/Table";
 
 const ActiveTables = new Map<string, Table>();

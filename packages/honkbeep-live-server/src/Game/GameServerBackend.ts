@@ -1,9 +1,12 @@
-import { GameMessage, GameMessageType } from "../../backend/types/GameMessages";
-import { MessageSocket } from "../../util/MessageSocket";
-import { GameClientConnection } from "../types/GameClientConnection";
+import {
+  GameMessage,
+  GameMessageType,
+} from "honkbeep-protocol/types/GameMessages";
+import { MessageSocket } from "honkbeep-util/MessageSocket";
+import { GameClientConnection } from "honkbeep-protocol/types/GameClientConnection";
 import WebSocket from "ws";
-import { GameEventMessage } from "../../backend/types/GameData";
-import ServerBoard from "./ServerBoard";
+import { GameEventMessage } from "honkbeep-protocol/types/GameData";
+import ServerBoard from "honkbeep-protocol/ServerBoard";
 
 /**Liaison for game client over websocket */
 export class GameServerBackend implements GameClientConnection {

@@ -1,8 +1,8 @@
 import WebSocket from "ws";
-import { User } from "../../backend/types/User";
-import { VariantDefinition } from "../../game";
+import { User } from "honkbeep-protocol/types/User";
+import { VariantDefinition } from "honkbeep-game";
 import { GameServerBackend } from "./GameServerBackend";
-import ServerBoard from "./ServerBoard";
+import ServerBoard from "honkbeep-protocol/ServerBoard";
 
 export class GameInstanceManager {
   private board: ServerBoard;

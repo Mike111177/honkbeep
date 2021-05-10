@@ -1,6 +1,6 @@
-import { User } from "../../backend/types/User";
-import { VariantDefinition } from "../../game";
-import { UID } from "../../util/rng";
+import { User } from "honkbeep-protocol/types/User";
+import { VariantDefinition } from "honkbeep-game";
+import { UID } from "honkbeep-util/rng";
 import { GameInstanceManager } from "../Game/GameInstanceManager";
 
 const ActiveGames = new Map<string, GameInstanceManager>();

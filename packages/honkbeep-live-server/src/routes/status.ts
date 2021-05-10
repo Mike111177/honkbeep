@@ -1,4 +1,4 @@
-import { StatusMessage } from "../../backend/types/ApiMessages";
+import { StatusMessage } from "honkbeep-protocol/types/ApiMessages";
 import { Router } from "../types/ServerTypes";
 
 export default function statusRoute(router: Router) {

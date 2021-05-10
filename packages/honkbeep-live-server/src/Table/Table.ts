@@ -3,10 +3,10 @@ import {
   TableMessage,
   TableMessageType,
   TableState,
-} from "../../backend/types/TableMessage";
-import { User } from "../../backend/types/User";
-import { genericVariant } from "../../game";
-import { MessageSocket } from "../../util/MessageSocket";
+} from "honkbeep-protocol/types/TableMessage";
+import { User } from "honkbeep-protocol/types/User";
+import { genericVariant } from "honkbeep-game";
+import { MessageSocket } from "honkbeep-util/MessageSocket";
 import { startNewGame } from "../Server/ActiveGames";
 
 export class Table {
