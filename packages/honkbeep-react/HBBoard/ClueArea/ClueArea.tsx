@@ -1,20 +1,19 @@
-import React, { useCallback, useState } from "react";
-
-import { GameEventType } from "../../../game/types/GameEvent";
 import {
   Clue,
   ColorClue,
   colorClue,
+  GameEventType,
   RankClue,
   rankClue,
-} from "../../../game/types/Clue";
+} from "honkbeep-game";
+import { UserActionType } from "honkbeep-play/types/UserAction";
+import * as ArrayUtil from "honkbeep-util/ArrayUtil";
+import { useCallback, useState } from "react";
 import colors from "../../BaseColors";
-import * as ArrayUtil from "../../../util/ArrayUtil";
 import { useBoardReducer, useBoardStateSelector } from "../../BoardContext";
-import { UserActionType } from "../../../client/types/UserAction";
+import { ErrorBoundary } from "../../util/ErrorBoundry";
 
 import styles from "./ClueArea.css";
-import { ErrorBoundary } from "../../util/ErrorBoundry";
 
 type Player = { p: string; i: number };
 type ClueButtonProps<T extends Clue | Player, S = T> = {

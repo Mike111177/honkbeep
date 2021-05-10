@@ -1,4 +1,4 @@
-import { GameAttempt } from "../../game";
+import { GameAttempt } from "honkbeep-game";
 import { GameData, GameEventMessage } from "./GameData";
 
 export const enum GameMessageType {

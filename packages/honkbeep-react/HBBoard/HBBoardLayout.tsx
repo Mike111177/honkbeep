@@ -8,8 +8,8 @@ import ReplayControls from "./ReplayControls/ReplayControls";
 import ScoreBoard from "./ScoreBoard/ScoreBoard";
 import StackArea from "./StackArea/Stack";
 import BoardContext from "../BoardContext";
-import Board from "../../client/Board";
-import { FacilityBoundary } from "../Zone";
+import Board from "honkbeep-play/Board";
+import { FacilityBoundary } from "honkbeep-react/util/Zone";
 
 import styles from "./BoardLayout.css";
 

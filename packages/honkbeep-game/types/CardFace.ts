@@ -1,4 +1,4 @@
-import { Immutable } from "../../util/HelperTypes";
+import { Immutable } from "honkbeep-util/HelperTypes";
 import { Rank } from "./Rank";
 import { Suit } from "./Suit";
 

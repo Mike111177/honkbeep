@@ -2,8 +2,8 @@ import { ComponentPropsWithoutRef, useMemo } from "react";
 
 import { DrawCard, CardProps } from "../../components/DrawCard";
 import { useStaticBoardState, useBoardStateSelector } from "../../BoardContext";
-import * as ArrayUtil from "../../../util/ArrayUtil";
-import { useSpacebar } from "../../input";
+import * as ArrayUtil from "honkbeep-util/ArrayUtil";
+import { useSpacebar } from "honkbeep-react/util/input";
 
 export type DeckCardProps = {
   index: number;

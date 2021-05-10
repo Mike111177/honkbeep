@@ -16,7 +16,7 @@ import {
   ContentRenderer,
   PopoverAlign,
 } from "react-tiny-popover";
-import { compareDOMRects } from "../../../util/Geometry";
+import { compareDOMRects } from "honkbeep-util/Geometry";
 import { useMemoizedArray } from "../../util";
 import { useRefHook } from "../../util/hooks/useRefRouter";
 import { Constants } from "./Constants";

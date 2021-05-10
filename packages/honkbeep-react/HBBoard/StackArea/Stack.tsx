@@ -1,9 +1,9 @@
 import { mix } from "chroma-js";
 
 import CardTarget from "../AnimatedDeck/CardTarget";
-import { useZone } from "../../Zone";
+import { useZone } from "../../util/Zone";
 import { CARD_VIEW_MIDPOINT as mid } from "../../components/DrawCard";
-import { vecAdd } from "../../../util/Geometry";
+import { vecAdd } from "honkbeep-util/Geometry";
 import { useStaticBoardState } from "../../BoardContext";
 
 import colors from "../../BaseColors";

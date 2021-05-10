@@ -4,8 +4,8 @@ import { mix } from "chroma-js";
 import colors from "../../BaseColors";
 import pipShapes from "../../SuitPips";
 import { Pip } from "../Pip";
-import { CardFace } from "../../../game";
-import { vecAdd, vecSub } from "../../../util/Geometry";
+import { CardFace } from "honkbeep-game";
+import { vecAdd, vecSub } from "honkbeep-util/Geometry";
 import { CARD_VIEW_MIDPOINT as mid, CardRectangle, CardSVG } from ".";
 
 export type CardFrontProps = {

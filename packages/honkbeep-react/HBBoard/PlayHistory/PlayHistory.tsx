@@ -8,14 +8,14 @@ import {
   GameEventType,
   GamePlayEvent,
   GamePlayResultType,
-} from "../../../game";
+} from "honkbeep-game";
 import { useBoardReducer, useBoardStateSelector } from "../../BoardContext";
 import classNames from "../../util/classNames";
-import * as ArrayUtil from "../../../util/ArrayUtil";
+import * as ArrayUtil from "honkbeep-util/ArrayUtil";
 
 import styles from "./PlayHistory.css";
 import darkregion from "../DarkRegion.css";
-import { UserActionType } from "../../../client/types/UserAction";
+import { UserActionType } from "honkbeep-play/types/UserAction";
 import { ErrorBoundary } from "../../util/ErrorBoundry";
 
 const NaturalNums = ["zero", "one", "two", "three", "four", "five"];

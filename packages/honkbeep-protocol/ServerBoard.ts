@@ -10,14 +10,10 @@ import {
   Variant,
   VariantDefinition,
   buildVariant,
-} from "../../game";
-import * as ArrayUtil from "../../util/ArrayUtil";
-import {
-  CardReveal,
-  GameData,
-  GameEventMessage,
-} from "../../backend/types/GameData";
-import { GameClientConnection } from "../types/GameClientConnection";
+} from "honkbeep-game";
+import * as ArrayUtil from "honkbeep-util/ArrayUtil";
+import { CardReveal, GameData, GameEventMessage } from "./types/GameData";
+import { GameClientConnection } from "honkbeep-protocol/types/GameClientConnection";
 
 type PlayerRevealTurn = {
   turn: number;

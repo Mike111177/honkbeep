@@ -1,6 +1,6 @@
 import { genericPlayers, genericVariant } from "honkbeep-game";
-import ServerBoard from "honkbeep-play/ServerBoard";
-import HBClientBoard from "honkbeep-react/HBBoard/HBClientBoard";
+import ServerBoard from "honkbeep-protocol/ServerBoard";
+import HBClientBoard from "../../HBClientBoard";
 import { ErrorBoundary } from "honkbeep-react/util/ErrorBoundry";
 import { useState } from "react";
 import { SplitScreenStyles as styles } from ".";

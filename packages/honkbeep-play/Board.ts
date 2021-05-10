@@ -1,6 +1,6 @@
-import { Immutable } from "../util/HelperTypes";
-import { GameAttempt, GameEvent, resolveGameAttempt } from "../game";
-import * as ArrayUtil from "../util/ArrayUtil";
+import { Immutable } from "honkbeep-util/HelperTypes";
+import { GameAttempt, GameEvent, resolveGameAttempt } from "honkbeep-game";
+import * as ArrayUtil from "honkbeep-util/ArrayUtil";
 import {
   BoardState,
   BoardStateMutator,

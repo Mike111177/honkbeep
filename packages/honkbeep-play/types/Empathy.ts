@@ -1,4 +1,4 @@
-import { Rank, Suit } from "../../game";
+import { Rank, Suit } from "honkbeep-game";
 
 export type Pips = {
   ranks: ReadonlyArray<Rank>;

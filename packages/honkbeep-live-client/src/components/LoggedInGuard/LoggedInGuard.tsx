@@ -1,4 +1,4 @@
-import { Api } from "honkbeep-protocol";
+import * as Api from "../../Api";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 

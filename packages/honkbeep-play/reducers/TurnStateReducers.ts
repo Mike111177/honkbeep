@@ -7,8 +7,8 @@ import {
   initGameStateFromDefinition,
   Variant,
   GamePlayResultType,
-} from "../../game";
-import * as ArrayUtil from "../../util/ArrayUtil";
+} from "honkbeep-game";
+import * as ArrayUtil from "honkbeep-util/ArrayUtil";
 import { TurnState } from "../states/TurnState";
 import { LocationType } from "../types/Location";
 

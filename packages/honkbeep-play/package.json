@@ -1,3 +1,8 @@
 {
-  "name": "honkbeep-play"
+  "name": "honkbeep-play",
+  "dependencies": {
+    "honkbeep-game": "workspace:packages/honkbeep-game",
+    "honkbeep-util": "workspace:packages/honkbeep-util",
+    "immer": "^9.0.2"
+  }
 }

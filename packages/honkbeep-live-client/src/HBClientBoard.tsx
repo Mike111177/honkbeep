@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import HBBoardLayout from "./HBBoardLayout";
-import ClientBoard from "../../client/ClientBoard";
-import Backend from "../../backend/types/Backend";
+import HBBoardLayout from "honkbeep-react/HBBoard/HBBoardLayout";
+import ClientBoard from "./ClientBoard";
+import Backend from "honkbeep-protocol/types/Backend";
 
 type HBClientBoardProps = {
   backend: Backend;

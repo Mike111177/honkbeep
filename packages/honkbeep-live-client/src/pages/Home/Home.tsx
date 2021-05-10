@@ -1,6 +1,6 @@
 import { useHistory } from "react-router-dom";
 import { HomeStyles as styles } from ".";
-import BoxButton from "../../components/BoxButton";
+import BoxButton from "honkbeep-react/components/BoxButton";
 
 export default function Home() {
   const history = useHistory();

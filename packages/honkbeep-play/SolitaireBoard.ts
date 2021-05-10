@@ -5,7 +5,7 @@ import {
   GameEventType,
   GameAttempt,
   genericVariant,
-} from "../game";
+} from "honkbeep-game";
 import Board from "./Board";
 import BoardState, { appendEvent } from "./states/BoardState";
 

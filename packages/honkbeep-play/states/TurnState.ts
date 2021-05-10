@@ -1,4 +1,4 @@
-import { GameState, Clue } from "../../game";
+import { GameState, Clue } from "honkbeep-game";
 import { Pips } from "../types/Empathy";
 import { Location } from "../types/Location";
 

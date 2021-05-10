@@ -1,5 +1,5 @@
-import { Location, LocationType } from "../../../client/types/Location";
-import * as ArrayUtil from "../../../util/ArrayUtil";
+import { Location, LocationType } from "honkbeep-play/types/Location";
+import * as ArrayUtil from "honkbeep-util/ArrayUtil";
 import { useBoardStateSelector } from "../../BoardContext";
 
 export function useSledCardState(

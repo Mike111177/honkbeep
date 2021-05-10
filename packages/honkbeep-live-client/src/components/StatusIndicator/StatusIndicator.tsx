@@ -1,6 +1,6 @@
-import { Pip } from "../Pip";
+import { Pip } from "honkbeep-react/components/Pip";
 import { useCallback, useEffect, useState } from "react";
-import * as Api from "../../../client/Api";
+import * as Api from "../../Api";
 
 import { StatusIndicatorStyles as styles } from ".";
 

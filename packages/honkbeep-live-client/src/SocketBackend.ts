@@ -1,10 +1,13 @@
 import { unstable_batchedUpdates } from "react-dom";
-import { GameAttempt } from "../game";
-import { MessageSocket } from "../util/MessageSocket";
-import Backend from "./types/Backend";
-import { GameData } from "./types/GameData";
-import { GameMessage, GameMessageType } from "./types/GameMessages";
-import * as Api from "../client/Api";
+import { GameAttempt } from "honkbeep-game";
+import { MessageSocket } from "honkbeep-util/MessageSocket";
+import Backend from "honkbeep-protocol/types/Backend";
+import { GameData } from "honkbeep-protocol/types/GameData";
+import {
+  GameMessage,
+  GameMessageType,
+} from "honkbeep-protocol/types/GameMessages";
+import * as Api from "./Api";
 
 export default class SocketBackend implements Backend {
   private player?: number;

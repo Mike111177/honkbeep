@@ -1,9 +1,9 @@
 import { ComponentPropsWithoutRef } from "react";
 import { mix } from "chroma-js";
 
-import { vecAdd, vecMul } from "../../../util/Geometry";
-import { Pips } from "../../../client/types/Empathy";
-import Variant from "../../../game/types/Variant";
+import { vecAdd, vecMul } from "honkbeep-util/Geometry";
+import { Pips } from "honkbeep-play/types/Empathy";
+import { Variant } from "honkbeep-game";
 import colors from "../../BaseColors";
 import pipShapes from "../../SuitPips";
 import { Pip, PipShape } from "../Pip";

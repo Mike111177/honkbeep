@@ -1,4 +1,4 @@
-import { GameEventMessage } from "../../backend/types/GameData";
+import { GameEventMessage } from "./GameData";
 
 export interface GameClientConnection {
   player: number;

@@ -1,4 +1,4 @@
-import * as ArrayUtil from "../../../util/ArrayUtil";
+import * as ArrayUtil from "honkbeep-util/ArrayUtil";
 import { useStaticBoardState } from "../../BoardContext";
 import { CardSled } from "./CardSled";
 import useMeasure from "react-use-measure";

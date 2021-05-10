@@ -1,7 +1,7 @@
 import { useState } from "react";
-import SocketBackend from "../../../backend/SocketBackend";
-import HBClientBoard from "../../HBBoard/HBClientBoard";
-import { ErrorBoundary, useQuery } from "../../util";
+import SocketBackend from "../../SocketBackend";
+import HBClientBoard from "../../HBClientBoard";
+import { ErrorBoundary, useQuery } from "honkbeep-react/util";
 
 export default function Game() {
   const id = useQuery().get("id")!;

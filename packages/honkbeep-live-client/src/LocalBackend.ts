@@ -1,10 +1,7 @@
-import Backend from "honkbeep-protocol/src/types/Backend";
+import Backend from "honkbeep-protocol/types/Backend";
 import { GameAttempt } from "honkbeep-game";
-import ServerBoard from "honkbeep-play/ServerBoard";
-import {
-  GameData,
-  GameEventMessage,
-} from "honkbeep-protocol/src/types/GameData";
+import ServerBoard from "honkbeep-protocol/ServerBoard";
+import { GameData, GameEventMessage } from "honkbeep-protocol/types/GameData";
 
 //Meant for dictating logic of local games or template games
 export default class LocalBackend implements Backend {

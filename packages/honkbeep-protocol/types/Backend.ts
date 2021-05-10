@@ -1,4 +1,4 @@
-import { GameAttempt } from "../../game";
+import { GameAttempt } from "honkbeep-game";
 import { GameData } from "./GameData";
 
 //Responsible for tracking canonical server state from clients perspective

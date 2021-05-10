@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import UserAction from "../../../client/types/UserAction";
+import UserAction from "honkbeep-play/types/UserAction";
 import { useBoard } from "./useBoard";
 
 export function useBoardReducer() {

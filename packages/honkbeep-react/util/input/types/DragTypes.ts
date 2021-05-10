@@ -1,4 +1,4 @@
-import { Vec2D } from "../../../util/Geometry";
+import { Vec2D } from "honkbeep-util/Geometry";
 
 export type DragStatus = {
   down: boolean;

@@ -1,8 +1,8 @@
 import axios from "axios";
-import { MeMessage, StatusMessage } from "../backend/types/ApiMessages";
-import { GameMessage } from "../backend/types/GameMessages";
-import { TableMessage } from "../backend/types/TableMessage";
-import { MessageSocket } from "../util/MessageSocket";
+import { MeMessage, StatusMessage } from "honkbeep-protocol/types/ApiMessages";
+import { GameMessage } from "honkbeep-protocol/types/GameMessages";
+import { TableMessage } from "honkbeep-protocol/types/TableMessage";
+import { MessageSocket } from "honkbeep-util/MessageSocket";
 
 const wsproto = window.location.protocol === "https:" ? "wss" : "ws";
 

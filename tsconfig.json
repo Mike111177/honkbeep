@@ -17,5 +17,5 @@
     "preserveConstEnums": true,
     "jsx": "react-jsx"
   },
-  "include": ["src"]
+  "include": ["assets.d.ts"]
 }

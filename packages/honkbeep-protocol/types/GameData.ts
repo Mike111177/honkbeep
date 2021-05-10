@@ -1,4 +1,4 @@
-import { GameEvent, VariantDefinition } from "../../game";
+import { GameEvent, VariantDefinition } from "honkbeep-game";
 
 export type CardReveal = {
   deck: number;

@@ -1,8 +1,8 @@
-import Backend from "../backend/types/Backend";
-import { GameEventMessage } from "../backend/types/GameData";
-import { GameAttempt } from "../game";
-import Board from "./Board";
-import BoardState, { appendEvent } from "./states/BoardState";
+import Backend from "honkbeep-protocol/types/Backend";
+import { GameEventMessage } from "honkbeep-protocol/types/GameData";
+import { GameAttempt } from "honkbeep-game";
+import Board from "honkbeep-play/Board";
+import BoardState, { appendEvent } from "honkbeep-play/states/BoardState";
 
 function appendEventMessage(
   state: BoardState,

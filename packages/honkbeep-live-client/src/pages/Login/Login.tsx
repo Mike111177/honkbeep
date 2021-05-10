@@ -1,7 +1,7 @@
-import * as Api from "../../../client/Api";
+import * as Api from "../../Api";
 import { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
-import BoxButton from "../../components/BoxButton";
+import BoxButton from "honkbeep-react/components/BoxButton";
 import styles from "./Login.css";
 
 export default function Login() {

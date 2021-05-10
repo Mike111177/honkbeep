@@ -1,7 +1,14 @@
 {
   "name": "honkbeep-live-client",
+  "scripts": {
+    "build": "webpack --progress",
+    "build:prod": "webpack --progress --env production",
+    "start": "webpack serve --port 3000",
+    "start:prod": "webpack serve --port 3000 --env production"
+  },
   "dependencies": {
     "@loadable/component": "^5.15.0",
+    "@svgr/webpack": "^5.5.0",
     "@types/loadable__component": "^5.13.3",
     "@types/react": "^17.0.5",
     "@types/react-dom": "^17.0.3",
@@ -9,19 +16,30 @@
     "@types/react-router-dom": "^5.1.7",
     "axios": "^0.21.1",
     "chroma-js": "^2.1.1",
-    "fork-ts-checker-webpack-plugin": "^6.2.6",
+    "compression-webpack-plugin": "^7.1.2",
+    "css-loader": "^5.2.4",
+    "css-minimizer-webpack-plugin": "^2.0.0",
+    "file-loader": "^6.2.0",
     "honkbeep-game": "workspace:packages/honkbeep-game",
     "honkbeep-play": "workspace:packages/honkbeep-play",
     "honkbeep-protocol": "workspace:packages/honkbeep-protocol",
     "honkbeep-react": "workspace:packages/honkbeep-react",
+    "honkbeep-util": "workspace:packages/honkbeep-util",
     "html-webpack-plugin": "^5.3.1",
+    "image-webpack-loader": "^7.0.1",
+    "mini-css-extract-plugin": "^1.6.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
+    "style-loader": "^2.0.0",
+    "terser-webpack-plugin": "^5.1.1",
+    "ts-loader": "^9.1.2",
     "typescript": "^4.2.4",
     "web-vitals": "^1.1.2",
     "webpack": "^5.36.2",
-    "webpack-cli": "^4.7.0"
+    "webpack-bundle-analyzer": "^4.4.1",
+    "webpack-cli": "^4.7.0",
+    "webpack-dev-server": "^3.11.2"
   }
 }

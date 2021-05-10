@@ -1,11 +1,15 @@
 import { useEffect, useReducer, useState } from "react";
 import { useHistory } from "react-router";
 import { TableStyles as styles } from ".";
-import { TableMessage, TableMessageType, TableState } from "";
-import { User } from "../../../backend/types/User";
-import * as Api from "../../../client/Api";
-import BoxButton from "../../components/BoxButton";
-import { classNames } from "../../util";
+import {
+  TableMessage,
+  TableMessageType,
+  TableState,
+} from "honkbeep-protocol/types/TableMessage";
+import { User } from "honkbeep-protocol/types/User";
+import * as Api from "../../Api";
+import BoxButton from "honkbeep-react/components/BoxButton";
+import { classNames } from "honkbeep-react/util";
 
 type TableComponentState = { starting: boolean; id: string } & TableState;
 

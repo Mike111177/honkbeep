@@ -1,3 +1,7 @@
 {
-  "name": "honkbeep-protocol"
+  "name": "honkbeep-protocol",
+  "dependencies": {
+    "honkbeep-game": "workspace:packages/honkbeep-game",
+    "honkbeep-util": "workspace:packages/honkbeep-util"
+  }
 }

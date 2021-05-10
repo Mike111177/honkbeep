@@ -1,4 +1,4 @@
-import { GameAttempt } from "../../game/types/GameEvent";
+import { GameAttempt } from "honkbeep-game";
 
 export const enum UserActionType {
   GameAttempt = 1,

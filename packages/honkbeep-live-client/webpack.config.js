@@ -1,5 +1,10 @@
 const path = require("path");
-const newRequire = require("./scripts/newRequire");
+const HTMLWebpackPlugin = require("html-webpack-plugin");
+const MiniCSSExtractPlugin = require("mini-css-extract-plugin");
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+const CompressionWebpackPlugin = require("compression-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
+const CSSMinPlugin = require("css-minimizer-webpack-plugin");
 const SVGOConfig = require("./svgo.config");
 
 module.exports = (env) => {
@@ -48,9 +53,7 @@ module.exports = (env) => {
         {
           test: /\.css$/,
           use: [
-            isProduction
-              ? require("mini-css-extract-plugin").loader
-              : "style-loader",
+            isProduction ? MiniCSSExtractPlugin.loader : "style-loader",
             {
               loader: "css-loader",
               options: {
@@ -88,7 +91,7 @@ module.exports = (env) => {
             {
               loader: "@svgr/webpack",
               options: {
-                svgo: SVGOConfig,
+                svgoConfig: SVGOConfig,
               },
             },
             {
@@ -123,34 +126,28 @@ module.exports = (env) => {
         {
           test: /\.tsx?$/,
           loader: "ts-loader",
-          options: {
-            //For dev type checking is done separately for speed
-            transpileOnly: isDevelopment,
-          },
         },
       ],
     },
     plugins: [
       //Minify CSS in Production
       isProduction
-        ? newRequire("mini-css-extract-plugin", {
+        ? new MiniCSSExtractPlugin({
             filename: Patterns.CSSModule,
             chunkFilename: Patterns.CSSChunk,
           })
         : null,
       //We always need to load index.html
-      newRequire("html-webpack-plugin", { template: "./src/index.html" }),
-      //Separately check types during development, during production this is done by ts-loader
-      isDevelopment ? newRequire("fork-ts-checker-webpack-plugin") : null,
+      new HTMLWebpackPlugin({ template: "./src/index.html" }),
       //Analyze the bundle size during production, but not deployment
       isProduction && !isDeployment
-        ? new require("webpack-bundle-analyzer").BundleAnalyzerPlugin({
+        ? new BundleAnalyzerPlugin({
             analyzerMode: "disabled",
             generateStatsFile: true,
           })
         : null,
       //For deployment generate gzipped files
-      isDeployment ? newRequire("compression-webpack-plugin") : null,
+      isDeployment ? CompressionWebpackPlugin : null,
     ].filter((i) => i),
     optimization: {
       //Only optimize for production
@@ -159,8 +156,8 @@ module.exports = (env) => {
         : {
             minimize: true,
             minimizer: [
-              newRequire("css-minimizer-webpack-plugin"),
-              newRequire("terser-webpack-plugin", {
+              new CSSMinPlugin(),
+              new TerserPlugin({
                 parallel: true,
                 extractComments: isDeployment ? /a^/ : true,
                 terserOptions: {

@@ -1,5 +1,5 @@
-import { UserActionType } from "../../../client/types/UserAction";
-import * as ArrayUtil from "../../../util/ArrayUtil";
+import { UserActionType } from "honkbeep-play/types/UserAction";
+import * as ArrayUtil from "honkbeep-util/ArrayUtil";
 import { useBoardReducer, useBoardStateSelector } from "../../BoardContext";
 import { ErrorBoundary } from "../../util/ErrorBoundry";
 import styles from "./ReplayControls.css";

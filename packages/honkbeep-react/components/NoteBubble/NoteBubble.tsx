@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { Popover } from "./Popover";
-import { UserActionType } from "../../../client/types/UserAction";
+import { UserActionType } from "honkbeep-play/types/UserAction";
 import { useBoardReducer, useBoardStateSelector } from "../../BoardContext";
 import { NoteEditor } from "./NoteEditor";
 
