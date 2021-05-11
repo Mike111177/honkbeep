@@ -1,0 +1,15 @@
+services:
+  frontend:
+    build:
+      context: ..
+      dockerfile: .docker-honkbeep/frontend.dockerfile
+    restart: always
+  backend:
+    build:
+      context: ..
+      dockerfile: .docker-honkbeep/backend.dockerfile
+  db:
+    image: postgres:alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: example

@@ -1,0 +1,21 @@
+services:
+  frontend:
+    extends:
+      file: services.yml
+      service: frontend
+    build:
+      args:
+        - conf_file=.docker-honkbeep/prod.nginx.conf
+    ports:
+      - "443:443"
+    volumes:
+      - "/etc/letsencrypt:/etc/letsencrypt"
+      - "/var/lib/letsencrypt:/var/lib/letsencrypt"
+  backend:
+    extends:
+      file: services.yml
+      service: backend
+  db:
+    extends:
+      file: services.yml
+      service: db

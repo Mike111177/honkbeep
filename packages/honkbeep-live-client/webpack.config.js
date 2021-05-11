@@ -41,7 +41,7 @@ module.exports = (env) => {
     output: {
       filename: Patterns.JSModule,
       chunkFilename: Patterns.JSChunk,
-      path: path.resolve(__dirname, "build", "client"),
+      path: path.resolve(__dirname, "build"),
       publicPath: "/",
       clean: true,
     },
