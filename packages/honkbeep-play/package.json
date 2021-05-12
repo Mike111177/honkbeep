@@ -4,5 +4,8 @@
     "honkbeep-game": "workspace:packages/honkbeep-game",
     "honkbeep-util": "workspace:packages/honkbeep-util",
     "immer": "^9.0.2"
+  },
+  "devDependencies": {
+    "ts-jest": "^26.5.6"
   }
 }

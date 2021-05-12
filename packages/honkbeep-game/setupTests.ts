@@ -1,5 +1,4 @@
-//DOM Matchers
-import "@testing-library/jest-dom";
+import "jest";
 
 //Custom Matchers
 declare global {

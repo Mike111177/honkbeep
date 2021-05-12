@@ -4,7 +4,7 @@ import {
   GameEventType,
   genericPlayers,
   genericSampleGame,
-} from "../../game";
+} from "honkbeep-game";
 import ServerBoard from "./ServerBoard";
 
 test("Initializes without error", () => {

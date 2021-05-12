@@ -16,6 +16,5 @@
     "isolatedModules": false,
     "preserveConstEnums": true,
     "jsx": "react-jsx"
-  },
-  "include": ["assets.d.ts"]
+  }
 }

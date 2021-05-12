@@ -28,7 +28,7 @@ function drawCard<T extends Draft<GameState>>(state: T, { deck }: Variant) {
     state.topDeck++;
     return card;
   } else {
-    return (undefined as unknown) as number;
+    return undefined as unknown as number;
   }
 }
 

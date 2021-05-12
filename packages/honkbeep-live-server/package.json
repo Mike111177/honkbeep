@@ -27,5 +27,8 @@
     "webpack": "^5.36.2",
     "webpack-cli": "^4.7.0",
     "ws": "^7.4.5"
+  },
+  "devDependencies": {
+    "ts-jest": "^26.5.6"
   }
 }

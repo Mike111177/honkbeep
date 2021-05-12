@@ -1,4 +1,4 @@
-import * as ArrayUtil from "../util/ArrayUtil";
+import * as ArrayUtil from "honkbeep-util/ArrayUtil";
 import { Deck, createProcuredDeckOrder, buildVariant } from ".";
 import { genericVariant } from "./GenericData";
 
