@@ -7,6 +7,7 @@ import styles from "./Login.css";
 export default function Login() {
   const history = useHistory();
   const username = useRef<HTMLInputElement>(null);
+  const password = useRef<HTMLInputElement>(null);
   const [loginError, setLoginError] = useState("");
   useEffect(() => {
     Api.me().then((result) => {
@@ -23,22 +24,20 @@ export default function Login() {
       <br />
       <label htmlFor="password">Password:</label>
       <br />
-      <input
-        type="password"
-        id="password"
-        name="password"
-        disabled={true}
-      ></input>
+      <input type="password" id="password" name="password"></input>
       <BoxButton
         onClick={async () => {
           const name = username.current?.value;
-          try {
-            await Api.login(name || "");
-            setLoginError("");
-            history.push("/");
-          } catch (error) {
-            console.log(error);
-            setLoginError(error.response!.data);
+          const pass = password.current?.value;
+          if (name !== undefined && pass !== undefined) {
+            try {
+              await Api.login(name, pass);
+              setLoginError("");
+              history.push("/");
+            } catch (error) {
+              console.log(error);
+              setLoginError(error.response!.data);
+            }
           }
         }}
       >

@@ -1,3 +1,4 @@
+version: "3.8"
 services:
   frontend:
     extends:
@@ -5,10 +6,12 @@ services:
       service: frontend
     build:
       args:
-        - conf_file=./.docker/dev.nginx.conf
+        - conf_file=./.docker-honkbeep/dev.nginx.conf
     ports:
       - "5000:80"
   backend:
+    depends_on:
+      - db
     extends:
       file: services.yml
       service: backend

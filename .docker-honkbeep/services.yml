@@ -5,6 +5,10 @@ services:
       dockerfile: .docker-honkbeep/frontend.dockerfile
     restart: always
   backend:
+    environment:
+      - PGHOST=db
+      - PGUSER=postgres
+      - PGPASSWORD=postgres
     build:
       context: ..
       dockerfile: .docker-honkbeep/backend.dockerfile
@@ -12,4 +16,6 @@ services:
     image: postgres:alpine
     restart: always
     environment:
-      POSTGRES_PASSWORD: example
+      POSTGRES_DB: "honkbeep"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"

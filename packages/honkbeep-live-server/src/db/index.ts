@@ -1,10 +1,11 @@
-import { Pool, QueryResult } from "pg";
+import { Pool } from "pg";
+import * as Queries from "./Queries";
 const pool = new Pool();
 
-export function query(
-  text: string,
-  params: any,
-  callback: (err: Error, result: QueryResult<any>) => void
-) {
-  return pool.query(text, params, callback);
+export function query(text: string, params?: any) {
+  return pool.query(text, params);
+}
+
+export async function initDB() {
+  console.log(await query(Queries.createTables));
 }

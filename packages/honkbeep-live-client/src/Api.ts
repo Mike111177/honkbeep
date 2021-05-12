@@ -24,8 +24,8 @@ export async function status() {
   }
 }
 
-export function login(name: string) {
-  return axios.post("/api/login", { name });
+export function login(username: string, password: string) {
+  return axios.post("/api/login", { username, password });
 }
 
 export function game(id: string) {
