@@ -1,9 +1,18 @@
 import { Router } from "../types/ServerTypes";
-import { createNewTable, getActiveTable } from "../Server/ActiveTables";
+import { createNewTable, getActiveTable, listTables } from "../Table/Table";
 
 export default function tableRoute(router: Router) {
-  router.post("/table/create", (ctx, next) => {
-    ctx.body = { id: createNewTable(ctx.session!.user) };
+  router.get("/table/list", async (ctx, next) => {
+    const tableList = Array.from(listTables()).map(([id, { state }]) => ({
+      id,
+      state,
+    }));
+    ctx.body = tableList;
+    await next();
+  });
+  router.get("/table/create", async (ctx, next) => {
+    ctx.body = { id: createNewTable(ctx.session!.user.id) };
+    await next();
   });
   router.all("/table/join/:id", async (ctx, next) => {
     const table = getActiveTable(ctx.params.id);

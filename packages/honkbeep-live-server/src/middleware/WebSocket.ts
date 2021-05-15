@@ -13,7 +13,7 @@ export default function createWebsocketMiddleware(): ServerMiddleware {
       .split(",")
       .map((s) => s.trim());
 
-    if (~upgradeHeader.indexOf("websocket")) {
+    if (upgradeHeader.includes("websocket")) {
       ctx.ws = () =>
         new Promise((resolve) => {
           wss.handleUpgrade(

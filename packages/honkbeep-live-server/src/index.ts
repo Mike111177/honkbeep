@@ -3,35 +3,26 @@ import session from "koa-session";
 import bodyparser from "koa-bodyparser";
 import WebSocketMiddleware from "./middleware/WebSocket";
 
+import { checkEnvironment } from "./environment";
 import Api from "./routes";
 import { ServerContext, ServerState } from "./types/ServerTypes";
-import { initDB } from "./db";
+import { initDB, sessionConfig } from "./db";
 
-console.log("Starting Honkbeep Server");
+//Load config
+checkEnvironment();
+console.log(process.env.HONKBEEP_PORT);
+const port = parseInt(process.env.HONKBEEP_PORT!);
 
-const app = new Koa<ServerState, ServerContext>();
-const ws = WebSocketMiddleware();
-const api = Api();
+console.log(`Starting Honkbeep Server on port ${port}`);
 
 initDB();
 
-const SESSCONFIG: Partial<session.opts> = {
-  key: "session",
-  signed: false,
-  store: {
-    async get(key) {
-      console.log(key);
-    },
-    async set(key, sess) {},
-    async destroy() {},
-  },
-};
-
+const app = new Koa<ServerState, ServerContext>();
+const api = Api();
 app
-  .use(session(SESSCONFIG, app))
-  .use(ws)
+  .use(session(sessionConfig(), app))
+  .use(WebSocketMiddleware())
   .use(bodyparser())
   .use(api.routes())
-  .use(api.allowedMethods());
-
-app.listen(3001);
+  .use(api.allowedMethods())
+  .listen(port);

@@ -8,6 +8,9 @@
 .yarn/cache
 .pnp.*
 
+#dev
+.env
+
 # dependencies
 /node_modules
 /.pnp

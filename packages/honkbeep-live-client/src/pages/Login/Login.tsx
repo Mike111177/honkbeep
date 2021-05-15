@@ -18,13 +18,18 @@ export default function Login() {
   }, [history]);
   return (
     <div className={styles.Login}>
-      <label htmlFor="username">Username or Email:</label>
+      <label htmlFor="username">Username:</label>
       <br />
       <input ref={username} type="text" id="username" name="username"></input>
       <br />
       <label htmlFor="password">Password:</label>
       <br />
-      <input type="password" id="password" name="password"></input>
+      <input
+        ref={password}
+        type="password"
+        id="password"
+        name="password"
+      ></input>
       <BoxButton
         onClick={async () => {
           const name = username.current?.value;

@@ -33,4 +33,8 @@ export class MessageSocket<
   set onopen(value: SocketType["onopen"]) {
     this.ws.onopen = value;
   }
+
+  set onclose(value: SocketType["onclose"]) {
+    this.ws.onclose = value;
+  }
 }

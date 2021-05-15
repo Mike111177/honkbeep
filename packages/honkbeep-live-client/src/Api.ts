@@ -1,7 +1,7 @@
 import axios from "axios";
 import { MeMessage, StatusMessage } from "honkbeep-protocol/types/ApiMessages";
 import { GameMessage } from "honkbeep-protocol/types/GameMessages";
-import { TableMessage } from "honkbeep-protocol/types/TableMessage";
+import { TableMessage, TableState } from "honkbeep-protocol/types/TableMessage";
 import { MessageSocket } from "honkbeep-util/MessageSocket";
 
 const wsproto = window.location.protocol === "https:" ? "wss" : "ws";
@@ -24,6 +24,21 @@ export async function status() {
   }
 }
 
+export async function createTable() {
+  return (await axios.get("/api/table/create")).data.id;
+}
+
+export async function listTables() {
+  return (
+    await axios.get<
+      {
+        id: string;
+        state: TableState;
+      }[]
+    >("/api/table/list")
+  ).data;
+}
+
 export function login(username: string, password: string) {
   return axios.post("/api/login", { username, password });
 }
@@ -34,8 +49,8 @@ export function game(id: string) {
   );
 }
 
-export function table() {
+export function joinTable(id: string) {
   return new MessageSocket<TableMessage>(
-    new WebSocket(`${wsproto}://${window.location.host}/api/table`)
+    new WebSocket(`${wsproto}://${window.location.host}/api/table/join/${id}`)
   );
 }

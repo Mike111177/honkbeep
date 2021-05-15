@@ -7,5 +7,7 @@ export function query(text: string, params?: any) {
 }
 
 export async function initDB() {
-  console.log(await query(Queries.createTables));
+  await query(Queries.createTables);
 }
+
+export * from "./sessions";

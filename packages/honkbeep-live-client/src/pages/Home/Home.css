@@ -10,3 +10,11 @@
   box-sizing: border-box;
   border-radius: 20px;
 }
+
+.CreateButtons {
+  display: inline-block;
+}
+
+.TableTable {
+  width: 100%;
+}

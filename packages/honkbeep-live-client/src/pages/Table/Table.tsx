@@ -9,7 +9,7 @@ import {
 import { User } from "honkbeep-protocol/types/User";
 import * as Api from "../../Api";
 import BoxButton from "honkbeep-react/components/BoxButton";
-import { classNames } from "honkbeep-react/util";
+import { classNames, useQuery } from "honkbeep-react/util";
 
 type TableComponentState = { starting: boolean; id: string } & TableState;
 
@@ -36,16 +36,17 @@ function TableReducer(
 
 export default function Table() {
   const history = useHistory();
+  const id = useQuery().get("id")!;
   const [meUser, setMeUser] = useState<User | undefined>();
   const [state, dispatch] = useReducer(TableReducer, initialTableState);
   const [sendMessage, setSendMessage] = useState<(msg: TableMessage) => void>();
   useEffect(() => {
-    const ws = Api.table();
+    const ws = Api.joinTable(id);
     ws.onmessage = dispatch;
     Api.me().then((response) => setMeUser(response?.user));
     setSendMessage(() => (msg: TableMessage) => ws.send(msg));
     return () => ws.close();
-  }, []);
+  }, [id]);
   useEffect(() => {
     if (state.starting) {
       history.push(`/game?id=${state.id}`);

@@ -1,6 +1,7 @@
 const webpack = require("webpack");
 const NodemonPlugin = require("nodemon-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+const Dotenv = require("dotenv-webpack");
 const path = require("path");
 
 module.exports = (env) => {
@@ -21,6 +22,7 @@ module.exports = (env) => {
       path: path.resolve(__dirname, "build"),
       clean: true,
     },
+    externals: { bcrypt: "commonjs bcrypt" },
     resolve: { extensions: [".js", ".ts"] },
     module: {
       rules: [
@@ -33,7 +35,7 @@ module.exports = (env) => {
     plugins: [
       new webpack.IgnorePlugin({ resourceRegExp: /^pg-native$/ }),
       new webpack.ContextReplacementPlugin(/any-promise/),
-      new NodemonPlugin(),
+      new NodemonPlugin({ nodeArgs: ["-r", "./config/dotenv"] }),
     ].filter((i) => i !== null),
     optimization: isProduction
       ? {

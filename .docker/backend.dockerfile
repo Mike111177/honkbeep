@@ -14,6 +14,12 @@ RUN yarn --cwd ./packages/honkbeep-live-server/ run build:prod --env deploy --no
 
 FROM base
 COPY --from=builder /app/packages/honkbeep-live-server/build ./
+
+#Configure DB
+ENV PGHOST=localhost
+ENV PGUSER=postgres
+ENV PGPASSWORD=postgres
+ENV HONKBEEP_PORT=3001
 CMD ["node", "./main.js"]
 
 

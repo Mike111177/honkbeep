@@ -5,7 +5,9 @@ const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const CompressionWebpackPlugin = require("compression-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const CSSMinPlugin = require("css-minimizer-webpack-plugin");
+
 const SVGOConfig = require("./svgo.config");
+require("dotenv").config({ path: "../../.env" });
 
 module.exports = (env) => {
   //Get mode
@@ -190,7 +192,7 @@ module.exports = (env) => {
       hot: true,
       proxy: {
         "/api": {
-          target: "http://localhost:3001",
+          target: `http://localhost:${process.env.HONKBEEP_PORT || 3001}`,
           logLevel: "silent",
           ws: true,
         },
