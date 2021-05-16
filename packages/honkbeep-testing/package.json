@@ -1,0 +1,6 @@
+{
+  "name": "honkbeep-testing",
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.12.0"
+  }
+}

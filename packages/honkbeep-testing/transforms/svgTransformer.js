@@ -1,3 +1,4 @@
+/*
 module.exports = {
   process(src, filename) {
     const assetFilename = JSON.stringify(path.basename(filename));
@@ -21,3 +22,7 @@ module.exports = {
     };`;
   },
 };
+*/
+
+//This works idk man.....
+module.exports = { default: "svg", ReactComponent: "div" };

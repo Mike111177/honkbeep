@@ -33,7 +33,7 @@ describe("createProcuredOrder", () => {
 
     //Make sure it is a valid order
     expect(order).toHaveLength(deck.length); //Has the same length as the deck
-    expect(order).toBeSet(); //Every item is unique
+    expect(order).toStrictEqual(Array.from(new Set(order))); //Every item is unique
     expect(order).toEqual(expect.arrayContaining(ArrayUtil.iota(deck.length))); //Every Item in the deck is accounted for
   });
 

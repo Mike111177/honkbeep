@@ -68,21 +68,6 @@
       "presentation": {
         "hidden": true
       }
-    },
-    {
-      "name": "Host/Storybook",
-      "type": "chrome",
-      "request": "launch",
-      "url": "http://localhost:6006",
-      "webRoot": "${workspaceFolder}/src",
-      "sourceMapPathOverrides": {
-        "webpack:///src/*": "${webRoot}/*"
-      },
-      "runtimeArgs": ["--new-window"],
-      "userDataDir": "${workspaceRoot}/chrome/storybook",
-      "presentation": {
-        "hidden": true
-      }
     }
   ]
 }

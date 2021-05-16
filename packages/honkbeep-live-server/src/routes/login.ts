@@ -17,7 +17,6 @@ export default function loginRoute(router: Router) {
       if (getUserQ.rowCount === 0) {
         //If not lets make a new user and log them in
         const ENCRYPTED_PASSWORD = await hash(PLAINTEXT_PASSWORD, 10);
-        console.log(ENCRYPTED_PASSWORD);
         const createUserQ = await query(
           `INSERT INTO accounts (username, password) VALUES ($1, $2) RETURNING user_id`,
           [username, ENCRYPTED_PASSWORD]
