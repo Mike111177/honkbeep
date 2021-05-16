@@ -7,7 +7,7 @@ const TerserPlugin = require("terser-webpack-plugin");
 const CSSMinPlugin = require("css-minimizer-webpack-plugin");
 
 const SVGOConfig = require("./svgo.config");
-require("dotenv").config({ path: "../../.env" });
+require("honkbeep-testing/environment");
 
 module.exports = (env) => {
   //Get mode
@@ -190,6 +190,7 @@ module.exports = (env) => {
     devServer: {
       historyApiFallback: true,
       hot: true,
+      port: process.env.HONKBEEP_WEB_PORT || 3000,
       proxy: {
         "/api": {
           target: `http://localhost:${process.env.HONKBEEP_PORT || 3001}`,

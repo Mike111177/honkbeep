@@ -7547,7 +7547,6 @@ fsevents@^1.2.7:
     compression-webpack-plugin: ^7.1.2
     css-loader: ^5.2.4
     css-minimizer-webpack-plugin: ^3.0.0
-    dotenv: ^9.0.2
     dotenv-webpack: ^7.0.2
     file-loader: ^6.2.0
     honkbeep-game: "workspace:packages/honkbeep-game"
@@ -7591,10 +7590,10 @@ fsevents@^1.2.7:
     "@types/pg": ^7.14.11
     "@types/ws": ^7.4.4
     bcrypt: ^5.0.1
-    dotenv: ^9.0.2
     dotenv-webpack: ^7.0.2
     honkbeep-game: "workspace:packages/honkbeep-game"
     honkbeep-protocol: "workspace:packages/honkbeep-protocol"
+    honkbeep-testing: "workspace:packages/honkbeep-testing"
     honkbeep-util: "workspace:packages/honkbeep-util"
     jest: ^26.6.3
     koa: ^2.13.1
@@ -7674,6 +7673,7 @@ fsevents@^1.2.7:
   resolution: "honkbeep-testing@workspace:packages/honkbeep-testing"
   dependencies:
     "@testing-library/jest-dom": ^5.12.0
+    dotenv: ^9.0.2
   languageName: unknown
   linkType: soft
 

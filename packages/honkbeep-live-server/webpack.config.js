@@ -35,7 +35,9 @@ module.exports = (env) => {
     plugins: [
       new webpack.IgnorePlugin({ resourceRegExp: /^pg-native$/ }),
       new webpack.ContextReplacementPlugin(/any-promise/),
-      new NodemonPlugin({ nodeArgs: ["-r", "./config/dotenv"] }),
+      new NodemonPlugin({
+        nodeArgs: ["-r", "honkbeep-testing/environment.js"],
+      }),
     ].filter((i) => i !== null),
     optimization: isProduction
       ? {

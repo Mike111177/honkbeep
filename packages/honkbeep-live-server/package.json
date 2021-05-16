@@ -32,7 +32,7 @@
     "ws": "^7.4.5"
   },
   "devDependencies": {
-    "dotenv": "^9.0.2",
+    "honkbeep-testing": "workspace:packages/honkbeep-testing",
     "jest": "^26.6.3",
     "ts-jest": "^26.5.6",
     "typescript": "^4.2.4"
