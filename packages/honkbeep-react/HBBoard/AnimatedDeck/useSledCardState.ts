@@ -1,4 +1,4 @@
-import { Location, LocationType } from "honkbeep-play/types/Location";
+import { Location, LocationType } from "honkbeep-play";
 import * as ArrayUtil from "honkbeep-util/ArrayUtil";
 import { useBoardStateSelector } from "../../BoardContext";
 

@@ -1,8 +1,6 @@
-import React from "react";
-import Board from "honkbeep-play/Board";
+import { createContext } from "react";
+import { Board } from "honkbeep-play";
 
-const BoardContext = React.createContext<Readonly<Board>>(
-  (null as unknown) as Board
-);
+const BoardContext = createContext<Readonly<Board>>(null as unknown as Board);
 
 export default BoardContext;

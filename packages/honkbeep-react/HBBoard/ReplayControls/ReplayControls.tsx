@@ -1,4 +1,4 @@
-import { UserActionType } from "honkbeep-play/types/UserAction";
+import { UserActionType } from "honkbeep-play";
 import * as ArrayUtil from "honkbeep-util/ArrayUtil";
 import { useBoardReducer, useBoardStateSelector } from "../../BoardContext";
 import { ErrorBoundary } from "../../util/ErrorBoundry";

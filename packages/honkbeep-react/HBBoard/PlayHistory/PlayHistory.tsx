@@ -15,7 +15,7 @@ import * as ArrayUtil from "honkbeep-util/ArrayUtil";
 
 import styles from "./PlayHistory.css";
 import darkregion from "../DarkRegion.css";
-import { UserActionType } from "honkbeep-play/types/UserAction";
+import { UserActionType } from "honkbeep-play";
 import { ErrorBoundary } from "../../util/ErrorBoundry";
 
 const NaturalNums = ["zero", "one", "two", "three", "four", "five"];

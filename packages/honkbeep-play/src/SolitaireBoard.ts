@@ -6,10 +6,10 @@ import {
   GameAttempt,
   genericVariant,
 } from "honkbeep-game";
-import Board from "./Board";
+import { Board } from "./Board";
 import BoardState, { appendEvent } from "./states/BoardState";
 
-export default class SolitaireBoard extends Board {
+export class SolitaireBoard extends Board {
   constructor(variantDef: VariantDefinition) {
     const boardState = new BoardState(variantDef, genericPlayers(variantDef));
     boardState.shuffleOrder = getShuffledOrder(

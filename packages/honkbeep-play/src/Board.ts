@@ -13,7 +13,7 @@ import { Draft } from "immer";
 
 export type BoardUpdateListener = () => void;
 
-export default abstract class Board {
+export abstract class Board {
   private listeners: BoardUpdateListener[];
   private readonly _boardState?: ImmutableBoardState;
   constructor(initialBoardState?: BoardState) {

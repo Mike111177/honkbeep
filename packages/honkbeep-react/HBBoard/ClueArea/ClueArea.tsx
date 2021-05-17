@@ -6,7 +6,7 @@ import {
   RankClue,
   rankClue,
 } from "honkbeep-game";
-import { UserActionType } from "honkbeep-play/types/UserAction";
+import { UserActionType } from "honkbeep-play";
 import * as ArrayUtil from "honkbeep-util/ArrayUtil";
 import { useCallback, useState } from "react";
 import colors from "../../BaseColors";

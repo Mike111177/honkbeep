@@ -11,6 +11,7 @@ import {
   VariantDefinition,
   buildVariant,
 } from "honkbeep-game";
+import { GameBoardState } from "honkbeep-play";
 import * as ArrayUtil from "honkbeep-util/ArrayUtil";
 import { CardReveal, GameData, GameEventMessage } from "./types/GameData";
 import { GameClientConnection } from "honkbeep-protocol/types/GameClientConnection";
@@ -23,15 +24,15 @@ type PlayerRevealTurn = {
 type PlayerRevealHistory = PlayerRevealTurn[];
 
 //Will be the substitute for a server in these local games
-export default class ServerBoard {
-  private playerNames: ReadonlyArray<string>;
+export default class ServerBoard implements GameBoardState {
+  readonly playerNames: ReadonlyArray<string>;
   private variantDef: VariantDefinition;
-  private variant: Variant;
+  readonly variant: Variant;
 
   private shuffleOrder: number[];
   private seed?: number;
 
-  private events: GameEvent[];
+  readonly events: GameEvent[];
   private reveals: PlayerRevealHistory[];
 
   //TODO: transfer all possible state to be managed by this state

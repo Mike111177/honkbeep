@@ -1,4 +1,4 @@
-import { StaticBoardState } from "honkbeep-play/states/BoardState";
+import { StaticBoardState } from "honkbeep-play";
 import { useBoard } from "./useBoard";
 
 export function useStaticBoardState(): StaticBoardState {

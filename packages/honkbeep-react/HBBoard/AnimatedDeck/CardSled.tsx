@@ -1,7 +1,7 @@
 import { animated, useSpring } from "@react-spring/web";
 import { GameEventType } from "honkbeep-game";
-import { LocationType } from "honkbeep-play/types/Location";
-import { UserActionType } from "honkbeep-play/types/UserAction";
+import { LocationType } from "honkbeep-play";
+import { UserActionType } from "honkbeep-play";
 import { compareRects, vecAdd, vecInRectangle } from "honkbeep-util/Geometry";
 import { useCallback, useEffect, useState } from "react";
 import { RectReadOnly } from "react-use-measure";

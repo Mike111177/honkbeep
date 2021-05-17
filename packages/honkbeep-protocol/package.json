@@ -2,6 +2,7 @@
   "name": "honkbeep-protocol",
   "dependencies": {
     "honkbeep-game": "workspace:packages/honkbeep-game",
+    "honkbeep-play": "workspace:packages/honkbeep-play",
     "honkbeep-util": "workspace:packages/honkbeep-util"
   },
   "devDependencies": {

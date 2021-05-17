@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createGenericSolitaireBoard } from "honkbeep-play/SolitaireBoard";
+import { createGenericSolitaireBoard } from "honkbeep-play";
 import HBBoardLayout from "honkbeep-react/HBBoard/HBBoardLayout";
 
 export default function Solitaire() {

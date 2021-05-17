@@ -7630,6 +7630,7 @@ fsevents@^1.2.7:
   dependencies:
     "@types/jest": ^26.0.23
     honkbeep-game: "workspace:packages/honkbeep-game"
+    honkbeep-play: "workspace:packages/honkbeep-play"
     honkbeep-util: "workspace:packages/honkbeep-util"
     jest: ^26.6.3
     ts-jest: ^26.5.6

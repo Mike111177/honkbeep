@@ -44,5 +44,3 @@ export type UserAction =
   | UserActionStartHypothetical
   | UserActionEndHypothetical
   | UserActionEditNote;
-
-export default UserAction;

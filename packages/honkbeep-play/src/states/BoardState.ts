@@ -7,10 +7,11 @@ import {
 import { Immutable } from "honkbeep-util/HelperTypes";
 import { CardNotes } from "../types/Notes";
 import { TurnState } from "./TurnState";
+import { GameBoardState } from "../types/GameBoardState";
 import { initTurnState, reduceTurnEvent } from "../reducers/TurnStateReducers";
 
 //Visible data for react components
-export class BoardState {
+export class BoardState implements GameBoardState {
   //Info to define game, should NEVER change after creation
   readonly variant: Immutable<Variant>;
   readonly playerNames: ReadonlyArray<string>;

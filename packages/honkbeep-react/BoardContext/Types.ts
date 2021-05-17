@@ -1,4 +1,4 @@
-import { BoardState } from "honkbeep-play/states/BoardState";
+import { BoardState } from "honkbeep-play";
 import { Immutable } from "honkbeep-util/HelperTypes";
 
 export type BoardStateUser<T> = (newState: Immutable<BoardState>) => T;
