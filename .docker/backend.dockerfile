@@ -4,16 +4,16 @@ WORKDIR /app
 
 FROM base AS builder
 
-COPY package.json tsconfig.json assets.d.ts yarn.lock .yarnrc .yarnrc.yml ./
+COPY package.json tsconfig.json yarn.lock .yarnrc .yarnrc.yml ./
 ADD .yarn ./.yarn
 ADD packages ./packages
 
-RUN yarn install
+RUN yarn workspaces focus honkbeep-live-server
 
-RUN yarn --cwd ./packages/honkbeep-live-server/ run build:prod --env deploy --no-devtool
+RUN yarn run deploy:server
 
 FROM base
-COPY --from=builder /app/packages/honkbeep-live-server/build ./
+COPY --from=builder /app/build/server ./
 
 #Configure DB
 ENV PGHOST=localhost

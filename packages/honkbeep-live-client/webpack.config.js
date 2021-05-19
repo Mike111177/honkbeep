@@ -149,7 +149,7 @@ module.exports = (env) => {
           })
         : null,
       //For deployment generate gzipped files
-      isDeployment ? CompressionWebpackPlugin : null,
+      isDeployment ? new CompressionWebpackPlugin() : null,
     ].filter((i) => i),
     optimization: {
       //Only optimize for production

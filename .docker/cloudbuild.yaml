@@ -1,0 +1,28 @@
+steps:
+  # - name: gcr.io/cloud-builders/docker
+  #   args:
+  #     - build
+  #     - '-t'
+  #     - builder
+  #     - '-f'
+  #     - ./.docker/builder.dockerfile
+  #     - .
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - "-t"
+      - "${_REPO_ZONE}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/server"
+      - "-f"
+      - ./.docker/backend.dockerfile
+      - .
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - "-t"
+      - "${_REPO_ZONE}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/client"
+      - "-f"
+      - ./.docker/frontend.dockerfile
+      - .
+images:
+  - "${_REPO_ZONE}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/server"
+  - "${_REPO_ZONE}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/client"

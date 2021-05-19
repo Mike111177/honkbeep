@@ -2,13 +2,12 @@ FROM node:16 AS base
 WORKDIR /app
 
 FROM base AS builder
-COPY package.json tsconfig.json assets.d.ts yarn.lock .yarnrc .yarnrc.yml ./
+COPY package.json tsconfig.json yarn.lock .yarnrc .yarnrc.yml ./
 ADD .yarn ./.yarn
 ADD packages ./packages
-RUN yarn install
-RUN yarn --cwd ./packages/honkbeep-live-client/ run build:prod
+RUN yarn workspaces focus honkbeep-live-client
+RUN yarn run deploy:client
 
 FROM nginx:alpine
-ARG conf_file
-COPY $conf_file /etc/nginx/nginx.conf
-COPY --from=builder /app/packages/honkbeep-live-client/build /usr/share/nginx/html
+COPY ./.docker/prod.nginx.conf /etc/nginx/nginx.conf
+COPY --from=builder /app/build/client /usr/share/nginx/html

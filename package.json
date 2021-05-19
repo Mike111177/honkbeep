@@ -8,6 +8,9 @@
   "scripts": {
     "start": "yarn workspace honkbeep-live-client start",
     "start:server": "yarn workspace honkbeep-live-server start",
+    "deploy": "yarn deploy:client && yarn deploy:server",
+    "deploy:client": "yarn workspace honkbeep-live-client build:prod -o ../../build/client --no-devtool --env deploy",
+    "deploy:server": "yarn workspace honkbeep-live-server build:prod -o ../../build/server --no-devtool --env deploy",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",

@@ -7607,6 +7607,7 @@ fsevents@^1.2.7:
     typescript: ^4.2.4
     webpack: ^5.37.0
     webpack-cli: ^4.7.0
+    webpack-node-externals: ^3.0.0
     ws: ^7.4.5
   languageName: unknown
   linkType: soft
@@ -15644,6 +15645,13 @@ typescript@^4.2.4:
     clone-deep: ^4.0.1
     wildcard: ^2.0.0
   checksum: 5e28f66f597cb34ac5f7ca0881cd3f106265091e47d7cda9ae00f4902283efdfdab36a70e34a9cf7b1467aac021178981513393b7dcddbb84caf11920f269379
+  languageName: node
+  linkType: hard
+
+"webpack-node-externals@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "webpack-node-externals@npm:3.0.0"
+  checksum: 7f344870035956e61580ab6206c2a091ccc6705c4f7478daf8a24686321e1bdf719060083e71028cf384f0c214487966143ff6bdecf803f758490cb3e33ec74a
   languageName: node
   linkType: hard
 
