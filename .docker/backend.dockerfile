@@ -14,6 +14,9 @@ RUN yarn run deploy:server
 
 FROM base
 COPY --from=builder /app/build/server ./
+COPY --from=builder /app/packages/honkbeep-live-server/package.json ./
+RUN node -e 'const fs = require("fs"); const pkg = JSON.parse(fs.readFileSync("./package.json", "utf-8")); delete pkg.devDependencies; fs.writeFileSync("./package.json", JSON.stringify(pkg), "utf-8");'
+RUN yarn install --production
 
 #Configure DB
 ENV PGHOST=localhost

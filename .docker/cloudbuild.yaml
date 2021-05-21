@@ -7,13 +7,13 @@ steps:
   #     - '-f'
   #     - ./.docker/builder.dockerfile
   #     - .
-  - name: "gcr.io/cloud-builders/docker"
-    entrypoint: "bash"
-    args:
-      [
-        "-c",
-        "docker pull ${_REPO_ZONE}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/server:latest || exit 0",
-      ]
+  # - name: "gcr.io/cloud-builders/docker"
+  #   entrypoint: "bash"
+  #   args:
+  #     [
+  #       "-c",
+  #       "docker pull ${_REPO_ZONE}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/server:latest || exit 0",
+  #     ]
   - name: gcr.io/cloud-builders/docker
     args:
       - build
@@ -21,16 +21,16 @@ steps:
       - "${_REPO_ZONE}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/server"
       - "-f"
       - "./.docker/backend.dockerfile"
-      - "--cache-from"
-      - "${_REPO_ZONE}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/server:latest"
+      # - "--cache-from"
+      # - "${_REPO_ZONE}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/server:latest"
       - .
-  - name: "gcr.io/cloud-builders/docker"
-    entrypoint: "bash"
-    args:
-      [
-        "-c",
-        "docker pull ${_REPO_ZONE}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/client:latest || exit 0",
-      ]
+  # - name: "gcr.io/cloud-builders/docker"
+  #   entrypoint: "bash"
+  #   args:
+  #     [
+  #       "-c",
+  #       "docker pull ${_REPO_ZONE}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/client:latest || exit 0",
+  #     ]
   - name: gcr.io/cloud-builders/docker
     args:
       - build
@@ -38,8 +38,8 @@ steps:
       - "${_REPO_ZONE}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/client"
       - "-f"
       - "./.docker/frontend.dockerfile"
-      - "--cache-from"
-      - "${_REPO_ZONE}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/client:latest"
+      # - "--cache-from"
+      # - "${_REPO_ZONE}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/client:latest"
       - .
 images:
   - "${_REPO_ZONE}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/server"

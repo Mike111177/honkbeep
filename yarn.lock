@@ -1286,7 +1286,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.7.7, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.0, @babel/runtime@npm:^7.7.7, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
   version: 7.14.0
   resolution: "@babel/runtime@npm:7.14.0"
   dependencies:
@@ -3395,6 +3395,16 @@ __metadata:
   bin:
     atob: bin/atob.js
   checksum: 597c0d1a740bb6522c98bea8fe362ae9420b4203af588d2bd470326d9abd4504264956b8355923d7019a21527ef5e6526a7b4455862ec5178ccd81e0ea289d5f
+  languageName: node
+  linkType: hard
+
+"automation-events@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "automation-events@npm:4.0.1"
+  dependencies:
+    "@babel/runtime": ^7.14.0
+    tslib: ^2.2.0
+  checksum: 1f820b08766f1a4943dac3a5864f54226dc6bb9415235a0a625f1f82e29c4e3f654f9f30254149d2dcc9bbad0c6c6a074266eed368ac34123c1d760d5947725d
   languageName: node
   linkType: hard
 
@@ -7665,6 +7675,7 @@ fsevents@^1.2.7:
     react-router-dom: ^5.2.0
     react-tiny-popover: ^6.0.5
     react-use-measure: ^2.0.4
+    tone: next
     ts-jest: ^26.5.6
     typescript: ^4.2.4
   languageName: unknown
@@ -14082,6 +14093,17 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
+"standardized-audio-context@npm:^25.1.8":
+  version: 25.2.3
+  resolution: "standardized-audio-context@npm:25.2.3"
+  dependencies:
+    "@babel/runtime": ^7.14.0
+    automation-events: ^4.0.1
+    tslib: ^2.2.0
+  checksum: 947450fe8abc46bdca480117ecea953f6d3923ae16bf890955b5e5cfb6cad557bc4d83e4e232804ab0bbe4a5d2b3944476ddb4c99d35479cdad026ccc0c7572b
+  languageName: node
+  linkType: hard
+
 "static-extend@npm:^0.1.1":
   version: 0.1.2
   resolution: "static-extend@npm:0.1.2"
@@ -14775,6 +14797,16 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
+"tone@npm:next":
+  version: 14.8.25
+  resolution: "tone@npm:14.8.25"
+  dependencies:
+    standardized-audio-context: ^25.1.8
+    tslib: ^2.0.1
+  checksum: d32d514aa47263aedbcc428d09acf2b3eab75f5671e39779aa4f6513bd31816b0b3a940f42291d295e88c6a87e345acd72d1d649147e21d4c04fdcc3b23a9b8d
+  languageName: node
+  linkType: hard
+
 "totalist@npm:^1.0.0":
   version: 1.1.0
   resolution: "totalist@npm:1.1.0"
@@ -14896,7 +14928,7 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.0.3":
+"tslib@npm:^2.0.1, tslib@npm:^2.0.3, tslib@npm:^2.2.0":
   version: 2.2.0
   resolution: "tslib@npm:2.2.0"
   checksum: 2d35468c470410871c5246e43f12dcb6d0fc363b617c176f26443b9530e5c5ee8448966892a42956168d8f495da7865bda33dfe82c26c91991e28999974a618f
@@ -15647,6 +15679,12 @@ typescript@^4.2.4:
   checksum: 5e28f66f597cb34ac5f7ca0881cd3f106265091e47d7cda9ae00f4902283efdfdab36a70e34a9cf7b1467aac021178981513393b7dcddbb84caf11920f269379
   languageName: node
   linkType: hard
+
+"webpack-midi-loader@workspace:packages/webpack-midi-loader":
+  version: 0.0.0-use.local
+  resolution: "webpack-midi-loader@workspace:packages/webpack-midi-loader"
+  languageName: unknown
+  linkType: soft
 
 "webpack-node-externals@npm:^3.0.0":
   version: 3.0.0

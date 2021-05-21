@@ -10,7 +10,6 @@ import { initDB, sessionConfig } from "./db";
 
 //Load config
 checkEnvironment();
-console.log(process.env.HONKBEEP_PORT);
 const port = parseInt(process.env.HONKBEEP_PORT!);
 
 console.log(`Starting Honkbeep Server on port ${port}`);
