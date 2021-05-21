@@ -10,12 +10,14 @@ import StackArea from "./StackArea/Stack";
 import BoardContext from "../BoardContext";
 import { Board } from "honkbeep-play";
 import { FacilityBoundary } from "honkbeep-react/util/Zone";
+import { SoundPlayer } from "./SoundPlayer";
 
 import styles from "./BoardLayout.css";
 
 export default function HBBoardLayout({ board }: { board: Board }) {
   return (
     <BoardContext.Provider value={board}>
+      <SoundPlayer />
       <FacilityBoundary>
         <div className={styles.Board}>
           <div className={styles.BoardGrid}>
