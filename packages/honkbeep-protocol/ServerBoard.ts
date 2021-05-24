@@ -10,6 +10,7 @@ import {
   Variant,
   VariantDefinition,
   buildVariant,
+  isGameOver,
 } from "honkbeep-game";
 import { GameBoardState } from "honkbeep-play";
 import { ArrayUtil } from "honkbeep-util";
@@ -136,12 +137,17 @@ export default class ServerBoard implements GameBoardState {
     return player === (this.state.turn - 1) % this.variant.numPlayers;
   }
 
-  private async broadcastLatestEvent() {
-    let turn = this.state.turn - 1;
+  private async broadcastEvent(turn: number) {
     this.connections.forEach((c) => {
       let message = this.buildEventMessage(c.player, turn);
       c.callback(message);
     });
+  }
+
+  private async broadcastLatestEvents(amount: number = 1) {
+    for (let i = 0; i < amount; i++) {
+      this.broadcastEvent(this.state.turn - amount + i);
+    }
   }
 
   public async attemptPlayerAction(player: number, action: GameAttempt) {

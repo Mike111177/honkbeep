@@ -7,6 +7,7 @@ export * from "./Deck";
 //Helpers
 export * from "./clueHelpers";
 export * from "./gameStateHelpers";
+export * from "./isGameOver";
 
 //Types
 export * from "./types/Clue";
