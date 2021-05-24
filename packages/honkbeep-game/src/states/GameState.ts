@@ -17,17 +17,24 @@ export interface GameState {
   readonly stacks: ReadonlyArray<CardPile>;
   readonly discardPile: CardPile;
   readonly topDeck: number;
+  readonly lastRound: number;
   readonly clues: number;
   readonly strikes: number;
   readonly cardReveals: ReadonlyArray<ReadonlySet<number>>;
 }
 
-function drawCard<T extends Draft<GameState>>(state: T, { deck }: Variant) {
+function drawCard<T extends Draft<GameState>>(
+  state: T,
+  { deck, numPlayers }: Variant
+) {
   if (deck.length - state.topDeck >= 0) {
     const card = state.topDeck;
     state.topDeck++;
     return card;
   } else {
+    if (state.lastRound < 0) {
+      state.lastRound = numPlayers - 1;
+    }
     return undefined as unknown as number;
   }
 }
@@ -56,6 +63,7 @@ export function reduceGameEventFn<T extends Draft<GameState>>(
       }
       //Advance to next players turn
       state.turn++;
+      state.lastRound--;
       break;
     }
     case GameEventType.Play: {
@@ -89,6 +97,7 @@ export function reduceGameEventFn<T extends Draft<GameState>>(
         .forEach((reveals) => reveals.add(newCard));
       //Advance to next players turn
       state.turn++;
+      state.lastRound--;
       break;
     }
     case GameEventType.Discard: {
@@ -124,6 +133,7 @@ export function reduceGameEventFn<T extends Draft<GameState>>(
       state.clues--;
       //Advance to next players turn
       state.turn++;
+      state.lastRound--;
       break;
     }
   }
@@ -133,6 +143,7 @@ export const reduceGameEvent = produce(reduceGameEventFn);
 export function initGameStateFromDefinition(variant: Variant): GameState {
   return {
     turn: 0,
+    lastRound: -1,
     hands: [],
     stacks: ArrayUtil.fill(variant.suits.length, () => []),
     discardPile: [],
@@ -146,6 +157,7 @@ export function initGameStateFromDefinition(variant: Variant): GameState {
 export function initNullGameState(): GameState {
   return {
     turn: 0,
+    lastRound: -1,
     hands: [],
     stacks: [],
     discardPile: [],
