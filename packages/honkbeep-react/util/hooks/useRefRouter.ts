@@ -1,4 +1,4 @@
-import * as ArrayUtil from "honkbeep-util/ArrayUtil";
+import { ArrayUtil } from "honkbeep-util";
 import {
   useRef,
   RefCallback,

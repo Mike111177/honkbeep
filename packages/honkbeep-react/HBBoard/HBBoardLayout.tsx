@@ -9,7 +9,7 @@ import ScoreBoard from "./ScoreBoard/ScoreBoard";
 import StackArea from "./StackArea/Stack";
 import BoardContext from "../BoardContext";
 import { Board } from "honkbeep-play";
-import { FacilityBoundary } from "honkbeep-react/util/Zone";
+import { FacilityBoundary } from "react-zones";
 import { SoundPlayer } from "./SoundPlayer";
 
 import styles from "./BoardLayout.css";

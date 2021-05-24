@@ -4,7 +4,7 @@ import {
   GamePlayResultType,
   GameEvent,
 } from "../types/GameEvent";
-import * as ArrayUtil from "honkbeep-util/ArrayUtil";
+import { ArrayUtil } from "honkbeep-util";
 import Variant from "../types/Variant";
 
 enableMapSet();

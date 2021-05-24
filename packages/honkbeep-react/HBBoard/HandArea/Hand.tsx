@@ -1,5 +1,5 @@
 import React from "react";
-import * as ArrayUtil from "honkbeep-util/ArrayUtil";
+import { ArrayUtil } from "honkbeep-util";
 import { useBoardStateSelector, useStaticBoardState } from "../../BoardContext";
 import classNames from "../../util/classNames";
 import CardTarget from "../AnimatedDeck/CardTarget";
@@ -32,9 +32,10 @@ export default function Hand({ player }: HandProps) {
     variant: { handSize },
     playerNames,
   } = useStaticBoardState();
-  const myTurn = useBoardStateSelector((s) => s.playerOfTurn === player, [
-    player,
-  ]);
+  const myTurn = useBoardStateSelector(
+    (s) => s.playerOfTurn === player,
+    [player]
+  );
 
   return (
     <div className={classNames(styles.Hand, styles.OnPlayerTurn, myTurn)}>

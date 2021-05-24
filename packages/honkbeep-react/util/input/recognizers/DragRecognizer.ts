@@ -1,4 +1,4 @@
-import { Vec2D, vecSub } from "honkbeep-util/Geometry";
+import { Vec2D, vecSub } from "honkbeep-util";
 import { DragListener } from "../types/DragTypes";
 import { GestureRef } from "../types/GestureTypes";
 import { Recognizer } from "../types/RecognizerTypes";

@@ -1,4 +1,4 @@
-import { Immutable } from "honkbeep-util/HelperTypes";
+import { Immutable } from "honkbeep-util";
 import { GameEvent, Variant } from "honkbeep-game";
 
 export interface GameBoardState {

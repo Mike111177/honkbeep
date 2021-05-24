@@ -1,7 +1,7 @@
 import { ComponentPropsWithoutRef } from "react";
 import { mix } from "chroma-js";
 
-import { vecAdd, vecMul } from "honkbeep-util/Geometry";
+import { vecAdd, vecMul } from "honkbeep-util";
 import { Pips } from "honkbeep-play";
 import { Variant } from "honkbeep-game";
 import colors from "../../BaseColors";

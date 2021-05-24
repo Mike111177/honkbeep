@@ -8,7 +8,7 @@ import {
   Variant,
   GamePlayResultType,
 } from "honkbeep-game";
-import * as ArrayUtil from "honkbeep-util/ArrayUtil";
+import { ArrayUtil } from "honkbeep-util";
 import { TurnState } from "../states/TurnState";
 import { LocationType } from "../types/Location";
 
@@ -112,9 +112,8 @@ function updateMetadata(
           }
         }
 
-        meta.deducedPossibleCards = meta.deducedPossibleCards.filter(
-          cardFilter
-        );
+        meta.deducedPossibleCards =
+          meta.deducedPossibleCards.filter(cardFilter);
       }
       break;
     }

@@ -21,7 +21,7 @@
     "@types/koa-bodyparser": "^4.3.0",
     "@types/koa-session": "^5.10.3",
     "@types/koa__router": "^8.0.4",
-    "@types/pg": "^7.14.11",
+    "@types/pg": "^8.6.0",
     "@types/ws": "^7.4.4",
     "dotenv-webpack": "^7.0.2",
     "honkbeep-game": "workspace:packages/honkbeep-game",
@@ -32,9 +32,9 @@
     "nodemon-webpack-plugin": "^4.5.2",
     "terser-webpack-plugin": "^5.1.2",
     "ts-jest": "^26.5.6",
-    "ts-loader": "^9.1.2",
+    "ts-loader": "^9.2.2",
     "typescript": "^4.2.4",
-    "webpack": "^5.37.0",
+    "webpack": "^5.37.1",
     "webpack-cli": "^4.7.0",
     "webpack-node-externals": "^3.0.0"
   }

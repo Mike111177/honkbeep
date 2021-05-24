@@ -1,6 +1,6 @@
 import { ComponentPropsWithoutRef } from "react";
 import { CardSVG } from "../../components/DrawCard";
-import { ZonePath, useZone, ZoneConfig } from "../../util/Zone";
+import { ZonePath, useZone, ZoneConfig } from "react-zones";
 
 //Helper to make card targets
 type CardTargetProps = {

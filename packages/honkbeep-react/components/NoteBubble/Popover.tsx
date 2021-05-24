@@ -16,7 +16,7 @@ import {
   ContentRenderer,
   PopoverAlign,
 } from "react-tiny-popover";
-import { compareDOMRects } from "honkbeep-util/Geometry";
+import { compareDOMRects } from "honkbeep-util";
 import { useMemoizedArray } from "../../util";
 import { useRefHook } from "../../util/hooks/useRefRouter";
 import { Constants } from "./Constants";
@@ -83,9 +83,8 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
     // TODO: factor prevs out into a custom prevs hook
     const prevIsOpen = useRef(false);
     const prevPositions = useRef<PopoverPosition[] | undefined>();
-    const prevContentLocation = useRef<
-      ContentLocation | ContentLocationGetter | undefined
-    >();
+    const prevContentLocation =
+      useRef<ContentLocation | ContentLocationGetter | undefined>();
     const prevReposition = useRef(reposition);
 
     const childRef = useRef<HTMLElement>();
@@ -223,7 +222,8 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
           childRef.current = node;
           if (externalRef != null) {
             if (typeof externalRef === "object") {
-              (externalRef as React.MutableRefObject<HTMLElement>).current = node;
+              (externalRef as React.MutableRefObject<HTMLElement>).current =
+                node;
             } else if (typeof externalRef === "function") {
               (externalRef as (instance: HTMLElement) => void)(node);
             }

@@ -1,4 +1,4 @@
-import { Rectangle, vecSub } from "honkbeep-util/Geometry";
+import { Rectangle, vecSub } from "honkbeep-util";
 /**
  * Translate target coords into local coords and then constrain to boundary
  * @param boundry

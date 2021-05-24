@@ -1,6 +1,6 @@
 import CardTarget from "../AnimatedDeck/CardTarget";
 import { useBoardStateSelector, useStaticBoardState } from "../../BoardContext";
-import { ZonePath } from "../../util/Zone";
+import { ZonePath } from "react-zones";
 
 import styles from "./Deck.css";
 

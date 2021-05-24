@@ -12,7 +12,7 @@ import {
   buildVariant,
 } from "honkbeep-game";
 import { GameBoardState } from "honkbeep-play";
-import * as ArrayUtil from "honkbeep-util/ArrayUtil";
+import { ArrayUtil } from "honkbeep-util";
 import { CardReveal, GameData, GameEventMessage } from "./types/GameData";
 import { GameClientConnection } from "honkbeep-protocol/types/GameClientConnection";
 
@@ -168,7 +168,17 @@ export default class ServerBoard implements GameBoardState {
         case GameEventType.Clue:
           this.state = reduceGameEvent(this.state, event, this.variant);
           this.events.push(event);
-          this.broadcastLatestEvent();
+          let newEvents = 1;
+          const gameOver = isGameOver(this.state, this.variant);
+          if (gameOver !== undefined) {
+            this.events.push({
+              turn: this.state.turn,
+              type: GameEventType.GameOver,
+              condition: gameOver,
+            });
+            newEvents++;
+          }
+          this.broadcastLatestEvents(newEvents);
           return true;
       }
     }

@@ -2,7 +2,7 @@ import {
   GameMessage,
   GameMessageType,
 } from "honkbeep-protocol/types/GameMessages";
-import { MessageSocket } from "honkbeep-util/MessageSocket";
+import { MessageSocket } from "honkbeep-util";
 import { GameClientConnection } from "honkbeep-protocol/types/GameClientConnection";
 import WebSocket from "ws";
 import { GameEventMessage } from "honkbeep-protocol/types/GameData";

@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import * as ArrayUtil from "honkbeep-util/ArrayUtil";
+import { ArrayUtil } from "honkbeep-util";
 import { useBoardStateSelector } from "../../BoardContext";
 import classNames from "../../util/classNames";
-import { ErrorBoundary } from "../../util/ErrorBoundry";
+import { ErrorBoundary } from "../../util/ErrorBoundary";
 
 import styles from "./ScoreBoard.css";
 import darkregion from "../DarkRegion.css";
@@ -19,9 +19,10 @@ export default function ScoreBoard() {
     ArrayUtil.shallowCompare
   );
 
-  const score = useMemo(() => stacks.reduce((acc, v) => acc + v.length, 0), [
-    stacks,
-  ]);
+  const score = useMemo(
+    () => stacks.reduce((acc, v) => acc + v.length, 0),
+    [stacks]
+  );
 
   //Pick the color for the clue count indicator
   const clueStyle = {

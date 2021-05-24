@@ -1,6 +1,6 @@
 import { Zone, ZoneConfig, ZoneEventType, ZoneListener, ZonePath } from ".";
 import { LegacyZonePath } from "./types";
-import * as ArrayUtil from "honkbeep-util/ArrayUtil";
+import { ArrayUtil } from "honkbeep-util";
 
 function legacyZonePathToString(path: LegacyZonePath): string {
   return path.join("-");

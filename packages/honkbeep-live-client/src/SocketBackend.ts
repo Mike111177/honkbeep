@@ -1,6 +1,6 @@
 import { unstable_batchedUpdates } from "react-dom";
 import { GameAttempt } from "honkbeep-game";
-import { MessageSocket } from "honkbeep-util/MessageSocket";
+import { MessageSocket } from "honkbeep-util";
 import Backend from "honkbeep-protocol/types/Backend";
 import { GameData } from "honkbeep-protocol/types/GameData";
 import {

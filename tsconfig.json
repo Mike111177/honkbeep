@@ -16,5 +16,6 @@
     "isolatedModules": false,
     "preserveConstEnums": true,
     "jsx": "react-jsx"
-  }
+  },
+  "exclude": ["build", "coverage"]
 }

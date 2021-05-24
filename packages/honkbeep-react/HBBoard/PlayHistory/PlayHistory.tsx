@@ -11,12 +11,12 @@ import {
 } from "honkbeep-game";
 import { useBoardReducer, useBoardStateSelector } from "../../BoardContext";
 import classNames from "../../util/classNames";
-import * as ArrayUtil from "honkbeep-util/ArrayUtil";
+import { ArrayUtil } from "honkbeep-util";
 
 import styles from "./PlayHistory.css";
 import darkregion from "../DarkRegion.css";
 import { UserActionType } from "honkbeep-play";
-import { ErrorBoundary } from "../../util/ErrorBoundry";
+import { ErrorBoundary } from "../../util/ErrorBoundary";
 
 const NaturalNums = ["zero", "one", "two", "three", "four", "five"];
 

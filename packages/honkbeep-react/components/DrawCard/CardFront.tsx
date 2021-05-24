@@ -5,7 +5,7 @@ import colors from "../../BaseColors";
 import pipShapes from "../../SuitPips";
 import { Pip } from "../Pip";
 import { CardFace } from "honkbeep-game";
-import { vecAdd, vecSub } from "honkbeep-util/Geometry";
+import { vecAdd, vecSub } from "honkbeep-util";
 import { CARD_VIEW_MIDPOINT as mid, CardRectangle, CardSVG } from ".";
 
 export type CardFrontProps = {

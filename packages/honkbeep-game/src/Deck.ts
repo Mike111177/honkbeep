@@ -1,6 +1,5 @@
 import { CardFace, VariantDefinition } from ".";
-import * as ArrayUtil from "honkbeep-util/ArrayUtil";
-import { xorshift32 } from "honkbeep-util/rng";
+import { ArrayUtil, xorshift32 } from "honkbeep-util";
 
 const DEFAULT_SUIT_RANKS: ReadonlyArray<number> = [1, 2, 3, 4, 5];
 const DEFAULT_SUIT_RANK_DIVISION: ReadonlyArray<number> = [3, 2, 2, 2, 1];

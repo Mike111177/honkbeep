@@ -1,4 +1,4 @@
-import { Entries } from "honkbeep-util/HelperTypes";
+import { Entries } from "honkbeep-util";
 import { GestureBuilder } from "../types/GestureTypes";
 import { Recognizer } from "../types/RecognizerTypes";
 

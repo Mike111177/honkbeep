@@ -1,4 +1,4 @@
-import * as ArrayUtil from "honkbeep-util/ArrayUtil";
+import { ArrayUtil } from "honkbeep-util";
 import { useBoardStateSelector } from "../../BoardContext";
 import Hand from "./Hand";
 

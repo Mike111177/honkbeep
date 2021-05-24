@@ -1,4 +1,4 @@
-import { Immutable } from "honkbeep-util/HelperTypes";
+import { Immutable } from "honkbeep-util";
 import { Deck } from "..";
 import { Suit } from "./Suit";
 

@@ -7,11 +7,11 @@ import {
   rankClue,
 } from "honkbeep-game";
 import { UserActionType } from "honkbeep-play";
-import * as ArrayUtil from "honkbeep-util/ArrayUtil";
+import { ArrayUtil } from "honkbeep-util";
 import { useCallback, useState } from "react";
 import colors from "../../BaseColors";
 import { useBoardReducer, useBoardStateSelector } from "../../BoardContext";
-import { ErrorBoundary } from "../../util/ErrorBoundry";
+import { ErrorBoundary } from "../../util/ErrorBoundary";
 
 import styles from "./ClueArea.css";
 

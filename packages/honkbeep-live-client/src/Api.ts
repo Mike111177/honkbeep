@@ -2,7 +2,7 @@ import axios from "axios";
 import { MeMessage, StatusMessage } from "honkbeep-protocol/types/ApiMessages";
 import { GameMessage } from "honkbeep-protocol/types/GameMessages";
 import { TableMessage, TableState } from "honkbeep-protocol/types/TableMessage";
-import { MessageSocket } from "honkbeep-util/MessageSocket";
+import { MessageSocket } from "honkbeep-util";
 
 const wsproto = window.location.protocol === "https:" ? "wss" : "ws";
 

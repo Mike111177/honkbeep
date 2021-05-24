@@ -1,15 +1,13 @@
-import WebSocket from "ws";
+import { genericVariant } from "honkbeep-game";
 import {
   TableMessage,
   TableMessageType,
   TableState,
 } from "honkbeep-protocol/types/TableMessage";
 import { User } from "honkbeep-protocol/types/User";
-import { genericVariant } from "honkbeep-game";
-import { MessageSocket } from "honkbeep-util/MessageSocket";
+import { ArrayUtil, MessageSocket, UID } from "honkbeep-util";
+import WebSocket from "ws";
 import { startNewGame } from "../Server/ActiveGames";
-import { UID } from "honkbeep-util/rng";
-import * as ArrayUtil from "honkbeep-util/ArrayUtil";
 
 const ActiveTables = new Map<string, Table>();
 

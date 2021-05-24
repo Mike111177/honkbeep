@@ -4,7 +4,7 @@ import {
   Variant,
   VariantDefinition,
 } from "honkbeep-game";
-import { Immutable } from "honkbeep-util/HelperTypes";
+import { Immutable } from "honkbeep-util";
 import { CardNotes } from "../types/Notes";
 import { TurnState } from "./TurnState";
 import { GameBoardState } from "../types/GameBoardState";

@@ -1,4 +1,4 @@
-import * as ArrayUtil from "honkbeep-util/ArrayUtil";
+import { ArrayUtil } from "honkbeep-util";
 import { useMemo, useRef } from "react";
 
 export function useMemoizedArray<T>(arr: T[]) {

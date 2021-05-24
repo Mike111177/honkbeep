@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import loadable from "@loadable/component";
 
-import { ErrorBoundary } from "honkbeep-react/util/ErrorBoundry";
+import { ErrorBoundary } from "honkbeep-react/util/ErrorBoundary";
 
 import Home from "./pages/Home";
 import Table from "./pages/Table";

@@ -1,5 +1,5 @@
 import { xorshift32 } from ".";
-import * as ArrayUtil from "../ArrayUtil";
+import { ArrayUtil } from "..";
 
 const URL_SAFE_CHARS: Readonly<string> =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";

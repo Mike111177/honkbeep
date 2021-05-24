@@ -1,4 +1,4 @@
-import { Vec2D, vecMul } from "honkbeep-util/Geometry";
+import { Vec2D, vecMul } from "honkbeep-util";
 
 export const CARD_VIEW: Vec2D = { x: 110, y: 150 };
 export const CARD_VIEW_MIDPOINT: Vec2D = vecMul(CARD_VIEW, 0.5);
