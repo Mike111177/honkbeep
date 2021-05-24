@@ -1,5 +1,5 @@
 import AnimatedDeck from "./AnimatedDeck/AnimatedDeck";
-import ClueArea from "./ClueArea/ClueArea";
+import { ClueArea } from "./ClueArea";
 import Deck from "./Deck/Deck";
 import DiscardPile from "./DiscardPile/DiscardPile";
 import HandsArea from "./HandArea/HandArea";
