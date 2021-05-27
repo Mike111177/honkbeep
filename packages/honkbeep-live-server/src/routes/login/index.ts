@@ -1,6 +1,8 @@
-import { query } from "../db";
-import { Router } from "../types/ServerTypes";
+import { query } from "../../db";
+import { Router } from "../../types/ServerTypes";
 import { compare, hash } from "bcrypt";
+import getUser from "./getUser.sql";
+import createUser from "./createUser.sql";
 
 export default function loginRoute(router: Router) {
   router.post("/login", async (ctx, next) => {
@@ -10,17 +12,14 @@ export default function loginRoute(router: Router) {
       ctx.response.body = "Please choose longer name.";
     } else {
       //See if this user exist
-      const getUserQ = await query(
-        `SELECT user_id, username, password FROM accounts WHERE username=$1`,
-        [username]
-      );
+      const getUserQ = await query(getUser, [username]);
       if (getUserQ.rowCount === 0) {
         //If not lets make a new user and log them in
         const ENCRYPTED_PASSWORD = await hash(PLAINTEXT_PASSWORD, 10);
-        const createUserQ = await query(
-          `INSERT INTO accounts (username, password) VALUES ($1, $2) RETURNING user_id`,
-          [username, ENCRYPTED_PASSWORD]
-        );
+        const createUserQ = await query(createUser, [
+          username,
+          ENCRYPTED_PASSWORD,
+        ]);
         ctx.session!.user = createUserQ.rows[0].user_id;
         ctx.body = ctx.session!.user;
       } else {

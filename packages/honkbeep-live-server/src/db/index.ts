@@ -1,5 +1,5 @@
 import { Pool } from "pg";
-import * as Queries from "./Queries";
+import createTables from "./createTables.sql";
 const pool = new Pool();
 
 export function query(text: string, params?: any) {
@@ -7,7 +7,7 @@ export function query(text: string, params?: any) {
 }
 
 export async function initDB() {
-  await query(Queries.createTables);
+  await query(createTables);
 }
 
 export * from "./sessions";

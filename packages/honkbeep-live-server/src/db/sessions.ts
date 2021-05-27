@@ -1,20 +1,16 @@
 import { query } from ".";
 import session from "koa-session";
 
+import getSession from "./getSession.sql";
+import createSession from "./createSession.sql";
+
 export function sessionConfig(): Partial<session.opts> {
   return {
     key: "session",
     signed: false,
     store: {
       async get(key) {
-        const getSessQ = await query(
-          `SELECT sessions.user_id, username 
-           FROM sessions
-           INNER JOIN accounts 
-           ON accounts.user_id=sessions.user_id
-           WHERE sess_id=$1`,
-          [key]
-        );
+        const getSessQ = await query(getSession, [key]);
         if (getSessQ.rowCount > 0) {
           return {
             user: {
@@ -26,10 +22,7 @@ export function sessionConfig(): Partial<session.opts> {
       },
       async set(key, sess) {
         if (sess.user !== undefined) {
-          await query(
-            "INSERT INTO sessions (sess_id, user_id) VALUES ($1, $2)",
-            [key, sess.user]
-          );
+          await query(createSession, [key, sess.user]);
         }
       },
       async destroy() {},

@@ -31,6 +31,10 @@ module.exports = (env) => {
     module: {
       rules: [
         {
+          test: /\.sql$/,
+          type: "asset/source",
+        },
+        {
           test: /\.ts$/,
           loader: "ts-loader",
         },
