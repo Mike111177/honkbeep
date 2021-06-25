@@ -1,1 +1,1 @@
-SELECT user_id, username, password FROM accounts WHERE username=$1
+SELECT user_id, username, displayName, password FROM accounts WHERE username=LOWER($1)

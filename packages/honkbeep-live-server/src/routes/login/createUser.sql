@@ -1,3 +1,3 @@
-INSERT INTO accounts (username, password) 
-VALUES ($1, $2) 
+INSERT INTO accounts (username, displayName, password) 
+VALUES (LOWER($1), $1, $2) 
 RETURNING user_id
